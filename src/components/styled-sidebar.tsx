@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { Order } from "@/types/order";
 import { sampleOrders } from "@/types/order";
+import { useMarkerHighlight } from "@/contexts/MarkerHighlightContext";
 import {
   DndContext,
   closestCenter,
@@ -26,6 +27,7 @@ interface StyledSidebarProps {
 const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [orders, setOrders] = useState<Order[]>(sampleOrders);
+  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
 
   // Configure sensors for drag and drop
   const sensors = useSensors(
@@ -80,6 +82,9 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
       isDragging,
     } = useSortable({ id: order.id });
 
+    // Check if this order is currently highlighted
+    const isHighlighted = highlightedOrderId === order.id;
+
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -98,32 +103,60 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
           style={{
             padding: "12px 16px",
             borderRadius: "8px",
-            backgroundColor: isDragging ? "#e0f2fe" : "#f9fafb",
-            border: `2px solid ${isDragging ? "#0284c7" : "#e5e7eb"}`,
+            backgroundColor: isDragging
+              ? "#e0f2fe"
+              : isHighlighted
+              ? "#dbeafe"
+              : "#f9fafb",
+            border: `2px solid ${
+              isDragging ? "#0284c7" : isHighlighted ? "#1d4ed8" : "#e5e7eb"
+            }`,
             cursor: isDragging ? "grabbing" : "grab",
             transition: "all 0.2s",
             boxShadow: isDragging
               ? "0 8px 25px -8px rgba(2, 132, 199, 0.3)"
+              : isHighlighted
+              ? "0 4px 12px -2px rgba(29, 78, 216, 0.2)"
               : "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-            transform: isDragging ? "rotate(2deg)" : "none",
+            transform: isDragging
+              ? "rotate(2deg)"
+              : isHighlighted
+              ? "translateY(-1px)"
+              : "none",
             position: "relative" as const,
           }}
           onMouseEnter={(e) => {
             if (!isDragging) {
-              e.currentTarget.style.backgroundColor = "#f3f4f6";
-              e.currentTarget.style.borderColor = "#d1d5db";
+              // Set the highlighted order ID in context
+              setHighlightedOrderId(order.id);
+
+              e.currentTarget.style.backgroundColor = isHighlighted
+                ? "#dbeafe"
+                : "#f3f4f6";
+              e.currentTarget.style.borderColor = isHighlighted
+                ? "#1d4ed8"
+                : "#d1d5db";
               e.currentTarget.style.transform = "translateY(-1px)";
-              e.currentTarget.style.boxShadow =
-                "0 4px 6px -1px rgba(0, 0, 0, 0.1)";
+              e.currentTarget.style.boxShadow = isHighlighted
+                ? "0 4px 12px -2px rgba(29, 78, 216, 0.2)"
+                : "0 4px 6px -1px rgba(0, 0, 0, 0.1)";
             }
           }}
           onMouseLeave={(e) => {
             if (!isDragging) {
-              e.currentTarget.style.backgroundColor = "#f9fafb";
-              e.currentTarget.style.borderColor = "#e5e7eb";
+              // Clear the highlighted order ID in context
+              setHighlightedOrderId(null);
+
+              e.currentTarget.style.backgroundColor = isHighlighted
+                ? "#dbeafe"
+                : "#f9fafb";
+              e.currentTarget.style.borderColor = isHighlighted
+                ? "#1d4ed8"
+                : "#e5e7eb";
               e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow =
-                "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
+              e.currentTarget.style.boxShadow = isHighlighted
+                ? "0 4px 12px -2px rgba(29, 78, 216, 0.2)"
+                : "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
             }
           }}
         >
