@@ -53,26 +53,6 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
     justifyContent: "center",
   };
 
-  const navItemStyle = {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-    padding: "8px 12px",
-    margin: "4px 8px",
-    borderRadius: "6px",
-    textDecoration: "none",
-    color: "#374151",
-    fontSize: "14px",
-    fontWeight: "500",
-    transition: "background-color 0.2s",
-  };
-
-  const activeNavItemStyle = {
-    ...navItemStyle,
-    backgroundColor: "#dbeafe",
-    color: "#1d4ed8",
-  };
-
   return (
     <div style={sidebarStyle} className={className}>
       {/* Header */}
@@ -123,58 +103,21 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
         </button>
       </div>
 
-      {/* Navigation */}
+      {/* Orders Section Only */}
       <nav style={{ flex: 1, padding: "8px" }}>
-        <a
-          href="/"
-          style={{ ...navItemStyle, ...(true ? activeNavItemStyle : {}) }}
-        >
-          <span>🏠</span>
-          {!collapsed && <span>Dashboard</span>}
-        </a>
-        <a href="/maps" style={navItemStyle}>
-          <span>🗺️</span>
-          {!collapsed && <span>Maps</span>}
-        </a>
-        <a href="/layers" style={navItemStyle}>
-          <span>📚</span>
-          {!collapsed && <span>Layers</span>}
-        </a>
-        <a href="/analytics" style={navItemStyle}>
-          <span>📊</span>
-          {!collapsed && <span>Analytics</span>}
-        </a>
-        <a href="/team" style={navItemStyle}>
-          <span>👥</span>
-          {!collapsed && <span>Team</span>}
-        </a>
-        <a href="/projects" style={navItemStyle}>
-          <span>📁</span>
-          {!collapsed && <span>Projects</span>}
-        </a>
-        <a href="/settings" style={navItemStyle}>
-          <span>⚙️</span>
-          {!collapsed && <span>Settings</span>}
-        </a>
-
-        {/* Orders Section */}
         {!collapsed && (
           <>
-            <div
-              style={{
-                borderTop: "1px solid #e5e7eb",
-                margin: "16px 8px 8px 8px",
-                paddingTop: "16px",
-              }}
-            />
-            <div style={{ marginBottom: "8px" }}>
+            <div style={{ marginBottom: "16px" }}>
               <span
                 style={{
-                  fontSize: "12px",
-                  fontWeight: "600",
-                  color: "#6b7280",
+                  fontSize: "14px",
+                  fontWeight: "700",
+                  color: "#111827",
                   textTransform: "uppercase",
                   letterSpacing: "0.05em",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
                 }}
               >
                 📋 Orders
@@ -184,29 +127,36 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "6px",
-                maxHeight: "300px",
+                gap: "8px",
+                maxHeight: "calc(100vh - 200px)",
                 overflowY: "auto",
               }}
             >
-              {sampleOrders.slice(0, 5).map((order) => (
+              {sampleOrders.map((order) => (
                 <div
                   key={order.id}
                   style={{
-                    padding: "8px 12px",
-                    borderRadius: "6px",
+                    padding: "12px 16px",
+                    borderRadius: "8px",
                     backgroundColor: "#f9fafb",
                     border: "1px solid #e5e7eb",
                     cursor: "pointer",
                     transition: "all 0.2s",
+                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = "#f3f4f6";
                     e.currentTarget.style.borderColor = "#d1d5db";
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 6px -1px rgba(0, 0, 0, 0.1)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = "#f9fafb";
                     e.currentTarget.style.borderColor = "#e5e7eb";
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
                   }}
                 >
                   <div
@@ -214,15 +164,16 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "flex-start",
-                      marginBottom: "4px",
+                      marginBottom: "6px",
                     }}
                   >
                     <span
                       style={{
-                        fontSize: "13px",
+                        fontSize: "14px",
                         fontWeight: "600",
                         color: "#111827",
-                        lineHeight: "1.2",
+                        lineHeight: "1.3",
+                        flex: 1,
                       }}
                     >
                       {order.name}
@@ -230,13 +181,13 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
                     <span
                       style={{
                         fontSize: "10px",
-                        padding: "2px 6px",
+                        padding: "3px 8px",
                         borderRadius: "12px",
                         backgroundColor: getStatusColor(order.status).bg,
                         color: getStatusColor(order.status).text,
-                        fontWeight: "500",
+                        fontWeight: "600",
                         whiteSpace: "nowrap",
-                        marginLeft: "8px",
+                        marginLeft: "12px",
                       }}
                     >
                       {order.status.replace("-", " ").toUpperCase()}
@@ -244,9 +195,10 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
                   </div>
                   <div
                     style={{
-                      fontSize: "11px",
+                      fontSize: "12px",
                       color: "#6b7280",
-                      marginBottom: "4px",
+                      marginBottom: "6px",
+                      fontWeight: "500",
                     }}
                   >
                     {order.customer}
@@ -254,15 +206,15 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
                   {order.comment && (
                     <div
                       style={{
-                        fontSize: "10px",
+                        fontSize: "11px",
                         color: "#9ca3af",
                         fontStyle: "italic",
-                        lineHeight: "1.3",
-                        marginBottom: "4px",
+                        lineHeight: "1.4",
+                        marginBottom: "8px",
                       }}
                     >
-                      {order.comment.length > 40
-                        ? `${order.comment.substring(0, 40)}...`
+                      {order.comment.length > 50
+                        ? `${order.comment.substring(0, 50)}...`
                         : order.comment}
                     </div>
                   )}
@@ -271,15 +223,31 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      fontSize: "10px",
+                      fontSize: "11px",
                       color: "#6b7280",
+                      borderTop: "1px solid #e5e7eb",
+                      paddingTop: "6px",
                     }}
                   >
-                    <span>Priority: {order.priority.toUpperCase()}</span>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <span>Priority: {order.priority.toUpperCase()}</span>
+                      <span style={{ fontSize: "10px" }}>ID: {order.id}</span>
+                    </div>
                     {order.totalAmount && (
-                      <span style={{ fontWeight: "600", color: "#111827" }}>
-                        €{order.totalAmount.toLocaleString()}
-                      </span>
+                      <div style={{ textAlign: "right" }}>
+                        <div
+                          style={{
+                            fontWeight: "700",
+                            color: "#111827",
+                            fontSize: "12px",
+                          }}
+                        >
+                          €{order.totalAmount.toLocaleString()}
+                        </div>
+                        <div style={{ fontSize: "10px", color: "#6b7280" }}>
+                          Total
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -288,9 +256,27 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
           </>
         )}
         {collapsed && (
-          <a href="/orders" style={navItemStyle}>
-            <span>📋</span>
-          </a>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "12px",
+              paddingTop: "16px",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "#6b7280",
+                writingMode: "vertical-rl",
+                textOrientation: "mixed",
+              }}
+            >
+              ORDERS
+            </span>
+          </div>
         )}
       </nav>
 
