@@ -1,8 +1,6 @@
 // src/components/OrderMarkers.tsx
 import React, { useEffect, useRef } from "react";
 import { useHereMap } from "@/hooks/useHereMap";
-import { OrderHighlightContext } from "@/contexts/OrderHighlightContext";
-import { useContext } from "react";
 import { sampleOrders } from "@/types/order";
 import { useMarkerHighlight } from "@/contexts/MarkerHighlightContext";
 import type { MapMarker } from "@/types/here-maps";
@@ -38,7 +36,6 @@ const createSvgIcon = (
 ) => {
   let color = "#6b7280"; // default gray
   let bgColor = "#f9fafb";
-  let strokeWidth = 2;
 
   // Set colors based on priority
   switch (priority) {
