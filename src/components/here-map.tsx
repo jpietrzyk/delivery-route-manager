@@ -1,6 +1,6 @@
 // src/components/HereMap.tsx
 import { useEffect, useRef } from "react";
-import { useHereMap } from "@/components/here-map-context"; // Obtain the context
+import { useHereMap } from "@/hooks/useHereMap"; // Obtain the context
 
 const HereMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
