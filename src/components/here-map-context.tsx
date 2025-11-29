@@ -12,6 +12,9 @@ export const HereMapProvider: React.FC<HereMapProviderProps> = ({
   // Holds the HERE map style object
   const styleRef = useRef<unknown>(null);
 
+  // Holds the HERE map instance
+  const mapRef = useRef<unknown>(null);
+
   // Tracks whether the map style is ready
   const [isReady, setIsReady] = useState<boolean>(false);
 
@@ -19,6 +22,7 @@ export const HereMapProvider: React.FC<HereMapProviderProps> = ({
     <HereMapContext.Provider
       value={{
         styleRef,
+        mapRef,
         isReady,
         setIsReady,
       }}

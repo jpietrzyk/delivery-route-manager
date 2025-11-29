@@ -6,6 +6,7 @@ export interface HereMapContextType {
   styleRef: React.MutableRefObject<unknown>;
   isReady: boolean;
   setIsReady: (ready: boolean) => void;
+  mapRef: React.MutableRefObject<unknown>;
 }
 
 // Create context with undefined as default value

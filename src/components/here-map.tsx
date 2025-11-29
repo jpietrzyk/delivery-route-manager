@@ -4,7 +4,7 @@ import { useHereMap } from "@/hooks/useHereMap"; // Obtain the context
 
 const HereMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const { styleRef, setIsReady } = useHereMap(); // Get the context setters
+  const { styleRef, setIsReady, mapRef: contextMapRef } = useHereMap(); // Get the context setters
 
   useEffect(() => {
     // Check if H (HERE Maps) is available
@@ -29,11 +29,14 @@ const HereMap: React.FC = () => {
     }
 
     const map = new H.Map(mapRef.current, defaultLayers.vector.normal.map, {
-      center: { lat: 52.52, lng: 13.405 },
-      zoom: 10,
+      center: { lat: 47.5, lng: 19.0 }, // Center on Hungary
+      zoom: 7,
       engineType,
       pixelRatio: window.devicePixelRatio || 1,
     });
+
+    // Store map instance in context
+    contextMapRef.current = map;
 
     new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
     H.ui.UI.createDefault(map, defaultLayers);
@@ -54,7 +57,7 @@ const HereMap: React.FC = () => {
       window.removeEventListener("resize", handleResize);
       map.dispose();
     };
-  }, [styleRef, setIsReady]);
+  }, [styleRef, setIsReady, contextMapRef]);
 
   return (
     <div
