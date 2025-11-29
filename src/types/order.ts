@@ -9,6 +9,10 @@ export interface Order {
   customer: string;
   totalAmount?: number;
   items?: OrderItem[];
+  location: {
+    lat: number;
+    lng: number;
+  };
 }
 
 export interface OrderItem {
@@ -30,6 +34,7 @@ export const sampleOrders: Order[] = [
     updatedAt: new Date('2025-11-29T08:15:00Z'),
     customer: 'BuildCorp Construction',
     totalAmount: 12500.00,
+    location: { lat: 47.4979, lng: 19.0402 }, // Budapest, Hungary
     items: [
       {
         id: 'ITEM-001',
@@ -49,6 +54,7 @@ export const sampleOrders: Order[] = [
     updatedAt: new Date('2025-11-29T09:45:00Z'),
     customer: 'WindowTech Solutions',
     totalAmount: 8750.50,
+    location: { lat: 47.5584, lng: 21.6411 }, // Debrecen, Hungary
     items: [
       {
         id: 'ITEM-002',
@@ -74,6 +80,7 @@ export const sampleOrders: Order[] = [
     updatedAt: new Date('2025-11-28T16:30:00Z'),
     customer: 'MetalCraft Industries',
     totalAmount: 3200.00,
+    location: { lat: 46.2517, lng: 20.1481 }, // Szeged, Hungary
     items: [
       {
         id: 'ITEM-004',
@@ -93,6 +100,7 @@ export const sampleOrders: Order[] = [
     updatedAt: new Date('2025-11-29T07:15:00Z'),
     customer: 'Infrastructure Plus',
     totalAmount: 45000.00,
+    location: { lat: 48.1033, lng: 20.7784 }, // Miskolc, Hungary
     items: [
       {
         id: 'ITEM-005',
@@ -118,6 +126,7 @@ export const sampleOrders: Order[] = [
     updatedAt: new Date('2025-11-28T10:20:00Z'),
     customer: 'ArtStudio Contemporary',
     totalAmount: 5600.00,
+    location: { lat: 46.0737, lng: 18.2331 }, // Pécs, Hungary
     items: [
       {
         id: 'ITEM-007',
