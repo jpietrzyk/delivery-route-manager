@@ -39,12 +39,12 @@ useEffect(() => {
 return (
   <div
     ref={mapRef}
-        style={
-          {
-            width: '100vw',
-            height: '100vh'
-          }
+      style={
+        {
+          width: '100vw',
+          height: '100vh'
         }
+      }
   />
 );
 };
