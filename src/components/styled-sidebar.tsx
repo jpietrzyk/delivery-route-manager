@@ -208,9 +208,15 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({ className = "" }) => {
               paddingTop: "6px",
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "2px" }}
+            >
               <span>Priority: {order.priority.toUpperCase()}</span>
               <span style={{ fontSize: "10px" }}>ID: {order.id}</span>
+              <span style={{ fontSize: "10px", color: "#059669" }}>
+                📍 {order.location.lat.toFixed(4)},{" "}
+                {order.location.lng.toFixed(4)}
+              </span>
             </div>
             {order.totalAmount && (
               <div style={{ textAlign: "right" }}>
