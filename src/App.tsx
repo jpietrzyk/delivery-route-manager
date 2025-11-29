@@ -1,5 +1,6 @@
 import HereMap from "@/components/here-map.tsx";
 import StyledSidebar from "@/components/styled-sidebar";
+import OrderMarkers from "@/components/order-markers";
 // import PublicTransitToggle from "@/components/public-transit-toggle.jsx"; // TODO: Convert to TypeScript
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
       {/* Map in the background */}
       <div className="absolute inset-0 z-0">
         <HereMap />
+        <OrderMarkers />
         {/* <PublicTransitToggle /> */} {/* TODO: Convert to TypeScript */}
       </div>
 
