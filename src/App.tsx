@@ -1,12 +1,21 @@
 import HereMap from "@/components/here-map.tsx";
+import StyledSidebar from "@/components/styled-sidebar";
 // import PublicTransitToggle from "@/components/public-transit-toggle.jsx"; // TODO: Convert to TypeScript
 
 function App() {
   return (
-    <>
-      <HereMap />
-      {/* <PublicTransitToggle /> */} {/* TODO: Convert to TypeScript */}
-    </>
+    <div className="h-screen w-screen overflow-hidden relative">
+      {/* Map in the background */}
+      <div className="absolute inset-0 z-0">
+        <HereMap />
+        {/* <PublicTransitToggle /> */} {/* TODO: Convert to TypeScript */}
+      </div>
+
+      {/* Sidebar overlaid on top of the map */}
+      <div className="absolute inset-y-0 left-0 z-[9999]">
+        <StyledSidebar />
+      </div>
+    </div>
   );
 }
 
