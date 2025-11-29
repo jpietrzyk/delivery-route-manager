@@ -1,9 +1,7 @@
 import HereMap from "@/components/here-map.tsx";
 import StyledSidebar from "@/components/styled-sidebar";
 import OrderMarkers from "@/components/order-markers";
-import OrderPolylines from "@/components/order-polylines";
 // import SimpleRouteTest from "@/components/simple-route-test";
-import { RouteFirstTwoOrders } from "@/components/configurable-route";
 import { MarkerHighlightProvider } from "@/contexts/MarkerHighlightContext";
 // import PublicTransitToggle from "@/components/public-transit-toggle.jsx"; // TODO: Convert to TypeScript
 
@@ -15,8 +13,6 @@ function App() {
         <div className="absolute inset-0 z-0">
           <HereMap />
           <OrderMarkers />
-          <OrderPolylines />
-          <RouteFirstTwoOrders />
           {/* <SimpleRouteTest /> */}
           {/* <PublicTransitToggle /> */} {/* TODO: Convert to TypeScript */}
         </div>
