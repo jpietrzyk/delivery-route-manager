@@ -31,6 +31,10 @@ declare global {
       Group: new () => MapGroup;
       Marker: new (options: MarkerOptions) => MapMarker;
       Icon: new (src: string) => MapIcon;
+      Polyline: new (geometry: unknown, options: PolylineOptions) => MapPolyline;
+    };
+    geo: {
+      LineString: new () => GeoLineString;
     };
   }
 
@@ -58,6 +62,28 @@ declare global {
   // HERE Maps Icon type - empty interface for extensibility
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface MapIcon {}
+
+  interface MapPolyline {
+    getType: () => string;
+  }
+
+  interface GeoLineString {
+    pushPoint: (lat: number, lng: number) => void;
+  }
+
+  interface PolylinePoint {
+    lat: number;
+    lng: number;
+  }
+
+  interface PolylineOptions {
+    style?: {
+      lineWidth?: number;
+      strokeColor?: string;
+      lineTail?: string;
+      lineHead?: string;
+    };
+  }
 
   interface HerePlatform {
     createDefaultLayers: (options: unknown) => unknown;
@@ -106,6 +132,10 @@ export type {
   MapGroup,
   MapMarker,
   MapIcon,
+  MapPolyline,
+  GeoLineString,
+  PolylinePoint,
+  PolylineOptions,
   HerePlatform,
   ViewModel,
   ViewPort,
