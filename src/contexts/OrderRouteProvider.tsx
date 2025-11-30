@@ -46,6 +46,9 @@ export const OrderRouteProvider: React.FC<{
   }, []);
 
   const addOrderToRoute = useCallback((order: Order) => {
+    // Only add active orders to the route
+    if (!order.active) return;
+
     setRouteOrders((currentOrders) => {
       // Check if order already exists in route
       const exists = currentOrders.some((o) => o.id === order.id);
@@ -67,8 +70,9 @@ export const OrderRouteProvider: React.FC<{
   }, []);
 
   const initializeRouteWithAllOrders = useCallback(() => {
-    // Sort orders by creation date as default route
-    const sortedOrders = [...availableOrders].sort(
+    // Sort active orders by creation date as default route
+    const activeOrders = availableOrders.filter((order) => order.active);
+    const sortedOrders = [...activeOrders].sort(
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     );
@@ -90,6 +94,22 @@ export const OrderRouteProvider: React.FC<{
       setIsLoadingOrders(false);
     }
   }, []);
+
+  // Initialize route with active orders when orders are loaded
+  useEffect(() => {
+    if (
+      !isLoadingOrders &&
+      availableOrders.length > 0 &&
+      routeOrders.length === 0
+    ) {
+      initializeRouteWithAllOrders();
+    }
+  }, [
+    isLoadingOrders,
+    availableOrders.length,
+    routeOrders.length,
+    initializeRouteWithAllOrders,
+  ]);
 
   const contextValue: OrderRouteContextType = {
     routeOrders,
