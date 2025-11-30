@@ -4,11 +4,12 @@ import { useHereMap } from "@/hooks/useHereMap";
 import { sampleOrders } from "@/types/order";
 import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 import type { MapMarker } from "@/types/here-maps";
+import type { HereMapsUI } from "@/types/here-maps";
 
 // Extend MapMarker interface to include tooltip property
 declare global {
   interface MapMarker {
-    _tooltip?: unknown;
+    _tooltip?: import("@/types/here-maps").InfoBubble;
   }
 }
 
@@ -105,7 +106,9 @@ const OrderMarkers: React.FC = () => {
       return;
     }
 
+    // Store ref values in local variables to avoid stale closures
     const map = mapRef.current;
+    const currentMarkers = markersRef.current;
 
     // Create a group for all order markers
     const markerGroup = new H.map.Group();
@@ -119,7 +122,7 @@ const OrderMarkers: React.FC = () => {
       });
 
       // Store marker reference by order ID
-      markersRef.current.set(order.id, marker);
+      currentMarkers.set(order.id, marker);
 
       // Create tooltip content
       const statusColors = getStatusColor(order.status);
@@ -185,8 +188,8 @@ const OrderMarkers: React.FC = () => {
         const tooltip = new H.ui.InfoBubble(marker.getGeometry(), {
           content: tooltipContent,
         });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (H.ui.UI.getUi(map) as any).addBubble(tooltip);
+        const ui: HereMapsUI = H.ui.UI.getUi(map);
+        ui.addBubble(tooltip);
         // Store tooltip reference on marker
         marker._tooltip = tooltip;
       });
@@ -198,11 +201,13 @@ const OrderMarkers: React.FC = () => {
         // Remove highlight
         marker.setIcon(originalIcon);
 
-        // Hide tooltip
+        // Hide and cleanup tooltip
         const tooltip = marker._tooltip;
         if (tooltip) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (H.ui.UI.getUi(map) as any).removeBubble(tooltip);
+          const ui: HereMapsUI = H.ui.UI.getUi(map);
+          ui.removeBubble(tooltip);
+          // Clear the tooltip reference
+          delete marker._tooltip;
         }
       });
 
@@ -222,9 +227,26 @@ const OrderMarkers: React.FC = () => {
 
     // Cleanup function
     return () => {
+      // Use the local variables captured at the start of the effect
+      // Clean up all tooltips before removing markers
+      currentMarkers.forEach((marker) => {
+        const tooltip = marker._tooltip;
+        if (tooltip) {
+          try {
+            const ui: HereMapsUI = H.ui.UI.getUi(map);
+            ui.removeBubble(tooltip);
+          } catch (error) {
+            // Silently ignore cleanup errors
+            console.warn("Failed to cleanup tooltip:", error);
+          }
+          delete marker._tooltip;
+        }
+      });
       map.removeObject(markerGroup);
+      // Clear the markers reference
+      currentMarkers.clear();
     };
-  }, [isReady, mapRef]);
+  }, [isReady, mapRef, setHighlightedOrderId]);
 
   // Effect to handle context changes and update marker highlights
   useEffect(() => {

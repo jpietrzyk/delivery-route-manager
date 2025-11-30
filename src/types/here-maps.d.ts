@@ -24,7 +24,7 @@ declare global {
     ui: {
       UI: {
         createDefault: (map: HereMap, layers: unknown) => unknown;
-        getUi: (map: HereMap) => unknown;
+        getUi: (map: HereMap) => HereMapsUI;
       };
       InfoBubble: new (geometry: unknown, options: InfoBubbleOptions) => InfoBubble;
     };
@@ -40,6 +40,11 @@ declare global {
         fromFlexiblePolyline: (polyline: string) => GeoLineString;
       };
     };
+  }
+
+  interface HereMapsUI {
+    addBubble: (bubble: InfoBubble) => void;
+    removeBubble: (bubble: InfoBubble) => void;
   }
 
   interface HereMap {
@@ -136,6 +141,7 @@ declare global {
 
   interface InfoBubble {
     content: string;
+    [key: string]: unknown;
   }
 
   interface MapOptions {
@@ -186,6 +192,7 @@ export type {
   RoutingParams,
   RoutingResult,
   RoutingError,
+  HereMapsUI,
 };
 
 // Also export the namespace interface itself
