@@ -3,7 +3,7 @@ import Sidebar from "@/components/sidebar";
 import OrderMarkers from "@/components/order-markers";
 import HereMultiSegmentRouting from "@/components/here-multi-segment-routing";
 import RouteManager from "@/components/RouteManager";
-// import SimpleRouteTest from "@/components/simple-route-test";
+
 import { MarkerHighlightProvider } from "@/contexts/MarkerHighlightContext";
 import { OrderRouteProvider } from "@/contexts/OrderRouteContext";
 // import PublicTransitToggle from "@/components/public-transit-toggle.jsx"; // TODO: Convert to TypeScript
@@ -18,7 +18,6 @@ function App() {
             <HereMap />
             <OrderMarkers />
             <HereMultiSegmentRouting />
-            {/* <SimpleRouteTest /> */}
             {/* <PublicTransitToggle /> */} {/* TODO: Convert to TypeScript */}
           </div>
 
