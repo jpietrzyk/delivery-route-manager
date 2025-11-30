@@ -270,9 +270,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           <div
             style={{
               position: "absolute",
-              top: "8px",
-              right: "8px",
-              fontSize: "12px",
+              top: "4px",
+              right: "4px",
+              fontSize: "10px",
               color: isDragging ? "#0284c7" : "#d1d5db",
               opacity: isDragging ? 1 : 0.6,
               transition: "color 0.2s",
@@ -319,8 +319,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
       >
         <div
           style={{
-            padding: "6px 10px",
-            borderRadius: "4px",
+            padding: "4px 8px",
+            borderRadius: "3px",
             backgroundColor: "#f9fafb",
             border: "1px solid #e5e7eb",
             cursor: isDragging ? "grabbing" : "grab",
@@ -334,42 +334,41 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: "4px",
             }}
           >
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "6px",
+                gap: "4px",
               }}
             >
               <span
                 style={{
-                  fontSize: "9px",
+                  fontSize: "8px",
                   color: "#9ca3af",
                   fontWeight: "600",
-                  minWidth: "16px",
+                  minWidth: "14px",
                 }}
               >
                 {activeOrders.length + index + 1}
               </span>
               <span
                 style={{
-                  fontSize: "13px",
+                  fontSize: "12px",
                   fontWeight: "600",
                   color: "#374151",
                 }}
                 title={order.name} // Show full name on hover
               >
-                {trimProductName(order.name)}
+                {trimProductName(order.name, 20)}
               </span>
             </div>
             <span
               style={{
-                fontSize: "9px",
-                padding: "2px 6px",
-                borderRadius: "8px",
+                fontSize: "8px",
+                padding: "1px 4px",
+                borderRadius: "6px",
                 backgroundColor: "#fee2e2",
                 color: "#991b1b",
                 fontWeight: "600",
@@ -378,25 +377,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
             >
               INACTIVE
             </span>
-          </div>
-          <div
-            style={{
-              fontSize: "11px",
-              color: "#6b7280",
-              marginBottom: "4px",
-              fontWeight: "500",
-            }}
-            title={order.customer} // Show full name on hover
-          >
-            {trimCustomerName(order.customer)}
-          </div>
-          <div
-            style={{
-              fontSize: "10px",
-              color: "#6b7280",
-            }}
-          >
-            Pri: {order.priority.toUpperCase()} | ID: {order.id}
           </div>
           {/* Drag handle indicator */}
           <div
@@ -532,7 +512,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                     display: "flex",
                     flexDirection: "column",
                     gap: "6px",
-                    maxHeight: "calc(60vh - 120px)",
+                    maxHeight: "calc(50vh - 120px)",
                     overflowY: "auto",
                   }}
                 >
@@ -560,8 +540,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                     style={{
                       display: "flex",
                       flexDirection: "column",
-                      gap: "6px",
-                      maxHeight: "calc(40vh - 100px)",
+                      gap: "4px",
+                      maxHeight: "calc(50vh - 80px)",
                       overflowY: "auto",
                     }}
                   >
