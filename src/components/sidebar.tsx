@@ -12,7 +12,7 @@ import {
   ItemDescription,
   ItemActions,
 } from "@/components/ui/item";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 
 // Utility function to trim product names for compact display
 const trimProductName = (name: string, maxLength: number = 25): string => {
@@ -126,10 +126,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
         style={{ cursor: "default" }}
       >
         <ItemMedia>
-          <Checkbox
+          <Switch
             checked={true}
             onCheckedChange={() => handleOrderStateChange(order, false)}
-            className="w-3.5 h-3.5"
+            className="scale-75"
           />
           <span className="text-xs text-muted-foreground font-semibold min-w-4">
             {index + 1}
@@ -184,10 +184,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
         style={{ cursor: "default" }}
       >
         <ItemMedia>
-          <Checkbox
+          <Switch
             checked={false}
             onCheckedChange={() => handleOrderStateChange(order, true)}
-            className="w-3 h-3"
+            className="scale-75"
           />
           <span className="text-xs text-muted-foreground font-semibold min-w-3.5">
             {activeOrders.length + index + 1}
@@ -307,7 +307,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                 📋 Active Orders
               </span>
             </div>
-            <ItemGroup className="gap-1.5 max-h-[calc(50vh-120px)] overflow-y-auto">
+            <ItemGroup className="gap-1 max-h-[calc(50vh-120px)] overflow-y-auto">
               {activeOrders.map((order, index) => (
                 <OrderItem key={order.id} order={order} index={index} />
               ))}
@@ -327,7 +327,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                     Inactive Orders
                   </span>
                 </div>
-                <ItemGroup className="gap-1 max-h-[calc(50vh-80px)] overflow-y-auto">
+                <ItemGroup className="gap-0.5 max-h-[calc(50vh-80px)] overflow-y-auto">
                   {inactiveOrders.map((order, index) => (
                     <InactiveOrderItem
                       key={order.id}
