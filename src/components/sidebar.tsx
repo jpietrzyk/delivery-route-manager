@@ -20,15 +20,12 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-interface StyledSidebarProps {
+interface SidebarProps {
   className?: string;
   children?: React.ReactNode;
 }
 
-const StyledSidebar: React.FC<StyledSidebarProps> = ({
-  className = "",
-  children,
-}) => {
+const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [orders, setOrders] = useState<Order[]>(sampleOrders);
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
@@ -491,4 +488,4 @@ const StyledSidebar: React.FC<StyledSidebarProps> = ({
   );
 };
 
-export default StyledSidebar;
+export default Sidebar;

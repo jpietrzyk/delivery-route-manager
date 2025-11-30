@@ -1,5 +1,5 @@
 import HereMap from "@/components/here-map.tsx";
-import StyledSidebar from "@/components/styled-sidebar";
+import Sidebar from "@/components/sidebar";
 import OrderMarkers from "@/components/order-markers";
 import HereMultiSegmentRouting from "@/components/here-multi-segment-routing";
 import RouteManager from "@/components/RouteManager";
@@ -24,9 +24,9 @@ function App() {
 
           {/* Sidebar overlaid on top of the map */}
           <div className="absolute inset-y-0 left-0 z-9999">
-            <StyledSidebar>
+            <Sidebar>
               <RouteManager />
-            </StyledSidebar>
+            </Sidebar>
           </div>
         </div>
       </OrderRouteProvider>
