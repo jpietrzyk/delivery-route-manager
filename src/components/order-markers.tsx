@@ -97,6 +97,8 @@ const OrderMarkers: React.FC = () => {
 
   // Store references to markers by order ID
   const markersRef = useRef<Map<string, MapMarker>>(new Map());
+  // Track previous order count to detect when new orders are added
+  const prevOrderCountRef = useRef<number>(0);
 
   // Fetch orders function
   const fetchOrders = useCallback(async () => {
@@ -112,14 +114,27 @@ const OrderMarkers: React.FC = () => {
     fetchOrders();
   }, [fetchOrders]);
 
-  // Periodic refresh to catch order updates from other components
+  // Refresh markers when orders might have changed (debounced)
+  const refreshTimeoutRef = useRef<number | undefined>();
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchOrders();
-    }, 2000); // Refresh every 2 seconds
+    if (highlightedOrderId) {
+      // Clear existing timeout
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+      }
 
-    return () => clearInterval(interval);
-  }, [fetchOrders]);
+      // Set new timeout to refresh after user interaction settles
+      refreshTimeoutRef.current = setTimeout(() => {
+        fetchOrders();
+      }, 1000); // Wait 1 second after last highlight change
+    }
+
+    return () => {
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+      }
+    };
+  }, [highlightedOrderId, fetchOrders]);
 
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
@@ -213,8 +228,7 @@ const OrderMarkers: React.FC = () => {
         const tooltip = new H.ui.InfoBubble(marker.getGeometry(), {
           content: tooltipContent,
         });
-        const ui: HereMapsUI = H.ui.UI.getUi(map);
-        ui.addBubble(tooltip);
+        map.addObject(tooltip);
         // Store tooltip reference on marker
         marker._tooltip = tooltip;
       });
@@ -242,13 +256,16 @@ const OrderMarkers: React.FC = () => {
     // Add the group to the map
     map.addObject(markerGroup);
 
-    // Center map to fit all markers
-    if (orders.length > 0) {
+    // Only center map when new orders are added (not on updates to existing orders)
+    if (orders.length > prevOrderCountRef.current && orders.length > 0) {
       const boundingBox = markerGroup.getBoundingBox();
       map.getViewModel().setLookAtData({
         bounds: boundingBox,
       });
     }
+
+    // Update the previous order count
+    prevOrderCountRef.current = orders.length;
 
     // Cleanup function
     return () => {
@@ -258,8 +275,7 @@ const OrderMarkers: React.FC = () => {
         const tooltip = marker._tooltip;
         if (tooltip) {
           try {
-            const ui: HereMapsUI = H.ui.UI.getUi(map);
-            ui.removeBubble(tooltip);
+            map.removeObject(tooltip);
           } catch (error) {
             // Silently ignore cleanup errors
             console.warn("Failed to cleanup tooltip:", error);

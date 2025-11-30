@@ -28,23 +28,6 @@ const trimCustomerName = (name: string, maxLength: number = 15): string => {
   if (name.length <= maxLength) return name;
   return name.substring(0, maxLength - 1) + ".";
 };
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 
 interface SidebarProps {
   className?: string;
@@ -56,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [inactiveOrders, setInactiveOrders] = useState<Order[]>([]);
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
-  const { addOrderToRoute } = useOrderRoute();
+  const { addOrderToRoute, refreshOrders } = useOrderRoute();
 
   // Fetch orders on mount
   useEffect(() => {
@@ -74,18 +57,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     fetchOrders();
   }, []);
 
-  // Configure sensors for drag and drop
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
   // Helper function to get status colors
   const getStatusColor = (status: Order["status"]) => {
     switch (status) {
@@ -102,83 +73,45 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     }
   };
 
-  // Handle drag end event
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (!over) return;
-
-    // Find the dragged order
-    const draggedOrder = [...activeOrders, ...inactiveOrders].find(
-      (order) => order.id === active.id
-    );
-
-    if (!draggedOrder) return;
-
-    // Check if it's being dropped in the active orders area
-    const isDroppedInActiveArea =
-      activeOrders.some((order) => order.id === over.id) ||
-      over.id === "active-drop-zone";
-
-    if (isDroppedInActiveArea && !draggedOrder.active) {
+  // Handle order state change (checkbox toggle)
+  const handleOrderStateChange = async (
+    order: Order,
+    newActiveState: boolean
+  ) => {
+    try {
       // Update the order status in the API
-      OrdersApi.updateOrderActiveStatus(draggedOrder.id, true)
-        .then((updatedOrder) => {
-          if (updatedOrder) {
-            // Remove from inactive and add to active
-            setInactiveOrders((prev) =>
-              prev.filter((order) => order.id !== draggedOrder.id)
-            );
-            setActiveOrders((prev) => [...prev, updatedOrder]);
+      await OrdersApi.updateOrderActiveStatus(order.id, newActiveState);
 
-            // Add to route
-            addOrderToRoute(updatedOrder);
-          }
-        })
-        .catch((error) => {
-          console.error("Failed to activate order:", error);
-        });
-    } else if (active.id !== over.id) {
-      // Handle reordering within active orders
-      setActiveOrders((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
+      if (newActiveState) {
+        // Move from inactive to active
+        setInactiveOrders((prev) => prev.filter((o) => o.id !== order.id));
+        setActiveOrders((prev) => [...prev, { ...order, active: true }]);
+        // Add to route
+        addOrderToRoute({ ...order, active: true });
+      } else {
+        // Move from active to inactive
+        setActiveOrders((prev) => prev.filter((o) => o.id !== order.id));
+        setInactiveOrders((prev) => [...prev, { ...order, active: false }]);
+        // Remove from route by refreshing orders (routeOrders will filter out inactive)
+      }
 
-        if (oldIndex !== -1 && newIndex !== -1) {
-          return arrayMove(items, oldIndex, newIndex);
-        }
-        return items;
-      });
+      // Refresh the OrderRouteProvider's orders to update routeOrders
+      await refreshOrders();
+    } catch (error) {
+      console.error("Failed to update order state:", error);
     }
   };
 
-  // Sortable Item Component for Active Orders
-  const SortableItem = ({ order, index }: { order: Order; index: number }) => {
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      transition,
-      isDragging,
-    } = useSortable({ id: order.id });
-
+  // Order Item Component for Active Orders
+  const OrderItem = ({ order, index }: { order: Order; index: number }) => {
     // Check if this order is currently highlighted
     const isHighlighted = highlightedOrderId === order.id;
 
-    const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
-      opacity: isDragging ? 0.8 : 1,
-    };
-
     return (
       <div
-        ref={setNodeRef}
-        style={style}
-        className="sortable-item"
-        {...attributes}
-        {...listeners}
+        style={{
+          cursor: "default",
+        }}
       >
         <div
           style={{
@@ -186,7 +119,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
             borderRadius: "4px",
             backgroundColor: isHighlighted ? "#dbeafe" : "#f9fafb",
             border: `1px solid ${isHighlighted ? "#1d4ed8" : "#e5e7eb"}`,
-            cursor: isDragging ? "grabbing" : "grab",
+            cursor: "default",
             transition: "all 0.2s",
             position: "relative" as const,
           }}
@@ -202,6 +135,16 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <input
+                type="checkbox"
+                checked={true}
+                onChange={() => handleOrderStateChange(order, false)}
+                style={{
+                  width: "14px",
+                  height: "14px",
+                  cursor: "pointer",
+                }}
+              />
               <span
                 style={{
                   fontSize: "9px",
@@ -266,56 +209,24 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
               </span>
             )}
           </div>
-          {/* Drag handle indicator */}
-          <div
-            style={{
-              position: "absolute",
-              top: "4px",
-              right: "4px",
-              fontSize: "10px",
-              color: isDragging ? "#0284c7" : "#d1d5db",
-              opacity: isDragging ? 1 : 0.6,
-              transition: "color 0.2s",
-              pointerEvents: "none" as const,
-            }}
-          >
-            ⋮⋮
-          </div>
         </div>
       </div>
     );
   };
 
-  // Sortable Item Component for Inactive Orders
-  const InactiveSortableItem = ({
+  // Order Item Component for Inactive Orders
+  const InactiveOrderItem = ({
     order,
     index,
   }: {
     order: Order;
     index: number;
   }) => {
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      transition,
-      isDragging,
-    } = useSortable({ id: order.id });
-
-    const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
-      opacity: isDragging ? 0.8 : 1,
-    };
-
     return (
       <div
-        ref={setNodeRef}
-        style={style}
-        className="sortable-item"
-        {...attributes}
-        {...listeners}
+        style={{
+          cursor: "default",
+        }}
       >
         <div
           style={{
@@ -323,7 +234,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
             borderRadius: "3px",
             backgroundColor: "#f9fafb",
             border: "1px solid #e5e7eb",
-            cursor: isDragging ? "grabbing" : "grab",
+            cursor: "default",
             transition: "all 0.2s",
             position: "relative" as const,
             opacity: 0.7,
@@ -343,6 +254,16 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                 gap: "4px",
               }}
             >
+              <input
+                type="checkbox"
+                checked={false}
+                onChange={() => handleOrderStateChange(order, true)}
+                style={{
+                  width: "12px",
+                  height: "12px",
+                  cursor: "pointer",
+                }}
+              />
               <span
                 style={{
                   fontSize: "8px",
@@ -377,21 +298,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
             >
               INACTIVE
             </span>
-          </div>
-          {/* Drag handle indicator */}
-          <div
-            style={{
-              position: "absolute",
-              top: "8px",
-              right: "8px",
-              fontSize: "12px",
-              color: isDragging ? "#0284c7" : "#d1d5db",
-              opacity: isDragging ? 1 : 0.6,
-              transition: "color 0.2s",
-              pointerEvents: "none" as const,
-            }}
-          >
-            ⋮⋮
           </div>
         </div>
       </div>
@@ -498,64 +404,53 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                 📋 Active Orders
               </span>
             </div>
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "6px",
+                maxHeight: "calc(50vh - 120px)",
+                overflowY: "auto",
+              }}
             >
-              <SortableContext
-                items={[...activeOrders, ...inactiveOrders]}
-                strategy={verticalListSortingStrategy}
-              >
+              {activeOrders.map((order, index) => (
+                <OrderItem key={order.id} order={order} index={index} />
+              ))}
+            </div>
+            {inactiveOrders.length > 0 && (
+              <>
+                <div style={{ marginTop: "16px", marginBottom: "8px" }}>
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "700",
+                      color: "#6b7280",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Inactive Orders
+                  </span>
+                </div>
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: "6px",
-                    maxHeight: "calc(50vh - 120px)",
+                    gap: "4px",
+                    maxHeight: "calc(50vh - 80px)",
                     overflowY: "auto",
                   }}
                 >
-                  {activeOrders.map((order, index) => (
-                    <SortableItem key={order.id} order={order} index={index} />
+                  {inactiveOrders.map((order, index) => (
+                    <InactiveOrderItem
+                      key={order.id}
+                      order={order}
+                      index={index}
+                    />
                   ))}
                 </div>
-              </SortableContext>
-              {inactiveOrders.length > 0 && (
-                <>
-                  <div style={{ marginTop: "16px", marginBottom: "8px" }}>
-                    <span
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "700",
-                        color: "#6b7280",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.05em",
-                      }}
-                    >
-                      Inactive Orders
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "4px",
-                      maxHeight: "calc(50vh - 80px)",
-                      overflowY: "auto",
-                    }}
-                  >
-                    {inactiveOrders.map((order, index) => (
-                      <InactiveSortableItem
-                        key={order.id}
-                        order={order}
-                        index={index}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
-            </DndContext>
+              </>
+            )}
           </>
         ) : (
           <div
