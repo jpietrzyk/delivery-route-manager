@@ -110,12 +110,21 @@ const OrderMarkers: React.FC = () => {
     }
   }, []);
 
+  // Initial fetch on mount
   useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
+    const fetchInitialOrders = async () => {
+      try {
+        const fetchedOrders = await OrdersApi.getOrders();
+        setOrders(fetchedOrders);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      }
+    };
+    fetchInitialOrders();
+  }, []);
 
   // Refresh markers when orders might have changed (debounced)
-  const refreshTimeoutRef = useRef<number | undefined>();
+  const refreshTimeoutRef = useRef<number | undefined>(undefined);
   useEffect(() => {
     if (highlightedOrderId) {
       // Clear existing timeout
