@@ -4,6 +4,7 @@ export interface Order {
   comment?: string;
   status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
   priority: 'low' | 'medium' | 'high';
+  active: boolean;
   createdAt: Date;
   updatedAt: Date;
   customer: string;
@@ -30,6 +31,7 @@ export const sampleOrders: Order[] = [
     comment: 'Urgent delivery required for construction project',
     status: 'pending',
     priority: 'high',
+    active: true,
     createdAt: new Date('2025-11-28T10:30:00Z'),
     updatedAt: new Date('2025-11-29T08:15:00Z'),
     customer: 'BuildCorp Construction',
@@ -50,6 +52,7 @@ export const sampleOrders: Order[] = [
     comment: 'Window frames for residential building',
     status: 'in-progress',
     priority: 'medium',
+    active: true,
     createdAt: new Date('2025-11-27T14:20:00Z'),
     updatedAt: new Date('2025-11-29T09:45:00Z'),
     customer: 'WindowTech Solutions',
@@ -76,6 +79,7 @@ export const sampleOrders: Order[] = [
     comment: 'Kitchen equipment parts',
     status: 'completed',
     priority: 'low',
+    active: true,
     createdAt: new Date('2025-11-25T11:00:00Z'),
     updatedAt: new Date('2025-11-28T16:30:00Z'),
     customer: 'MetalCraft Industries',
@@ -96,6 +100,7 @@ export const sampleOrders: Order[] = [
     comment: 'Bridge construction materials',
     status: 'pending',
     priority: 'high',
+    active: true,
     createdAt: new Date('2025-11-29T07:15:00Z'),
     updatedAt: new Date('2025-11-29T07:15:00Z'),
     customer: 'Infrastructure Plus',
@@ -122,6 +127,7 @@ export const sampleOrders: Order[] = [
     comment: 'Art installation pieces',
     status: 'cancelled',
     priority: 'low',
+    active: true,
     createdAt: new Date('2025-11-26T13:45:00Z'),
     updatedAt: new Date('2025-11-28T10:20:00Z'),
     customer: 'ArtStudio Contemporary',
