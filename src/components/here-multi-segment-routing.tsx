@@ -2,17 +2,17 @@
 import React, { useEffect, useRef } from "react";
 import { useHereMap } from "@/hooks/useHereMap";
 import { useOrderRoute } from "@/contexts/OrderRouteContext";
+import type { MapGroup, RoutingResult, RoutingError } from "@/types/here-maps";
 
 const HereMultiSegmentRouting: React.FC = () => {
   const { isReady, mapRef } = useHereMap();
   const { routeOrders } = useOrderRoute();
-  const routeGroupRef = useRef<any>(null);
+  const routeGroupRef = useRef<MapGroup | null>(null);
 
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const H = (window as any).H;
+    const H = window.H;
     if (!H || !H.service) {
       console.error("HERE Maps SDK not available");
       return;
@@ -39,8 +39,7 @@ const HereMultiSegmentRouting: React.FC = () => {
     const platform = new H.service.Platform({
       apikey: import.meta.env.VITE_HERE_MAPS_API_KEY,
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const routingService = platform.getRoutingService(null, 8);
+    const routingService = platform.getRoutingService();
 
     const routeGroup = new H.map.Group();
     routeGroupRef.current = routeGroup;
@@ -68,7 +67,7 @@ const HereMultiSegmentRouting: React.FC = () => {
             routingService.calculateRoute(
               segmentParams,
               // Success callback
-              (result: any) => {
+              (result: RoutingResult) => {
                 console.log(`Segment ${i + 1} result:`, result);
 
                 if (result.routes && result.routes.length > 0) {
@@ -147,7 +146,7 @@ const HereMultiSegmentRouting: React.FC = () => {
                 resolve();
               },
               // Error callback
-              (error: any) => {
+              (error: RoutingError) => {
                 console.error(`Segment ${i + 1} routing failed:`, error);
 
                 // Fallback: create simple line for this segment
@@ -193,12 +192,7 @@ const HereMultiSegmentRouting: React.FC = () => {
         color: string,
         label?: string
       ) => {
-        const marker = new H.map.Marker(
-          { lat, lng },
-          {
-            style: { fillColor: color },
-          }
-        );
+        const marker = new H.map.Marker({ lat, lng });
 
         if (label) {
           // Add label as SVG icon
@@ -252,10 +246,12 @@ const HereMultiSegmentRouting: React.FC = () => {
     createRouteSegments();
 
     // Cleanup function
+    const currentMap = mapRef.current;
+    const currentRouteGroup = routeGroupRef.current;
     return () => {
       try {
-        if (mapRef.current && routeGroupRef.current) {
-          mapRef.current.removeObject(routeGroupRef.current);
+        if (currentMap && currentRouteGroup) {
+          currentMap.removeObject(currentRouteGroup);
         }
       } catch (error) {
         console.warn("Error during route cleanup:", error);

@@ -15,6 +15,7 @@ declare global {
     };
     service: {
       Platform: new (options: PlatformOptions) => HerePlatform;
+      RoutingService: new (options?: unknown, version?: number) => RoutingService;
     };
     mapevents: {
       MapEvents: new (map: HereMap) => unknown;
@@ -29,12 +30,15 @@ declare global {
     };
     map: {
       Group: new () => MapGroup;
-      Marker: new (options: MarkerOptions) => MapMarker;
+      Marker: new (options: MarkerOptions, behavior?: unknown) => MapMarker;
       Icon: new (src: string) => MapIcon;
       Polyline: new (geometry: unknown, options: PolylineOptions) => MapPolyline;
     };
     geo: {
-      LineString: new () => GeoLineString;
+      LineString: {
+        new (): GeoLineString;
+        fromFlexiblePolyline: (polyline: string) => GeoLineString;
+      };
     };
   }
 
@@ -82,11 +86,44 @@ declare global {
       strokeColor?: string;
       lineTail?: string;
       lineHead?: string;
+      lineDash?: number[];
     };
   }
 
   interface HerePlatform {
     createDefaultLayers: (options: unknown) => unknown;
+    getRoutingService: (options?: unknown, version?: number) => RoutingService;
+  }
+
+  interface RoutingService {
+    calculateRoute: (
+      params: RoutingParams,
+      successCallback: (result: RoutingResult) => void,
+      errorCallback: (error: RoutingError) => void
+    ) => void;
+  }
+
+  interface RoutingParams {
+    transportMode: string;
+    origin: string;
+    destination: string;
+    routingMode: string;
+    return: string[];
+  }
+
+  interface RoutingResult {
+    routes?: Array<{
+      sections: Array<{
+        polyline: string;
+      }>;
+    }>;
+  }
+
+  interface RoutingError {
+    error?: {
+      message: string;
+      code: string;
+    };
   }
 
   interface ViewModel {
@@ -145,4 +182,11 @@ export type {
   InfoBubbleOptions,
   MarkerOptions,
   LookAtData,
+  RoutingService,
+  RoutingParams,
+  RoutingResult,
+  RoutingError,
 };
+
+// Also export the namespace interface itself
+export type { HereMapsNamespace };
