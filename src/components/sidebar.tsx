@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import type { Order } from "@/types/order";
-import { sampleOrders } from "@/types/order";
+import { OrdersApi } from "@/services/ordersApi";
 import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 import {
   DndContext,
@@ -27,8 +27,21 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [orders, setOrders] = useState<Order[]>(sampleOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
+
+  // Fetch orders on mount
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const fetchedOrders = await OrdersApi.getOrders();
+        setOrders(fetchedOrders);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   // Configure sensors for drag and drop
   const sensors = useSensors(

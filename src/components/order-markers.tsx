@@ -1,7 +1,8 @@
 // src/components/OrderMarkers.tsx
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHereMap } from "@/hooks/useHereMap";
-import { sampleOrders } from "@/types/order";
+import { OrdersApi } from "@/services/ordersApi";
+import type { Order } from "@/types/order";
 import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 import type { MapMarker } from "@/types/here-maps";
 import type { HereMapsUI } from "@/types/here-maps";
@@ -92,9 +93,23 @@ const createSvgIcon = (
 const OrderMarkers: React.FC = () => {
   const { isReady, mapRef } = useHereMap();
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
+  const [orders, setOrders] = useState<Order[]>([]);
 
   // Store references to markers by order ID
   const markersRef = useRef<Map<string, MapMarker>>(new Map());
+
+  // Fetch orders on mount
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const fetchedOrders = await OrdersApi.getOrders();
+        setOrders(fetchedOrders);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
@@ -114,7 +129,7 @@ const OrderMarkers: React.FC = () => {
     const markerGroup = new H.map.Group();
 
     // Create markers for each order
-    sampleOrders.forEach((order) => {
+    orders.forEach((order) => {
       // Create marker with order information
       const marker = new H.map.Marker({
         lat: order.location.lat,
@@ -218,7 +233,7 @@ const OrderMarkers: React.FC = () => {
     map.addObject(markerGroup);
 
     // Center map to fit all markers
-    if (sampleOrders.length > 0) {
+    if (orders.length > 0) {
       const boundingBox = markerGroup.getBoundingBox();
       map.getViewModel().setLookAtData({
         bounds: boundingBox,
@@ -246,7 +261,7 @@ const OrderMarkers: React.FC = () => {
       // Clear the markers reference
       currentMarkers.clear();
     };
-  }, [isReady, mapRef, setHighlightedOrderId]);
+  }, [isReady, mapRef, setHighlightedOrderId, orders]);
 
   // Effect to handle context changes and update marker highlights
   useEffect(() => {
@@ -256,7 +271,7 @@ const OrderMarkers: React.FC = () => {
     if (!H) return;
 
     // Update all markers based on highlightedOrderId
-    sampleOrders.forEach((order) => {
+    orders.forEach((order) => {
       const marker = markersRef.current.get(order.id);
       if (!marker) return;
 
@@ -271,7 +286,7 @@ const OrderMarkers: React.FC = () => {
       const shouldHighlight = highlightedOrderId === order.id;
       marker.setIcon(shouldHighlight ? highlightedIcon : originalIcon);
     });
-  }, [highlightedOrderId, isReady, mapRef]);
+  }, [highlightedOrderId, isReady, mapRef, orders]);
 
   return null; // This component doesn't render anything visible
 };
