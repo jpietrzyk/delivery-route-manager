@@ -7,6 +7,7 @@ const RouteManager: React.FC = () => {
   const {
     routeOrders,
     availableOrders,
+    isLoadingOrders,
     initializeRouteWithAllOrders,
     clearRoute,
     addOrderToRoute,
@@ -15,11 +16,20 @@ const RouteManager: React.FC = () => {
   } = useOrderRoute();
 
   useEffect(() => {
-    // Initialize the route with all orders when component mounts
-    if (routeOrders.length === 0) {
+    // Initialize the route with all orders when component mounts and orders are loaded
+    if (
+      !isLoadingOrders &&
+      routeOrders.length === 0 &&
+      availableOrders.length > 0
+    ) {
       initializeRouteWithAllOrders();
     }
-  }, [routeOrders.length, initializeRouteWithAllOrders]);
+  }, [
+    routeOrders.length,
+    initializeRouteWithAllOrders,
+    isLoadingOrders,
+    availableOrders.length,
+  ]);
 
   const handleRecalculateRoute = () => {
     setIsCalculatingRoute(true);
@@ -169,7 +179,9 @@ const RouteManager: React.FC = () => {
                   color: "#8b5cf6",
                 }}
               >
-                {availableOrders.length - routeOrders.length}
+                {isLoadingOrders
+                  ? "..."
+                  : Math.max(0, availableOrders.length - routeOrders.length)}
               </div>
               <div
                 style={{
@@ -191,26 +203,31 @@ const RouteManager: React.FC = () => {
           >
             <button
               onClick={handleAddAllOrders}
+              disabled={isLoadingOrders}
               style={{
                 flex: 1,
                 padding: "8px 12px",
                 fontSize: "14px",
                 fontWeight: "500",
-                color: "white",
-                backgroundColor: "#3b82f6",
+                color: isLoadingOrders ? "#9ca3af" : "white",
+                backgroundColor: isLoadingOrders ? "#e5e7eb" : "#3b82f6",
                 border: "1px solid transparent",
                 borderRadius: "6px",
-                cursor: "pointer",
+                cursor: isLoadingOrders ? "not-allowed" : "pointer",
                 transition: "background-color 0.2s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#2563eb";
+                if (!isLoadingOrders) {
+                  e.currentTarget.style.backgroundColor = "#2563eb";
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#3b82f6";
+                if (!isLoadingOrders) {
+                  e.currentTarget.style.backgroundColor = "#3b82f6";
+                }
               }}
             >
-              Add All Orders
+              {isLoadingOrders ? "Loading..." : "Add All Orders"}
             </button>
             <button
               onClick={handleRecalculateRoute}
@@ -270,7 +287,7 @@ const RouteManager: React.FC = () => {
       <DraggableOrderList />
 
       {/* Available Orders (for adding to route) */}
-      {availableOrders.length > routeOrders.length && (
+      {!isLoadingOrders && availableOrders.length > routeOrders.length && (
         <div
           style={{
             backgroundColor: "#ffffff",

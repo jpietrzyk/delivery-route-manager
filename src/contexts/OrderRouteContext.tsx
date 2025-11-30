@@ -8,6 +8,12 @@ export interface OrderRouteContextType {
   // Original orders data
   availableOrders: Order[];
 
+  // Loading state for fetching orders
+  isLoadingOrders: boolean;
+
+  // Error state if fetching orders fails
+  ordersError: string | null;
+
   // Update the route order sequence
   setRouteOrders: (orders: Order[]) => void;
 
@@ -29,6 +35,9 @@ export interface OrderRouteContextType {
   // Whether a route is being calculated
   isCalculatingRoute: boolean;
   setIsCalculatingRoute: (calculating: boolean) => void;
+
+  // Refresh orders from the API
+  refreshOrders: () => Promise<void>;
 }
 
 export const OrderRouteContext = createContext<
