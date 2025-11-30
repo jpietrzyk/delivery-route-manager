@@ -3,6 +3,16 @@ import type { Order } from "@/types/order";
 import { OrdersApi } from "@/services/ordersApi";
 import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 import { useOrderRoute } from "@/hooks/useOrderRoute";
+import {
+  Item,
+  ItemGroup,
+  ItemMedia,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+  ItemActions,
+} from "@/components/ui/item";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Utility function to trim product names for compact display
 const trimProductName = (name: string, maxLength: number = 25): string => {
@@ -108,109 +118,53 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     const isHighlighted = highlightedOrderId === order.id;
 
     return (
-      <div
-        style={{
-          cursor: "default",
-        }}
+      <Item
+        variant={isHighlighted ? "default" : "muted"}
+        size="sm"
+        onMouseEnter={() => setHighlightedOrderId(order.id)}
+        onMouseLeave={() => setHighlightedOrderId(null)}
+        style={{ cursor: "default" }}
       >
-        <div
-          style={{
-            padding: "6px 10px",
-            borderRadius: "4px",
-            backgroundColor: isHighlighted ? "#dbeafe" : "#f9fafb",
-            border: `1px solid ${isHighlighted ? "#1d4ed8" : "#e5e7eb"}`,
-            cursor: "default",
-            transition: "all 0.2s",
-            position: "relative" as const,
-          }}
-          onMouseEnter={() => setHighlightedOrderId(order.id)}
-          onMouseLeave={() => setHighlightedOrderId(null)}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "4px",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <input
-                type="checkbox"
-                checked={true}
-                onChange={() => handleOrderStateChange(order, false)}
-                style={{
-                  width: "14px",
-                  height: "14px",
-                  cursor: "pointer",
-                }}
-              />
-              <span
-                style={{
-                  fontSize: "9px",
-                  color: "#9ca3af",
-                  fontWeight: "600",
-                  minWidth: "16px",
-                }}
-              >
-                {index + 1}
-              </span>
-              <span
-                style={{
-                  fontSize: "13px",
-                  fontWeight: "600",
-                  color: "#111827",
-                }}
-                title={order.name} // Show full name on hover
-              >
-                {trimProductName(order.name)}
-              </span>
-            </div>
-            <span
-              style={{
-                fontSize: "9px",
-                padding: "2px 6px",
-                borderRadius: "8px",
-                backgroundColor: getStatusColor(order.status).bg,
-                color: getStatusColor(order.status).text,
-                fontWeight: "600",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {order.status.replace("-", " ").toUpperCase()}
-            </span>
-          </div>
-          <div
-            style={{
-              fontSize: "11px",
-              color: "#6b7280",
-              marginBottom: "4px",
-              fontWeight: "500",
-            }}
-            title={order.customer} // Show full name on hover
-          >
+        <ItemMedia>
+          <Checkbox
+            checked={true}
+            onCheckedChange={() => handleOrderStateChange(order, false)}
+            className="w-3.5 h-3.5"
+          />
+          <span className="text-xs text-muted-foreground font-semibold min-w-4">
+            {index + 1}
+          </span>
+        </ItemMedia>
+        <ItemContent>
+          <ItemTitle className="text-sm font-semibold text-foreground">
+            {trimProductName(order.name)}
+          </ItemTitle>
+          <ItemDescription className="text-xs text-muted-foreground font-medium">
             {trimCustomerName(order.customer)}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontSize: "10px",
-              color: "#6b7280",
-            }}
-          >
+          </ItemDescription>
+          <div className="flex justify-between items-center text-xs text-muted-foreground">
             <span>
               Pri: {order.priority.toUpperCase()} | ID: {order.id}
             </span>
             {order.totalAmount && (
-              <span style={{ fontWeight: "600", color: "#111827" }}>
+              <span className="font-semibold text-foreground">
                 €{order.totalAmount.toLocaleString()}
               </span>
             )}
           </div>
-        </div>
-      </div>
+        </ItemContent>
+        <ItemActions>
+          <span
+            className="text-xs px-1.5 py-0.5 rounded-md font-semibold whitespace-nowrap"
+            style={{
+              backgroundColor: getStatusColor(order.status).bg,
+              color: getStatusColor(order.status).text,
+            }}
+          >
+            {order.status.replace("-", " ").toUpperCase()}
+          </span>
+        </ItemActions>
+      </Item>
     );
   };
 
@@ -223,84 +177,33 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     index: number;
   }) => {
     return (
-      <div
-        style={{
-          cursor: "default",
-        }}
+      <Item
+        variant="muted"
+        size="sm"
+        className="opacity-70"
+        style={{ cursor: "default" }}
       >
-        <div
-          style={{
-            padding: "4px 8px",
-            borderRadius: "3px",
-            backgroundColor: "#f9fafb",
-            border: "1px solid #e5e7eb",
-            cursor: "default",
-            transition: "all 0.2s",
-            position: "relative" as const,
-            opacity: 0.7,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={false}
-                onChange={() => handleOrderStateChange(order, true)}
-                style={{
-                  width: "12px",
-                  height: "12px",
-                  cursor: "pointer",
-                }}
-              />
-              <span
-                style={{
-                  fontSize: "8px",
-                  color: "#9ca3af",
-                  fontWeight: "600",
-                  minWidth: "14px",
-                }}
-              >
-                {activeOrders.length + index + 1}
-              </span>
-              <span
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "600",
-                  color: "#374151",
-                }}
-                title={order.name} // Show full name on hover
-              >
-                {trimProductName(order.name, 20)}
-              </span>
-            </div>
-            <span
-              style={{
-                fontSize: "8px",
-                padding: "1px 4px",
-                borderRadius: "6px",
-                backgroundColor: "#fee2e2",
-                color: "#991b1b",
-                fontWeight: "600",
-                whiteSpace: "nowrap",
-              }}
-            >
-              INACTIVE
-            </span>
-          </div>
-        </div>
-      </div>
+        <ItemMedia>
+          <Checkbox
+            checked={false}
+            onCheckedChange={() => handleOrderStateChange(order, true)}
+            className="w-3 h-3"
+          />
+          <span className="text-xs text-muted-foreground font-semibold min-w-3.5">
+            {activeOrders.length + index + 1}
+          </span>
+        </ItemMedia>
+        <ItemContent>
+          <ItemTitle className="text-sm font-semibold text-muted-foreground">
+            {trimProductName(order.name, 20)}
+          </ItemTitle>
+        </ItemContent>
+        <ItemActions>
+          <span className="text-xs px-1 py-0.5 rounded bg-destructive/10 text-destructive font-semibold whitespace-nowrap">
+            INACTIVE
+          </span>
+        </ItemActions>
+      </Item>
     );
   };
 
@@ -404,19 +307,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                 📋 Active Orders
               </span>
             </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "6px",
-                maxHeight: "calc(50vh - 120px)",
-                overflowY: "auto",
-              }}
-            >
+            <ItemGroup className="gap-1.5 max-h-[calc(50vh-120px)] overflow-y-auto">
               {activeOrders.map((order, index) => (
                 <OrderItem key={order.id} order={order} index={index} />
               ))}
-            </div>
+            </ItemGroup>
             {inactiveOrders.length > 0 && (
               <>
                 <div style={{ marginTop: "16px", marginBottom: "8px" }}>
@@ -432,15 +327,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                     Inactive Orders
                   </span>
                 </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "4px",
-                    maxHeight: "calc(50vh - 80px)",
-                    overflowY: "auto",
-                  }}
-                >
+                <ItemGroup className="gap-1 max-h-[calc(50vh-80px)] overflow-y-auto">
                   {inactiveOrders.map((order, index) => (
                     <InactiveOrderItem
                       key={order.id}
@@ -448,7 +335,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                       index={index}
                     />
                   ))}
-                </div>
+                </ItemGroup>
               </>
             )}
           </>
