@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Order } from "@/types/order";
 import { sampleOrders } from "@/types/order";
-import { useMarkerHighlight } from "@/contexts/MarkerHighlightContext";
+import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 import {
   DndContext,
   closestCenter,

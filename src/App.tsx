@@ -4,7 +4,7 @@ import OrderMarkers from "@/components/order-markers";
 import HereMultiSegmentRouting from "@/components/here-multi-segment-routing";
 import RouteManager from "@/components/RouteManager";
 
-import { MarkerHighlightProvider } from "@/contexts/MarkerHighlightContext";
+import { MarkerHighlightProvider } from "@/contexts/MarkerHighlightProvider";
 import { OrderRouteProvider } from "@/contexts/OrderRouteContext";
 // import PublicTransitToggle from "@/components/public-transit-toggle.jsx"; // TODO: Convert to TypeScript
 

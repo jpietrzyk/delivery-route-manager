@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { useHereMap } from "@/hooks/useHereMap";
 import { sampleOrders } from "@/types/order";
-import { useMarkerHighlight } from "@/contexts/MarkerHighlightContext";
+import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 import type { MapMarker } from "@/types/here-maps";
 
 // Extend MapMarker interface to include tooltip property
