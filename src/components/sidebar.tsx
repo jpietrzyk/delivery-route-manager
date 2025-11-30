@@ -27,15 +27,19 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [activeOrders, setActiveOrders] = useState<Order[]>([]);
+  const [inactiveOrders, setInactiveOrders] = useState<Order[]>([]);
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
 
   // Fetch orders on mount
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const fetchedOrders = await OrdersApi.getOrders();
-        setOrders(fetchedOrders);
+        const fetchedOrders = await OrdersApi.getAllOrders();
+        const active = fetchedOrders.filter((order) => order.active);
+        const inactive = fetchedOrders.filter((order) => !order.active);
+        setActiveOrders(active);
+        setInactiveOrders(inactive);
       } catch (error) {
         console.error("Failed to fetch orders:", error);
       }
@@ -76,7 +80,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      setOrders((items) => {
+      setActiveOrders((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over?.id);
 
@@ -408,7 +412,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={orders}
+                items={activeOrders}
                 strategy={verticalListSortingStrategy}
               >
                 <div
@@ -416,15 +420,127 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                     display: "flex",
                     flexDirection: "column",
                     gap: "8px",
-                    maxHeight: "calc(100vh - 200px)",
+                    maxHeight: "calc(50vh - 150px)",
                     overflowY: "auto",
                   }}
                 >
-                  {orders.map((order, index) => (
+                  {activeOrders.map((order, index) => (
                     <SortableItem key={order.id} order={order} index={index} />
                   ))}
                 </div>
               </SortableContext>
+              {inactiveOrders.length > 0 && (
+                <>
+                  <div style={{ marginTop: "16px", marginBottom: "8px" }}>
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "700",
+                        color: "#6b7280",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      Inactive Orders
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "8px",
+                      maxHeight: "calc(50vh - 150px)",
+                      overflowY: "auto",
+                    }}
+                  >
+                    {inactiveOrders.map((order, index) => (
+                      <div
+                        key={order.id}
+                        style={{
+                          padding: "12px 16px",
+                          borderRadius: "8px",
+                          backgroundColor: "#f9fafb",
+                          border: "2px solid #e5e7eb",
+                          cursor: "default",
+                          opacity: 0.7,
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "flex-start",
+                            marginBottom: "6px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontSize: "10px",
+                                color: "#9ca3af",
+                                fontWeight: "600",
+                                minWidth: "20px",
+                              }}
+                            >
+                              {activeOrders.length + index + 1}
+                            </span>
+                            <span
+                              style={{
+                                fontSize: "14px",
+                                fontWeight: "600",
+                                color: "#374151",
+                                lineHeight: "1.3",
+                              }}
+                            >
+                              {order.name}
+                            </span>
+                          </div>
+                          <span
+                            style={{
+                              fontSize: "10px",
+                              padding: "3px 8px",
+                              borderRadius: "12px",
+                              backgroundColor: "#fee2e2",
+                              color: "#991b1b",
+                              fontWeight: "600",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            INACTIVE
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            color: "#6b7280",
+                            marginBottom: "6px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          {order.customer}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "11px",
+                            color: "#6b7280",
+                            borderTop: "1px solid #e5e7eb",
+                            paddingTop: "6px",
+                          }}
+                        >
+                          Priority: {order.priority.toUpperCase()} | ID:{" "}
+                          {order.id}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </DndContext>
           </>
         ) : (

@@ -52,6 +52,17 @@ export class OrdersApi {
   }
 
   /**
+   * Fetch all orders (including inactive)
+   */
+  static async getAllOrders(): Promise<Order[]> {
+    // Simulate network delay
+    await mockDelay(500);
+
+    // Return a copy of all data
+    return sampleOrdersData.map(order => ({ ...order }));
+  }
+
+  /**
    * Get a specific order by ID
    */
   static async getOrderById(id: string): Promise<Order | null> {
