@@ -119,92 +119,41 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
       >
         <div
           style={{
-            padding: "12px 16px",
-            borderRadius: "8px",
-            backgroundColor: isDragging
-              ? "#e0f2fe"
-              : isHighlighted
-              ? "#dbeafe"
-              : "#f9fafb",
-            border: `2px solid ${
-              isDragging ? "#0284c7" : isHighlighted ? "#1d4ed8" : "#e5e7eb"
-            }`,
+            padding: "8px 12px",
+            borderRadius: "4px",
+            backgroundColor: isHighlighted ? "#dbeafe" : "#f9fafb",
+            border: `1px solid ${isHighlighted ? "#1d4ed8" : "#e5e7eb"}`,
             cursor: isDragging ? "grabbing" : "grab",
             transition: "all 0.2s",
-            boxShadow: isDragging
-              ? "0 8px 25px -8px rgba(2, 132, 199, 0.3)"
-              : isHighlighted
-              ? "0 4px 12px -2px rgba(29, 78, 216, 0.2)"
-              : "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-            transform: isDragging
-              ? "rotate(2deg)"
-              : isHighlighted
-              ? "translateY(-1px)"
-              : "none",
             position: "relative" as const,
           }}
-          onMouseEnter={(e) => {
-            if (!isDragging) {
-              // Set the highlighted order ID in context
-              setHighlightedOrderId(order.id);
-
-              e.currentTarget.style.backgroundColor = isHighlighted
-                ? "#dbeafe"
-                : "#f3f4f6";
-              e.currentTarget.style.borderColor = isHighlighted
-                ? "#1d4ed8"
-                : "#d1d5db";
-              e.currentTarget.style.transform = "translateY(-1px)";
-              e.currentTarget.style.boxShadow = isHighlighted
-                ? "0 4px 12px -2px rgba(29, 78, 216, 0.2)"
-                : "0 4px 6px -1px rgba(0, 0, 0, 0.1)";
-            }
-            setHighlightedOrderId?.(order.id);
-          }}
-          onMouseLeave={(e) => {
-            if (!isDragging) {
-              // Clear the highlighted order ID in context
-              setHighlightedOrderId(null);
-
-              e.currentTarget.style.backgroundColor = isHighlighted
-                ? "#dbeafe"
-                : "#f9fafb";
-              e.currentTarget.style.borderColor = isHighlighted
-                ? "#1d4ed8"
-                : "#e5e7eb";
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = isHighlighted
-                ? "0 4px 12px -2px rgba(29, 78, 216, 0.2)"
-                : "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
-            }
-            setHighlightedOrderId?.(null);
-          }}
+          onMouseEnter={() => setHighlightedOrderId(order.id)}
+          onMouseLeave={() => setHighlightedOrderId(null)}
         >
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginBottom: "6px",
+              alignItems: "center",
+              marginBottom: "4px",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <span
                 style={{
-                  fontSize: "10px",
+                  fontSize: "9px",
                   color: "#9ca3af",
                   fontWeight: "600",
-                  minWidth: "20px",
+                  minWidth: "16px",
                 }}
               >
                 {index + 1}
               </span>
               <span
                 style={{
-                  fontSize: "14px",
+                  fontSize: "13px",
                   fontWeight: "600",
                   color: "#111827",
-                  lineHeight: "1.3",
                 }}
               >
                 {order.name}
@@ -212,14 +161,13 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
             </div>
             <span
               style={{
-                fontSize: "10px",
-                padding: "3px 8px",
-                borderRadius: "12px",
+                fontSize: "9px",
+                padding: "2px 6px",
+                borderRadius: "8px",
                 backgroundColor: getStatusColor(order.status).bg,
                 color: getStatusColor(order.status).text,
                 fontWeight: "600",
                 whiteSpace: "nowrap",
-                marginLeft: "8px",
               }}
             >
               {order.status.replace("-", " ").toUpperCase()}
@@ -227,63 +175,30 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           </div>
           <div
             style={{
-              fontSize: "12px",
+              fontSize: "11px",
               color: "#6b7280",
-              marginBottom: "6px",
+              marginBottom: "4px",
               fontWeight: "500",
             }}
           >
             {order.customer}
           </div>
-          {order.comment && (
-            <div
-              style={{
-                fontSize: "11px",
-                color: "#9ca3af",
-                fontStyle: "italic",
-                lineHeight: "1.4",
-                marginBottom: "8px",
-              }}
-            >
-              {order.comment.length > 50
-                ? `${order.comment.substring(0, 50)}...`
-                : order.comment}
-            </div>
-          )}
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              fontSize: "11px",
+              fontSize: "10px",
               color: "#6b7280",
-              borderTop: "1px solid #e5e7eb",
-              paddingTop: "6px",
             }}
           >
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "2px" }}
-            >
-              <span>Priority: {order.priority.toUpperCase()}</span>
-              <span style={{ fontSize: "10px" }}>ID: {order.id}</span>
-              <span style={{ fontSize: "10px", color: "#059669" }}>
-                📍 {order.location.lat.toFixed(4)},{" "}
-                {order.location.lng.toFixed(4)}
-              </span>
-            </div>
+            <span>
+              Pri: {order.priority.toUpperCase()} | ID: {order.id}
+            </span>
             {order.totalAmount && (
-              <div style={{ textAlign: "right" }}>
-                <div
-                  style={{
-                    fontWeight: "700",
-                    color: "#111827",
-                    fontSize: "12px",
-                  }}
-                >
-                  €{order.totalAmount.toLocaleString()}
-                </div>
-                <div style={{ fontSize: "10px", color: "#6b7280" }}>Total</div>
-              </div>
+              <span style={{ fontWeight: "600", color: "#111827" }}>
+                €{order.totalAmount.toLocaleString()}
+              </span>
             )}
           </div>
           {/* Drag handle indicator */}
@@ -403,7 +318,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                   gap: "8px",
                 }}
               >
-                📋 Orders
+                📋 Active Orders
               </span>
             </div>
             <DndContext
@@ -457,10 +372,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                       <div
                         key={order.id}
                         style={{
-                          padding: "12px 16px",
-                          borderRadius: "8px",
+                          padding: "8px 12px",
+                          borderRadius: "4px",
                           backgroundColor: "#f9fafb",
-                          border: "2px solid #e5e7eb",
+                          border: "1px solid #e5e7eb",
                           cursor: "default",
                           opacity: 0.7,
                         }}
@@ -469,33 +384,32 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
-                            alignItems: "flex-start",
-                            marginBottom: "6px",
+                            alignItems: "center",
+                            marginBottom: "4px",
                           }}
                         >
                           <div
                             style={{
                               display: "flex",
                               alignItems: "center",
-                              gap: "8px",
+                              gap: "6px",
                             }}
                           >
                             <span
                               style={{
-                                fontSize: "10px",
+                                fontSize: "9px",
                                 color: "#9ca3af",
                                 fontWeight: "600",
-                                minWidth: "20px",
+                                minWidth: "16px",
                               }}
                             >
                               {activeOrders.length + index + 1}
                             </span>
                             <span
                               style={{
-                                fontSize: "14px",
+                                fontSize: "13px",
                                 fontWeight: "600",
                                 color: "#374151",
-                                lineHeight: "1.3",
                               }}
                             >
                               {order.name}
@@ -503,9 +417,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                           </div>
                           <span
                             style={{
-                              fontSize: "10px",
-                              padding: "3px 8px",
-                              borderRadius: "12px",
+                              fontSize: "9px",
+                              padding: "2px 6px",
+                              borderRadius: "8px",
                               backgroundColor: "#fee2e2",
                               color: "#991b1b",
                               fontWeight: "600",
@@ -517,9 +431,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                         </div>
                         <div
                           style={{
-                            fontSize: "12px",
+                            fontSize: "11px",
                             color: "#6b7280",
-                            marginBottom: "6px",
+                            marginBottom: "4px",
                             fontWeight: "500",
                           }}
                         >
@@ -527,14 +441,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                         </div>
                         <div
                           style={{
-                            fontSize: "11px",
+                            fontSize: "10px",
                             color: "#6b7280",
-                            borderTop: "1px solid #e5e7eb",
-                            paddingTop: "6px",
                           }}
                         >
-                          Priority: {order.priority.toUpperCase()} | ID:{" "}
-                          {order.id}
+                          Pri: {order.priority.toUpperCase()} | ID: {order.id}
                         </div>
                       </div>
                     ))}
