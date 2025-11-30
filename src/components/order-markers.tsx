@@ -112,6 +112,15 @@ const OrderMarkers: React.FC = () => {
     fetchOrders();
   }, [fetchOrders]);
 
+  // Periodic refresh to catch order updates from other components
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchOrders();
+    }, 2000); // Refresh every 2 seconds
+
+    return () => clearInterval(interval);
+  }, [fetchOrders]);
+
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
 
