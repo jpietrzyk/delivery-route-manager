@@ -111,6 +111,27 @@ export const OrderRouteProvider: React.FC<{
     initializeRouteWithAllOrders,
   ]);
 
+  // Update route orders when available orders change (filter out inactive orders)
+  useEffect(() => {
+    if (!isLoadingOrders && availableOrders.length > 0) {
+      const activeOrders = availableOrders.filter((order) => order.active);
+      setRouteOrders((currentRouteOrders) => {
+        // Only update if the active orders have actually changed
+        const currentActiveIds = currentRouteOrders.map((o) => o.id).sort();
+        const newActiveIds = activeOrders.map((o) => o.id).sort();
+
+        if (JSON.stringify(currentActiveIds) !== JSON.stringify(newActiveIds)) {
+          // Sort by creation date to maintain consistent order
+          return [...activeOrders].sort(
+            (a, b) =>
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+        }
+        return currentRouteOrders;
+      });
+    }
+  }, [availableOrders, isLoadingOrders]);
+
   const contextValue: OrderRouteContextType = {
     routeOrders,
     availableOrders,
