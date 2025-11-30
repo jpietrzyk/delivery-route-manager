@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import type { Order } from "@/types/order";
 import { OrdersApi } from "@/services/ordersApi";
 import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
+import { useOrderRoute } from "@/hooks/useOrderRoute";
 import {
   DndContext,
   closestCenter,
@@ -30,6 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [inactiveOrders, setInactiveOrders] = useState<Order[]>([]);
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
+  const { addOrderToRoute } = useOrderRoute();
 
   // Fetch orders on mount
   useEffect(() => {
@@ -79,17 +81,53 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (active.id !== over?.id) {
+    if (!over) return;
+
+    // Find the dragged order
+    const draggedOrder = [...activeOrders, ...inactiveOrders].find(
+      (order) => order.id === active.id
+    );
+
+    if (!draggedOrder) return;
+
+    // Check if it's being dropped in the active orders area
+    const isDroppedInActiveArea =
+      activeOrders.some((order) => order.id === over.id) ||
+      over.id === "active-drop-zone";
+
+    if (isDroppedInActiveArea && !draggedOrder.active) {
+      // Update the order status in the API
+      OrdersApi.updateOrderActiveStatus(draggedOrder.id, true)
+        .then((updatedOrder) => {
+          if (updatedOrder) {
+            // Remove from inactive and add to active
+            setInactiveOrders((prev) =>
+              prev.filter((order) => order.id !== draggedOrder.id)
+            );
+            setActiveOrders((prev) => [...prev, updatedOrder]);
+
+            // Add to route
+            addOrderToRoute(updatedOrder);
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to activate order:", error);
+        });
+    } else if (active.id !== over.id) {
+      // Handle reordering within active orders
       setActiveOrders((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over?.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
 
-        return arrayMove(items, oldIndex, newIndex);
+        if (oldIndex !== -1 && newIndex !== -1) {
+          return arrayMove(items, oldIndex, newIndex);
+        }
+        return items;
       });
     }
   };
 
-  // Sortable Item Component
+  // Sortable Item Component for Active Orders
   const SortableItem = ({ order, index }: { order: Order; index: number }) => {
     const {
       attributes,
@@ -221,6 +259,136 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     );
   };
 
+  // Sortable Item Component for Inactive Orders
+  const InactiveSortableItem = ({
+    order,
+    index,
+  }: {
+    order: Order;
+    index: number;
+  }) => {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: order.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.8 : 1,
+    };
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="sortable-item"
+        {...attributes}
+        {...listeners}
+      >
+        <div
+          style={{
+            padding: "8px 12px",
+            borderRadius: "4px",
+            backgroundColor: "#f9fafb",
+            border: "1px solid #e5e7eb",
+            cursor: isDragging ? "grabbing" : "grab",
+            transition: "all 0.2s",
+            position: "relative" as const,
+            opacity: 0.7,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "4px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "9px",
+                  color: "#9ca3af",
+                  fontWeight: "600",
+                  minWidth: "16px",
+                }}
+              >
+                {activeOrders.length + index + 1}
+              </span>
+              <span
+                style={{
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  color: "#374151",
+                }}
+              >
+                {order.name}
+              </span>
+            </div>
+            <span
+              style={{
+                fontSize: "9px",
+                padding: "2px 6px",
+                borderRadius: "8px",
+                backgroundColor: "#fee2e2",
+                color: "#991b1b",
+                fontWeight: "600",
+                whiteSpace: "nowrap",
+              }}
+            >
+              INACTIVE
+            </span>
+          </div>
+          <div
+            style={{
+              fontSize: "11px",
+              color: "#6b7280",
+              marginBottom: "4px",
+              fontWeight: "500",
+            }}
+          >
+            {order.customer}
+          </div>
+          <div
+            style={{
+              fontSize: "10px",
+              color: "#6b7280",
+            }}
+          >
+            Pri: {order.priority.toUpperCase()} | ID: {order.id}
+          </div>
+          {/* Drag handle indicator */}
+          <div
+            style={{
+              position: "absolute",
+              top: "8px",
+              right: "8px",
+              fontSize: "12px",
+              color: isDragging ? "#0284c7" : "#d1d5db",
+              opacity: isDragging ? 1 : 0.6,
+              transition: "color 0.2s",
+              pointerEvents: "none" as const,
+            }}
+          >
+            ⋮⋮
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // Inline styles to ensure visibility
   const sidebarStyle = {
     width: collapsed ? "64px" : "256px",
@@ -327,7 +495,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={activeOrders}
+                items={[...activeOrders, ...inactiveOrders]}
                 strategy={verticalListSortingStrategy}
               >
                 <div
@@ -369,85 +537,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                     }}
                   >
                     {inactiveOrders.map((order, index) => (
-                      <div
+                      <InactiveSortableItem
                         key={order.id}
-                        style={{
-                          padding: "8px 12px",
-                          borderRadius: "4px",
-                          backgroundColor: "#f9fafb",
-                          border: "1px solid #e5e7eb",
-                          cursor: "default",
-                          opacity: 0.7,
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginBottom: "4px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "6px",
-                            }}
-                          >
-                            <span
-                              style={{
-                                fontSize: "9px",
-                                color: "#9ca3af",
-                                fontWeight: "600",
-                                minWidth: "16px",
-                              }}
-                            >
-                              {activeOrders.length + index + 1}
-                            </span>
-                            <span
-                              style={{
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                color: "#374151",
-                              }}
-                            >
-                              {order.name}
-                            </span>
-                          </div>
-                          <span
-                            style={{
-                              fontSize: "9px",
-                              padding: "2px 6px",
-                              borderRadius: "8px",
-                              backgroundColor: "#fee2e2",
-                              color: "#991b1b",
-                              fontWeight: "600",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            INACTIVE
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "11px",
-                            color: "#6b7280",
-                            marginBottom: "4px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          {order.customer}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "10px",
-                            color: "#6b7280",
-                          }}
-                        >
-                          Pri: {order.priority.toUpperCase()} | ID: {order.id}
-                        </div>
-                      </div>
+                        order={order}
+                        index={index}
+                      />
                     ))}
                   </div>
                 </>

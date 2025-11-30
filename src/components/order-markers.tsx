@@ -1,5 +1,5 @@
 // src/components/OrderMarkers.tsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useHereMap } from "@/hooks/useHereMap";
 import { OrdersApi } from "@/services/ordersApi";
 import type { Order } from "@/types/order";
@@ -98,18 +98,19 @@ const OrderMarkers: React.FC = () => {
   // Store references to markers by order ID
   const markersRef = useRef<Map<string, MapMarker>>(new Map());
 
-  // Fetch orders on mount
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const fetchedOrders = await OrdersApi.getOrders();
-        setOrders(fetchedOrders);
-      } catch (error) {
-        console.error("Failed to fetch orders:", error);
-      }
-    };
-    fetchOrders();
+  // Fetch orders function
+  const fetchOrders = useCallback(async () => {
+    try {
+      const fetchedOrders = await OrdersApi.getOrders();
+      setOrders(fetchedOrders);
+    } catch (error) {
+      console.error("Failed to fetch orders:", error);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   useEffect(() => {
     if (!isReady || !mapRef.current) return;

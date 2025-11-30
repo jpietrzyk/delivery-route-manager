@@ -79,7 +79,7 @@ export class OrdersApi {
   static async updateOrderStatus(id: string, status: Order['status']): Promise<Order | null> {
     await mockDelay(400);
 
-    const orderIndex = sampleOrdersData.findIndex(order => order.id === id && order.active);
+    const orderIndex = sampleOrdersData.findIndex(order => order.id === id);
     if (orderIndex === -1) return null;
 
     const updatedOrder = {
@@ -88,7 +88,31 @@ export class OrdersApi {
       updatedAt: new Date()
     };
 
-    // In a real API, this would update the server-side data
+    // Update the in-memory data
+    sampleOrdersData[orderIndex] = updatedOrder;
+
+    return { ...updatedOrder };
+  }
+
+  /**
+   * Mock method for updating an order's active status
+   * Future: This will be a PUT/PATCH request to the backend
+   */
+  static async updateOrderActiveStatus(id: string, active: boolean): Promise<Order | null> {
+    await mockDelay(400);
+
+    const orderIndex = sampleOrdersData.findIndex(order => order.id === id);
+    if (orderIndex === -1) return null;
+
+    const updatedOrder = {
+      ...sampleOrdersData[orderIndex],
+      active,
+      updatedAt: new Date()
+    };
+
+    // Update the in-memory data
+    sampleOrdersData[orderIndex] = updatedOrder;
+
     return { ...updatedOrder };
   }
 }
