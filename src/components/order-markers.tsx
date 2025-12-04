@@ -65,8 +65,8 @@ const createSvgIcon = (
 
   // Enhanced colors for highlighted state
   if (isHighlighted) {
-    color = "#1d4ed8"; // bright blue
-    bgColor = "#dbeafe"; // light blue background
+    color = "#059669"; // bright green
+    bgColor = "#d1fae5"; // light green background
   }
 
   const strokeWidth = isHighlighted ? "4" : "2";
@@ -114,8 +114,6 @@ const OrderMarkers: React.FC = () => {
     };
     fetchInitialOrders();
   }, []);
-
-
 
   useEffect(() => {
     if (!isReady || !mapRef.current) return;

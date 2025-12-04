@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import type { Order } from "@/types/order";
 import { OrdersApi } from "@/services/ordersApi";
 import { useOrderRoute } from "@/hooks/useOrderRoute";
+import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 import {
   Item,
   ItemGroup,
@@ -26,6 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [inactiveOrders, setInactiveOrders] = useState<Order[]>([]);
   const { addOrderToRoute, refreshOrders } = useOrderRoute();
+  const { setHighlightedOrderId } = useMarkerHighlight();
 
   // Fetch orders on mount
   useEffect(() => {
@@ -105,6 +107,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
+        onMouseEnter={() => setHighlightedOrderId(order.id)}
+        onMouseLeave={() => setHighlightedOrderId(null)}
         variant="default"
         size="sm"
         style={{
