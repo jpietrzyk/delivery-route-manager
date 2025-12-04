@@ -6,32 +6,11 @@ import { useOrderRoute } from "@/hooks/useOrderRoute";
 import {
   Item,
   ItemGroup,
-
   ItemContent,
   ItemTitle,
   ItemDescription,
-  ItemActions,
 } from "@/components/ui/item";
-import { Checkbox } from "@/components/ui/checkbox";
 
-// Utility function to trim product names for compact display
-const trimProductName = (name: string, maxLength: number = 25): string => {
-  if (name.length <= maxLength) return name;
-
-  // Try to find good break points
-  const words = name.split(" ");
-
-  // If it's a dimension + description pattern (like "3x5 spad do tyłu...")
-  if (words.length >= 3 && /^\d+x\d+/.test(words[0])) {
-    const dimension = words[0];
-    const type = words.slice(1, 3).join(" "); // Take first 2 words after dimension
-    return `${dimension} ${type}...`;
-  }
-
-  // For very long names, take first few words
-  const shortWords = words.slice(0, 4);
-  return shortWords.join(" ") + "...";
-};
 
 // Utility function to trim customer names
 const trimCustomerName = (name: string, maxLength: number = 15): string => {
@@ -67,22 +46,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     };
     fetchOrders();
   }, []);
-
-  // Helper function to get status colors
-  const getStatusColor = (status: Order["status"]) => {
-    switch (status) {
-      case "pending":
-        return { bg: "#fef3c7", text: "#92400e" };
-      case "in-progress":
-        return { bg: "#dbeafe", text: "#1e40af" };
-      case "completed":
-        return { bg: "#d1fae5", text: "#065f46" };
-      case "cancelled":
-        return { bg: "#fee2e2", text: "#991b1b" };
-      default:
-        return { bg: "#f3f4f6", text: "#374151" };
-    }
-  };
 
   // Handle order state change (checkbox toggle)
   const handleOrderStateChange = async (
@@ -170,12 +133,13 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <Checkbox
+        <input
+          type="checkbox"
           checked={true}
-          onCheckedChange={() => handleOrderStateChange(order, false)}
-          className="h-4 w-4 shrink-0 mr-2"
+          onChange={() => handleOrderStateChange(order, false)}
+          className="h-4 w-4 shrink-0 cursor-pointer"
         />
-        <ItemContent>
+        <ItemContent className="flex-1">
           <ItemTitle className="text-xs font-semibold text-foreground">
             {trimCustomerName(order.customer)}
           </ItemTitle>
@@ -246,12 +210,13 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <Checkbox
+        <input
+          type="checkbox"
           checked={false}
-          onCheckedChange={() => handleOrderStateChange(order, true)}
-          className="h-4 w-4 shrink-0 mr-2"
+          onChange={() => handleOrderStateChange(order, true)}
+          className="h-4 w-4 shrink-0 cursor-pointer"
         />
-        <ItemContent>
+        <ItemContent className="flex-1">
           <ItemTitle className="text-xs font-semibold text-muted-foreground">
             {trimCustomerName(order.customer)}
           </ItemTitle>
