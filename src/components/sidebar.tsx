@@ -26,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [inactiveOrders, setInactiveOrders] = useState<Order[]>([]);
-  const { addOrderToRoute, refreshOrders } = useOrderRoute();
+  const { addOrderToRoute, refreshOrders, setRouteOrders, routeOrders } = useOrderRoute();
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
 
   // Fetch orders on mount
@@ -98,6 +98,17 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           const [draggedOrder] = newActiveOrders.splice(dragData.index, 1);
           newActiveOrders.splice(index, 0, draggedOrder);
           setActiveOrders(newActiveOrders);
+          
+          // Update route order to match new sidebar order
+          const newRouteOrders = [...routeOrders];
+          const routeIndex = newRouteOrders.findIndex((o) => o.id === draggedOrder.id);
+          if (routeIndex !== -1) {
+            const [movedOrder] = newRouteOrders.splice(routeIndex, 1);
+            // Find position in new route based on new sidebar order
+            const targetRoutIndex = newRouteOrders.findIndex((o) => o.id === newActiveOrders[index].id);
+            newRouteOrders.splice(targetRoutIndex !== -1 ? targetRoutIndex : newRouteOrders.length, 0, movedOrder);
+            setRouteOrders(newRouteOrders);
+          }
         }
       } catch (error) {
         console.error("Error handling drop:", error);
