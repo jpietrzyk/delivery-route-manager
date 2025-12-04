@@ -233,7 +233,7 @@ const OrderMarkers: React.FC = () => {
       marker.addEventListener("pointerenter", () => {
         // Update local reference for instant feedback without context delay
         localHighlightedRef.current = order.id;
-        
+
         // Also update context to highlight corresponding sidebar item
         setHighlightedOrderId(order.id);
 
@@ -252,7 +252,7 @@ const OrderMarkers: React.FC = () => {
       marker.addEventListener("pointerleave", () => {
         // Clear local reference
         localHighlightedRef.current = null;
-        
+
         // Clear context to unhighlight sidebar item
         setHighlightedOrderId(null);
 
