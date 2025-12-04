@@ -116,14 +116,57 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const OrderItem = ({ order, index }: { order: Order; index: number }) => {
     // Check if this order is currently highlighted
     const isHighlighted = highlightedOrderId === order.id;
+    const [isDragging, setIsDragging] = useState(false);
+
+    const handleDragStart = (e: React.DragEvent) => {
+      setIsDragging(true);
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", JSON.stringify({ order, index, type: "active" }));
+    };
+
+    const handleDragEnd = () => {
+      setIsDragging(false);
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+      e.preventDefault();
+      try {
+        const dragData = JSON.parse(e.dataTransfer.getData("text/plain"));
+        // Only allow reordering within active orders
+        if (dragData.type === "active" && dragData.index !== index) {
+          // Reorder active orders
+          const newActiveOrders = [...activeOrders];
+          const [draggedOrder] = newActiveOrders.splice(dragData.index, 1);
+          newActiveOrders.splice(index, 0, draggedOrder);
+          setActiveOrders(newActiveOrders);
+        }
+      } catch (error) {
+        console.error("Error handling drop:", error);
+      }
+      setIsDragging(false);
+    };
 
     return (
       <Item
+        draggable
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
         variant={isHighlighted ? "default" : "muted"}
         size="sm"
         onMouseEnter={() => setHighlightedOrderId(order.id)}
         onMouseLeave={() => setHighlightedOrderId(null)}
-        style={{ cursor: "default" }}
+        style={{ 
+          cursor: "move",
+          opacity: isDragging ? 0.5 : 1,
+          transition: "opacity 0.2s",
+        }}
       >
         <ItemMedia>
           <Switch
@@ -176,12 +219,56 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     order: Order;
     index: number;
   }) => {
+    const [isDragging, setIsDragging] = useState(false);
+
+    const handleDragStart = (e: React.DragEvent) => {
+      setIsDragging(true);
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", JSON.stringify({ order, index, type: "inactive" }));
+    };
+
+    const handleDragEnd = () => {
+      setIsDragging(false);
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+      e.preventDefault();
+      try {
+        const dragData = JSON.parse(e.dataTransfer.getData("text/plain"));
+        // Only allow reordering within inactive orders
+        if (dragData.type === "inactive" && dragData.index !== index) {
+          // Reorder inactive orders
+          const newInactiveOrders = [...inactiveOrders];
+          const [draggedOrder] = newInactiveOrders.splice(dragData.index, 1);
+          newInactiveOrders.splice(index, 0, draggedOrder);
+          setInactiveOrders(newInactiveOrders);
+        }
+      } catch (error) {
+        console.error("Error handling drop:", error);
+      }
+      setIsDragging(false);
+    };
+
     return (
       <Item
+        draggable
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
         variant="muted"
         size="sm"
         className="opacity-70"
-        style={{ cursor: "default" }}
+        style={{ 
+          cursor: "move",
+          opacity: isDragging ? 0.35 : 0.7,
+          transition: "opacity 0.2s",
+        }}
       >
         <ItemMedia>
           <Switch
@@ -209,7 +296,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
 
   // Inline styles to ensure visibility
   const sidebarStyle = {
-    width: collapsed ? "64px" : "256px",
+    width: collapsed ? "128px" : "512px",
     height: "100vh",
     backgroundColor: "#ffffff",
     borderLeft: "1px solid #e5e7eb",
@@ -307,7 +394,17 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                 📋 Active Orders
               </span>
             </div>
-            <ItemGroup className="gap-1 max-h-[calc(50vh-120px)] overflow-y-auto">
+            <ItemGroup 
+              className="gap-1 max-h-[calc(50vh-120px)] overflow-y-auto"
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                // Drop handling will be managed at individual item level or can be extended
+              }}
+            >
               {activeOrders.map((order, index) => (
                 <OrderItem key={order.id} order={order} index={index} />
               ))}
@@ -327,7 +424,17 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                     Inactive Orders
                   </span>
                 </div>
-                <ItemGroup className="gap-0.5 max-h-[calc(50vh-80px)] overflow-y-auto">
+                <ItemGroup 
+                  className="gap-0.5 max-h-[calc(50vh-80px)] overflow-y-auto"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "move";
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    // Drop handling will be managed at individual item level or can be extended
+                  }}
+                >
                   {inactiveOrders.map((order, index) => (
                     <InactiveOrderItem
                       key={order.id}
