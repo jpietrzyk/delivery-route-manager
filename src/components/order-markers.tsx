@@ -103,6 +103,9 @@ const OrderMarkers: React.FC = () => {
   // Track previous order count to detect when new orders are added
   const prevOrderCountRef = useRef<number>(0);
 
+  // Store previous orders to detect actual changes
+  const prevOrdersRef = useRef<Order[]>([]);
+
   // Initial fetch on mount and poll for updates
   useEffect(() => {
     const fetchOrdersAndUpdate = async () => {
@@ -110,7 +113,24 @@ const OrderMarkers: React.FC = () => {
         const fetchedOrders = await OrdersApi.getOrders();
         // Only show markers for active orders
         const activeOrders = fetchedOrders.filter((order) => order.active);
-        setOrders(activeOrders);
+
+        // Only update if orders actually changed (avoid unnecessary re-renders)
+        const ordersChanged =
+          activeOrders.length !== prevOrdersRef.current.length ||
+          activeOrders.some(
+            (order) =>
+              !prevOrdersRef.current.find((prev) => prev.id === order.id)
+          ) ||
+          prevOrdersRef.current.some(
+            (order) => !activeOrders.find((curr) => curr.id === order.id)
+          );
+
+        if (ordersChanged) {
+          prevOrdersRef.current = activeOrders;
+          setOrders(activeOrders);
+          // Clear highlight when orders change to prevent stale references
+          localHighlightedRef.current = null;
+        }
       } catch (error) {
         console.error("Failed to fetch orders:", error);
       }
@@ -119,8 +139,8 @@ const OrderMarkers: React.FC = () => {
     // Fetch on mount
     fetchOrdersAndUpdate();
 
-    // Poll for updates every 2 seconds to detect when orders are activated/deactivated
-    const pollInterval = setInterval(fetchOrdersAndUpdate, 2000);
+    // Poll for updates every 5 seconds to detect when orders are activated/deactivated
+    const pollInterval = setInterval(fetchOrdersAndUpdate, 5000);
 
     return () => clearInterval(pollInterval);
   }, []);
@@ -285,6 +305,13 @@ const OrderMarkers: React.FC = () => {
   // Effect to handle context changes and update marker highlights
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
+
+    // Check if highlighted order still exists
+    if (highlightedOrderId && !markersRef.current.has(highlightedOrderId)) {
+      // If highlighted order no longer exists, clear the highlight
+      localHighlightedRef.current = null;
+      return;
+    }
 
     // Update all markers based on highlightedOrderId
     markersRef.current.forEach((marker, orderId) => {
