@@ -69,12 +69,11 @@ const createSvgIcon = (
     bgColor = "#d1fae5"; // light green background
   }
 
-  const strokeWidth = isHighlighted ? "4" : "2";
-  const markerScale = isHighlighted ? "1.2" : "1";
+  const strokeWidth = isHighlighted ? "3" : "2";
 
   const svg = `
     <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <g transform="scale(${markerScale}) translate(4, 4)">
+      <g transform="translate(0, 0)">
         <circle cx="16" cy="16" r="12" fill="${bgColor}" stroke="${color}" stroke-width="${strokeWidth}"/>
         <circle cx="16" cy="16" r="6" fill="${color}"/>
         <circle cx="16" cy="16" r="3" fill="white"/>
@@ -94,11 +93,13 @@ const createSvgIcon = (
 
 const OrderMarkers: React.FC = () => {
   const { isReady, mapRef } = useHereMap();
-  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
+  const { highlightedOrderId } = useMarkerHighlight();
   const [orders, setOrders] = useState<Order[]>([]);
 
   // Store references to markers by order ID
   const markersRef = useRef<Map<string, MapMarker>>(new Map());
+  // Store local highlighted state for instant feedback without context delay
+  const localHighlightedRef = useRef<string | null>(null);
   // Track previous order count to detect when new orders are added
   const prevOrderCountRef = useRef<number>(0);
 
@@ -199,12 +200,12 @@ const OrderMarkers: React.FC = () => {
       // Set initial icon
       marker.setIcon(originalIcon);
 
-      // Add hover events
+      // Add hover events with instant local feedback
       marker.addEventListener("pointerenter", () => {
-        // Set the highlighted order ID in context
-        setHighlightedOrderId(order.id);
+        // Update local reference for instant feedback without context delay
+        localHighlightedRef.current = order.id;
 
-        // Highlight the marker
+        // Highlight the marker immediately
         marker.setIcon(highlightedIcon);
 
         // Show tooltip
@@ -217,8 +218,8 @@ const OrderMarkers: React.FC = () => {
       });
 
       marker.addEventListener("pointerleave", () => {
-        // Clear the highlighted order ID in context
-        setHighlightedOrderId(null);
+        // Clear local reference
+        localHighlightedRef.current = null;
 
         // Remove highlight
         marker.setIcon(originalIcon);
@@ -270,7 +271,7 @@ const OrderMarkers: React.FC = () => {
       // Clear the markers reference
       currentMarkers.clear();
     };
-  }, [isReady, mapRef, setHighlightedOrderId, orders]);
+  }, [isReady, mapRef, orders]);
 
   // Effect to handle context changes and update marker highlights
   useEffect(() => {
