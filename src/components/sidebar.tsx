@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { Order } from "@/types/order";
 import { OrdersApi } from "@/services/ordersApi";
-import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 import { useOrderRoute } from "@/hooks/useOrderRoute";
 import {
   Item,
@@ -10,7 +9,6 @@ import {
   ItemTitle,
   ItemDescription,
 } from "@/components/ui/item";
-
 
 // Utility function to trim customer names
 const trimCustomerName = (name: string, maxLength: number = 15): string => {
@@ -27,8 +25,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [inactiveOrders, setInactiveOrders] = useState<Order[]>([]);
-  const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
-  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
   const { addOrderToRoute, refreshOrders } = useOrderRoute();
 
   // Fetch orders on mount
@@ -78,25 +74,17 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
 
   // Order Item Component for Active Orders
   const OrderItem = ({ order, index }: { order: Order; index: number }) => {
-    const isHighlighted = highlightedOrderId === order.id;
-    const isBeingDragged = draggedItemId === order.id;
-
     const handleDragStart = (e: React.DragEvent) => {
-      setDraggedItemId(order.id);
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData(
         "text/plain",
         JSON.stringify({ order, index, type: "active" })
       );
     };
-    const handleDragEnd = () => {
-      setDraggedItemId(null);
-    };
     const handleDragOver = (e: React.DragEvent) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = "move";
     };
-    const handleDragLeave = () => {};
     const handleDrop = (e: React.DragEvent) => {
       e.preventDefault();
       try {
@@ -110,26 +98,20 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
       } catch (error) {
         console.error("Error handling drop:", error);
       }
-      setDraggedItemId(null);
     };
     return (
       <Item
         draggable
         onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         variant="default"
         size="sm"
-        onMouseEnter={() => setHighlightedOrderId(order.id)}
-        onMouseLeave={() => setHighlightedOrderId(null)}
         style={{
           cursor: "move",
-          opacity: isBeingDragged ? 0.4 : 1,
           padding: "6px 10px",
           borderBottom: "1px solid #f0f0f0",
-          backgroundColor: isHighlighted ? "#f5f5f5" : "transparent",
+          backgroundColor: "transparent",
           transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
@@ -152,58 +134,14 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   };
 
   // Order Item Component for Inactive Orders
-  const InactiveOrderItem = ({
-    order,
-    index,
-  }: {
-    order: Order;
-    index: number;
-  }) => {
-    const isBeingDragged = draggedItemId === order.id;
-    const handleDragStart = (e: React.DragEvent) => {
-      setDraggedItemId(order.id);
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData(
-        "text/plain",
-        JSON.stringify({ order, index, type: "inactive" })
-      );
-    };
-    const handleDragEnd = () => {
-      setDraggedItemId(null);
-    };
-    const handleDragOver = (e: React.DragEvent) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
-    };
-    const handleDragLeave = () => {};
-    const handleDrop = (e: React.DragEvent) => {
-      e.preventDefault();
-      try {
-        const dragData = JSON.parse(e.dataTransfer.getData("text/plain"));
-        if (dragData.type === "inactive" && dragData.index !== index) {
-          const newInactiveOrders = [...inactiveOrders];
-          const [draggedOrder] = newInactiveOrders.splice(dragData.index, 1);
-          newInactiveOrders.splice(index, 0, draggedOrder);
-          setInactiveOrders(newInactiveOrders);
-        }
-      } catch (error) {
-        console.error("Error handling drop:", error);
-      }
-      setDraggedItemId(null);
-    };
+  const InactiveOrderItem = ({ order }: { order: Order }) => {
     return (
       <Item
-        draggable
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
         variant="default"
         size="sm"
         style={{
-          cursor: "move",
-          opacity: isBeingDragged ? 0.4 : 0.7,
+          cursor: "default",
+          opacity: 0.7,
           padding: "6px 10px",
           borderBottom: "1px solid #f0f0f0",
           backgroundColor: "transparent",
@@ -369,11 +307,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                     // Drop handling will be managed at individual item level or can be extended
                   }}
                 >
-                  {inactiveOrders.map((order, index) => (
+                  {inactiveOrders.map((order) => (
                     <InactiveOrderItem
                       key={order.id}
                       order={order}
-                      index={index}
                     />
                   ))}
                 </ItemGroup>
