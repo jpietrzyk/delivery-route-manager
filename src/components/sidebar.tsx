@@ -308,10 +308,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                   }}
                 >
                   {inactiveOrders.map((order) => (
-                    <InactiveOrderItem
-                      key={order.id}
-                      order={order}
-                    />
+                    <InactiveOrderItem key={order.id} order={order} />
                   ))}
                 </ItemGroup>
               </>
