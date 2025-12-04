@@ -48,6 +48,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [inactiveOrders, setInactiveOrders] = useState<Order[]>([]);
+  const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
+  const [dropHighlightIndex, setDropHighlightIndex] = useState<number | null>(null);
+  const [dropHighlightGroup, setDropHighlightGroup] = useState<"active" | "inactive" | null>(null);
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
   const { addOrderToRoute, refreshOrders } = useOrderRoute();
 
@@ -116,21 +119,31 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const OrderItem = ({ order, index }: { order: Order; index: number }) => {
     // Check if this order is currently highlighted
     const isHighlighted = highlightedOrderId === order.id;
-    const [isDragging, setIsDragging] = useState(false);
+    const isBeingDragged = draggedItemId === order.id;
+    const isDropTarget = dropHighlightIndex === index && dropHighlightGroup === "active";
 
     const handleDragStart = (e: React.DragEvent) => {
-      setIsDragging(true);
+      setDraggedItemId(order.id);
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("text/plain", JSON.stringify({ order, index, type: "active" }));
     };
 
     const handleDragEnd = () => {
-      setIsDragging(false);
+      setDraggedItemId(null);
+      setDropHighlightIndex(null);
+      setDropHighlightGroup(null);
     };
 
     const handleDragOver = (e: React.DragEvent) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = "move";
+      setDropHighlightIndex(index);
+      setDropHighlightGroup("active");
+    };
+
+    const handleDragLeave = () => {
+      setDropHighlightIndex(null);
+      setDropHighlightGroup(null);
     };
 
     const handleDrop = (e: React.DragEvent) => {
@@ -148,7 +161,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
       } catch (error) {
         console.error("Error handling drop:", error);
       }
-      setIsDragging(false);
+      setDraggedItemId(null);
+      setDropHighlightIndex(null);
+      setDropHighlightGroup(null);
     };
 
     return (
@@ -157,6 +172,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         variant={isHighlighted ? "default" : "muted"}
         size="sm"
@@ -164,15 +180,16 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
         onMouseLeave={() => setHighlightedOrderId(null)}
         style={{ 
           cursor: "move",
-          opacity: isDragging ? 0.5 : 1,
-          transition: "opacity 0.2s",
+          opacity: isBeingDragged ? 0.4 : 1,
+          transform: isDropTarget ? "scaleX(1.02)" : "scaleX(1)",
+          backgroundColor: isDropTarget ? "rgba(37, 99, 235, 0.1)" : "transparent",
+          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
         <ItemMedia>
           <Switch
             checked={true}
             onCheckedChange={() => handleOrderStateChange(order, false)}
-            className="scale-75"
           />
           <span className="text-xs text-muted-foreground font-semibold min-w-4">
             {index + 1}
@@ -219,21 +236,31 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     order: Order;
     index: number;
   }) => {
-    const [isDragging, setIsDragging] = useState(false);
+    const isBeingDragged = draggedItemId === order.id;
+    const isDropTarget = dropHighlightIndex === index && dropHighlightGroup === "inactive";
 
     const handleDragStart = (e: React.DragEvent) => {
-      setIsDragging(true);
+      setDraggedItemId(order.id);
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("text/plain", JSON.stringify({ order, index, type: "inactive" }));
     };
 
     const handleDragEnd = () => {
-      setIsDragging(false);
+      setDraggedItemId(null);
+      setDropHighlightIndex(null);
+      setDropHighlightGroup(null);
     };
 
     const handleDragOver = (e: React.DragEvent) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = "move";
+      setDropHighlightIndex(index);
+      setDropHighlightGroup("inactive");
+    };
+
+    const handleDragLeave = () => {
+      setDropHighlightIndex(null);
+      setDropHighlightGroup(null);
     };
 
     const handleDrop = (e: React.DragEvent) => {
@@ -251,7 +278,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
       } catch (error) {
         console.error("Error handling drop:", error);
       }
-      setIsDragging(false);
+      setDraggedItemId(null);
+      setDropHighlightIndex(null);
+      setDropHighlightGroup(null);
     };
 
     return (
@@ -260,21 +289,23 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         variant="muted"
         size="sm"
         className="opacity-70"
         style={{ 
           cursor: "move",
-          opacity: isDragging ? 0.35 : 0.7,
-          transition: "opacity 0.2s",
+          opacity: isBeingDragged ? 0.28 : 0.7,
+          transform: isDropTarget ? "scaleX(1.02)" : "scaleX(1)",
+          backgroundColor: isDropTarget ? "rgba(220, 38, 38, 0.08)" : "transparent",
+          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
         <ItemMedia>
           <Switch
             checked={false}
             onCheckedChange={() => handleOrderStateChange(order, true)}
-            className="scale-75"
           />
           <span className="text-xs text-muted-foreground font-semibold min-w-3.5">
             {activeOrders.length + index + 1}
