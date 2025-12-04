@@ -1,5 +1,5 @@
 // src/components/OrderMarkers.tsx
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHereMap } from "@/hooks/useHereMap";
 import { OrdersApi } from "@/services/ordersApi";
 import type { Order } from "@/types/order";
@@ -7,10 +7,12 @@ import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 import type { MapMarker } from "@/types/here-maps";
 import type { HereMapsUI } from "@/types/here-maps";
 
-// Extend MapMarker interface to include tooltip property
+// Extend MapMarker interface to include our custom properties
 declare global {
   interface MapMarker {
     _tooltip?: import("@/types/here-maps").InfoBubble;
+    _originalIcon?: MapIcon;
+    _highlightedIcon?: MapIcon;
   }
 }
 
@@ -100,16 +102,6 @@ const OrderMarkers: React.FC = () => {
   // Track previous order count to detect when new orders are added
   const prevOrderCountRef = useRef<number>(0);
 
-  // Fetch orders function
-  const fetchOrders = useCallback(async () => {
-    try {
-      const fetchedOrders = await OrdersApi.getOrders();
-      setOrders(fetchedOrders);
-    } catch (error) {
-      console.error("Failed to fetch orders:", error);
-    }
-  }, []);
-
   // Initial fetch on mount
   useEffect(() => {
     const fetchInitialOrders = async () => {
@@ -123,27 +115,7 @@ const OrderMarkers: React.FC = () => {
     fetchInitialOrders();
   }, []);
 
-  // Refresh markers when orders might have changed (debounced)
-  const refreshTimeoutRef = useRef<number | undefined>(undefined);
-  useEffect(() => {
-    if (highlightedOrderId) {
-      // Clear existing timeout
-      if (refreshTimeoutRef.current) {
-        clearTimeout(refreshTimeoutRef.current);
-      }
 
-      // Set new timeout to refresh after user interaction settles
-      refreshTimeoutRef.current = setTimeout(() => {
-        fetchOrders();
-      }, 1000); // Wait 1 second after last highlight change
-    }
-
-    return () => {
-      if (refreshTimeoutRef.current) {
-        clearTimeout(refreshTimeoutRef.current);
-      }
-    };
-  }, [highlightedOrderId, fetchOrders]);
 
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
@@ -221,6 +193,10 @@ const OrderMarkers: React.FC = () => {
       const highlightedIcon = new H.map.Icon(
         createSvgIcon(order.priority, order.status, true)
       );
+
+      // Store icons on the marker for later use
+      marker._originalIcon = originalIcon;
+      marker._highlightedIcon = highlightedIcon;
 
       // Set initial icon
       marker.setIcon(originalIcon);
@@ -302,26 +278,19 @@ const OrderMarkers: React.FC = () => {
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
 
-    const H = window.H;
-    if (!H) return;
-
     // Update all markers based on highlightedOrderId
-    orders.forEach((order) => {
-      const marker = markersRef.current.get(order.id);
-      if (!marker) return;
+    markersRef.current.forEach((marker, orderId) => {
+      // Use stored icons instead of recreating them
+      const originalIcon = marker._originalIcon;
+      const highlightedIcon = marker._highlightedIcon;
 
-      const originalIcon = new H.map.Icon(
-        createSvgIcon(order.priority, order.status, false)
-      );
-      const highlightedIcon = new H.map.Icon(
-        createSvgIcon(order.priority, order.status, true)
-      );
+      if (!originalIcon || !highlightedIcon) return;
 
       // Check if this marker should be highlighted
-      const shouldHighlight = highlightedOrderId === order.id;
+      const shouldHighlight = highlightedOrderId === orderId;
       marker.setIcon(shouldHighlight ? highlightedIcon : originalIcon);
     });
-  }, [highlightedOrderId, isReady, mapRef, orders]);
+  }, [highlightedOrderId, isReady, mapRef]);
 
   return null; // This component doesn't render anything visible
 };
