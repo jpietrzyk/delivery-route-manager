@@ -77,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   // Order Item Component for Active Orders
   const OrderItem = ({ order, index }: { order: Order; index: number }) => {
     const isHighlighted = highlightedOrderId === order.id;
-    
+
     const handleDragStart = (e: React.DragEvent) => {
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData(
