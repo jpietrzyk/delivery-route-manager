@@ -93,7 +93,7 @@ const createSvgIcon = (
 
 const OrderMarkers: React.FC = () => {
   const { isReady, mapRef } = useHereMap();
-  const { highlightedOrderId } = useMarkerHighlight();
+  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
   const [orders, setOrders] = useState<Order[]>([]);
 
   // Store references to markers by order ID
@@ -233,6 +233,9 @@ const OrderMarkers: React.FC = () => {
       marker.addEventListener("pointerenter", () => {
         // Update local reference for instant feedback without context delay
         localHighlightedRef.current = order.id;
+        
+        // Also update context to highlight corresponding sidebar item
+        setHighlightedOrderId(order.id);
 
         // Highlight the marker immediately
         marker.setIcon(highlightedIcon);
@@ -249,6 +252,9 @@ const OrderMarkers: React.FC = () => {
       marker.addEventListener("pointerleave", () => {
         // Clear local reference
         localHighlightedRef.current = null;
+        
+        // Clear context to unhighlight sidebar item
+        setHighlightedOrderId(null);
 
         // Remove highlight
         marker.setIcon(originalIcon);
@@ -300,7 +306,7 @@ const OrderMarkers: React.FC = () => {
       // Clear the markers reference
       currentMarkers.clear();
     };
-  }, [isReady, mapRef, orders]);
+  }, [isReady, mapRef, orders, setHighlightedOrderId]);
 
   // Effect to handle context changes and update marker highlights
   useEffect(() => {

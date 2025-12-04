@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [inactiveOrders, setInactiveOrders] = useState<Order[]>([]);
   const { addOrderToRoute, refreshOrders } = useOrderRoute();
-  const { setHighlightedOrderId } = useMarkerHighlight();
+  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
 
   // Fetch orders on mount
   useEffect(() => {
@@ -76,6 +76,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
 
   // Order Item Component for Active Orders
   const OrderItem = ({ order, index }: { order: Order; index: number }) => {
+    const isHighlighted = highlightedOrderId === order.id;
+    
     const handleDragStart = (e: React.DragEvent) => {
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData(
@@ -115,7 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           cursor: "move",
           padding: "6px 10px",
           borderBottom: "1px solid #f0f0f0",
-          backgroundColor: "transparent",
+          backgroundColor: isHighlighted ? "#d1fae5" : "transparent",
           transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
