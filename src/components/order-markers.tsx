@@ -103,17 +103,26 @@ const OrderMarkers: React.FC = () => {
   // Track previous order count to detect when new orders are added
   const prevOrderCountRef = useRef<number>(0);
 
-  // Initial fetch on mount
+  // Initial fetch on mount and poll for updates
   useEffect(() => {
-    const fetchInitialOrders = async () => {
+    const fetchOrdersAndUpdate = async () => {
       try {
         const fetchedOrders = await OrdersApi.getOrders();
-        setOrders(fetchedOrders);
+        // Only show markers for active orders
+        const activeOrders = fetchedOrders.filter((order) => order.active);
+        setOrders(activeOrders);
       } catch (error) {
         console.error("Failed to fetch orders:", error);
       }
     };
-    fetchInitialOrders();
+
+    // Fetch on mount
+    fetchOrdersAndUpdate();
+
+    // Poll for updates every 2 seconds to detect when orders are activated/deactivated
+    const pollInterval = setInterval(fetchOrdersAndUpdate, 2000);
+
+    return () => clearInterval(pollInterval);
   }, []);
 
   useEffect(() => {
