@@ -6,13 +6,13 @@ import { useOrderRoute } from "@/hooks/useOrderRoute";
 import {
   Item,
   ItemGroup,
-  ItemMedia,
+
   ItemContent,
   ItemTitle,
   ItemDescription,
   ItemActions,
 } from "@/components/ui/item";
-import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Utility function to trim product names for compact display
 const trimProductName = (name: string, maxLength: number = 25): string => {
@@ -121,10 +121,18 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     const handleDragStart = (e: React.DragEvent) => {
       setDraggedItemId(order.id);
       e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", JSON.stringify({ order, index, type: "active" }));
+      e.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify({ order, index, type: "active" })
+      );
     };
-    const handleDragEnd = () => { setDraggedItemId(null); };
-    const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; };
+    const handleDragEnd = () => {
+      setDraggedItemId(null);
+    };
+    const handleDragOver = (e: React.DragEvent) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    };
     const handleDragLeave = () => {};
     const handleDrop = (e: React.DragEvent) => {
       e.preventDefault();
@@ -136,7 +144,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           newActiveOrders.splice(index, 0, draggedOrder);
           setActiveOrders(newActiveOrders);
         }
-      } catch (error) { console.error("Error handling drop:", error); }
+      } catch (error) {
+        console.error("Error handling drop:", error);
+      }
       setDraggedItemId(null);
     };
     return (
@@ -151,11 +161,20 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
         size="sm"
         onMouseEnter={() => setHighlightedOrderId(order.id)}
         onMouseLeave={() => setHighlightedOrderId(null)}
-        style={{ cursor: "move", opacity: isBeingDragged ? 0.4 : 1, padding: "6px 10px", borderBottom: "1px solid #f0f0f0", backgroundColor: isHighlighted ? "#f5f5f5" : "transparent", transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)" }}
+        style={{
+          cursor: "move",
+          opacity: isBeingDragged ? 0.4 : 1,
+          padding: "6px 10px",
+          borderBottom: "1px solid #f0f0f0",
+          backgroundColor: isHighlighted ? "#f5f5f5" : "transparent",
+          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
       >
-        <ItemMedia>
-          <Switch checked={true} onCheckedChange={() => handleOrderStateChange(order, false)} />
-        </ItemMedia>
+        <Checkbox
+          checked={true}
+          onCheckedChange={() => handleOrderStateChange(order, false)}
+          className="h-4 w-4 shrink-0 mr-2"
+        />
         <ItemContent>
           <ItemTitle className="text-xs font-semibold text-foreground">
             {trimCustomerName(order.customer)}
@@ -169,15 +188,29 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   };
 
   // Order Item Component for Inactive Orders
-  const InactiveOrderItem = ({ order, index }: { order: Order; index: number }) => {
+  const InactiveOrderItem = ({
+    order,
+    index,
+  }: {
+    order: Order;
+    index: number;
+  }) => {
     const isBeingDragged = draggedItemId === order.id;
     const handleDragStart = (e: React.DragEvent) => {
       setDraggedItemId(order.id);
       e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", JSON.stringify({ order, index, type: "inactive" }));
+      e.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify({ order, index, type: "inactive" })
+      );
     };
-    const handleDragEnd = () => { setDraggedItemId(null); };
-    const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; };
+    const handleDragEnd = () => {
+      setDraggedItemId(null);
+    };
+    const handleDragOver = (e: React.DragEvent) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    };
     const handleDragLeave = () => {};
     const handleDrop = (e: React.DragEvent) => {
       e.preventDefault();
@@ -189,7 +222,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           newInactiveOrders.splice(index, 0, draggedOrder);
           setInactiveOrders(newInactiveOrders);
         }
-      } catch (error) { console.error("Error handling drop:", error); }
+      } catch (error) {
+        console.error("Error handling drop:", error);
+      }
       setDraggedItemId(null);
     };
     return (
@@ -202,11 +237,20 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
         onDrop={handleDrop}
         variant="default"
         size="sm"
-        style={{ cursor: "move", opacity: isBeingDragged ? 0.4 : 0.7, padding: "6px 10px", borderBottom: "1px solid #f0f0f0", backgroundColor: "transparent", transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)" }}
+        style={{
+          cursor: "move",
+          opacity: isBeingDragged ? 0.4 : 0.7,
+          padding: "6px 10px",
+          borderBottom: "1px solid #f0f0f0",
+          backgroundColor: "transparent",
+          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
       >
-        <ItemMedia>
-          <Switch checked={false} onCheckedChange={() => handleOrderStateChange(order, true)} />
-        </ItemMedia>
+        <Checkbox
+          checked={false}
+          onCheckedChange={() => handleOrderStateChange(order, true)}
+          className="h-4 w-4 shrink-0 mr-2"
+        />
         <ItemContent>
           <ItemTitle className="text-xs font-semibold text-muted-foreground">
             {trimCustomerName(order.customer)}
