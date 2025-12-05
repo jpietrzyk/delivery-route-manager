@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import type { DropResult } from "@hello-pangea/dnd";
 import type { Order } from "@/types/order";
 import { OrdersApi } from "@/services/ordersApi";
 import { useOrderRoute } from "@/hooks/useOrderRoute";
@@ -29,6 +31,28 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const { addOrderToRoute, refreshOrders, setRouteOrders, routeOrders } =
     useOrderRoute();
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
+
+  // Handle drag end for reordering active orders
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
+
+    if (sourceIndex === destinationIndex) return;
+
+    const newActiveOrders = Array.from(activeOrders);
+    const [reorderedItem] = newActiveOrders.splice(sourceIndex, 1);
+    newActiveOrders.splice(destinationIndex, 0, reorderedItem);
+
+    setActiveOrders(newActiveOrders);
+
+    // Update route order to match new sidebar order
+    const newRouteOrders = newActiveOrders.filter((order) =>
+      routeOrders.some((routeOrder) => routeOrder.id === order.id)
+    );
+    setRouteOrders(newRouteOrders);
+  };
 
   // Fetch orders on mount
   useEffect(() => {
@@ -79,71 +103,50 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const OrderItem = ({ order, index }: { order: Order; index: number }) => {
     const isHighlighted = highlightedOrderId === order.id;
 
-    const handleDragStart = (e: React.DragEvent) => {
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData(
-        "text/plain",
-        JSON.stringify({ order, index, type: "active" })
-      );
-    };
-    const handleDragOver = (e: React.DragEvent) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
-    };
-    const handleDrop = (e: React.DragEvent) => {
-      e.preventDefault();
-      try {
-        const dragData = JSON.parse(e.dataTransfer.getData("text/plain"));
-        if (dragData.type === "active" && dragData.index !== index) {
-          const newActiveOrders = [...activeOrders];
-          const [draggedOrder] = newActiveOrders.splice(dragData.index, 1);
-          newActiveOrders.splice(index, 0, draggedOrder);
-          setActiveOrders(newActiveOrders);
-
-          // Update route order to match new sidebar order
-          // Rebuild the route to only include active orders in the new order
-          const newRouteOrders = newActiveOrders.filter((order) =>
-            routeOrders.some((routeOrder) => routeOrder.id === order.id)
-          );
-          setRouteOrders(newRouteOrders);
-        }
-      } catch (error) {
-        console.error("Error handling drop:", error);
-      }
-    };
     return (
-      <Item
-        draggable
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        onMouseEnter={() => setHighlightedOrderId(order.id)}
-        onMouseLeave={() => setHighlightedOrderId(null)}
-        variant="default"
-        size="sm"
-        style={{
-          cursor: "move",
-          padding: "6px 10px",
-          borderBottom: "1px solid #f0f0f0",
-          backgroundColor: isHighlighted ? "#d1fae5" : "transparent",
-          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={true}
-          onChange={() => handleOrderStateChange(order, false)}
-          className="h-4 w-4 shrink-0 cursor-pointer"
-        />
-        <ItemContent className="flex-1">
-          <ItemTitle className="text-xs font-semibold text-foreground">
-            {trimCustomerName(order.customer)}
-          </ItemTitle>
-          <ItemDescription className="text-xs text-muted-foreground font-medium">
-            {order.name.slice(0, 40)}
-          </ItemDescription>
-        </ItemContent>
-      </Item>
+      <Draggable draggableId={order.id} index={index}>
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
+            <Item
+              onMouseEnter={() => setHighlightedOrderId(order.id)}
+              onMouseLeave={() => setHighlightedOrderId(null)}
+              variant="default"
+              size="sm"
+              style={{
+                cursor: "move",
+                padding: "6px 10px",
+                borderBottom: "1px solid #f0f0f0",
+                backgroundColor: snapshot.isDragging
+                  ? "#e0f2fe"
+                  : isHighlighted
+                  ? "#d1fae5"
+                  : "transparent",
+                transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                ...provided.draggableProps.style,
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={true}
+                onChange={() => handleOrderStateChange(order, false)}
+                className="h-4 w-4 shrink-0 cursor-pointer"
+              />
+              <ItemContent className="flex-1">
+                <ItemTitle className="text-xs font-semibold text-foreground">
+                  {trimCustomerName(order.customer)}
+                </ItemTitle>
+                <ItemDescription className="text-xs text-muted-foreground font-medium">
+                  {order.name.slice(0, 40)}
+                </ItemDescription>
+              </ItemContent>
+            </Item>
+          </div>
+        )}
+      </Draggable>
     );
   };
 
@@ -210,9 +213,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
 
   return (
     <div style={sidebarStyle} className={className}>
-      {/* Header */}
-      <div
-        style={{
+        {/* Header */}
+        <div
+          style={{
           height: "64px",
           borderBottom: "1px solid #f0f0f0",
           padding: "0 16px",
@@ -280,21 +283,28 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                 📋 Active Orders
               </span>
             </div>
-            <ItemGroup
-              className="gap-1 max-h-[calc(50vh-120px)] overflow-y-auto"
-              onDragOver={(e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = "move";
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-                // Drop handling will be managed at individual item level or can be extended
-              }}
-            >
-              {activeOrders.map((order, index) => (
-                <OrderItem key={order.id} order={order} index={index} />
-              ))}
-            </ItemGroup>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="active-orders">
+                {(provided, snapshot) => (
+                  <ItemGroup
+                    className="gap-1 max-h-[calc(50vh-120px)] overflow-y-auto"
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    style={{
+                      backgroundColor: snapshot.isDraggingOver
+                        ? "#f0f9ff"
+                        : "transparent",
+                      transition: "background-color 0.2s ease",
+                    }}
+                  >
+                    {activeOrders.map((order, index) => (
+                      <OrderItem key={order.id} order={order} index={index} />
+                    ))}
+                    {provided.placeholder}
+                  </ItemGroup>
+                )}
+              </Droppable>
+            </DragDropContext>
             {inactiveOrders.length > 0 && (
               <>
                 <div style={{ marginTop: "16px", marginBottom: "8px" }}>
