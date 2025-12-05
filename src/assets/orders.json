@@ -340,5 +340,23 @@
       "lng": 21.403632
     },
     "deliveryId": null
+  },
+  {
+    "id": "TEST-001",
+    "name": "Test Pool Order in Berlin",
+    "comment": "Test order to verify pool markers",
+    "status": "pending",
+    "priority": "low",
+    "active": true,
+    "createdAt": "2025-12-05T10:00:00.000Z",
+    "updatedAt": "2025-12-05T10:00:00.000Z",
+    "customer": "Test Customer",
+    "totalAmount": 0,
+    "items": [],
+    "location": {
+      "lat": 52.52,
+      "lng": 13.405
+    },
+    "deliveryId": null
   }
 ]

@@ -23,21 +23,49 @@ const PoolOrderMarkers = () => {
 
   // Create marker icon for pool orders (different style than active orders)
   const createPoolMarkerIcon = useCallback(() => {
+    // @ts-expect-error - H namespace from HERE Maps SDK
+    const H = window.H;
+    if (!H) {
+      console.error(
+        "[PoolOrderMarkers] H namespace not available for icon creation"
+      );
+      return null;
+    }
+
     const svgMarkup = `
-      <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="10" fill="#94a3b8" stroke="white" stroke-width="2"/>
-        <circle cx="12" cy="12" r="4" fill="white"/>
+      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(0, 0)">
+          <circle cx="16" cy="16" r="12" fill="#f3f4f6" stroke="#9ca3af" stroke-width="2"/>
+          <circle cx="16" cy="16" r="6" fill="#9ca3af"/>
+          <circle cx="16" cy="16" r="3" fill="white"/>
+        </g>
       </svg>
     `;
-    // @ts-expect-error - H namespace from HERE Maps SDK
-    return new H.map.Icon(svgMarkup, {
-      anchor: { x: 12, y: 12 },
-    });
+
+    // Convert SVG to data URI (required format for HERE Maps)
+    const svgDataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
+      svgMarkup
+    )}`;
+
+    return new H.map.Icon(svgDataUri);
   }, []);
 
   // Incremental marker updates - only add/remove what changed
   useEffect(() => {
-    if (!isReady || !mapRef.current) return;
+    if (!isReady || !mapRef.current) {
+      console.log("[PoolOrderMarkers] Not ready:", {
+        isReady,
+        hasMap: !!mapRef.current,
+      });
+      return;
+    }
+
+    // @ts-expect-error - H namespace from HERE Maps SDK
+    const H = window.H;
+    if (!H) {
+      console.error("[PoolOrderMarkers] HERE Maps SDK not available");
+      return;
+    }
 
     console.log("[PoolOrderMarkers] Rendering pool orders:", poolOrders.length);
 
@@ -63,7 +91,12 @@ const PoolOrderMarkers = () => {
     // ADD markers for new orders in pool
     poolOrders.forEach((order) => {
       if (!currentMarkers.has(order.id)) {
-        // @ts-expect-error - H namespace from HERE Maps SDK
+        console.log(
+          "[PoolOrderMarkers] Adding marker for:",
+          order.id,
+          order.location
+        );
+
         const marker = new H.map.Marker(
           { lat: order.location.lat, lng: order.location.lng },
           { icon }
@@ -74,6 +107,11 @@ const PoolOrderMarkers = () => {
 
         map.addObject(marker);
         currentMarkers.set(order.id, marker);
+
+        console.log(
+          "[PoolOrderMarkers] Marker added successfully for:",
+          order.id
+        );
       }
     });
 
