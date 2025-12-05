@@ -93,7 +93,7 @@ const createSvgIcon = (
 
 const OrderMarkers: React.FC = () => {
   const { isReady, mapRef } = useHereMap();
-  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
+  const { setHighlightedOrderId, highlightMarkerRef } = useMarkerHighlight();
 
   // Store references to markers by order ID
   const markersRef = useRef<Map<string, MapMarker>>(new Map());
@@ -106,6 +106,26 @@ const OrderMarkers: React.FC = () => {
   // Only show markers for active orders
   const activeOrders = availableOrders.filter((order) => order.active);
 
+  // Register the highlight function directly in the ref (no re-renders!)
+  useEffect(() => {
+    highlightMarkerRef.current = (orderId: string | null) => {
+      markersRef.current.forEach((marker, id) => {
+        const shouldHighlight = orderId === id;
+        const icon = shouldHighlight
+          ? marker._highlightedIcon
+          : marker._originalIcon;
+        if (icon) {
+          marker.setIcon(icon);
+        }
+      });
+      localHighlightedRef.current = orderId;
+    };
+
+    return () => {
+      highlightMarkerRef.current = null;
+    };
+  }, [highlightMarkerRef]); // Ref is stable, won't cause re-renders
+
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
 
@@ -116,15 +136,42 @@ const OrderMarkers: React.FC = () => {
       return;
     }
 
-    // Store ref values in local variables to avoid stale closures
     const map = mapRef.current;
     const currentMarkers = markersRef.current;
 
-    // Create a group for all order markers
-    const markerGroup = new H.map.Group();
+    // Get current order IDs
+    const currentOrderIds = new Set(activeOrders.map((order) => order.id));
+    const existingOrderIds = new Set(currentMarkers.keys());
 
-    // Create markers for each active order
+    // Remove markers for orders that no longer exist
+    existingOrderIds.forEach((orderId) => {
+      if (!currentOrderIds.has(orderId)) {
+        const marker = currentMarkers.get(orderId);
+        if (marker) {
+          // Cleanup tooltip
+          const tooltip = marker._tooltip;
+          if (tooltip) {
+            try {
+              map.removeObject(tooltip);
+            } catch (error) {
+              console.warn("Failed to cleanup tooltip:", error);
+            }
+            delete marker._tooltip;
+          }
+          // Remove marker from map
+          map.removeObject(marker);
+          currentMarkers.delete(orderId);
+        }
+      }
+    });
+
+    // Add markers for new orders only
     activeOrders.forEach((order: Order) => {
+      // Skip if marker already exists
+      if (currentMarkers.has(order.id)) {
+        return;
+      }
+
       // Create marker with order information
       const marker = new H.map.Marker({
         lat: order.location.lat,
@@ -230,58 +277,16 @@ const OrderMarkers: React.FC = () => {
         }
       });
 
-      markerGroup.addObject(marker);
+      // Add marker directly to map (no group needed for incremental updates)
+      map.addObject(marker);
     });
 
-    // Add the group to the map
-    map.addObject(markerGroup);
-
-    // Cleanup function
-    return () => {
-      // Use the local variables captured at the start of the effect
-      // Clean up all tooltips before removing markers
-      currentMarkers.forEach((marker) => {
-        const tooltip = marker._tooltip;
-        if (tooltip) {
-          try {
-            map.removeObject(tooltip);
-          } catch (error) {
-            // Silently ignore cleanup errors
-            console.warn("Failed to cleanup tooltip:", error);
-          }
-          delete marker._tooltip;
-        }
-      });
-      map.removeObject(markerGroup);
-      // Clear the markers reference
-      currentMarkers.clear();
-    };
+    // No cleanup function needed - markers persist across renders
+    // They're only removed when their order is removed (above)
   }, [isReady, mapRef, activeOrders, setHighlightedOrderId]);
 
-  // Effect to handle context changes and update marker highlights
-  useEffect(() => {
-    if (!isReady || !mapRef.current) return;
-
-    // Check if highlighted order still exists
-    if (highlightedOrderId && !markersRef.current.has(highlightedOrderId)) {
-      // If highlighted order no longer exists, clear the highlight
-      localHighlightedRef.current = null;
-      return;
-    }
-
-    // Update all markers based on highlightedOrderId
-    markersRef.current.forEach((marker, orderId) => {
-      // Use stored icons instead of recreating them
-      const originalIcon = marker._originalIcon;
-      const highlightedIcon = marker._highlightedIcon;
-
-      if (!originalIcon || !highlightedIcon) return;
-
-      // Check if this marker should be highlighted
-      const shouldHighlight = highlightedOrderId === orderId;
-      marker.setIcon(shouldHighlight ? highlightedIcon : originalIcon);
-    });
-  }, [highlightedOrderId, isReady, mapRef]);
+  // Note: Markers are now managed incrementally - only added/removed when orders change
+  // No more destroying and recreating all markers on every render
 
   return null; // This component doesn't render anything visible
 };
