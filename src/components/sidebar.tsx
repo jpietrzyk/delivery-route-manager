@@ -129,7 +129,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                   : isHighlighted
                   ? "#d1fae5"
                   : "transparent",
-                transition: "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                transition:
+                  "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
               }}
             >
               <input
@@ -216,9 +217,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
 
   return (
     <div style={sidebarStyle} className={className}>
-        {/* Header */}
-        <div
-          style={{
+      {/* Header */}
+      <div
+        style={{
           height: "64px",
           borderBottom: "1px solid #f0f0f0",
           padding: "0 16px",
@@ -243,10 +244,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                 fontSize: "14px",
               }}
             >
-              P
+              🚚
             </div>
             <h2 style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>
-              PFS Maps
+              Delivery Plan
             </h2>
           </div>
         )}
@@ -283,14 +284,14 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                   gap: "8px",
                 }}
               >
-                📋 Active Orders
+                🚚 Delivery Route
               </span>
             </div>
             <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="active-orders">
                 {(provided, snapshot) => (
                   <ItemGroup
-                    className="gap-1 max-h-[calc(50vh-120px)] overflow-y-auto"
+                    className="gap-1 max-h-[calc(100vh-200px)] overflow-y-auto"
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     style={{
@@ -308,38 +309,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                 )}
               </Droppable>
             </DragDropContext>
-            {inactiveOrders.length > 0 && (
-              <>
-                <div style={{ marginTop: "16px", marginBottom: "8px" }}>
-                  <span
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "700",
-                      color: "#6b7280",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    Inactive Orders
-                  </span>
-                </div>
-                <ItemGroup
-                  className="gap-0.5 max-h-[calc(50vh-80px)] overflow-y-auto"
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    e.dataTransfer.dropEffect = "move";
-                  }}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    // Drop handling will be managed at individual item level or can be extended
-                  }}
-                >
-                  {inactiveOrders.map((order) => (
-                    <InactiveOrderItem key={order.id} order={order} />
-                  ))}
-                </ItemGroup>
-              </>
-            )}
           </>
         ) : (
           <div
@@ -377,36 +346,16 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           justifyContent: collapsed ? "center" : "flex-start",
         }}
       >
-        <div
-          style={{
-            width: "32px",
-            height: "32px",
-            backgroundColor: "#d1d5db",
-            color: "#374151",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "12px",
-            fontWeight: "600",
-          }}
-        >
-          JD
-        </div>
         {!collapsed && (
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, textAlign: "center" }}>
             <p
               style={{
-                fontSize: "14px",
-                fontWeight: "500",
+                fontSize: "12px",
+                color: "#6b7280",
                 margin: 0,
-                color: "#111827",
               }}
             >
-              John Doe
-            </p>
-            <p style={{ fontSize: "12px", color: "#6b7280", margin: 0 }}>
-              john.doe@profistahl.com
+              © PFS 2025
             </p>
           </div>
         )}
