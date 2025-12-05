@@ -12,15 +12,12 @@ export const MarkerHighlightProvider: React.FC<
   const [highlightedOrderId, setHighlightedOrderId] = useState<string | null>(
     null
   );
-  const [isDragging, setIsDragging] = useState(false);
 
   return (
     <MarkerHighlightContext.Provider
       value={{
         highlightedOrderId,
         setHighlightedOrderId,
-        isDragging,
-        setIsDragging,
       }}
     >
       {children}

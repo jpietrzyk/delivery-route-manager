@@ -1,6 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import type { DropResult } from "@hello-pangea/dnd";
+import React, { useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import type { Order } from "@/types/order";
 import { OrdersApi } from "@/services/ordersApi";
 import { useOrderRoute } from "@/hooks/useOrderRoute";
@@ -26,7 +41,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [isRecalculatingRoute, setIsRecalculatingRoute] = useState(false);
   const {
     addOrderToRoute,
     refreshOrders,
@@ -34,71 +48,51 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     routeOrders,
     availableOrders,
   } = useOrderRoute();
-  const {
-    highlightedOrderId,
-    setHighlightedOrderId,
-    isDragging,
-    setIsDragging,
-  } = useMarkerHighlight();
+  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
 
   // Derive active and inactive orders from availableOrders
   const activeOrders = availableOrders.filter((order) => order.active);
   const inactiveOrders = availableOrders.filter((order) => !order.active);
 
-  // Handle drag start - prevent other updates during drag
-  const handleDragStart = () => {
-    setIsDragging(true);
+  // Configure dnd-kit sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px movement before drag starts
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Handle drag start
+  const handleDragStart = (event: DragStartEvent) => {
     setHighlightedOrderId(null); // Clear any highlights during drag
   };
 
-  // Handle drag end for reordering active orders
-  const handleDragEnd = (result: DropResult) => {
-    // Always reset dragging state first, regardless of the result
-    setIsDragging(false);
+  // Handle drag end for reordering
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-    // If dropped outside the list or no destination, just exit
-    if (!result.destination) {
+    if (!over || active.id === over.id) {
       return;
     }
 
-    const sourceIndex = result.source.index;
-    const destinationIndex = result.destination.index;
+    const oldIndex = routeOrders.findIndex((order) => order.id === active.id);
+    const newIndex = routeOrders.findIndex((order) => order.id === over.id);
 
-    // If dropped in the same position, no need to update
-    if (sourceIndex === destinationIndex) {
-      return;
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const newRouteOrders = arrayMove(routeOrders, oldIndex, newIndex);
+      setRouteOrders(newRouteOrders);
     }
-
-    // Reorder routeOrders directly (not activeOrders)
-    const newRouteOrders = Array.from(routeOrders);
-    const [reorderedItem] = newRouteOrders.splice(sourceIndex, 1);
-    newRouteOrders.splice(destinationIndex, 0, reorderedItem);
-
-    // Lock drag-and-drop while route is recalculating
-    setIsRecalculatingRoute(true);
-
-    // Update route orders with the new sequence
-    setRouteOrders(newRouteOrders);
-
-    // Unlock after route calculation with a small delay for rendering
-    setTimeout(() => {
-      setIsRecalculatingRoute(false);
-    }, 500);
   };
-
-  // Remove the fetchOrders function - we now use availableOrders from context
-  // Remove the useEffect that called fetchOrders - orders come from context
 
   // Handle order state change (checkbox toggle)
   const handleOrderStateChange = async (
     order: Order,
     newActiveState: boolean
   ) => {
-    // Prevent checkbox changes during drag
-    if (isDragging) {
-      return;
-    }
-
     try {
       // Update the order status in the API
       await OrdersApi.updateOrderActiveStatus(order.id, newActiveState);
@@ -115,72 +109,63 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     }
   };
 
-  // Order Item Component for Active Orders
-  const OrderItem = ({ order, index }: { order: Order; index: number }) => {
+  // Order Item Component for Active Orders using dnd-kit
+  const OrderItem = ({ order }: { order: Order }) => {
     const isHighlighted = highlightedOrderId === order.id;
 
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: order.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
     return (
-      <Draggable
-        draggableId={order.id}
-        index={index}
-        isDragDisabled={isRecalculatingRoute}
-      >
-        {(provided, snapshot) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            style={{
-              ...provided.draggableProps.style,
-              opacity: snapshot.isDragging ? 0.8 : 1,
+      <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        <Item
+          onMouseEnter={() => setHighlightedOrderId(order.id)}
+          onMouseLeave={() => setHighlightedOrderId(null)}
+          variant="default"
+          size="sm"
+          style={{
+            cursor: "move",
+            padding: "6px 10px",
+            borderBottom: "1px solid #f0f0f0",
+            backgroundColor: isDragging
+              ? "#e0f2fe"
+              : isHighlighted
+              ? "#d1fae5"
+              : "transparent",
+            transition: "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={true}
+            onChange={(e) => {
+              e.stopPropagation();
+              handleOrderStateChange(order, false);
             }}
-          >
-            <Item
-              onMouseEnter={() => {
-                // Don't update highlights during or immediately after drag
-                if (!isDragging && !isRecalculatingRoute) {
-                  setHighlightedOrderId(order.id);
-                }
-              }}
-              onMouseLeave={() => {
-                // Don't update highlights during or immediately after drag
-                if (!isDragging && !isRecalculatingRoute) {
-                  setHighlightedOrderId(null);
-                }
-              }}
-              variant="default"
-              size="sm"
-              style={{
-                cursor: "move",
-                padding: "6px 10px",
-                borderBottom: "1px solid #f0f0f0",
-                backgroundColor: snapshot.isDragging
-                  ? "#e0f2fe"
-                  : isHighlighted
-                  ? "#d1fae5"
-                  : "transparent",
-                transition:
-                  "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={true}
-                onChange={() => handleOrderStateChange(order, false)}
-                className="h-4 w-4 shrink-0 cursor-pointer"
-              />
-              <ItemContent className="flex-1">
-                <ItemTitle className="text-xs font-semibold text-foreground">
-                  {trimCustomerName(order.customer)}
-                </ItemTitle>
-                <ItemDescription className="text-xs text-muted-foreground font-medium">
-                  {order.name.slice(0, 40)}
-                </ItemDescription>
-              </ItemContent>
-            </Item>
-          </div>
-        )}
-      </Draggable>
+            className="h-4 w-4 shrink-0 cursor-pointer"
+          />
+          <ItemContent className="flex-1">
+            <ItemTitle className="text-xs font-semibold text-foreground">
+              {trimCustomerName(order.customer)}
+            </ItemTitle>
+            <ItemDescription className="text-xs text-muted-foreground font-medium">
+              {order.name.slice(0, 40)}
+            </ItemDescription>
+          </ItemContent>
+        </Item>
+      </div>
     );
   };
 
@@ -317,34 +302,23 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                 🚚 Delivery Route
               </span>
             </div>
-            <DragDropContext
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <Droppable
-                droppableId="active-orders"
-                isDropDisabled={isRecalculatingRoute}
+              <SortableContext
+                items={routeOrders.map((order) => order.id)}
+                strategy={verticalListSortingStrategy}
               >
-                {(provided, snapshot) => (
-                  <ItemGroup
-                    className="gap-1 max-h-[calc(100vh-200px)] overflow-y-auto"
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    style={{
-                      backgroundColor: snapshot.isDraggingOver
-                        ? "#f0f9ff"
-                        : "transparent",
-                      transition: "background-color 0.2s ease",
-                    }}
-                  >
-                    {routeOrders.map((order, index) => (
-                      <OrderItem key={order.id} order={order} index={index} />
-                    ))}
-                    {provided.placeholder}
-                  </ItemGroup>
-                )}
-              </Droppable>
-            </DragDropContext>
+                <ItemGroup className="gap-1 max-h-[calc(100vh-200px)] overflow-y-auto">
+                  {routeOrders.map((order) => (
+                    <OrderItem key={order.id} order={order} />
+                  ))}
+                </ItemGroup>
+              </SortableContext>
+            </DndContext>
           </>
         ) : (
           <div
