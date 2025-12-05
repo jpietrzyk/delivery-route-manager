@@ -27,6 +27,11 @@ import {
   ItemTitle,
   ItemDescription,
 } from "@/components/ui/item";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 // Utility function to trim customer names
 const trimCustomerName = (name: string, maxLength: number = 15): string => {
@@ -129,56 +134,116 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
       opacity: isDragging ? 0.5 : 1,
     };
 
+    // Helper to format status color
+    const getStatusColor = (status: Order["status"]) => {
+      switch (status) {
+        case "pending":
+          return { bg: "#fef3c7", text: "#92400e" };
+        case "in-progress":
+          return { bg: "#dbeafe", text: "#1e40af" };
+        case "completed":
+          return { bg: "#d1fae5", text: "#065f46" };
+        case "cancelled":
+          return { bg: "#fee2e2", text: "#991b1b" };
+        default:
+          return { bg: "#f3f4f6", text: "#374151" };
+      }
+    };
+
+    const statusColor = getStatusColor(order.status);
+
     return (
-      <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-        <Item
-          onMouseEnter={() => {
-            setHighlightedOrderId(order.id);
-            // Call the ref function directly (no re-renders!)
-            if (highlightMarkerRef.current) {
-              highlightMarkerRef.current(order.id);
-            }
-          }}
-          onMouseLeave={() => {
-            setHighlightedOrderId(null);
-            // Clear marker highlight
-            if (highlightMarkerRef.current) {
-              highlightMarkerRef.current(null);
-            }
-          }}
-          variant="default"
-          size="sm"
-          style={{
-            cursor: "move",
-            padding: "6px 10px",
-            borderBottom: "1px solid #f0f0f0",
-            backgroundColor: isDragging
-              ? "#e0f2fe"
-              : isHighlighted
-              ? "#d1fae5"
-              : "transparent",
-            transition: "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
-        >
-          <input
-            type="checkbox"
-            checked={true}
-            onChange={(e) => {
-              e.stopPropagation();
-              handleOrderStateChange(order, false);
-            }}
-            className="h-4 w-4 shrink-0 cursor-pointer"
-          />
-          <ItemContent className="flex-1">
-            <ItemTitle className="text-xs font-semibold text-foreground">
-              {trimCustomerName(order.customer)}
-            </ItemTitle>
-            <ItemDescription className="text-xs text-muted-foreground font-medium">
-              {order.name.slice(0, 40)}
-            </ItemDescription>
-          </ItemContent>
-        </Item>
-      </div>
+      <Tooltip open={isHighlighted && !isDragging}>
+        <TooltipTrigger asChild>
+          <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+            <Item
+              onMouseEnter={() => {
+                setHighlightedOrderId(order.id);
+                // Call the ref function directly (no re-renders!)
+                if (highlightMarkerRef.current) {
+                  highlightMarkerRef.current(order.id);
+                }
+              }}
+              onMouseLeave={() => {
+                setHighlightedOrderId(null);
+                // Clear marker highlight
+                if (highlightMarkerRef.current) {
+                  highlightMarkerRef.current(null);
+                }
+              }}
+              variant="default"
+              size="sm"
+              style={{
+                cursor: "move",
+                padding: "6px 10px",
+                borderBottom: "1px solid #f0f0f0",
+                backgroundColor: isDragging
+                  ? "#e0f2fe"
+                  : isHighlighted
+                  ? "#d1fae5"
+                  : "transparent",
+                transition:
+                  "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={true}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  handleOrderStateChange(order, false);
+                }}
+                className="h-4 w-4 shrink-0 cursor-pointer"
+              />
+              <ItemContent className="flex-1">
+                <ItemTitle className="text-xs font-semibold text-foreground">
+                  {trimCustomerName(order.customer)}
+                </ItemTitle>
+                <ItemDescription className="text-xs text-muted-foreground font-medium">
+                  {order.name.slice(0, 40)}
+                </ItemDescription>
+              </ItemContent>
+            </Item>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="left" className="w-80 p-4 text-sm">
+          <div className="space-y-2">
+            <div className="font-bold text-base">{order.name}</div>
+            <div className="text-muted-foreground">
+              <strong>Customer:</strong> {order.customer}
+            </div>
+            <div className="flex items-center gap-2">
+              <strong>Status:</strong>
+              <span
+                className="px-2 py-0.5 rounded-full text-xs font-bold"
+                style={{
+                  backgroundColor: statusColor.bg,
+                  color: statusColor.text,
+                }}
+              >
+                {order.status.toUpperCase()}
+              </span>
+            </div>
+            <div>
+              <strong>Priority:</strong> {order.priority.toUpperCase()}
+            </div>
+            <div className="text-green-600">
+              <strong>📍 Location:</strong> {order.location.lat.toFixed(4)},{" "}
+              {order.location.lng.toFixed(4)}
+            </div>
+            {order.totalAmount && (
+              <div>
+                <strong>Total:</strong> €{order.totalAmount.toLocaleString()}
+              </div>
+            )}
+            {order.comment && (
+              <div className="mt-2 pt-2 border-t text-muted-foreground italic">
+                {order.comment}
+              </div>
+            )}
+          </div>
+        </TooltipContent>
+      </Tooltip>
     );
   };
 
