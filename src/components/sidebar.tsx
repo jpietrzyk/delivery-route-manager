@@ -140,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
             {trimCustomerName(order.customer)}
           </ItemTitle>
           <ItemDescription className="text-xs text-muted-foreground font-medium">
-            {order.name.slice(0, 15)}
+            {order.name.slice(0, 40)}
           </ItemDescription>
         </ItemContent>
       </Item>
