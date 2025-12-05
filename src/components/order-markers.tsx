@@ -1,9 +1,9 @@
 // src/components/OrderMarkers.tsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useHereMap } from "@/hooks/useHereMap";
-import { OrdersApi } from "@/services/ordersApi";
 import type { Order } from "@/types/order";
 import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
+import { useOrderRoute } from "@/hooks/useOrderRoute";
 import type { MapMarker } from "@/types/here-maps";
 import type { HereMapsUI } from "@/types/here-maps";
 
@@ -94,56 +94,17 @@ const createSvgIcon = (
 const OrderMarkers: React.FC = () => {
   const { isReady, mapRef } = useHereMap();
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
-  const [orders, setOrders] = useState<Order[]>([]);
 
   // Store references to markers by order ID
   const markersRef = useRef<Map<string, MapMarker>>(new Map());
   // Store local highlighted state for instant feedback without context delay
   const localHighlightedRef = useRef<string | null>(null);
-  // Track previous order count to detect when new orders are added
-  const prevOrderCountRef = useRef<number>(0);
 
-  // Store previous orders to detect actual changes
-  const prevOrdersRef = useRef<Order[]>([]);
+  // Get orders directly from the shared context - no more polling!
+  const { availableOrders } = useOrderRoute();
 
-  // Initial fetch on mount and poll for updates
-  useEffect(() => {
-    const fetchOrdersAndUpdate = async () => {
-      try {
-        const fetchedOrders = await OrdersApi.getOrders();
-        // Only show markers for active orders
-        const activeOrders = fetchedOrders.filter((order) => order.active);
-
-        // Only update if orders actually changed (avoid unnecessary re-renders)
-        const ordersChanged =
-          activeOrders.length !== prevOrdersRef.current.length ||
-          activeOrders.some(
-            (order) =>
-              !prevOrdersRef.current.find((prev) => prev.id === order.id)
-          ) ||
-          prevOrdersRef.current.some(
-            (order) => !activeOrders.find((curr) => curr.id === order.id)
-          );
-
-        if (ordersChanged) {
-          prevOrdersRef.current = activeOrders;
-          setOrders(activeOrders);
-          // Clear highlight when orders change to prevent stale references
-          localHighlightedRef.current = null;
-        }
-      } catch (error) {
-        console.error("Failed to fetch orders:", error);
-      }
-    };
-
-    // Fetch on mount
-    fetchOrdersAndUpdate();
-
-    // Poll for updates every 5 seconds to detect when orders are activated/deactivated
-    const pollInterval = setInterval(fetchOrdersAndUpdate, 5000);
-
-    return () => clearInterval(pollInterval);
-  }, []);
+  // Only show markers for active orders
+  const activeOrders = availableOrders.filter((order) => order.active);
 
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
@@ -162,8 +123,8 @@ const OrderMarkers: React.FC = () => {
     // Create a group for all order markers
     const markerGroup = new H.map.Group();
 
-    // Create markers for each order
-    orders.forEach((order) => {
+    // Create markers for each active order
+    activeOrders.forEach((order: Order) => {
       // Create marker with order information
       const marker = new H.map.Marker({
         lat: order.location.lat,
@@ -275,17 +236,6 @@ const OrderMarkers: React.FC = () => {
     // Add the group to the map
     map.addObject(markerGroup);
 
-    // Only center map when new orders are added (not on updates to existing orders)
-    if (orders.length > prevOrderCountRef.current && orders.length > 0) {
-      const boundingBox = markerGroup.getBoundingBox();
-      map.getViewModel().setLookAtData({
-        bounds: boundingBox,
-      });
-    }
-
-    // Update the previous order count
-    prevOrderCountRef.current = orders.length;
-
     // Cleanup function
     return () => {
       // Use the local variables captured at the start of the effect
@@ -306,7 +256,7 @@ const OrderMarkers: React.FC = () => {
       // Clear the markers reference
       currentMarkers.clear();
     };
-  }, [isReady, mapRef, orders, setHighlightedOrderId]);
+  }, [isReady, mapRef, activeOrders, setHighlightedOrderId]);
 
   // Effect to handle context changes and update marker highlights
   useEffect(() => {

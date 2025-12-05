@@ -230,14 +230,8 @@ const HereMultiSegmentRouting: React.FC = () => {
       if (mapRef.current) {
         mapRef.current.addObject(routeGroup);
 
-        // Fit map to route
-        try {
-          mapRef.current.getViewModel().setLookAtData({
-            bounds: routeGroup.getBoundingBox(),
-          });
-        } catch (error) {
-          console.warn("Could not fit map to route bounds:", error);
-        }
+        // Don't auto-zoom to fit route - preserve user's zoom level
+        // The initial zoom is set when markers are first loaded
       }
 
       console.log("Multi-segment route completed successfully");

@@ -5,6 +5,7 @@ import {
   OrderRouteContext,
   type OrderRouteContextType,
 } from "./OrderRouteContext";
+import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 
 export const OrderRouteProvider: React.FC<{
   children: React.ReactNode;
@@ -14,6 +15,9 @@ export const OrderRouteProvider: React.FC<{
   const [isCalculatingRoute, setIsCalculatingRoute] = useState<boolean>(false);
   const [isLoadingOrders, setIsLoadingOrders] = useState<boolean>(true);
   const [ordersError, setOrdersError] = useState<string | null>(null);
+
+  // Get drag state to prevent updates during drag operations
+  const { isDragging } = useMarkerHighlight();
 
   // Load orders from the API on component mount
   useEffect(() => {
@@ -97,6 +101,11 @@ export const OrderRouteProvider: React.FC<{
 
   // Initialize route with active orders when orders are loaded
   useEffect(() => {
+    // Don't initialize during an active drag operation
+    if (isDragging) {
+      return;
+    }
+
     if (
       !isLoadingOrders &&
       availableOrders.length > 0 &&
@@ -109,10 +118,16 @@ export const OrderRouteProvider: React.FC<{
     availableOrders.length,
     routeOrders.length,
     initializeRouteWithAllOrders,
+    isDragging,
   ]);
 
   // Update route orders when available orders change (filter out inactive orders)
   useEffect(() => {
+    // Don't update routeOrders during an active drag operation
+    if (isDragging) {
+      return;
+    }
+
     if (!isLoadingOrders && availableOrders.length > 0) {
       const activeOrders = availableOrders.filter((order) => order.active);
       setRouteOrders((currentRouteOrders) => {
@@ -130,7 +145,7 @@ export const OrderRouteProvider: React.FC<{
         return currentRouteOrders;
       });
     }
-  }, [availableOrders, isLoadingOrders]);
+  }, [availableOrders, isLoadingOrders, isDragging]);
 
   const contextValue: OrderRouteContextType = {
     routeOrders,

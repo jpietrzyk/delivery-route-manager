@@ -26,73 +26,89 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [activeOrders, setActiveOrders] = useState<Order[]>([]);
-  const [inactiveOrders, setInactiveOrders] = useState<Order[]>([]);
-  const { addOrderToRoute, refreshOrders, setRouteOrders, routeOrders } =
-    useOrderRoute();
-  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
+  const [isRecalculatingRoute, setIsRecalculatingRoute] = useState(false);
+  const {
+    addOrderToRoute,
+    refreshOrders,
+    setRouteOrders,
+    routeOrders,
+    availableOrders,
+  } = useOrderRoute();
+  const {
+    highlightedOrderId,
+    setHighlightedOrderId,
+    isDragging,
+    setIsDragging,
+  } = useMarkerHighlight();
+
+  // Derive active and inactive orders from availableOrders
+  const activeOrders = availableOrders.filter((order) => order.active);
+  const inactiveOrders = availableOrders.filter((order) => !order.active);
+
+  // Handle drag start - prevent other updates during drag
+  const handleDragStart = () => {
+    setIsDragging(true);
+    setHighlightedOrderId(null); // Clear any highlights during drag
+  };
 
   // Handle drag end for reordering active orders
   const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
+    // Always reset dragging state first, regardless of the result
+    setIsDragging(false);
+
+    // If dropped outside the list or no destination, just exit
+    if (!result.destination) {
+      return;
+    }
 
     const sourceIndex = result.source.index;
     const destinationIndex = result.destination.index;
 
-    if (sourceIndex === destinationIndex) return;
+    // If dropped in the same position, no need to update
+    if (sourceIndex === destinationIndex) {
+      return;
+    }
 
-    const newActiveOrders = Array.from(activeOrders);
-    const [reorderedItem] = newActiveOrders.splice(sourceIndex, 1);
-    newActiveOrders.splice(destinationIndex, 0, reorderedItem);
+    // Reorder routeOrders directly (not activeOrders)
+    const newRouteOrders = Array.from(routeOrders);
+    const [reorderedItem] = newRouteOrders.splice(sourceIndex, 1);
+    newRouteOrders.splice(destinationIndex, 0, reorderedItem);
 
-    setActiveOrders(newActiveOrders);
+    // Lock drag-and-drop while route is recalculating
+    setIsRecalculatingRoute(true);
 
-    // Update route order to match new sidebar order
-    const newRouteOrders = newActiveOrders.filter((order) =>
-      routeOrders.some((routeOrder) => routeOrder.id === order.id)
-    );
+    // Update route orders with the new sequence
     setRouteOrders(newRouteOrders);
+
+    // Unlock after route calculation with a small delay for rendering
+    setTimeout(() => {
+      setIsRecalculatingRoute(false);
+    }, 500);
   };
 
-  // Fetch orders on mount
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const fetchedOrders = await OrdersApi.getAllOrders();
-        const active = fetchedOrders.filter((order) => order.active);
-        const inactive = fetchedOrders.filter((order) => !order.active);
-        setActiveOrders(active);
-        setInactiveOrders(inactive);
-      } catch (error) {
-        console.error("Failed to fetch orders:", error);
-      }
-    };
-    fetchOrders();
-  }, []);
+  // Remove the fetchOrders function - we now use availableOrders from context
+  // Remove the useEffect that called fetchOrders - orders come from context
 
   // Handle order state change (checkbox toggle)
   const handleOrderStateChange = async (
     order: Order,
     newActiveState: boolean
   ) => {
+    // Prevent checkbox changes during drag
+    if (isDragging) {
+      return;
+    }
+
     try {
       // Update the order status in the API
       await OrdersApi.updateOrderActiveStatus(order.id, newActiveState);
 
       if (newActiveState) {
-        // Move from inactive to active
-        setInactiveOrders((prev) => prev.filter((o) => o.id !== order.id));
-        setActiveOrders((prev) => [...prev, { ...order, active: true }]);
         // Add to route
         addOrderToRoute({ ...order, active: true });
-      } else {
-        // Move from active to inactive
-        setActiveOrders((prev) => prev.filter((o) => o.id !== order.id));
-        setInactiveOrders((prev) => [...prev, { ...order, active: false }]);
-        // Remove from route by refreshing orders (routeOrders will filter out inactive)
       }
 
-      // Refresh the OrderRouteProvider's orders to update routeOrders
+      // Refresh orders from API to update availableOrders in context
       await refreshOrders();
     } catch (error) {
       console.error("Failed to update order state:", error);
@@ -104,7 +120,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     const isHighlighted = highlightedOrderId === order.id;
 
     return (
-      <Draggable draggableId={order.id} index={index}>
+      <Draggable
+        draggableId={order.id}
+        index={index}
+        isDragDisabled={isRecalculatingRoute}
+      >
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
@@ -116,8 +136,18 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
             }}
           >
             <Item
-              onMouseEnter={() => setHighlightedOrderId(order.id)}
-              onMouseLeave={() => setHighlightedOrderId(null)}
+              onMouseEnter={() => {
+                // Don't update highlights during or immediately after drag
+                if (!isDragging && !isRecalculatingRoute) {
+                  setHighlightedOrderId(order.id);
+                }
+              }}
+              onMouseLeave={() => {
+                // Don't update highlights during or immediately after drag
+                if (!isDragging && !isRecalculatingRoute) {
+                  setHighlightedOrderId(null);
+                }
+              }}
               variant="default"
               size="sm"
               style={{
@@ -287,8 +317,14 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                 🚚 Delivery Route
               </span>
             </div>
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="active-orders">
+            <DragDropContext
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
+              <Droppable
+                droppableId="active-orders"
+                isDropDisabled={isRecalculatingRoute}
+              >
                 {(provided, snapshot) => (
                   <ItemGroup
                     className="gap-1 max-h-[calc(100vh-200px)] overflow-y-auto"
@@ -301,7 +337,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                       transition: "background-color 0.2s ease",
                     }}
                   >
-                    {activeOrders.map((order, index) => (
+                    {routeOrders.map((order, index) => (
                       <OrderItem key={order.id} order={order} index={index} />
                     ))}
                     {provided.placeholder}
