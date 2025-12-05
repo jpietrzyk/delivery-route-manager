@@ -26,7 +26,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [inactiveOrders, setInactiveOrders] = useState<Order[]>([]);
-  const { addOrderToRoute, refreshOrders, setRouteOrders, routeOrders } = useOrderRoute();
+  const { addOrderToRoute, refreshOrders, setRouteOrders, routeOrders } =
+    useOrderRoute();
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
 
   // Fetch orders on mount
@@ -98,11 +99,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           const [draggedOrder] = newActiveOrders.splice(dragData.index, 1);
           newActiveOrders.splice(index, 0, draggedOrder);
           setActiveOrders(newActiveOrders);
-          
+
           // Update route order to match new sidebar order
           // Rebuild the route to only include active orders in the new order
-          const newRouteOrders = newActiveOrders.filter(order => 
-            routeOrders.some(routeOrder => routeOrder.id === order.id)
+          const newRouteOrders = newActiveOrders.filter((order) =>
+            routeOrders.some((routeOrder) => routeOrder.id === order.id)
           );
           setRouteOrders(newRouteOrders);
         }
