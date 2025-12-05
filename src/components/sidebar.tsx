@@ -48,7 +48,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     routeOrders,
     availableOrders,
   } = useOrderRoute();
-  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
+  const { highlightedOrderId, setHighlightedOrderId, highlightMarkerRef } =
+    useMarkerHighlight();
 
   // Derive active and inactive orders from availableOrders
   const activeOrders = availableOrders.filter((order) => order.active);
@@ -131,8 +132,20 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     return (
       <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
         <Item
-          onMouseEnter={() => setHighlightedOrderId(order.id)}
-          onMouseLeave={() => setHighlightedOrderId(null)}
+          onMouseEnter={() => {
+            setHighlightedOrderId(order.id);
+            // Call the ref function directly (no re-renders!)
+            if (highlightMarkerRef.current) {
+              highlightMarkerRef.current(order.id);
+            }
+          }}
+          onMouseLeave={() => {
+            setHighlightedOrderId(null);
+            // Clear marker highlight
+            if (highlightMarkerRef.current) {
+              highlightMarkerRef.current(null);
+            }
+          }}
           variant="default"
           size="sm"
           style={{
