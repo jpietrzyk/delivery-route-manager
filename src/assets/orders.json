@@ -14,7 +14,8 @@
     "location": {
       "lat": 47.097999,
       "lng": 18.580731
-    }
+    },
+    "deliveryId": "DEL-001"
   },
   {
     "id": "PROD-002",
@@ -31,7 +32,8 @@
     "location": {
       "lat": 46.342652,
       "lng": 20.039065
-    }
+    },
+    "deliveryId": "DEL-001"
   },
   {
     "id": "PROD-003",
@@ -48,7 +50,8 @@
     "location": {
       "lat": 47.702565,
       "lng": 17.753661
-    }
+    },
+    "deliveryId": "DEL-001"
   },
   {
     "id": "PROD-004",
@@ -65,7 +68,8 @@
     "location": {
       "lat": 47.347772,
       "lng": 19.787069
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-005",
@@ -82,7 +86,8 @@
     "location": {
       "lat": 47.021006,
       "lng": 17.961157
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-006",
@@ -90,7 +95,7 @@
     "comment": "3x2 kojec dla psa 6 #",
     "status": "pending",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Zátrok Gyula",
@@ -99,7 +104,8 @@
     "location": {
       "lat": 47.242874,
       "lng": 19.620719
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-007",
@@ -107,7 +113,7 @@
     "comment": "4,5x5,5 dwuspad brama uchylna szeroki panel 3,5 m szeroka pośrodku + okucia przód dachu CAŁY GARAŻ CIEMNY ORZECH",
     "status": "pending",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Popovics Gyula",
@@ -116,7 +122,8 @@
     "location": {
       "lat": 46.957207,
       "lng": 20.243918
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-008",
@@ -124,7 +131,7 @@
     "comment": "3x6 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
     "status": "in-progress",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "FIRMA",
@@ -132,8 +139,9 @@
     "items": [],
     "location": {
       "lat": 46.197248,
-      "lng": 18.724730
-    }
+      "lng": 18.72473
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-009",
@@ -141,7 +149,7 @@
     "comment": "7x6 dwuspad 2 x brama uchylna szeroki panel + drzwiczki 0,90 szeroki panel na prawym boku z przodu + ZMF + 2 x okno 80x50 na lewym i prawym boku z tyłu 1 m od tylnych słupków + okucia przód dachu + 4 x narożne + rynny + 2 X AUTOMAT CAŁY GARAŻ PANEL POZIOMY ZŁOTY DĄB",
     "status": "in-progress",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "FIRMA",
@@ -150,7 +158,8 @@
     "location": {
       "lat": 47.650062,
       "lng": 19.125517
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-010",
@@ -158,7 +167,7 @@
     "comment": "3x5 spad do tyłu 2 klasa",
     "status": "pending",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Benedek Marton",
@@ -167,7 +176,8 @@
     "location": {
       "lat": 47.720417,
       "lng": 19.547765
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-011",
@@ -175,7 +185,7 @@
     "comment": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
     "status": "pending",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Törő István",
@@ -184,7 +194,8 @@
     "location": {
       "lat": 47.991272,
       "lng": 21.780276
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-012",
@@ -192,16 +203,17 @@
     "comment": "3x2 kojec dla psa 2 #",
     "status": "in-progress",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Vigh Norbert",
     "totalAmount": 0,
     "items": [],
     "location": {
-      "lat": 47.217300,
-      "lng": 16.592350
-    }
+      "lat": 47.2173,
+      "lng": 16.59235
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-013",
@@ -209,7 +221,7 @@
     "comment": "3x2 kojec dla psa 4 #",
     "status": "pending",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Mészáros László",
@@ -218,7 +230,8 @@
     "location": {
       "lat": 47.607439,
       "lng": 20.280129
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-014",
@@ -226,7 +239,7 @@
     "comment": "3x2 kojec dla psa 2 #",
     "status": "in-progress",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Mező Péter",
@@ -235,7 +248,8 @@
     "location": {
       "lat": 48.040709,
       "lng": 18.909381
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-015",
@@ -243,16 +257,17 @@
     "comment": "4,5 x 6 dwuspad 2 skrzydłowa brama po prawo po lewo drzwiczki 0,90 GARAŻ RAL 8017 BRAMA + DRZWICZKI RAL 1002",
     "status": "pending",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Szaki Krisztián",
     "totalAmount": 0,
     "items": [],
     "location": {
-      "lat": 47.743110,
+      "lat": 47.74311,
       "lng": 19.073521
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-016",
@@ -260,7 +275,7 @@
     "comment": "3x2 kojec dla psa 2 #",
     "status": "in-progress",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Molnar Ferenc",
@@ -269,7 +284,8 @@
     "location": {
       "lat": 46.628914,
       "lng": 16.544321
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-017",
@@ -277,7 +293,7 @@
     "comment": "3,5x5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
     "status": "in-progress",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Nyéki Tibor",
@@ -286,7 +302,8 @@
     "location": {
       "lat": 47.383039,
       "lng": 19.356908
-    }
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-018",
@@ -294,7 +311,7 @@
     "comment": "3x5 spad do tyłu 2 klasa",
     "status": "pending",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Bősze Cintia",
@@ -302,8 +319,9 @@
     "items": [],
     "location": {
       "lat": 46.625734,
-      "lng": 18.655410
-    }
+      "lng": 18.65541
+    },
+    "deliveryId": null
   },
   {
     "id": "PROD-019",
@@ -311,7 +329,7 @@
     "comment": "3x5 spad do tyłu 2 klasa",
     "status": "in-progress",
     "priority": "medium",
-    "active": false,
+    "active": true,
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "FIRMA",
@@ -320,6 +338,7 @@
     "location": {
       "lat": 47.437512,
       "lng": 21.403632
-    }
+    },
+    "deliveryId": null
   }
 ]

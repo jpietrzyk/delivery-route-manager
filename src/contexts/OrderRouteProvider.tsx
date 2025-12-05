@@ -71,7 +71,10 @@ export const OrderRouteProvider: React.FC<{
 
   const initializeRouteWithAllOrders = useCallback(() => {
     // Sort active orders by creation date as default route
-    const activeOrders = availableOrders.filter((order) => order.active);
+    // Only include orders that are assigned to a delivery (not in pool)
+    const activeOrders = availableOrders.filter(
+      (order) => order.active && order.deliveryId
+    );
     const sortedOrders = [...activeOrders].sort(
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
@@ -111,18 +114,21 @@ export const OrderRouteProvider: React.FC<{
     initializeRouteWithAllOrders,
   ]);
 
-  // Update route orders when available orders change (filter out inactive orders)
+  // Update route orders when available orders change (filter out inactive orders and pool orders)
   useEffect(() => {
     if (!isLoadingOrders && availableOrders.length > 0) {
-      const activeOrders = availableOrders.filter((order) => order.active);
+      // Only include orders that are active AND assigned to a delivery (not in pool)
+      const deliveryOrders = availableOrders.filter(
+        (order) => order.active && order.deliveryId
+      );
       setRouteOrders((currentRouteOrders) => {
-        // Only update if the active orders have actually changed
+        // Only update if the delivery orders have actually changed
         const currentActiveIds = currentRouteOrders.map((o) => o.id).sort();
-        const newActiveIds = activeOrders.map((o) => o.id).sort();
+        const newActiveIds = deliveryOrders.map((o) => o.id).sort();
 
         if (JSON.stringify(currentActiveIds) !== JSON.stringify(newActiveIds)) {
           // Sort by creation date to maintain consistent order
-          return [...activeOrders].sort(
+          return [...deliveryOrders].sort(
             (a, b) =>
               new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           );

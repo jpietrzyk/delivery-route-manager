@@ -32,29 +32,36 @@ const getStatusColor = (status: string) => {
   }
 };
 
-// Create SVG icon based on priority
+// Create SVG icon based on priority and active status
 const createSvgIcon = (
   priority: string,
   status: string,
-  isHighlighted = false
+  isHighlighted = false,
+  isActive = true
 ) => {
   let color = "#6b7280"; // default gray
   let bgColor = "#f9fafb";
 
-  // Set colors based on priority
-  switch (priority) {
-    case "high":
-      color = "#dc2626"; // red
-      bgColor = "#fee2e2";
-      break;
-    case "medium":
-      color = "#d97706"; // orange
-      bgColor = "#fed7aa";
-      break;
-    case "low":
-      color = "#059669"; // green
-      bgColor = "#d1fae5";
-      break;
+  // Inactive orders always get gray
+  if (!isActive) {
+    color = "#9ca3af";
+    bgColor = "#f3f4f6";
+  } else {
+    // Set colors based on priority for active orders
+    switch (priority) {
+      case "high":
+        color = "#dc2626"; // red
+        bgColor = "#fee2e2";
+        break;
+      case "medium":
+        color = "#d97706"; // orange
+        bgColor = "#fed7aa";
+        break;
+      case "low":
+        color = "#059669"; // green
+        bgColor = "#d1fae5";
+        break;
+    }
   }
 
   // Adjust for cancelled status
@@ -103,8 +110,9 @@ const OrderMarkers: React.FC = () => {
   // Get orders directly from the shared context - no more polling!
   const { availableOrders } = useOrderRoute();
 
-  // Only show markers for active orders
-  const activeOrders = availableOrders.filter((order) => order.active);
+  // Show markers for orders with deliveryId (assigned to delivery)
+  // Active orders get colored markers, inactive orders get gray markers
+  const deliveryOrders = availableOrders.filter((order) => order.deliveryId);
 
   // Register the highlight function directly in the ref (no re-renders!)
   useEffect(() => {
@@ -140,7 +148,7 @@ const OrderMarkers: React.FC = () => {
     const currentMarkers = markersRef.current;
 
     // Get current order IDs
-    const currentOrderIds = new Set(activeOrders.map((order) => order.id));
+    const currentOrderIds = new Set(deliveryOrders.map((order) => order.id));
     const existingOrderIds = new Set(currentMarkers.keys());
 
     // Remove markers for orders that no longer exist
@@ -166,7 +174,7 @@ const OrderMarkers: React.FC = () => {
     });
 
     // Add markers for new orders only
-    activeOrders.forEach((order: Order) => {
+    deliveryOrders.forEach((order: Order) => {
       // Skip if marker already exists
       if (currentMarkers.has(order.id)) {
         return;
@@ -224,10 +232,10 @@ const OrderMarkers: React.FC = () => {
 
       // Store original icon for highlighting
       const originalIcon = new H.map.Icon(
-        createSvgIcon(order.priority, order.status, false)
+        createSvgIcon(order.priority, order.status, false, order.active)
       );
       const highlightedIcon = new H.map.Icon(
-        createSvgIcon(order.priority, order.status, true)
+        createSvgIcon(order.priority, order.status, true, order.active)
       );
 
       // Store icons on the marker for later use
@@ -283,7 +291,7 @@ const OrderMarkers: React.FC = () => {
 
     // No cleanup function needed - markers persist across renders
     // They're only removed when their order is removed (above)
-  }, [isReady, mapRef, activeOrders, setHighlightedOrderId]);
+  }, [isReady, mapRef, deliveryOrders, setHighlightedOrderId]);
 
   // Note: Markers are now managed incrementally - only added/removed when orders change
   // No more destroying and recreating all markers on every render

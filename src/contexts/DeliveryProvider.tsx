@@ -29,12 +29,18 @@ export const DeliveryProvider: React.FC<DeliveryProviderProps> = ({
   const refreshPoolOrders = useCallback(async () => {
     try {
       const allOrders = await OrdersApi.getOrders();
+      console.log("[DeliveryProvider] All orders:", allOrders.length);
       // Filter for orders not assigned to any delivery (deliveryId is null/undefined)
       const unassigned = allOrders.filter(
         (order) =>
           !order.deliveryId &&
           order.status !== "completed" &&
           order.status !== "cancelled"
+      );
+      console.log(
+        "[DeliveryProvider] Pool orders (unassigned):",
+        unassigned.length,
+        unassigned.map((o) => o.id)
       );
       setPoolOrders(unassigned);
     } catch (error) {

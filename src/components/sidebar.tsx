@@ -101,12 +101,19 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
     newActiveState: boolean
   ) => {
     try {
-      // Update the order status in the API
-      await OrdersApi.updateOrderActiveStatus(order.id, newActiveState);
-
       if (newActiveState) {
+        // Activating: Update active status
+        await OrdersApi.updateOrderActiveStatus(order.id, true);
         // Add to route
         addOrderToRoute({ ...order, active: true });
+      } else {
+        // Deactivating: Clear both active status and deliveryId (return to pool)
+        await OrdersApi.updateOrder(order.id, {
+          active: false,
+          deliveryId: undefined,
+        });
+        // Remove from routeOrders
+        setRouteOrders(routeOrders.filter((o) => o.id !== order.id));
       }
 
       // Refresh orders from API to update availableOrders in context
