@@ -32,6 +32,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import { Toggle } from "@/components/ui/toggle";
 
 // Utility function to trim customer names
 const trimCustomerName = (name: string, maxLength: number = 15): string => {
@@ -186,15 +187,30 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
                   "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
               }}
             >
-              <input
-                type="checkbox"
-                checked={true}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  handleOrderStateChange(order, false);
+              <Toggle
+                pressed={true}
+                onPressedChange={(pressed) => {
+                  if (!pressed) {
+                    handleOrderStateChange(order, false);
+                  }
                 }}
-                className="h-4 w-4 shrink-0 cursor-pointer"
-              />
+                size="sm"
+                className="shrink-0 h-6 w-6 p-0 data-[state=on]:bg-green-500 data-[state=on]:text-white hover:bg-green-100"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </Toggle>
               <ItemContent className="flex-1">
                 <ItemTitle className="text-xs font-semibold text-foreground">
                   {trimCustomerName(order.customer)}
@@ -262,12 +278,29 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "", children }) => {
           transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <input
-          type="checkbox"
-          checked={false}
-          onChange={() => handleOrderStateChange(order, true)}
-          className="h-4 w-4 shrink-0 cursor-pointer"
-        />
+        <Toggle
+          pressed={false}
+          onPressedChange={(pressed) => {
+            if (pressed) {
+              handleOrderStateChange(order, true);
+            }
+          }}
+          size="sm"
+          className="shrink-0 h-6 w-6 p-0 data-[state=on]:bg-green-500 data-[state=on]:text-white hover:bg-green-100"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </Toggle>
         <ItemContent className="flex-1">
           <ItemTitle className="text-xs font-semibold text-muted-foreground">
             {trimCustomerName(order.customer)}
