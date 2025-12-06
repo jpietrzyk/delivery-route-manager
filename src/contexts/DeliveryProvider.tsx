@@ -68,6 +68,14 @@ export const DeliveryProvider: React.FC<DeliveryProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run on mount
 
+  // POC: Auto-select first delivery as current delivery
+  useEffect(() => {
+    if (deliveries.length > 0 && !currentDelivery) {
+      console.log('[DeliveryProvider] POC: Auto-selecting first delivery as current:', deliveries[0].id);
+      setCurrentDelivery(deliveries[0]);
+    }
+  }, [deliveries, currentDelivery]);
+
   // Create a new delivery
   const createDelivery = useCallback(
     async (delivery: Omit<Delivery, "id" | "createdAt" | "updatedAt">) => {
