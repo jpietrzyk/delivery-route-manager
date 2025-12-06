@@ -29,7 +29,7 @@ const getStatusColor = (status: string) => {
 };
 
 // Create popup content for pool order
-const createPoolOrderPopupContent = (order: Order): string => {
+const createPoolOrderPopupContent = (order: Order, orderId: string): string => {
   const statusColors = getStatusColor(order.status);
   return `
     <div style="padding: 12px; max-width: 250px; font-family: system-ui, sans-serif;">
@@ -72,8 +72,16 @@ const createPoolOrderPopupContent = (order: Order): string => {
       `
           : ""
       }
-      <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #e5e7eb; font-size: 11px; color: #6b7280;">
-        Click to assign to a delivery route
+      <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #e5e7eb;">
+        <button 
+          data-order-id="${orderId}"
+          class="assign-to-delivery-btn"
+          style="width: 100%; padding: 8px 16px; background-color: #059669; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;"
+          onmouseover="this.style.backgroundColor='#047857'"
+          onmouseout="this.style.backgroundColor='#059669'"
+        >
+          ➕ Assign to Current Delivery
+        </button>
       </div>
     </div>
   `;
@@ -95,7 +103,7 @@ const createPoolOrderPopupContent = (order: Order): string => {
  */
 const PoolOrderMarkers = () => {
   const { isReady, mapRef } = useHereMap();
-  const { poolOrders } = useDelivery();
+  const { poolOrders, currentDelivery, addOrderToDelivery } = useDelivery();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<Map<string, any>>(new Map());
 
@@ -195,49 +203,89 @@ const PoolOrderMarkers = () => {
 
         // Add click event listener to show popup
         marker.addEventListener("tap", (evt: any) => {
-          // Create popup content
-          const popupContent = createPoolOrderPopupContent(order);
-
-          // Create a simple HTML overlay popup
-          const bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
-            content: popupContent,
-          });
-
-          // Use the UI layer that was created with the map
-          // First, get or create the default UI
-          let ui = map.getUi?.();
-          if (!ui) {
-            // If getUi doesn't exist, UI was created at map init - access it differently
-            console.warn("[PoolOrderMarkers] Using fallback UI access method");
-            // Store reference to bubble on marker for manual cleanup
-            marker._bubble = bubble;
-            // Try adding as overlay element instead
-            const bubbleDiv = document.createElement("div");
-            bubbleDiv.innerHTML = popupContent;
-            bubbleDiv.style.cssText =
-              "position: absolute; background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; max-width: 300px;";
-            document.body.appendChild(bubbleDiv);
-
-            // Position it near the click
-            const pixel = map.geoToScreen(marker.getGeometry());
-            bubbleDiv.style.left = pixel.x + 20 + "px";
-            bubbleDiv.style.top = pixel.y - 100 + "px";
-
-            // Close on click outside
-            const closeHandler = () => {
-              bubbleDiv.remove();
-              document.removeEventListener("click", closeHandler);
-            };
-            setTimeout(
-              () => document.addEventListener("click", closeHandler),
-              100
-            );
-
+          // Get order data from the marker itself to avoid closure issues
+          const markerData = evt.target.getData();
+          const clickedOrder = markerData.order;
+          
+          if (!clickedOrder) {
+            console.error('[PoolOrderMarkers] No order data found on marker');
             return;
           }
+          
+          // Create popup content
+          const popupContent = createPoolOrderPopupContent(clickedOrder, clickedOrder.id);
 
-          ui.addBubble(bubble);
-          console.log("[PoolOrderMarkers] Popup opened for:", order.id);
+          // Create a simple HTML overlay popup (DOM fallback method)
+          const bubbleDiv = document.createElement("div");
+          bubbleDiv.innerHTML = popupContent;
+          bubbleDiv.style.cssText =
+            "position: absolute; background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; max-width: 300px;";
+          document.body.appendChild(bubbleDiv);
+
+          // Position it near the click
+          const pixel = map.geoToScreen(marker.getGeometry());
+          bubbleDiv.style.left = pixel.x + 20 + "px";
+          bubbleDiv.style.top = pixel.y - 100 + "px";
+
+          // Attach click handler to assignment button
+          const assignBtn = bubbleDiv.querySelector('.assign-to-delivery-btn') as HTMLButtonElement;
+          if (assignBtn) {
+            assignBtn.addEventListener('click', async (e) => {
+              e.stopPropagation(); // Prevent bubble close
+              
+              // Check if current delivery exists
+              if (!currentDelivery) {
+                alert('Please select a delivery first');
+                return;
+              }
+
+              // Disable button and show loading state
+              assignBtn.disabled = true;
+              assignBtn.textContent = '⏳ Assigning...';
+              assignBtn.style.backgroundColor = '#6b7280';
+
+              try {
+                console.log('[PoolOrderMarkers] Assigning order', clickedOrder.id, 'to delivery', currentDelivery.id);
+                
+                // Add order to current delivery
+                await addOrderToDelivery(currentDelivery.id, clickedOrder.id);
+                
+                console.log('[PoolOrderMarkers] Successfully assigned order');
+                
+                // Show success state briefly
+                assignBtn.textContent = '✓ Assigned!';
+                assignBtn.style.backgroundColor = '#10b981';
+                
+                // Close popup after short delay to show success
+                setTimeout(() => {
+                  bubbleDiv.remove();
+                  document.removeEventListener("click", closeHandler);
+                }, 500);
+              } catch (error) {
+                console.error('[PoolOrderMarkers] Failed to assign order:', error);
+                alert('Failed to assign order to delivery');
+                
+                // Restore button state
+                assignBtn.disabled = false;
+                assignBtn.textContent = '➕ Assign to Current Delivery';
+                assignBtn.style.backgroundColor = '#059669';
+              }
+            });
+          }
+
+          // Close on click outside
+          const closeHandler = (e: MouseEvent) => {
+            if (!bubbleDiv.contains(e.target as Node)) {
+              bubbleDiv.remove();
+              document.removeEventListener("click", closeHandler);
+            }
+          };
+          setTimeout(
+            () => document.addEventListener("click", closeHandler),
+            100
+          );
+
+          console.log("[PoolOrderMarkers] Popup opened for:", clickedOrder.id);
         });
 
         map.addObject(marker);
