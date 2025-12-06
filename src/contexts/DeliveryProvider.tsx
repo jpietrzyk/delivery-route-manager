@@ -71,7 +71,10 @@ export const DeliveryProvider: React.FC<DeliveryProviderProps> = ({
   // POC: Auto-select first delivery as current delivery
   useEffect(() => {
     if (deliveries.length > 0 && !currentDelivery) {
-      console.log('[DeliveryProvider] POC: Auto-selecting first delivery as current:', deliveries[0].id);
+      console.log(
+        "[DeliveryProvider] POC: Auto-selecting first delivery as current:",
+        deliveries[0].id
+      );
       setCurrentDelivery(deliveries[0]);
     }
   }, [deliveries, currentDelivery]);

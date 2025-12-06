@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useHereMap } from "@/hooks/useHereMap";
 import { useDelivery } from "@/hooks/useDelivery";
+import { useOrderRoute } from "@/hooks/useOrderRoute";
 import { mapConfig } from "@/config/map.config";
 import type { Order } from "@/types/order";
 
@@ -73,7 +74,7 @@ const createPoolOrderPopupContent = (order: Order, orderId: string): string => {
           : ""
       }
       <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #e5e7eb;">
-        <button 
+        <button
           data-order-id="${orderId}"
           class="assign-to-delivery-btn"
           style="width: 100%; padding: 8px 16px; background-color: #059669; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;"
@@ -104,6 +105,7 @@ const createPoolOrderPopupContent = (order: Order, orderId: string): string => {
 const PoolOrderMarkers = () => {
   const { isReady, mapRef } = useHereMap();
   const { poolOrders, currentDelivery, addOrderToDelivery } = useDelivery();
+  const { refreshOrders } = useOrderRoute();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<Map<string, any>>(new Map());
 
@@ -206,14 +208,17 @@ const PoolOrderMarkers = () => {
           // Get order data from the marker itself to avoid closure issues
           const markerData = evt.target.getData();
           const clickedOrder = markerData.order;
-          
+
           if (!clickedOrder) {
-            console.error('[PoolOrderMarkers] No order data found on marker');
+            console.error("[PoolOrderMarkers] No order data found on marker");
             return;
           }
-          
+
           // Create popup content
-          const popupContent = createPoolOrderPopupContent(clickedOrder, clickedOrder.id);
+          const popupContent = createPoolOrderPopupContent(
+            clickedOrder,
+            clickedOrder.id
+          );
 
           // Create a simple HTML overlay popup (DOM fallback method)
           const bubbleDiv = document.createElement("div");
@@ -228,47 +233,60 @@ const PoolOrderMarkers = () => {
           bubbleDiv.style.top = pixel.y - 100 + "px";
 
           // Attach click handler to assignment button
-          const assignBtn = bubbleDiv.querySelector('.assign-to-delivery-btn') as HTMLButtonElement;
+          const assignBtn = bubbleDiv.querySelector(
+            ".assign-to-delivery-btn"
+          ) as HTMLButtonElement;
           if (assignBtn) {
-            assignBtn.addEventListener('click', async (e) => {
+            assignBtn.addEventListener("click", async (e) => {
               e.stopPropagation(); // Prevent bubble close
-              
+
               // Check if current delivery exists
               if (!currentDelivery) {
-                alert('Please select a delivery first');
+                alert("Please select a delivery first");
                 return;
               }
 
               // Disable button and show loading state
               assignBtn.disabled = true;
-              assignBtn.textContent = '⏳ Assigning...';
-              assignBtn.style.backgroundColor = '#6b7280';
+              assignBtn.textContent = "⏳ Assigning...";
+              assignBtn.style.backgroundColor = "#6b7280";
 
               try {
-                console.log('[PoolOrderMarkers] Assigning order', clickedOrder.id, 'to delivery', currentDelivery.id);
-                
+                console.log(
+                  "[PoolOrderMarkers] Assigning order",
+                  clickedOrder.id,
+                  "to delivery",
+                  currentDelivery.id
+                );
+
                 // Add order to current delivery
                 await addOrderToDelivery(currentDelivery.id, clickedOrder.id);
-                
-                console.log('[PoolOrderMarkers] Successfully assigned order');
-                
+
+                console.log("[PoolOrderMarkers] Successfully assigned order");
+
+                // Refresh the order route context to update sidebar
+                await refreshOrders();
+
                 // Show success state briefly
-                assignBtn.textContent = '✓ Assigned!';
-                assignBtn.style.backgroundColor = '#10b981';
-                
+                assignBtn.textContent = "✓ Assigned!";
+                assignBtn.style.backgroundColor = "#10b981";
+
                 // Close popup after short delay to show success
                 setTimeout(() => {
                   bubbleDiv.remove();
                   document.removeEventListener("click", closeHandler);
                 }, 500);
               } catch (error) {
-                console.error('[PoolOrderMarkers] Failed to assign order:', error);
-                alert('Failed to assign order to delivery');
-                
+                console.error(
+                  "[PoolOrderMarkers] Failed to assign order:",
+                  error
+                );
+                alert("Failed to assign order to delivery");
+
                 // Restore button state
                 assignBtn.disabled = false;
-                assignBtn.textContent = '➕ Assign to Current Delivery';
-                assignBtn.style.backgroundColor = '#059669';
+                assignBtn.textContent = "➕ Assign to Current Delivery";
+                assignBtn.style.backgroundColor = "#059669";
               }
             });
           }
