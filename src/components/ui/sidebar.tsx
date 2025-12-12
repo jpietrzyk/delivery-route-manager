@@ -1,19 +1,4 @@
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import {
-  Menu,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Home,
-  Settings,
-  Users,
-  Folder,
-  User,
-} from "lucide-react";
 
 // Navigation item type
 export interface NavigationItem {
@@ -25,62 +10,17 @@ export interface NavigationItem {
   disabled?: boolean;
 }
 
-// Sidebar variants
-const sidebarVariants = cva(
-  "flex h-full flex-col bg-background border-r transition-all duration-300",
-  {
-    variants: {
-      collapsed: {
-        true: "w-16",
-        false: "w-64",
-      },
-    },
-    defaultVariants: {
-      collapsed: false,
-    },
-  }
-);
-
-export interface SidebarProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof sidebarVariants> {
+export interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   collapsible?: boolean;
   mobile?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
 }
 
 const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
-  (
-    { className, collapsed = false, onCollapsedChange, children, ...props },
-    ref
-  ) => {
-    const handleToggle = () => {
-      onCollapsedChange?.(!collapsed);
-    };
-
+  ({ children, ...props }, ref) => {
     return (
-      <div
-        ref={ref}
-        className={cn(sidebarVariants({ collapsed }), className)}
-        {...props}
-      >
+      <div ref={ref} {...props}>
         {children}
-        {onCollapsedChange && (
-          <div className="border-t p-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={handleToggle}
-            >
-              {collapsed ? (
-                <ChevronRight className="size-4" />
-              ) : (
-                <ChevronLeft className="size-4" />
-              )}
-            </Button>
-          </div>
-        )}
       </div>
     );
   }
@@ -95,15 +35,11 @@ export interface SidebarHeaderProps
 }
 
 const SidebarHeader = React.forwardRef<HTMLDivElement, SidebarHeaderProps>(
-  ({ className, logo, title, children, ...props }, ref) => {
+  ({ logo, title, children, ...props }, ref) => {
     return (
-      <div
-        ref={ref}
-        className={cn("flex h-16 items-center border-b px-4", className)}
-        {...props}
-      >
-        {logo && <div className="flex items-center gap-2">{logo}</div>}
-        {title && <h2 className="font-semibold truncate">{title}</h2>}
+      <div ref={ref} {...props}>
+        {logo && <div>{logo}</div>}
+        {title && <h2>{title}</h2>}
         {children}
       </div>
     );
@@ -146,34 +82,12 @@ const SidebarNavigation = React.forwardRef<HTMLElement, SidebarNavigationProps>(
     const navigationItems = items.length > 0 ? items : defaultItems;
 
     return (
-      <nav
-        ref={ref}
-        className={cn("flex-1 space-y-1 p-2", className)}
-        {...props}
-      >
+      <nav ref={ref} {...props}>
         {navigationItems.map((item, index) => {
-          const Icon = item.icon;
           return (
-            <a
-              key={index}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                "hover:bg-accent hover:text-accent-foreground",
-                "focus:bg-accent focus:text-accent-foreground focus:outline-none",
-                "disabled:pointer-events-none disabled:opacity-50",
-                item.active && "bg-accent text-accent-foreground",
-                className
-              )}
-              aria-disabled={item.disabled}
-            >
-              {Icon && <Icon className="size-4" />}
-              <span className="truncate">{item.title}</span>
-              {item.badge && (
-                <span className="ml-auto rounded-full bg-primary px-2 py-1 text-xs text-primary-foreground">
-                  {item.badge}
-                </span>
-              )}
+            <a key={index} href={item.href} aria-disabled={item.disabled}>
+              {item.title}
+              {item.badge && <span>{item.badge}</span>}
             </a>
           );
         })}
@@ -205,24 +119,14 @@ const SidebarFooter = React.forwardRef<HTMLDivElement, SidebarFooterProps>(
     const currentUser = user || defaultUser;
 
     return (
-      <div ref={ref} className={cn("border-t p-4", className)} {...props}>
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-medium">
-            {currentUser.avatar ? (
-              <img
-                src={currentUser.avatar}
-                alt={currentUser.name}
-                className="h-8 w-8 rounded-full object-cover"
-              />
-            ) : (
-              <User className="size-4" />
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{currentUser.name}</p>
-            <p className="text-xs text-muted-foreground truncate">
-              {currentUser.email}
-            </p>
+      <div ref={ref} {...props}>
+        <div>
+          {currentUser.avatar ? (
+            <img src={currentUser.avatar} alt={currentUser.name} />
+          ) : null}
+          <div>
+            <p>{currentUser.name}</p>
+            <p>{currentUser.email}</p>
           </div>
         </div>
         {children}
@@ -248,18 +152,10 @@ const MobileSidebarTrigger = React.forwardRef<
   };
 
   return (
-    <Button
-      ref={ref}
-      variant="ghost"
-      size="icon"
-      className={cn("h-8 w-8", className)}
-      onClick={handleClick}
-      {...props}
-    >
-      {open ? <X className="size-4" /> : <Menu className="size-4" />}
-      <span className="sr-only">{open ? "Close sidebar" : "Open sidebar"}</span>
+    <button ref={ref} onClick={handleClick} {...props}>
+      {open ? "Close sidebar" : "Open sidebar"}
       {children}
-    </Button>
+    </button>
   );
 });
 MobileSidebarTrigger.displayName = "MobileSidebarTrigger";
@@ -300,19 +196,17 @@ const CompleteSidebar: React.FC<CompleteSidebarProps> = ({
   if (mobile) {
     return (
       <>
-        <div className="flex items-center gap-2">
+        <div>
           <MobileSidebarTrigger
             open={mobileOpen}
             onOpenChange={setMobileOpen}
           />
-          {header?.title && (
-            <span className="font-semibold">{header.title}</span>
-          )}
+          {header?.title && <span>{header.title}</span>}
         </div>
 
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetContent side="left" className="p-0 w-64">
-            <Sidebar className="border-0" collapsible={false}>
+          <SheetContent side="left">
+            <Sidebar collapsible={false}>
               <SidebarHeader logo={header?.logo} title={header?.title} />
               <SidebarNavigation items={navigation} />
               <SidebarFooter user={footer?.user} />
@@ -326,7 +220,6 @@ const CompleteSidebar: React.FC<CompleteSidebarProps> = ({
   // Desktop sidebar
   return (
     <Sidebar
-      className={className}
       collapsible={collapsible}
       collapsed={collapsed}
       onCollapsedChange={setCollapsed}

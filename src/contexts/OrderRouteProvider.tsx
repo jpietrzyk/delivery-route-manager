@@ -1,43 +1,7 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { OrdersApi } from "@/services/ordersApi";
-import type { Order } from "@/types/order";
-import {
-  OrderRouteContext,
-  type OrderRouteContextType,
-} from "./OrderRouteContext";
-
-export const OrderRouteProvider: React.FC<{
-  children: React.ReactNode;
-}> = ({ children }) => {
-  const [routeOrders, setRouteOrders] = useState<Order[]>([]);
-  const [availableOrders, setAvailableOrders] = useState<Order[]>([]);
-  const [isCalculatingRoute, setIsCalculatingRoute] = useState<boolean>(false);
-  const [isLoadingOrders, setIsLoadingOrders] = useState<boolean>(true);
-  const [ordersError, setOrdersError] = useState<string | null>(null);
-
-  // Load orders from the API on component mount
-  useEffect(() => {
-    const loadOrders = async () => {
-      try {
-        setIsLoadingOrders(true);
-        setOrdersError(null);
-        const orders = await OrdersApi.getOrders();
-        setAvailableOrders(orders);
-      } catch (error) {
-        setOrdersError(
-          error instanceof Error ? error.message : "Failed to fetch orders"
-        );
-        console.error("Error loading orders:", error);
-      } finally {
-        setIsLoadingOrders(false);
-      }
-    };
-
-    loadOrders();
-  }, []);
-
-  const moveOrder = useCallback((fromIndex: number, toIndex: number) => {
-    setRouteOrders((currentOrders) => {
+// Reset: empty provider
+export default function OrderRouteProvider({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
+}
       const newOrders = [...currentOrders];
       const [movedOrder] = newOrders.splice(fromIndex, 1);
       newOrders.splice(toIndex, 0, movedOrder);

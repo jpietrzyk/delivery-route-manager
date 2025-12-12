@@ -1,18 +1,8 @@
-import React, { useState } from "react";
-import { OrderHighlightContext } from "./OrderHighlightContext";
-
-export const OrderHighlightProvider: React.FC<{
+// Reset: empty provider
+export default function OrderHighlightProvider({
+  children,
+}: {
   children: React.ReactNode;
-}> = ({ children }) => {
-  const [highlightedOrderId, setHighlightedOrderId] = useState<string | null>(
-    null
-  );
-
-  return (
-    <OrderHighlightContext.Provider
-      value={{ highlightedOrderId, setHighlightedOrderId }}
-    >
-      {children}
-    </OrderHighlightContext.Provider>
-  );
-};
+}) {
+  return <>{children}</>;
+}
