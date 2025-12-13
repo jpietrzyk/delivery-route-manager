@@ -1,4 +1,4 @@
-import LeafletMapPlaceholder from "@/components/leaflet-map-placeholder";
+import LeafletMap from "@/components/leaflet-map";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DeliverySidebar } from "@/components/DeliverySidebar";
 import { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ function App() {
           <SidebarTrigger />
         </div>
         <div className="flex-1 h-full">
-          <LeafletMapPlaceholder />
+          <LeafletMap orders={orders} />
         </div>
         <DeliverySidebar orders={orders.filter((order) => order.deliveryId)} />
       </main>
