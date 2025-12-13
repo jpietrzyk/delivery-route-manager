@@ -1,5 +1,12 @@
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  Polyline,
+} from "react-leaflet";
 
 import L from "leaflet";
 import React from "react";
@@ -98,10 +105,16 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ orders = [] }) => {
       <MapCenterer center={center} />
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {polylinePositions1 && (
-        <Polyline positions={polylinePositions1} pathOptions={{ color: "#2563eb", weight: 4, opacity: 0.8 }} />
+        <Polyline
+          positions={polylinePositions1}
+          pathOptions={{ color: "#2563eb", weight: 4, opacity: 0.8 }}
+        />
       )}
       {polylinePositions2 && (
-        <Polyline positions={polylinePositions2} pathOptions={{ color: "#f59e42", weight: 4, opacity: 0.8 }} />
+        <Polyline
+          positions={polylinePositions2}
+          pathOptions={{ color: "#f59e42", weight: 4, opacity: 0.8 }}
+        />
       )}
       {orders.map((order) => {
         const isGrayed = !order.deliveryId;
