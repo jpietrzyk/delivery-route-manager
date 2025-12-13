@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Home, Truck, Settings } from "lucide-react";
 
-export function DeliverySidebar({ orders = [] }: { orders?: any[] }) {
+const DeliverySidebar = ({ orders = [] }: { orders?: any[] }) => {
   return (
     <Sidebar
       side="right"
@@ -45,4 +45,6 @@ export function DeliverySidebar({ orders = [] }: { orders?: any[] }) {
       </SidebarFooter>
     </Sidebar>
   );
-}
+};
+
+export default DeliverySidebar;
