@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25" height="41" viewBox="0 0 25 41" fill="none">
+  <g filter="url(#a)">
+    <path fill="#bbb" stroke="#888" stroke-width="2" d="M12.5 2C7.253 2 3 6.253 3 11.5c0 6.5 8.5 25.5 8.5 25.5s8.5-19 8.5-25.5C22 6.253 17.747 2 12.5 2Z"/>
+    <circle cx="12.5" cy="11.5" r="4.5" fill="#eee" stroke="#888" stroke-width="2"/>
+  </g>
+  <defs>
+    <filter id="a" x="0" y="0" width="25" height="41" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+    </filter>
+  </defs>
+</svg>

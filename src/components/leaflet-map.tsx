@@ -37,7 +37,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ orders = [] }) => {
         const isGrayed = !order.deliveryId;
         const icon = L.icon({
           iconUrl: isGrayed
-            ? "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x-grey.png"
+            ? "/marker-icon-grey.svg"
             : "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
           iconSize: [25, 41],
           iconAnchor: [12, 41],
