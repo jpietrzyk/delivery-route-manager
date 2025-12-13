@@ -11,15 +11,10 @@ import {
 import L from "leaflet";
 import React from "react";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
+import type { Order } from "@/types/order";
 
 interface LeafletMapProps {
-  orders?: Array<{
-    id: string;
-    name: string;
-    customer: string;
-    location: { lat: number; lng: number };
-    deliveryId?: string;
-  }>;
+  orders?: Order[];
 }
 
 function MapCenterer({ center }: { center: { lat: number; lng: number } }) {
@@ -50,10 +45,26 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ orders = [] }) => {
       }),
     []
   );
-  const grayedIcon = React.useMemo(
+  // Pool/unassigned marker icons
+  const poolIcon = React.useMemo(
     () =>
       L.icon({
-        iconUrl: "/marker-icon-grey.svg",
+        iconUrl:
+          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowUrl:
+          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+        shadowSize: [41, 41],
+      }),
+    []
+  );
+  const poolHighPriceIcon = React.useMemo(
+    () =>
+      L.icon({
+        iconUrl:
+          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
@@ -77,6 +88,9 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ orders = [] }) => {
       }),
     []
   );
+
+  // Use fixed threshold for orange marker
+  const ORANGE_THRESHOLD = 13000;
 
   // Draw straight lines between the first-second and second-third order markers if they exist
   let polylinePositions1: [number, number][] | undefined = undefined;
@@ -117,8 +131,15 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ orders = [] }) => {
         />
       )}
       {orders.map((order) => {
-        const isGrayed = !order.deliveryId;
-        let icon = isGrayed ? grayedIcon : defaultIcon;
+        const isPool = !order.deliveryId;
+        let icon = defaultIcon;
+        if (isPool) {
+          if ((order.totalAmount ?? 0) > ORANGE_THRESHOLD) {
+            icon = poolHighPriceIcon;
+          } else {
+            icon = poolIcon;
+          }
+        }
         if (highlightedOrderId === order.id) {
           icon = highlightIcon;
         }
@@ -134,8 +155,20 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ orders = [] }) => {
               <br />
               {order.customer}
               <br />({order.location.lat}, {order.location.lng})
-              {isGrayed && (
+              {isPool && (
                 <div style={{ color: "#888" }}>No delivery assigned</div>
+              )}
+              {isPool && order.totalAmount !== undefined && (
+                <div
+                  style={{
+                    color:
+                      (order.totalAmount ?? 0) > ORANGE_THRESHOLD
+                        ? "#f59e42"
+                        : "#888",
+                  }}
+                >
+                  {`Order price: €${order.totalAmount.toLocaleString()} (threshold: €${ORANGE_THRESHOLD.toLocaleString()})`}
+                </div>
               )}
             </Popup>
           </Marker>

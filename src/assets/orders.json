@@ -189,7 +189,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Törő István",
-    "totalAmount": 0,
+    "totalAmount": 66000,
     "items": [],
     "location": {
       "lat": 47.991272,
@@ -207,7 +207,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Vigh Norbert",
-    "totalAmount": 0,
+    "totalAmount": 11,
     "items": [],
     "location": {
       "lat": 47.2173,
@@ -225,7 +225,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Mészáros László",
-    "totalAmount": 0,
+    "totalAmount": 24000,
     "items": [],
     "location": {
       "lat": 47.607439,
@@ -243,7 +243,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Mező Péter",
-    "totalAmount": 0,
+    "totalAmount": 10123,
     "items": [],
     "location": {
       "lat": 48.040709,
@@ -279,7 +279,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Molnar Ferenc",
-    "totalAmount": 0,
+    "totalAmount": 18000,
     "items": [],
     "location": {
       "lat": 46.628914,
@@ -297,7 +297,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Nyéki Tibor",
-    "totalAmount": 0,
+    "totalAmount": 6000,
     "items": [],
     "location": {
       "lat": 47.383039,
@@ -315,7 +315,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "Bősze Cintia",
-    "totalAmount": 0,
+    "totalAmount": 7000,
     "items": [],
     "location": {
       "lat": 46.625734,
@@ -333,7 +333,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "FIRMA",
-    "totalAmount": 0,
+    "totalAmount": 6000,
     "items": [],
     "location": {
       "lat": 47.437512,
@@ -351,7 +351,7 @@
     "createdAt": "2025-12-05T10:00:00.000Z",
     "updatedAt": "2025-12-05T10:00:00.000Z",
     "customer": "Test Customer",
-    "totalAmount": 0,
+    "totalAmount": 15000,
     "items": [],
     "location": {
       "lat": 52.52,
