@@ -3,12 +3,11 @@ import {
   SidebarHeader,
   SidebarFooter,
   SidebarContent,
-  SidebarMenu,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Home, Truck, Settings } from "lucide-react";
+import { useMarkerHighlight } from "@/hooks/useMarkerHighlight";
 
 const DeliverySidebar = ({ orders = [] }: { orders?: any[] }) => {
+  const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
   return (
     <Sidebar
       side="right"
@@ -27,7 +26,14 @@ const DeliverySidebar = ({ orders = [] }: { orders?: any[] }) => {
               <li className="text-xs text-gray-400">Brak zamówień</li>
             )}
             {orders.map((order) => (
-              <li key={order.id} className="rounded border p-2 bg-gray-50">
+              <li
+                key={order.id}
+                className={`rounded border p-2 bg-gray-50 ${
+                  highlightedOrderId === order.id ? "ring-2 ring-blue-400" : ""
+                }`}
+                onMouseEnter={() => setHighlightedOrderId(order.id)}
+                onMouseLeave={() => setHighlightedOrderId(null)}
+              >
                 <div className="font-medium text-sm text-gray-900">
                   {order.name}
                 </div>
