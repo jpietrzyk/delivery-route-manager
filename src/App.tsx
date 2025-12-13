@@ -1,5 +1,5 @@
 import LeafletMapPlaceholder from "@/components/leaflet-map-placeholder";
-import { DeliveryPlacSidebar } from "@/components/DeliveryPlacSidebar";
+import { Sidebar, SidebarHeader, SidebarFooter } from "@/components/ui/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 function App() {
@@ -11,14 +11,20 @@ function App() {
           <LeafletMapPlaceholder />
         </div>
         {/* Sidebar on the right */}
-        <DeliveryPlacSidebar
-          header={<div className="font-bold text-lg">Delivery Plac</div>}
-          footer={
-            <div className="text-xs text-gray-500">© 2025 Profi-Stahl</div>
-          }
+        <Sidebar
+          side="right"
+          className="border-l bg-white shadow-lg z-50 flex flex-col h-full"
         >
-          {/* Place your sidebar content here */}
-        </DeliveryPlacSidebar>
+          <SidebarHeader className="font-bold text-lg px-4 py-3 border-b">
+            Trasa D-001
+          </SidebarHeader>
+          <div className="flex-1 overflow-y-auto">
+            {/* Place your sidebar content here */}
+          </div>
+          <SidebarFooter className="text-xs text-gray-500 px-4 py-3 border-t">
+            Panel boczny - stopka
+          </SidebarFooter>
+        </Sidebar>
       </div>
     </SidebarProvider>
   );
