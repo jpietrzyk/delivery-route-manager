@@ -23,19 +23,16 @@ function getDistanceKm(a: { lat: number; lng: number }, b: { lat: number; lng: n
   return R * c;
 }
 
-// Estimate driving time for a truck (Leaflet, average speed ~60 km/h)
-function getDriveTimeString(distanceKm: number, complexity: number) {
-  const avgTruckSpeedKmh = 60; // average truck speed in km/h
-  const driveHours = distanceKm / avgTruckSpeedKmh;
-  const driveMinutes = Math.round(driveHours * 60);
-  const complexityMinutes = complexity * 20;
-  const totalMinutes = driveMinutes + complexityMinutes;
-  const h = Math.floor(totalMinutes / 60);
-  const m = totalMinutes % 60;
-  if (h > 0) {
-    return `${h}h ${m}min`;
-  }
-  return `${m}min`;
+// Estimate driving and handling times
+function getDriveMinutes(distanceKm: number) {
+  const avgTruckSpeedKmh = 60;
+  return Math.round((distanceKm / avgTruckSpeedKmh) * 60);
+}
+function getHandlingMinutes(complexity: number) {
+  return (complexity ?? 1) * 20;
+}
+function formatTimeHM(date: Date) {
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
 const DeliverySidebar = ({ orders = [] }: { orders?: Order[] }) => {
@@ -57,38 +54,67 @@ const DeliverySidebar = ({ orders = [] }: { orders?: Order[] }) => {
             {orders.length === 0 && (
               <li className="text-xs text-muted-foreground">Brak zamówień</li>
             )}
-            {orders.map((order, idx) => (
-              <>
-                <li
-                  key={String(order.id)}
-                  className={`rounded border p-2 bg-accent/40 ${
-                    highlightedOrderId === String(order.id)
-                      ? "ring-2 ring-blue-400"
-                      : ""
-                  }`}
-                  onMouseEnter={() => setHighlightedOrderId(String(order.id))}
-                  onMouseLeave={() => setHighlightedOrderId(null)}
-                >
-                  <div className="font-medium text-sm text-foreground">
-                    {order.product?.name}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {order.customer}
-                  </div>
-                  <div className="text-xs text-muted-foreground/80">
-                    Status: {order.status}
-                  </div>
-                </li>
-                {idx < orders.length - 1 && (
-                  <li className="flex items-center justify-center text-xs text-muted-foreground/80">
-                    ↳ czas przejazdu + obsługa: {getDriveTimeString(
-                      getDistanceKm(orders[idx].location, orders[idx + 1].location),
-                      orders[idx + 1].product?.complexity ?? 1
-                    )}
+            {(() => {
+              // Calculate arrival/departure times
+              let currentTime = new Date();
+              currentTime.setHours(8, 0, 0, 0); // Start at 8:00 AM
+              const result: JSX.Element[] = [];
+              for (let idx = 0; idx < orders.length; idx++) {
+                const order = orders[idx];
+                // Drive time from previous order (skip for first)
+                let driveMinutes = 0;
+                if (idx > 0) {
+                  driveMinutes = getDriveMinutes(
+                    getDistanceKm(orders[idx - 1].location, order.location)
+                  );
+                  currentTime = new Date(currentTime.getTime() + driveMinutes * 60000);
+                }
+                const arrivalTime = new Date(currentTime);
+                // Handling time
+                const handlingMinutes = getHandlingMinutes(order.product?.complexity ?? 1);
+                const departureTime = new Date(currentTime.getTime() + handlingMinutes * 60000);
+                result.push(
+                  <li
+                    key={String(order.id)}
+                    className={`rounded border p-2 bg-accent/40 ${
+                      highlightedOrderId === String(order.id)
+                        ? "ring-2 ring-blue-400"
+                        : ""
+                    }`}
+                    onMouseEnter={() => setHighlightedOrderId(String(order.id))}
+                    onMouseLeave={() => setHighlightedOrderId(null)}
+                  >
+                    <div className="font-medium text-sm text-foreground">
+                      {order.product?.name}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {order.customer}
+                    </div>
+                    <div className="text-xs text-muted-foreground/80">
+                      Status: {order.status}
+                    </div>
+                    <div className="text-xs text-muted-foreground/80 mt-1">
+                      Przyjazd: {formatTimeHM(arrivalTime)} | Wyjazd: {formatTimeHM(departureTime)}
+                    </div>
                   </li>
-                )}
-              </>
-            ))}
+                );
+                // Prepare for next order
+                currentTime = departureTime;
+                if (idx < orders.length - 1) {
+                  // Show drive + handling time to next order
+                  const nextDriveMinutes = getDriveMinutes(
+                    getDistanceKm(order.location, orders[idx + 1].location)
+                  );
+                  const nextHandlingMinutes = getHandlingMinutes(orders[idx + 1].product?.complexity ?? 1);
+                  result.push(
+                    <li key={`time-${order.id}-${orders[idx + 1].id}`} className="flex items-center justify-center text-xs text-muted-foreground/80">
+                      ↳ czas przejazdu: {nextDriveMinutes}min, obsługa: {nextHandlingMinutes}min
+                    </li>
+                  );
+                }
+              }
+              return result;
+            })()}
           </ul>
         </div>
       </SidebarContent>
