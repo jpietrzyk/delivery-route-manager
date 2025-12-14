@@ -23,6 +23,21 @@ function getDistanceKm(a: { lat: number; lng: number }, b: { lat: number; lng: n
   return R * c;
 }
 
+// Estimate driving time for a truck (Leaflet, average speed ~60 km/h)
+function getDriveTimeString(distanceKm: number, complexity: number) {
+  const avgTruckSpeedKmh = 60; // average truck speed in km/h
+  const driveHours = distanceKm / avgTruckSpeedKmh;
+  const driveMinutes = Math.round(driveHours * 60);
+  const complexityMinutes = complexity * 20;
+  const totalMinutes = driveMinutes + complexityMinutes;
+  const h = Math.floor(totalMinutes / 60);
+  const m = totalMinutes % 60;
+  if (h > 0) {
+    return `${h}h ${m}min`;
+  }
+  return `${m}min`;
+}
+
 const DeliverySidebar = ({ orders = [] }: { orders?: Order[] }) => {
   const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
   return (
@@ -66,7 +81,10 @@ const DeliverySidebar = ({ orders = [] }: { orders?: Order[] }) => {
                 </li>
                 {idx < orders.length - 1 && (
                   <li className="flex items-center justify-center text-xs text-muted-foreground/80">
-                    ↳ dystans: {getDistanceKm(orders[idx].location, orders[idx + 1].location).toFixed(2)} km
+                    ↳ czas przejazdu + obsługa: {getDriveTimeString(
+                      getDistanceKm(orders[idx].location, orders[idx + 1].location),
+                      orders[idx + 1].product?.complexity ?? 1
+                    )}
                   </li>
                 )}
               </>
