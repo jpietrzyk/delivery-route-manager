@@ -1,7 +1,7 @@
 [
   {
     "id": "PROD-001",
-    "name": "3x5 spad do tyłu 2 klasa",
+    "product": { "name": "3x5 spad do tyłu 2 klasa", "price": 0, "complexity": 1 },
     "comment": "3x5 spad do tyłu 2 klasa",
     "status": "pending",
     "priority": "medium",
@@ -19,7 +19,7 @@
   },
   {
     "id": "PROD-002",
-    "name": "3x5 spad do tyłu 2 klasa",
+    "product": { "name": "3x5 spad do tyłu 2 klasa", "price": 0, "complexity": 1 },
     "comment": "3x5 spad do tyłu 2 klasa",
     "status": "pending",
     "priority": "medium",
@@ -37,7 +37,7 @@
   },
   {
     "id": "PROD-003",
-    "name": "3x2 kojec dla psa 3 #",
+    "product": { "name": "3x2 kojec dla psa 3 #", "price": 0, "complexity": 1 },
     "comment": "3x2 kojec dla psa 3 #",
     "status": "pending",
     "priority": "medium",
@@ -55,7 +55,7 @@
   },
   {
     "id": "PROD-004",
-    "name": "3x5 spad do tyłu 2 skrzydłowa brama GARAŻ RAL ????",
+    "product": { "name": "3x5 spad do tyłu 2 skrzydłowa brama GARAŻ RAL ????", "price": 0, "complexity": 1 },
     "comment": "3x5 spad do tyłu 2 skrzydłowa brama GARAŻ RAL ????",
     "status": "pending",
     "priority": "medium",
@@ -73,7 +73,7 @@
   },
   {
     "id": "PROD-005",
-    "name": "4x5 dwuspad brama uchylna szeroki panel pośrodku CAŁY GARAŻ CIEMNY ORZECH",
+    "product": { "name": "4x5 dwuspad brama uchylna szeroki panel pośrodku CAŁY GARAŻ CIEMNY ORZECH", "price": 0, "complexity": 1 },
     "comment": "4x5 dwuspad brama uchylna szeroki panel pośrodku CAŁY GARAŻ CIEMNY ORZECH",
     "status": "pending",
     "priority": "medium",
@@ -91,7 +91,7 @@
   },
   {
     "id": "PROD-006",
-    "name": "3x2 kojec dla psa 6 #",
+    "product": { "name": "3x2 kojec dla psa 6 #", "price": 0, "complexity": 1 },
     "comment": "3x2 kojec dla psa 6 #",
     "status": "pending",
     "priority": "medium",
@@ -109,7 +109,7 @@
   },
   {
     "id": "PROD-007",
-    "name": "4,5x5,5 dwuspad brama uchylna szeroki panel 3,5 m szeroka pośrodku + okucia przód dachu CAŁY GARAŻ CIEMNY ORZECH",
+    "product": { "name": "4,5x5,5 dwuspad brama uchylna szeroki panel 3,5 m szeroka pośrodku + okucia przód dachu CAŁY GARAŻ CIEMNY ORZECH", "price": 0, "complexity": 1 },
     "comment": "4,5x5,5 dwuspad brama uchylna szeroki panel 3,5 m szeroka pośrodku + okucia przód dachu CAŁY GARAŻ CIEMNY ORZECH",
     "status": "pending",
     "priority": "medium",
@@ -127,7 +127,7 @@
   },
   {
     "id": "PROD-008",
-    "name": "3x6 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+    "product": { "name": "3x6 spad do tyłu 2 skrzydłowa brama garaż w ocynku", "price": 0, "complexity": 1 },
     "comment": "3x6 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
     "status": "in-progress",
     "priority": "medium",
@@ -145,7 +145,7 @@
   },
   {
     "id": "PROD-009",
-    "name": "7x6 dwuspad 2 x brama uchylna szeroki panel + drzwiczki 0,90 szeroki panel na prawym boku z przodu + ZMF + 2 x okno 80x50 na lewym i prawym boku z tyłu 1 m od tylnych słupków + okucia przód dachu + 4 x narożne + rynny + 2 X AUTOMAT CAŁY GARAŻ PANEL POZIOMY ZŁOTY DĄB",
+    "product": { "name": "7x6 dwuspad 2 x brama uchylna szeroki panel + drzwiczki 0,90 szeroki panel na prawym boku z przodu + ZMF + 2 x okno 80x50 na lewym i prawym boku z tyłu 1 m od tylnych słupków + okucia przód dachu + 4 x narożne + rynny + 2 X AUTOMAT CAŁY GARAŻ PANEL POZIOMY ZŁOTY DĄB", "price": 0, "complexity": 1 },
     "comment": "7x6 dwuspad 2 x brama uchylna szeroki panel + drzwiczki 0,90 szeroki panel na prawym boku z przodu + ZMF + 2 x okno 80x50 na lewym i prawym boku z tyłu 1 m od tylnych słupków + okucia przód dachu + 4 x narożne + rynny + 2 X AUTOMAT CAŁY GARAŻ PANEL POZIOMY ZŁOTY DĄB",
     "status": "in-progress",
     "priority": "medium",
@@ -163,7 +163,7 @@
   },
   {
     "id": "PROD-010",
-    "name": "3x5 spad do tyłu 2 klasa",
+    "product": { "name": "3x5 spad do tyłu 2 klasa", "price": 0, "complexity": 1 },
     "comment": "3x5 spad do tyłu 2 klasa",
     "status": "pending",
     "priority": "medium",
@@ -181,7 +181,7 @@
   },
   {
     "id": "PROD-011",
-    "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+    "product": { "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku", "price": 66000, "complexity": 3 },
     "comment": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
     "status": "pending",
     "priority": "medium",
@@ -199,7 +199,7 @@
   },
   {
     "id": "PROD-012",
-    "name": "3x2 kojec dla psa 2 #",
+    "product": { "name": "3x2 kojec dla psa 2 #", "price": 11, "complexity": 1 },
     "comment": "3x2 kojec dla psa 2 #",
     "status": "in-progress",
     "priority": "medium",
@@ -217,7 +217,7 @@
   },
   {
     "id": "PROD-013",
-    "name": "3x2 kojec dla psa 4 #",
+    "product": { "name": "3x2 kojec dla psa 4 #", "price": 24000, "complexity": 3 },
     "comment": "3x2 kojec dla psa 4 #",
     "status": "pending",
     "priority": "medium",
@@ -235,7 +235,7 @@
   },
   {
     "id": "PROD-014",
-    "name": "3x2 kojec dla psa 2 #",
+    "product": { "name": "3x2 kojec dla psa 2 #", "price": 10123, "complexity": 2 },
     "comment": "3x2 kojec dla psa 2 #",
     "status": "in-progress",
     "priority": "medium",
@@ -253,7 +253,7 @@
   },
   {
     "id": "PROD-015",
-    "name": "4,5 x 6 dwuspad 2 skrzydłowa brama po prawo po lewo drzwiczki 0,90 GARAŻ RAL 8017 BRAMA + DRZWICZKI RAL 1002",
+    "product": { "name": "4,5 x 6 dwuspad 2 skrzydłowa brama po prawo po lewo drzwiczki 0,90 GARAŻ RAL 8017 BRAMA + DRZWICZKI RAL 1002", "price": 0, "complexity": 1 },
     "comment": "4,5 x 6 dwuspad 2 skrzydłowa brama po prawo po lewo drzwiczki 0,90 GARAŻ RAL 8017 BRAMA + DRZWICZKI RAL 1002",
     "status": "pending",
     "priority": "medium",
@@ -271,7 +271,7 @@
   },
   {
     "id": "PROD-016",
-    "name": "3x2 kojec dla psa 2 #",
+    "product": { "name": "3x2 kojec dla psa 2 #", "price": 18000, "complexity": 3 },
     "comment": "3x2 kojec dla psa 2 #",
     "status": "in-progress",
     "priority": "medium",
@@ -289,7 +289,7 @@
   },
   {
     "id": "PROD-017",
-    "name": "3,5x5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
+    "product": { "name": "3,5x5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku", "price": 6000, "complexity": 1 },
     "comment": "3,5x5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
     "status": "in-progress",
     "priority": "medium",
@@ -307,7 +307,7 @@
   },
   {
     "id": "PROD-018",
-    "name": "3x5 spad do tyłu 2 klasa",
+    "product": { "name": "3x5 spad do tyłu 2 klasa", "price": 7000, "complexity": 1 },
     "comment": "3x5 spad do tyłu 2 klasa",
     "status": "pending",
     "priority": "medium",
@@ -325,7 +325,7 @@
   },
   {
     "id": "PROD-019",
-    "name": "3x5 spad do tyłu 2 klasa",
+    "product": { "name": "3x5 spad do tyłu 2 klasa", "price": 6000, "complexity": 1 },
     "comment": "3x5 spad do tyłu 2 klasa",
     "status": "in-progress",
     "priority": "medium",
@@ -343,7 +343,7 @@
   },
   {
     "id": "TEST-001",
-    "name": "Test Pool Order in Berlin",
+    "product": { "name": "Test Pool Order in Berlin", "price": 15000, "complexity": 3 },
     "comment": "Test order to verify pool markers",
     "status": "pending",
     "priority": "low",

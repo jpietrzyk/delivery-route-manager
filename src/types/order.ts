@@ -1,6 +1,12 @@
+export interface Product {
+  name: string;
+  price: number;
+  complexity: 1 | 2 | 3;
+}
+
 export interface Order {
   id: string;
-  name: string;
+  product: Product;
   comment?: string;
   status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
   priority: 'low' | 'medium' | 'high';
@@ -9,7 +15,7 @@ export interface Order {
   createdAt: Date;
   updatedAt: Date;
   customer: string;
-  totalAmount?: number;
+  totalAmount: number;
   items?: OrderItem[];
   location: {
     lat: number;
@@ -28,7 +34,7 @@ export interface OrderItem {
 export const sampleOrders: Order[] = [
   {
     id: 'ORD-001',
-    name: 'Steel Delivery Order',
+    product: { name: 'Steel Delivery Order', price: 12500.00, complexity: 2 },
     comment: 'Urgent delivery required for construction project',
     status: 'pending',
     priority: 'high',
@@ -49,7 +55,7 @@ export const sampleOrders: Order[] = [
   },
   {
     id: 'ORD-002',
-    name: 'Aluminum Profiles Order',
+    product: { name: 'Aluminum Profiles Order', price: 8750.50, complexity: 1 },
     comment: 'Window frames for residential building',
     status: 'in-progress',
     priority: 'medium',
@@ -76,7 +82,7 @@ export const sampleOrders: Order[] = [
   },
   {
     id: 'ORD-003',
-    name: 'Stainless Steel Components',
+    product: { name: 'Stainless Steel Components', price: 3200.00, complexity: 1 },
     comment: 'Kitchen equipment parts',
     status: 'completed',
     priority: 'low',
@@ -97,7 +103,7 @@ export const sampleOrders: Order[] = [
   },
   {
     id: 'ORD-004',
-    name: 'Structural Steel Order',
+    product: { name: 'Structural Steel Order', price: 45000.00, complexity: 3 },
     comment: 'Bridge construction materials',
     status: 'pending',
     priority: 'high',
@@ -124,7 +130,7 @@ export const sampleOrders: Order[] = [
   },
   {
     id: 'ORD-005',
-    name: 'Custom Metal Fabrication',
+    product: { name: 'Custom Metal Fabrication', price: 5600.00, complexity: 2 },
     comment: 'Art installation pieces',
     status: 'cancelled',
     priority: 'low',

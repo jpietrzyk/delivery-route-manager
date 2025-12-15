@@ -15,13 +15,21 @@ function App() {
   return (
     <SidebarProvider>
       <main className="h-screen w-screen overflow-hidden relative flex">
-        <div className="absolute top-4 right-80 z-9999">
-          <SidebarTrigger />
-        </div>
-        <div className="flex-1 h-full">
+        {/* Map layer at the bottom */}
+        <div className="absolute inset-0 z-0">
           <LeafletMap orders={orders} />
         </div>
-        <DeliverySidebar orders={orders.filter((order) => order.deliveryId)} />
+        {/* UI overlays above the map, pointer-events-none except sidebar */}
+        <div className="relative w-full flex justify-end items-start z-10 pointer-events-none">
+          <div className="pointer-events-auto">
+            <SidebarTrigger />
+          </div>
+        </div>
+        <div className="pointer-events-auto">
+          <DeliverySidebar
+            orders={orders.filter((order) => order.deliveryId)}
+          />
+        </div>
       </main>
     </SidebarProvider>
   );
