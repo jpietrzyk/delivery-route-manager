@@ -9,14 +9,12 @@ import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import type { Order } from "@/types/order";
 import { DeliveryRouteManager } from "./delivery-route-manager";
 
-
-
 const DeliverySidebar = ({ orders = [] }: { orders?: Order[] }) => {
   const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
   return (
     <Sidebar
       side="right"
-      className="border-l bg-sidebar text-sidebar-foreground shadow-lg relative z-20 flex flex-col h-full pointer-events-auto"
+      className="border-l bg-sidebar text-sidebar-foreground shadow-lg relative z-20 flex flex-col h-screen pointer-events-auto"
     >
       <SidebarHeader className="font-bold text-lg px-4 py-3 border-b">
         Trasa D-001
