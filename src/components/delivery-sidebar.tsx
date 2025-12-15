@@ -76,14 +76,19 @@ const DeliverySidebar = () => {
     }
 
     try {
-      await removeOrderFromDelivery(currentDelivery.id, orderId);
-      // After removal, update the local state to reflect the change
+      // Optimistic UI update - remove immediately for better UX
       const updatedOrders = deliveryOrders.filter(
         (order) => order.id !== orderId
       );
       setDeliveryOrders(updatedOrders);
+
+      // Perform API call in background
+      await removeOrderFromDelivery(currentDelivery.id, orderId);
+
+      console.log(`Successfully removed order ${orderId} from delivery`);
     } catch (error) {
       console.error("Failed to remove order:", error);
+      // TODO: Revert optimistic update on error (would need to refetch or cache previous state)
     }
   };
 
