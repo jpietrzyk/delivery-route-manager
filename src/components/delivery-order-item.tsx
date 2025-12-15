@@ -1,11 +1,14 @@
 import React from "react";
 import type { Order } from "@/types/order";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 interface DeliveryOrderItemProps {
   order: Order;
   isHighlighted?: boolean;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
+  onRemove?: (orderId: string) => void;
 }
 
 export const DeliveryOrderItem: React.FC<DeliveryOrderItemProps> = ({
@@ -13,7 +16,13 @@ export const DeliveryOrderItem: React.FC<DeliveryOrderItemProps> = ({
   isHighlighted = false,
   onMouseEnter,
   onMouseLeave,
+  onRemove,
 }) => {
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering mouse leave/enter on parent
+    onRemove?.(order.id);
+  };
+
   return (
     <li
       className={`rounded border p-2 bg-accent/40 ${
@@ -22,16 +31,31 @@ export const DeliveryOrderItem: React.FC<DeliveryOrderItemProps> = ({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="font-medium text-sm text-foreground">
-        {order.product?.name}
-      </div>
-      <div className="text-xs text-muted-foreground">{order.customer}</div>
-      <div className="text-xs text-muted-foreground/80">
-        Status: {order.status}
-      </div>
-      <div className="text-xs text-muted-foreground/80 mt-1">
-        Location: ({order.location.lat.toFixed(4)},{" "}
-        {order.location.lng.toFixed(4)})
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1">
+          <div className="font-medium text-sm text-foreground">
+            {order.product?.name}
+          </div>
+          <div className="text-xs text-muted-foreground">{order.customer}</div>
+          <div className="text-xs text-muted-foreground/80">
+            Status: {order.status}
+          </div>
+          <div className="text-xs text-muted-foreground/80 mt-1">
+            Location: ({order.location.lat.toFixed(4)},{" "}
+            {order.location.lng.toFixed(4)})
+          </div>
+        </div>
+        {onRemove && (
+          <Button
+            variant="destructive"
+            size="icon-sm"
+            onClick={handleRemove}
+            className="shrink-0 mt-0.5"
+            aria-label={`Remove order ${order.id}`}
+          >
+            <Trash2 className="size-3" />
+          </Button>
+        )}
       </div>
     </li>
   );

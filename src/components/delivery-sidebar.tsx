@@ -5,12 +5,28 @@ import {
   SidebarContent,
 } from "@/components/ui/sidebar";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
+import { useDelivery } from "@/hooks/use-delivery";
 
 import type { Order } from "@/types/order";
-import { DeliveryRouteManager } from "./delivery-route-manager";
+import { DeliveryOrderList } from "./delivery-order-list";
 
 const DeliverySidebar = ({ orders = [] }: { orders?: Order[] }) => {
   const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
+  const { currentDelivery, removeOrderFromDelivery } = useDelivery();
+
+  const handleRemoveOrder = async (orderId: string) => {
+    if (!currentDelivery) {
+      console.warn("No current delivery selected");
+      return;
+    }
+
+    try {
+      await removeOrderFromDelivery(currentDelivery.id, orderId);
+    } catch (error) {
+      console.error("Failed to remove order:", error);
+    }
+  };
+
   return (
     <Sidebar
       side="right"
@@ -20,16 +36,13 @@ const DeliverySidebar = ({ orders = [] }: { orders?: Order[] }) => {
         Trasa D-001
       </SidebarHeader>
       <SidebarContent className="flex-1 overflow-y-auto">
-        <div className="px-4 py-2">
-          <div className="font-semibold text-sm mb-2 text-foreground/70">
-            Zamówienia przypisane do dostawy
-          </div>
-          <DeliveryRouteManager
-            orders={orders}
-            highlightedOrderId={highlightedOrderId}
-            setHighlightedOrderId={setHighlightedOrderId}
-          />
-        </div>
+        <DeliveryOrderList
+          orders={orders}
+          highlightedOrderId={highlightedOrderId}
+          setHighlightedOrderId={setHighlightedOrderId}
+          onRemoveOrder={handleRemoveOrder}
+          title="Zamówienia przypisane do dostawy"
+        />
       </SidebarContent>
       <SidebarFooter className="text-xs text-muted-foreground px-4 py-3 border-t">
         Panel boczny - stopka

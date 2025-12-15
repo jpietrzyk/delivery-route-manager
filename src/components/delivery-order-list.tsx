@@ -6,6 +6,7 @@ interface DeliveryOrderListProps {
   orders: Order[];
   highlightedOrderId?: string | null;
   setHighlightedOrderId?: (id: string | null) => void;
+  onRemoveOrder?: (orderId: string) => void;
   title?: string;
 }
 
@@ -13,6 +14,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
   orders,
   highlightedOrderId,
   setHighlightedOrderId,
+  onRemoveOrder,
   title = "Zamówienia",
 }) => {
   return (
@@ -31,6 +33,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
               isHighlighted={highlightedOrderId === order.id}
               onMouseEnter={() => setHighlightedOrderId?.(order.id)}
               onMouseLeave={() => setHighlightedOrderId?.(null)}
+              onRemove={onRemoveOrder}
             />
           ))}
         </ul>
