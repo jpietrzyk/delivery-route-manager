@@ -16,7 +16,7 @@ const DeliverySidebar = ({ orders = [] }: { orders?: Order[] }) => {
   return (
     <Sidebar
       side="right"
-      className="border-l bg-sidebar text-sidebar-foreground shadow-lg relative z-1200 flex flex-col h-full"
+      className="border-l bg-sidebar text-sidebar-foreground shadow-lg relative z-20 flex flex-col h-full pointer-events-auto"
     >
       <SidebarHeader className="font-bold text-lg px-4 py-3 border-b">
         Trasa D-001

@@ -19,11 +19,15 @@ function App() {
         <div className="absolute inset-0 z-0">
           <LeafletMap orders={orders} />
         </div>
-        {/* UI overlays above the map */}
-        <div className="relative w-full flex justify-end items-start z-10">
-          <SidebarTrigger />
+        {/* UI overlays above the map, pointer-events-none except sidebar */}
+        <div className="relative w-full flex justify-end items-start z-10 pointer-events-none">
+          <div className="pointer-events-auto">
+            <SidebarTrigger />
+          </div>
         </div>
-        <DeliverySidebar orders={orders.filter((order) => order.deliveryId)} />
+        <div className="pointer-events-auto">
+          <DeliverySidebar orders={orders.filter((order) => order.deliveryId)} />
+        </div>
       </main>
     </SidebarProvider>
   );
