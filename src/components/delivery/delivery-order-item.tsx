@@ -2,6 +2,8 @@ import React, { memo } from "react";
 import type { Order } from "@/types/order";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface DeliveryOrderItemProps {
   order: Order;
@@ -11,6 +13,7 @@ interface DeliveryOrderItemProps {
   onRemove?: (orderId: string) => void;
   arrivalTime?: Date;
   departureTime?: Date;
+  id: string;
 }
 
 export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
@@ -22,7 +25,23 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
     onRemove,
     arrivalTime,
     departureTime,
+    id,
   }) {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+      zIndex: isDragging ? 1000 : "auto",
+    };
     // Format time as HH:MM
     const formatTimeHM = (date: Date) => {
       return date.toLocaleTimeString([], {
@@ -33,11 +52,16 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
 
     const handleRemove = (e: React.MouseEvent) => {
       e.stopPropagation(); // Prevent triggering mouse leave/enter on parent
+      e.preventDefault(); // Prevent any drag operations
       onRemove?.(order.id);
     };
 
     return (
       <li
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
         className={`rounded border p-2 bg-accent/40 ${
           isHighlighted ? "ring-2 ring-blue-400" : ""
         }`}
@@ -74,7 +98,9 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
               variant="destructive"
               size="icon-sm"
               onClick={handleRemove}
-              className="shrink-0 mt-0.5"
+              onMouseDown={(e) => e.stopPropagation()} // Prevent drag start on button
+              onPointerDown={(e) => e.stopPropagation()} // Prevent pointer events
+              className="shrink-0 mt-0.5 cursor-pointer"
               aria-label={`Remove order ${order.id}`}
             >
               <Trash2 className="size-3" />

@@ -12,6 +12,7 @@ import L from "leaflet";
 import React from "react";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import type { Order } from "@/types/order";
+import { OrdersApi } from "@/services/ordersApi";
 
 interface LeafletMapProps {
   orders?: Order[];
@@ -21,9 +22,23 @@ function MapFitter({ orders }: { orders: Order[] }) {
   const map = useMap();
   React.useEffect(() => {
     if (orders.length === 0) return;
-    if (orders.length === 1) {
-      map.setView(orders[0].location, 13);
+
+    // Filter to get only delivery orders for primary focus
+    const deliveryOrders = orders.filter((order) => order.deliveryId);
+
+    if (deliveryOrders.length === 1) {
+      map.setView(deliveryOrders[0].location, 13);
+    } else if (deliveryOrders.length > 1) {
+      // Focus on delivery orders, but include pool orders in bounds for context
+      const allOrders = orders.filter(
+        (order) => order.deliveryId || (deliveryOrders.length === 0 && order) // Include pool orders if no delivery orders
+      );
+      const bounds = L.latLngBounds(
+        allOrders.map((o) => [o.location.lat, o.location.lng])
+      );
+      map.fitBounds(bounds, { padding: [40, 40] });
     } else {
+      // If no delivery orders, show all orders (pool orders)
       const bounds = L.latLngBounds(
         orders.map((o) => [o.location.lat, o.location.lng])
       );
@@ -100,13 +115,17 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ orders = [] }) => {
   // Use fixed threshold for orange marker
   const ORANGE_THRESHOLD = 13000;
 
-  // Draw straight lines between all consecutive order markers
+  // Draw straight lines between consecutive DELIVERY order markers only
   const polylinePositions: [number, number][][] = [];
-  if (orders.length >= 2) {
-    for (let i = 0; i < orders.length - 1; i++) {
+  const deliveryOrders = orders.filter((order) => order.deliveryId);
+  if (deliveryOrders.length >= 2) {
+    for (let i = 0; i < deliveryOrders.length - 1; i++) {
       polylinePositions.push([
-        [orders[i].location.lat, orders[i].location.lng],
-        [orders[i + 1].location.lat, orders[i + 1].location.lng],
+        [deliveryOrders[i].location.lat, deliveryOrders[i].location.lng],
+        [
+          deliveryOrders[i + 1].location.lat,
+          deliveryOrders[i + 1].location.lng,
+        ],
       ]);
     }
   }
@@ -155,7 +174,9 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ orders = [] }) => {
               {order.customer}
               <br />({order.location.lat}, {order.location.lng})
               {isPool && (
-                <div style={{ color: "#888" }}>No delivery assigned</div>
+                <div style={{ color: "#888", marginBottom: "8px" }}>
+                  No delivery assigned
+                </div>
               )}
               {isPool && order.totalAmount !== undefined && (
                 <div
@@ -164,10 +185,40 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ orders = [] }) => {
                       (order.totalAmount ?? 0) > ORANGE_THRESHOLD
                         ? "#f59e42"
                         : "#888",
+                    marginBottom: "8px",
                   }}
                 >
                   {`Order price: €${order.totalAmount.toLocaleString()} (threshold: €${ORANGE_THRESHOLD.toLocaleString()})`}
                 </div>
+              )}
+              {isPool && (
+                <button
+                  onClick={async () => {
+                    try {
+                      await OrdersApi.updateOrder(order.id, {
+                        deliveryId: "DEL-001",
+                      });
+                      // Refresh the page to update the UI
+                      window.location.reload();
+                    } catch (error) {
+                      console.error("Failed to add order to delivery:", error);
+                      alert("Failed to add order to delivery");
+                    }
+                  }}
+                  style={{
+                    backgroundColor: "#059669",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                    marginTop: "8px",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                >
+                  ➕ Add to Delivery
+                </button>
               )}
             </Popup>
           </Marker>

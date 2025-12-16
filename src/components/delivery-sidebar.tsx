@@ -10,16 +10,21 @@ import { useEffect, useState } from "react";
 
 import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
+import { PoolOrderList } from "@/components/delivery/pool-order-list";
 import { OrdersApi } from "@/services/ordersApi";
 
 interface DeliverySidebarProps {
   onOrderRemoved?: () => void;
   onDeliveryOrdersUpdated?: (updatedOrders: Order[]) => void;
+  poolOrders?: Order[];
+  onAddOrderToDelivery?: (orderId: string) => void;
 }
 
 const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   onOrderRemoved,
   onDeliveryOrdersUpdated,
+  poolOrders = [],
+  onAddOrderToDelivery,
 }) => {
   const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
   const { currentDelivery, removeOrderFromDelivery } = useDelivery();
@@ -102,6 +107,14 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     }
   };
 
+  const handleReorder = (newOrders: Order[]) => {
+    // Update the local state with the new order
+    setDeliveryOrders(newOrders);
+
+    // Call the callback to notify parent components about the update
+    onDeliveryOrdersUpdated?.(newOrders);
+  };
+
   return (
     <Sidebar
       side="right"
@@ -116,13 +129,25 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
             Ładowanie zamówień...
           </div>
         ) : (
-          <DeliveryOrderList
-            orders={deliveryOrders}
-            highlightedOrderId={highlightedOrderId}
-            setHighlightedOrderId={setHighlightedOrderId}
-            onRemoveOrder={handleRemoveOrder}
-            title="Zamówienia przypisane do dostawy"
-          />
+          <div className="space-y-4">
+            <DeliveryOrderList
+              orders={deliveryOrders}
+              highlightedOrderId={highlightedOrderId}
+              setHighlightedOrderId={setHighlightedOrderId}
+              onRemoveOrder={handleRemoveOrder}
+              onReorder={handleReorder}
+              title="Zamówienia przypisane do dostawy"
+            />
+            {poolOrders.length > 0 && (
+              <div className="border-t pt-2">
+                <PoolOrderList
+                  poolOrders={poolOrders}
+                  onAddToDelivery={onAddOrderToDelivery || (() => {})}
+                  title="Dostępne zamówienia do przypisania"
+                />
+              </div>
+            )}
+          </div>
         )}
       </SidebarContent>
       <SidebarFooter className="text-xs text-muted-foreground px-4 py-3 border-t">
