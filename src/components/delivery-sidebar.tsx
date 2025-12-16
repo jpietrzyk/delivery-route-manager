@@ -9,7 +9,7 @@ import { useDelivery } from "@/hooks/use-delivery";
 import { useEffect, useState } from "react";
 
 import type { Order } from "@/types/order";
-import { DeliveryOrderList } from "./delivery-order-list";
+import { DeliveryOrderList } from "./delivery/delivery-order-list";
 import { OrdersApi } from "@/services/ordersApi";
 
 const DeliverySidebar = () => {
