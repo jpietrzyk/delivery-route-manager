@@ -12,7 +12,15 @@ import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
 import { OrdersApi } from "@/services/ordersApi";
 
-const DeliverySidebar = () => {
+interface DeliverySidebarProps {
+  onOrderRemoved?: () => void;
+  onDeliveryOrdersUpdated?: (updatedOrders: Order[]) => void;
+}
+
+const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
+  onOrderRemoved,
+  onDeliveryOrdersUpdated,
+}) => {
   const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
   const { currentDelivery, removeOrderFromDelivery } = useDelivery();
   const [deliveryOrders, setDeliveryOrders] = useState<Order[]>([]);
@@ -86,6 +94,8 @@ const DeliverySidebar = () => {
       await removeOrderFromDelivery(currentDelivery.id, orderId);
 
       console.log(`Successfully removed order ${orderId} from delivery`);
+      onOrderRemoved?.();
+      onDeliveryOrdersUpdated?.(updatedOrders);
     } catch (error) {
       console.error("Failed to remove order:", error);
       // TODO: Revert optimistic update on error (would need to refetch or cache previous state)

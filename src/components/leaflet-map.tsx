@@ -121,13 +121,14 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ orders = [] }) => {
     >
       <MapFitter orders={orders} />
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {polylinePositions.map((positions, index) => (
-        <Polyline
-          key={index}
-          positions={positions}
-          pathOptions={{ color: "#2563eb", weight: 4, opacity: 0.8 }}
-        />
-      ))}
+      {polylinePositions.length > 0 &&
+        polylinePositions.map((positions, index) => (
+          <Polyline
+            key={index}
+            positions={positions}
+            pathOptions={{ color: "#2563eb", weight: 4, opacity: 0.8 }}
+          />
+        ))}
       {orders.map((order) => {
         const isPool = !order.deliveryId;
         let icon = defaultIcon;
