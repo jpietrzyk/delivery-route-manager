@@ -9,6 +9,8 @@ interface DeliveryOrderItemProps {
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   onRemove?: (orderId: string) => void;
+  arrivalTime?: Date;
+  departureTime?: Date;
 }
 
 export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
@@ -18,7 +20,17 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
     onMouseEnter,
     onMouseLeave,
     onRemove,
+    arrivalTime,
+    departureTime,
   }) {
+    // Format time as HH:MM
+    const formatTimeHM = (date: Date) => {
+      return date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    };
+
     const handleRemove = (e: React.MouseEvent) => {
       e.stopPropagation(); // Prevent triggering mouse leave/enter on parent
       onRemove?.(order.id);
@@ -44,8 +56,17 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
               Status: {order.status}
             </div>
             <div className="text-xs text-muted-foreground/80 mt-1">
-              Location: ({order.location.lat.toFixed(4)},{" "}
-              {order.location.lng.toFixed(4)})
+              {arrivalTime && departureTime ? (
+                <>
+                  Przyjazd: {formatTimeHM(arrivalTime)} | Wyjazd:{" "}
+                  {formatTimeHM(departureTime)}
+                </>
+              ) : (
+                <>
+                  Location: ({order.location.lat.toFixed(4)},{" "}
+                  {order.location.lng.toFixed(4)})
+                </>
+              )}
             </div>
           </div>
           {onRemove && (

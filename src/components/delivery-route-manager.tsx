@@ -1,6 +1,6 @@
 import React from "react";
 import type { Order } from "@/types/order";
-import { OrderRouteItem } from "./order-route-item";
+import { DeliveryOrderItem } from "@/components/delivery/delivery-order-item";
 
 // Haversine formula for straight-line distance in km
 function getDistanceKm(
@@ -59,13 +59,14 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
       currentTime.getTime() + handlingMinutes * 60000
     );
     result.push(
-      <OrderRouteItem
+      <DeliveryOrderItem
         key={String(order.id)}
         order={order}
         arrivalTime={arrivalTime}
         departureTime={departureTime}
-        highlightedOrderId={highlightedOrderId}
-        setHighlightedOrderId={setHighlightedOrderId}
+        isHighlighted={highlightedOrderId === String(order.id)}
+        onMouseEnter={() => setHighlightedOrderId?.(String(order.id))}
+        onMouseLeave={() => setHighlightedOrderId?.(null)}
       />
     );
     // Prepare for next order

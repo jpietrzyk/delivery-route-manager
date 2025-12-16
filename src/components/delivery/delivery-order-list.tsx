@@ -1,7 +1,7 @@
 import React from "react";
 import type { Order } from "@/types/order";
-import { DeliveryOrderItem } from "./delivery-order-item";
-import { DeliveryDriveSegment } from "./delivery-drive-segment";
+import { DeliveryOrderItem } from "@/components/delivery/delivery-order-item";
+import { DeliveryDriveSegment } from "@/components/delivery/delivery-drive-segment";
 import {
   getDistanceKm,
   getDriveMinutes,
