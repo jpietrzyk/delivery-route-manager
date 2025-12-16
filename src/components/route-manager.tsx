@@ -1,9 +1,30 @@
-// src/components/RouteManager.tsx
 import React, { useEffect } from "react";
 import { useOrderRoute } from "@/hooks/useOrderRoute";
 import DraggableOrderList from "./DraggableOrderList";
 
 const RouteManager: React.FC = () => {
+  interface Order {
+    id: string | number;
+    name: string;
+    customer: string;
+    location: {
+      lat: number;
+      lng: number;
+    };
+    // Add other fields as needed
+  }
+
+  const orderRoute = useOrderRoute() as {
+    routeOrders: Order[];
+    availableOrders: Order[];
+    isLoadingOrders: boolean;
+    initializeRouteWithAllOrders: () => void;
+    clearRoute: () => void;
+    addOrderToRoute: (order: Order) => void;
+    isCalculatingRoute: boolean;
+    setIsCalculatingRoute: (val: boolean) => void;
+  };
+
   const {
     routeOrders,
     availableOrders,
@@ -13,7 +34,7 @@ const RouteManager: React.FC = () => {
     addOrderToRoute,
     isCalculatingRoute,
     setIsCalculatingRoute,
-  } = useOrderRoute();
+  } = orderRoute;
 
   useEffect(() => {
     // Initialize the route with all orders when component mounts and orders are loaded

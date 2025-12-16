@@ -1,5 +1,6 @@
 import React from "react";
 import type { Order } from "@/types/order";
+import { OrderRouteItem } from "./order-route-item";
 
 // Haversine formula for straight-line distance in km
 function getDistanceKm(
@@ -25,9 +26,6 @@ function getDriveMinutes(distanceKm: number) {
 }
 function getHandlingMinutes(complexity: number) {
   return (complexity ?? 1) * 20;
-}
-function formatTimeHM(date: Date) {
-  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
 interface DeliveryRouteManagerProps {
@@ -61,26 +59,14 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
       currentTime.getTime() + handlingMinutes * 60000
     );
     result.push(
-      <li
+      <OrderRouteItem
         key={String(order.id)}
-        className={`rounded border p-2 bg-accent/40 ${
-          highlightedOrderId === String(order.id) ? "ring-2 ring-blue-400" : ""
-        }`}
-        onMouseEnter={() => setHighlightedOrderId?.(String(order.id))}
-        onMouseLeave={() => setHighlightedOrderId?.(null)}
-      >
-        <div className="font-medium text-sm text-foreground">
-          {order.product?.name}
-        </div>
-        <div className="text-xs text-muted-foreground">{order.customer}</div>
-        <div className="text-xs text-muted-foreground/80">
-          Status: {order.status}
-        </div>
-        <div className="text-xs text-muted-foreground/80 mt-1">
-          Przyjazd: {formatTimeHM(arrivalTime)} | Wyjazd:{" "}
-          {formatTimeHM(departureTime)}
-        </div>
-      </li>
+        order={order}
+        arrivalTime={arrivalTime}
+        departureTime={departureTime}
+        highlightedOrderId={highlightedOrderId}
+        setHighlightedOrderId={setHighlightedOrderId}
+      />
     );
     // Prepare for next order
     currentTime = departureTime;
@@ -97,8 +83,8 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
           key={`time-${order.id}-${orders[idx + 1].id}`}
           className="flex items-center justify-center text-xs text-muted-foreground/80"
         >
-          ↳ czas przejazdu: {nextDriveMinutes}min, obsługa:{" "}
-          {nextHandlingMinutes}min
+          ↳ czas przejazdu: {nextDriveMinutes}min, obsługa:{nextHandlingMinutes}
+          min
         </li>
       );
     }

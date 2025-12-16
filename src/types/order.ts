@@ -21,6 +21,13 @@ export interface Order {
     lat: number;
     lng: number;
   };
+  // Time tracking fields
+  deliveryTimeEstimate?: number; // Estimated time to deliver this order (minutes)
+  deliveryTimeActual?: number; // Actual time taken to deliver this order (minutes)
+  buildTimeEstimate?: number; // Estimated time to build the garage (minutes)
+  buildTimeActual?: number; // Actual time taken to build the garage (minutes)
+  startTime?: Date; // When delivery/building started
+  endTime?: Date; // When delivery/building ended
 }
 
 export interface OrderItem {
@@ -51,7 +58,10 @@ export const sampleOrders: Order[] = [
         quantity: 50,
         price: 150.00
       }
-    ]
+    ],
+    // Time tracking data
+    deliveryTimeEstimate: 30, // 30 minutes to deliver
+    buildTimeEstimate: 180, // 3 hours to build garage
   },
   {
     id: 'ORD-002',
@@ -78,7 +88,10 @@ export const sampleOrders: Order[] = [
         quantity: 100,
         price: 12.75
       }
-    ]
+    ],
+    // Time tracking data
+    deliveryTimeEstimate: 20, // 20 minutes to deliver
+    buildTimeEstimate: 120, // 2 hours to build garage
   },
   {
     id: 'ORD-003',
@@ -99,7 +112,12 @@ export const sampleOrders: Order[] = [
         quantity: 20,
         price: 160.00
       }
-    ]
+    ],
+    // Time tracking data
+    deliveryTimeEstimate: 15, // 15 minutes to deliver
+    buildTimeEstimate: 90, // 1.5 hours to build garage
+    deliveryTimeActual: 18, // Actual time taken
+    buildTimeActual: 105, // Actual build time
   },
   {
     id: 'ORD-004',

@@ -13,7 +13,7 @@ const LeafletMapPlaceholder: React.FC = () => (
     engineType="default"
   >
     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-    <Marker position={{ lat: 51.51, lng: -0.1 }}>
+    <Marker position={{ lat: 51.51, lng: -0.1 }} lat={51.51} lng={-0.1}>
       <Popup>
         Marker near London
         <br />

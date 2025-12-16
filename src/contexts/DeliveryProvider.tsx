@@ -1,7 +1,25 @@
-// Reset: empty provider
-export default function DeliveryProvider({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
-}
+import React, { useState, useEffect, useCallback } from "react";
+import { DeliveryContext } from "./DeliveryContext";
+import { DeliveriesApi } from "@/services/deliveriesApi";
+import { OrdersApi } from "@/services/ordersApi";
+import type { Delivery } from "@/types/delivery";
+import type { Order } from "@/types/order";
+
+export default function DeliveryProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [deliveries, setDeliveries] = useState<Delivery[]>([]);
+  const [currentDelivery, setCurrentDelivery] = useState<Delivery | null>(null);
+  const [poolOrders, setPoolOrders] = useState<Order[]>([]);
+
+  // Fetch pool orders (unassigned)
+  const refreshPoolOrders = useCallback(async () => {
+    try {
+      const orders = await OrdersApi.getOrders();
+      const unassigned = orders.filter((order) => !order.deliveryId);
+      console.log(
         "[DeliveryProvider] Pool orders (unassigned):",
         unassigned.length,
         unassigned.map((o) => o.id)
@@ -199,4 +217,4 @@ export default function DeliveryProvider({ children }: { children: React.ReactNo
       {children}
     </DeliveryContext.Provider>
   );
-};
+}

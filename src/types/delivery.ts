@@ -20,6 +20,11 @@ export interface Delivery {
   notes?: string;
   estimatedDistance?: number; // in kilometers
   estimatedDuration?: number; // in minutes
+  // Time tracking fields
+  totalDeliveryTime?: number; // Total time spent delivering all orders (minutes)
+  totalDriveTime?: number; // Total time spent driving between locations (minutes)
+  totalBuildTime?: number; // Total time spent building garages (minutes)
+  totalTime?: number; // Total delivery time including all activities (minutes)
 }
 
 /**
@@ -32,6 +37,11 @@ export interface DeliveryOrder {
   deliveredAt?: Date;
   notes?: string;
   order?: Order; // Populated order data (for display)
+  // Time tracking fields
+  driveTimeEstimate?: number; // Estimated drive time from previous location (minutes)
+  driveTimeActual?: number; // Actual drive time from previous location (minutes)
+  arrivalTime?: Date; // When arrived at this order location
+  departureTime?: Date; // When departed from this order location
 }
 
 // Helper function to create a new delivery
@@ -174,19 +184,74 @@ export const sampleDeliveries: Delivery[] = [
     updatedAt: new Date('2025-12-05T15:30:00Z'),
     orders: [
       {
-        orderId: 'ORD-001',
+        orderId: 'PROD-001',
         sequence: 0,
         status: 'pending',
+        driveTimeEstimate: 0, // Starting point, no drive time
+        driveTimeActual: 0,
       },
       {
-        orderId: 'ORD-002',
+        orderId: 'PROD-002',
         sequence: 1,
         status: 'pending',
+        driveTimeEstimate: 45, // 45 minutes drive from previous location
+        driveTimeActual: 0,
       },
       {
-        orderId: 'ORD-003',
+        orderId: 'PROD-003',
         sequence: 2,
         status: 'pending',
+        driveTimeEstimate: 30, // 30 minutes drive from previous location
+        driveTimeActual: 0,
+      },
+      {
+        orderId: 'PROD-013',
+        sequence: 3,
+        status: 'pending',
+        driveTimeEstimate: 25, // 25 minutes drive from previous location
+        driveTimeActual: 0,
+      },
+      {
+        orderId: 'PROD-014',
+        sequence: 4,
+        status: 'pending',
+        driveTimeEstimate: 20, // 20 minutes drive from previous location
+        driveTimeActual: 0,
+      },
+      {
+        orderId: 'PROD-015',
+        sequence: 5,
+        status: 'pending',
+        driveTimeEstimate: 15, // 15 minutes drive from previous location
+        driveTimeActual: 0,
+      },
+      {
+        orderId: 'PROD-016',
+        sequence: 6,
+        status: 'pending',
+        driveTimeEstimate: 18, // 18 minutes drive from previous location
+        driveTimeActual: 0,
+      },
+      {
+        orderId: 'PROD-017',
+        sequence: 7,
+        status: 'pending',
+        driveTimeEstimate: 22, // 22 minutes drive from previous location
+        driveTimeActual: 0,
+      },
+      {
+        orderId: 'PROD-018',
+        sequence: 8,
+        status: 'pending',
+        driveTimeEstimate: 12, // 12 minutes drive from previous location
+        driveTimeActual: 0,
+      },
+      {
+        orderId: 'PROD-019',
+        sequence: 9,
+        status: 'pending',
+        driveTimeEstimate: 10, // 10 minutes drive from previous location
+        driveTimeActual: 0,
       },
     ],
     notes: 'First delivery of the day. Start at warehouse.',
