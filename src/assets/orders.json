@@ -231,7 +231,7 @@
       "lat": 47.607439,
       "lng": 20.280129
     },
-    "deliveryId": null
+    "deliveryId": "DEL-001"
   },
   {
     "id": "PROD-014",
@@ -249,7 +249,7 @@
       "lat": 48.040709,
       "lng": 18.909381
     },
-    "deliveryId": null
+    "deliveryId": "DEL-001"
   },
   {
     "id": "PROD-015",
@@ -267,7 +267,7 @@
       "lat": 47.74311,
       "lng": 19.073521
     },
-    "deliveryId": null
+    "deliveryId": "DEL-001"
   },
   {
     "id": "PROD-016",
@@ -285,7 +285,7 @@
       "lat": 46.628914,
       "lng": 16.544321
     },
-    "deliveryId": null
+    "deliveryId": "DEL-001"
   },
   {
     "id": "PROD-017",
@@ -303,7 +303,7 @@
       "lat": 47.383039,
       "lng": 19.356908
     },
-    "deliveryId": null
+    "deliveryId": "DEL-001"
   },
   {
     "id": "PROD-018",
@@ -321,7 +321,7 @@
       "lat": 46.625734,
       "lng": 18.65541
     },
-    "deliveryId": null
+    "deliveryId": "DEL-001"
   },
   {
     "id": "PROD-019",
@@ -339,24 +339,6 @@
       "lat": 47.437512,
       "lng": 21.403632
     },
-    "deliveryId": null
-  },
-  {
-    "id": "TEST-001",
-    "product": { "name": "Test Pool Order in Berlin", "price": 15000, "complexity": 3 },
-    "comment": "Test order to verify pool markers",
-    "status": "pending",
-    "priority": "low",
-    "active": true,
-    "createdAt": "2025-12-05T10:00:00.000Z",
-    "updatedAt": "2025-12-05T10:00:00.000Z",
-    "customer": "Test Customer",
-    "totalAmount": 15000,
-    "items": [],
-    "location": {
-      "lat": 52.52,
-      "lng": 13.405
-    },
-    "deliveryId": null
+    "deliveryId": "DEL-001"
   }
 ]
