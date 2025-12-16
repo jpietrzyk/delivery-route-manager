@@ -102,6 +102,14 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     }
   };
 
+  const handleReorder = (newOrders: Order[]) => {
+    // Update the local state with the new order
+    setDeliveryOrders(newOrders);
+
+    // Call the callback to notify parent components about the update
+    onDeliveryOrdersUpdated?.(newOrders);
+  };
+
   return (
     <Sidebar
       side="right"
@@ -121,6 +129,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
             highlightedOrderId={highlightedOrderId}
             setHighlightedOrderId={setHighlightedOrderId}
             onRemoveOrder={handleRemoveOrder}
+            onReorder={handleReorder}
             title="Zamówienia przypisane do dostawy"
           />
         )}
