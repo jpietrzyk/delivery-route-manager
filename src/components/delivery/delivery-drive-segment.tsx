@@ -33,6 +33,11 @@ export const DeliveryDriveSegment: React.FC<DeliveryDriveSegmentProps> = ({
     return (meters / 1000).toFixed(1);
   };
 
+  // Format location coordinates for display
+  const formatLocation = (lat: number, lng: number): string => {
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  };
+
   return (
     <li
       key={`segment-${segment.id}`}
@@ -46,10 +51,29 @@ export const DeliveryDriveSegment: React.FC<DeliveryDriveSegmentProps> = ({
         </span>
       ) : segment.routeData ? (
         <div className="flex items-center gap-2">
-          <span>
-            ↳ Drive: {formatDuration(segment.routeData.duration)}min, Distance:{" "}
-            {formatDistance(segment.routeData.distance)}km
-          </span>
+          <div className="text-xs">
+            <div className="font-medium text-foreground/90">
+              Route: {segment.fromOrder.customer} → {segment.toOrder.customer}
+            </div>
+            <div className="text-muted-foreground/80">
+              Start:{" "}
+              {formatLocation(
+                segment.fromOrder.location.lat,
+                segment.fromOrder.location.lng
+              )}
+            </div>
+            <div className="text-muted-foreground/80">
+              End:{" "}
+              {formatLocation(
+                segment.toOrder.location.lat,
+                segment.toOrder.location.lng
+              )}
+            </div>
+            <div className="text-muted-foreground/80">
+              Distance: {formatDistance(segment.routeData.distance)}km | Time:{" "}
+              {formatDuration(segment.routeData.duration)}min
+            </div>
+          </div>
           {segment.status === "failed" && (
             <span className="text-red-500 ml-2" title={segment.routeData.error}>
               ⚠️
