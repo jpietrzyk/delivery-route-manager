@@ -1,0 +1,59 @@
+import React from "react";
+import type { RouteSegment } from "@/types/map-provider";
+import type { RouteManager } from "@/services/RouteManager";
+
+interface DeliveryRouteSegmentProps {
+  segment: RouteSegment;
+  onRecalculate?: () => void;
+  isCalculating?: boolean;
+  onHover?: () => void;
+  routeManager?: RouteManager;
+}
+
+export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
+  segment,
+  onRecalculate,
+  isCalculating = false,
+  onHover,
+  routeManager,
+}) => {
+  const handleRecalculate = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onRecalculate?.();
+  };
+
+  const handleMouseEnter = () => {
+    onHover?.();
+    if (routeManager) {
+      routeManager.highlightSegment(segment.id);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (routeManager) {
+      routeManager.unhighlightSegment(segment.id);
+    }
+  };
+
+  // Format duration from seconds to minutes
+  const formatDuration = (seconds: number): string => {
+    return Math.round(seconds / 60).toString();
+  };
+
+  return (
+    <div
+      className="delivery-route-segment"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div>Segment ID: {segment.id}</div>
+      <div>
+        Duration:{" "}
+        {segment.duration ? formatDuration(segment.duration) + " min" : "N/A"}
+      </div>
+      <button onClick={handleRecalculate} disabled={isCalculating}>
+        {isCalculating ? "Recalculating..." : "Recalculate"}
+      </button>
+    </div>
+  );
+};

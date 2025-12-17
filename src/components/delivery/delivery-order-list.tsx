@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import type { Order } from "@/types/order";
 import { DeliveryOrderItem } from "@/components/delivery/delivery-order-item";
-import { DeliveryDriveSegment } from "@/components/delivery/delivery-drive-segment";
+import { DeliveryRouteSegment } from "@/components/delivery/delivery-route-segment";
 import { getDistanceKm, getDriveMinutes } from "@/lib/delivery-time-utils";
 import {
   DndContext,
@@ -131,7 +131,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                     onRemove={onRemoveOrder}
                   />
                   {idx < orders.length - 1 && routeManager && (
-                    <DeliveryDriveSegment
+                    <DeliveryRouteSegment
                       segment={
                         routeManager.getSegment(
                           `${order.id}-${orders[idx + 1].id}`
@@ -156,7 +156,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                     />
                   )}
                   {idx < orders.length - 1 && !routeManager && (
-                    <DeliveryDriveSegment
+                    <DeliveryRouteSegment
                       segment={{
                         id: `${order.id}-${orders[idx + 1].id}`,
                         fromOrder: order,
