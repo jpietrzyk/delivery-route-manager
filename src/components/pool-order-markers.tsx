@@ -6,10 +6,12 @@ import { mapConfig } from "@/config/map.config";
 import type { Order } from "@/types/order";
 
 // Extend marker interface to include custom properties
+import type { HereMapsNamespace } from "@/types/here-maps";
+
+// Extend marker interface to include custom properties
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   interface Window {
-    H: any;
+    H: HereMapsNamespace;
   }
 }
 
@@ -204,6 +206,7 @@ const PoolOrderMarkers = () => {
         });
 
         // Add click event listener to show popup
+        // TODO: Fix When add more abstraction over maps handling
         marker.addEventListener("tap", (evt: any) => {
           // Get order data from the marker itself to avoid closure issues
           const markerData = evt.target.getData();
@@ -323,7 +326,7 @@ const PoolOrderMarkers = () => {
       });
       currentMarkers.clear();
     };
-  }, [isReady, mapRef, poolOrders, createPoolMarkerIcon]);
+  }, [isReady, mapRef, poolOrders, createPoolMarkerIcon, addOrderToDelivery, currentDelivery, refreshOrders]);
 
   return null; // No UI, just map interaction
 };

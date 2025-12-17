@@ -121,7 +121,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
       className="border-l bg-background text-foreground shadow-xl relative z-20 flex flex-col h-screen pointer-events-auto w-96 transition-all duration-300"
     >
       {/* Enhanced Header with Gradient */}
-      <SidebarHeader className="font-bold text-xl px-6 py-4 border-b bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-sm">
+      <SidebarHeader className="font-bold text-xl px-6 py-4 border-b bg-linear-to-r from-primary to-primary/90 text-primary-foreground shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
