@@ -156,4 +156,5 @@ export interface RouteSegment {
   status: 'idle' | 'calculating' | 'calculated' | 'failed';
   createdAt: Date;
   updatedAt: Date;
+  duration?: number; // Duration in seconds (optional)
 }
