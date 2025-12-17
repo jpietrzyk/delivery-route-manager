@@ -132,7 +132,7 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
             </div>
           )}
         </div>
-        <div className="h-1 w-full bg-gradient-to-r from-transparent via-primary/10 to-transparent"></div>
+        <div className="h-1 w-full bg-linear-to-r from-transparent via-primary/10 to-transparent"></div>
       </li>
     );
   }
