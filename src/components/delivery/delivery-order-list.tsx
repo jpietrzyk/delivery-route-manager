@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { Order } from "@/types/order";
 import { DeliveryOrderItem } from "@/components/delivery/delivery-order-item";
 import { DeliveryDriveSegment } from "@/components/delivery/delivery-drive-segment";
@@ -22,6 +22,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { RouteManager } from "@/services/RouteManager";
 
 interface DeliveryOrderListProps {
   orders: Order[];
@@ -30,6 +31,7 @@ interface DeliveryOrderListProps {
   onRemoveOrder?: (orderId: string) => void;
   title?: string;
   onReorder?: (newOrders: Order[]) => void;
+  routeManager?: RouteManager;
 }
 
 export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
@@ -39,6 +41,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
   onRemoveOrder,
   title = "Zamówienia",
   onReorder,
+  routeManager,
 }) => {
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -62,6 +65,31 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
       }
     }
   };
+
+  // Manage route segments when orders change
+  useEffect(() => {
+    if (!routeManager || orders.length < 2) {
+      return;
+    }
+
+    // Update all segments for consecutive orders
+    for (let i = 0; i < orders.length - 1; i++) {
+      routeManager.upsertSegment(orders[i], orders[i + 1]);
+    }
+
+    // Remove segments that no longer exist
+    const currentSegmentIds = new Set<string>();
+    for (let i = 0; i < orders.length - 1; i++) {
+      currentSegmentIds.add(`${orders[i].id}-${orders[i + 1].id}`);
+    }
+
+    // Remove obsolete segments
+    routeManager.getAllSegments().forEach((segment) => {
+      if (!currentSegmentIds.has(segment.id)) {
+        routeManager.removeSegment(segment.id);
+      }
+    });
+  }, [orders, routeManager]);
 
   return (
     <DndContext
@@ -92,16 +120,56 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                     onMouseLeave={() => setHighlightedOrderId?.(null)}
                     onRemove={onRemoveOrder}
                   />
-                  {idx < orders.length - 1 && (
+                  {idx < orders.length - 1 && routeManager && (
                     <DeliveryDriveSegment
-                      fromOrderId={order.id}
-                      toOrderId={orders[idx + 1].id}
-                      driveMinutes={getDriveMinutes(
-                        getDistanceKm(order.location, orders[idx + 1].location)
+                      segment={
+                        routeManager.getSegment(
+                          `${order.id}-${orders[idx + 1].id}`
+                        ) || {
+                          id: `${order.id}-${orders[idx + 1].id}`,
+                          fromOrder: order,
+                          toOrder: orders[idx + 1],
+                          status: "idle",
+                          createdAt: new Date(),
+                          updatedAt: new Date(),
+                        }
+                      }
+                      onRecalculate={() =>
+                        routeManager.recalculateSegment(
+                          `${order.id}-${orders[idx + 1].id}`
+                        )
+                      }
+                      isCalculating={routeManager.isCalculating(
+                        `${order.id}-${orders[idx + 1].id}`
                       )}
-                      handlingMinutes={getHandlingMinutes(
-                        orders[idx + 1].product?.complexity ?? 1
-                      )}
+                    />
+                  )}
+                  {idx < orders.length - 1 && !routeManager && (
+                    <DeliveryDriveSegment
+                      segment={{
+                        id: `${order.id}-${orders[idx + 1].id}`,
+                        fromOrder: order,
+                        toOrder: orders[idx + 1],
+                        routeData: {
+                          polyline: [],
+                          distance:
+                            getDistanceKm(
+                              order.location,
+                              orders[idx + 1].location
+                            ) * 1000,
+                          duration:
+                            getDriveMinutes(
+                              getDistanceKm(
+                                order.location,
+                                orders[idx + 1].location
+                              )
+                            ) * 60,
+                          status: "calculated",
+                        },
+                        status: "calculated",
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                      }}
                     />
                   )}
                 </React.Fragment>
