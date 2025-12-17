@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { DeliveryContext } from "@/contexts/DeliveryContext";
+import { DeliveryContext } from "@/contexts/delivery-context";
 
 export const useDelivery = () => {
   const context = useContext(DeliveryContext);

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MarkerHighlightContext } from "./MarkerHighlightContext";
+import { MarkerHighlightContext } from "./marker-highlight-context";
 
 export default function MarkerHighlightProvider({
   children,

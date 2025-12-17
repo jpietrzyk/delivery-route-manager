@@ -3,8 +3,8 @@ import "./index.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import MarkerHighlightProvider from "@/contexts/MarkerHighlightProvider";
-import DeliveryProvider from "@/contexts/DeliveryProvider";
+import MarkerHighlightProvider from "@/contexts/marker-highlight-provider";
+import DeliveryProvider from "@/contexts/delivery-provider";
 const rootElement = document.getElementById("root");
 if (!rootElement) {
   throw new Error("Root element not found");

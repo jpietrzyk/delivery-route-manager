@@ -1,6 +1,6 @@
 
 import { useContext } from "react";
-import { MarkerHighlightContext } from "@/contexts/MarkerHighlightContext";
+import { MarkerHighlightContext } from "@/contexts/marker-highlight-context";
 
 export const useMarkerHighlight = () => {
   const context = useContext(MarkerHighlightContext);
