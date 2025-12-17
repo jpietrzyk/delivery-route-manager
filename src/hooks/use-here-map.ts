@@ -1,4 +1,4 @@
-// src/hooks/useHereMap.ts
+// src/hooks/use-here-map.ts
 import { useContext } from "react";
 import { HereMapContext } from "@/contexts/HereMapContext";
 import type { HereMapContextType } from "@/contexts/HereMapContext";

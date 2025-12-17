@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
-import { useHereMap } from "@/hooks/useHereMap";
+import { useHereMap } from "@/hooks/use-here-map";
 import { useDelivery } from "@/hooks/use-delivery";
-import { useOrderRoute } from "@/hooks/useOrderRoute";
+import { useOrderRoute } from "@/hooks/use-order-route";
 import { mapConfig } from "@/config/map.config";
 import type { Order } from "@/types/order";
 
@@ -326,7 +326,15 @@ const PoolOrderMarkers = () => {
       });
       currentMarkers.clear();
     };
-  }, [isReady, mapRef, poolOrders, createPoolMarkerIcon, addOrderToDelivery, currentDelivery, refreshOrders]);
+  }, [
+    isReady,
+    mapRef,
+    poolOrders,
+    createPoolMarkerIcon,
+    addOrderToDelivery,
+    currentDelivery,
+    refreshOrders,
+  ]);
 
   return null; // No UI, just map interaction
 };

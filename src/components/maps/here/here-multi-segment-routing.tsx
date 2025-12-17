@@ -1,7 +1,7 @@
 // src/components/HereMultiSegmentRouting.tsx
 import React, { useEffect, useRef } from "react";
-import { useHereMap } from "@/hooks/useHereMap";
-import { useOrderRoute } from "@/hooks/useOrderRoute";
+import { useHereMap } from "@/hooks/use-here-map";
+import { useOrderRoute } from "@/hooks/use-order-route";
 import type { MapGroup, RoutingResult, RoutingError } from "@/types/here-maps";
 
 const HereMultiSegmentRouting: React.FC = () => {
