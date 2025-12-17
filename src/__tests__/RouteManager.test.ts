@@ -31,9 +31,22 @@ describe('RouteManager', () => {
     expect(routeManager.getAllSegments()).toHaveLength(0);
   });
 
+  const createMockOrder = (id: string, lat: number, lng: number) => ({
+    id,
+    product: { name: 'Test Product', price: 100, complexity: 1 as 1 },
+    status: 'pending' as 'pending',
+    priority: 'medium' as 'medium',
+    active: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    customer: 'Test Customer',
+    totalAmount: 100,
+    location: { lat, lng },
+  });
+
   it('should create a segment when upsertSegment is called', () => {
-    const mockOrder1 = { id: 'order-1', location: { lat: 51.505, lng: -0.09 } };
-    const mockOrder2 = { id: 'order-2', location: { lat: 51.51, lng: -0.1 } };
+    const mockOrder1 = createMockOrder('order-1', 51.505, -0.09);
+    const mockOrder2 = createMockOrder('order-2', 51.51, -0.1);
 
     const segment = routeManager.upsertSegment(mockOrder1, mockOrder2);
 
@@ -45,8 +58,8 @@ describe('RouteManager', () => {
   });
 
   it('should return the same segment when upsertSegment is called with same orders', () => {
-    const mockOrder1 = { id: 'order-1', location: { lat: 51.505, lng: -0.09 } };
-    const mockOrder2 = { id: 'order-2', location: { lat: 51.51, lng: -0.1 } };
+    const mockOrder1 = createMockOrder('order-1', 51.505, -0.09);
+    const mockOrder2 = createMockOrder('order-2', 51.51, -0.1);
 
     const segment1 = routeManager.upsertSegment(mockOrder1, mockOrder2);
     const segment2 = routeManager.upsertSegment(mockOrder1, mockOrder2);
@@ -56,8 +69,8 @@ describe('RouteManager', () => {
   });
 
   it('should remove a segment when removeSegment is called', () => {
-    const mockOrder1 = { id: 'order-1', location: { lat: 51.505, lng: -0.09 } };
-    const mockOrder2 = { id: 'order-2', location: { lat: 51.51, lng: -0.1 } };
+    const mockOrder1 = createMockOrder('order-1', 51.505, -0.09);
+    const mockOrder2 = createMockOrder('order-2', 51.51, -0.1);
 
     routeManager.upsertSegment(mockOrder1, mockOrder2);
     expect(routeManager.getAllSegments()).toHaveLength(1);
@@ -67,9 +80,9 @@ describe('RouteManager', () => {
   });
 
   it('should clear all segments when clear is called', () => {
-    const mockOrder1 = { id: 'order-1', location: { lat: 51.505, lng: -0.09 } };
-    const mockOrder2 = { id: 'order-2', location: { lat: 51.51, lng: -0.1 } };
-    const mockOrder3 = { id: 'order-3', location: { lat: 51.515, lng: -0.11 } };
+    const mockOrder1 = createMockOrder('order-1', 51.505, -0.09);
+    const mockOrder2 = createMockOrder('order-2', 51.51, -0.1);
+    const mockOrder3 = createMockOrder('order-3', 51.515, -0.11);
 
     routeManager.upsertSegment(mockOrder1, mockOrder2);
     routeManager.upsertSegment(mockOrder2, mockOrder3);

@@ -1,16 +1,15 @@
-// Jest configuration for ES modules
-
+// Jest configuration for ES modules (CommonJS export)
 /** @type {import('ts-jest').JestConfigWithTsJest} */
-export default {
+module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '\.(css|less|scss|sass)$': 'identity-obj-proxy'
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
   },
   transform: {
-    '^.+\.tsx?$': ['ts-jest', {
+    '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: 'tsconfig.json',
       useESM: true
     }]
@@ -19,8 +18,7 @@ export default {
     "**/__tests__/**/*.[jt]s?(x)",
     "**/?(*.)+(spec|test).[tj]s?(x)"
   ],
-  extensionsToTreatAsEsm: ['.ts', '.tsx']
-  ,
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
   testEnvironmentOptions: {
     customExportConditions: ["node", "node-addons"]
   }

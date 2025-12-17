@@ -8,9 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "jest --config jest.config.mjs",
-    "test:watch": "jest --config jest.config.mjs --watch",
-    "test:coverage": "jest --config jest.config.mjs --coverage"
+    "test": "pnpm dlx jest --config jest.config.cjs",
+    "test:watch": "pnpm dlx jest --config jest.config.cjs --watch",
+    "test:coverage": "pnpm dlx jest --config jest.config.cjs --coverage"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
