@@ -112,8 +112,22 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                     id={order.id}
                     order={order}
                     isHighlighted={highlightedOrderId === order.id}
-                    onMouseEnter={() => setHighlightedOrderId?.(order.id)}
-                    onMouseLeave={() => setHighlightedOrderId?.(null)}
+                    onMouseEnter={() => {
+                      setHighlightedOrderId?.(order.id);
+                      // Highlight the route segment to the next order
+                      if (routeManager && idx < orders.length - 1) {
+                        const segmentId = `${order.id}-${orders[idx + 1].id}`;
+                        routeManager.highlightSegment(segmentId);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      setHighlightedOrderId?.(null);
+                      // Unhighlight the route segment to the next order
+                      if (routeManager && idx < orders.length - 1) {
+                        const segmentId = `${order.id}-${orders[idx + 1].id}`;
+                        routeManager.unhighlightSegment(segmentId);
+                      }
+                    }}
                     onRemove={onRemoveOrder}
                   />
                   {idx < orders.length - 1 && routeManager && (

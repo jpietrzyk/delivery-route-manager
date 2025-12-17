@@ -313,13 +313,23 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
       <MapFitter orders={orders} />
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {polylinePositions.length > 0 &&
-        polylinePositions.map((positions, index) => (
-          <Polyline
-            key={index}
-            positions={positions}
-            pathOptions={{ color: "#2563eb", weight: 4, opacity: 0.8 }}
-          />
-        ))}
+        polylinePositions.map((positions, index) => {
+          // Determine if this segment should be highlighted
+          const fromOrderId = deliveryOrders[index]?.id;
+          const isHighlighted = highlightedOrderId === fromOrderId;
+
+          return (
+            <Polyline
+              key={index}
+              positions={positions}
+              pathOptions={{
+                color: isHighlighted ? "#10b981" : "#2563eb", // Highlighted segment green, others blue
+                weight: isHighlighted ? 6 : 4, // Highlighted segment thicker
+                opacity: isHighlighted ? 1.0 : 0.8, // Highlighted segment more opaque
+              }}
+            />
+          );
+        })}
       {orders.map((order) => {
         const isPool = !order.deliveryId;
         let icon = defaultIcon;
