@@ -221,7 +221,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
 }) => {
   const center =
     orders.length > 0 ? orders[0].location : { lat: 51.505, lng: -0.09 };
-  const { highlightedOrderId } = useMarkerHighlight();
+  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDelivery();
 
@@ -339,6 +339,10 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
             position={order.location}
             // @ts-expect-error: icon is supported by react-leaflet Marker but not in type definitions
             icon={icon as L.Icon}
+            eventHandlers={{
+              mouseover: () => setHighlightedOrderId(order.id),
+              mouseout: () => setHighlightedOrderId(null),
+            }}
           >
             <Popup>
               {createOrderPopupContent(
