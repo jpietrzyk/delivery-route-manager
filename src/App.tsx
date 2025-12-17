@@ -8,6 +8,7 @@ import type { Order } from "@/types/order";
 function App() {
   const [deliveryOrders, setDeliveryOrders] = useState<Order[]>([]);
   const [poolOrders, setPoolOrders] = useState<Order[]>([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     OrdersApi.getOrders().then((fetchedOrders) => {
@@ -35,6 +36,8 @@ function App() {
         (order) => !order.deliveryId
       );
       setPoolOrders(initialPoolOrders);
+      // Trigger sidebar refresh
+      setRefreshTrigger((prev) => prev + 1);
     });
   };
 
@@ -84,6 +87,7 @@ function App() {
             onOrderRemoved={handleOrderRemoved}
             onDeliveryOrdersUpdated={handleDeliveryOrdersUpdated}
             poolOrders={poolOrders}
+            refreshTrigger={refreshTrigger}
             onAddOrderToDelivery={async (orderId: string) => {
               try {
                 // Update the order to assign it to default delivery

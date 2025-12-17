@@ -11,6 +11,7 @@ import {
 import L from "leaflet";
 import React from "react";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
+import { useDelivery } from "@/hooks/use-delivery";
 import type { Order } from "@/types/order";
 import { OrdersApi } from "@/services/ordersApi";
 
@@ -220,7 +221,9 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
 }) => {
   const center =
     orders.length > 0 ? orders[0].location : { lat: 51.505, lng: -0.09 };
-  const { highlightedOrderId } = useMarkerHighlight();
+  const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
+  const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
+    useDelivery();
 
   // Preload icons
   const defaultIcon = React.useMemo(
@@ -336,6 +339,10 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
             position={order.location}
             // @ts-expect-error: icon is supported by react-leaflet Marker but not in type definitions
             icon={icon as L.Icon}
+            eventHandlers={{
+              mouseover: () => setHighlightedOrderId(order.id),
+              mouseout: () => setHighlightedOrderId(null),
+            }}
           >
             <Popup>
               {createOrderPopupContent(
@@ -344,17 +351,28 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
                 async () => {
                   try {
                     if (isPool) {
-                      // Add to delivery
-                      await OrdersApi.updateOrder(order.id, {
-                        deliveryId: "DEL-001",
-                      });
+                      // Add to delivery using the proper delivery context
+                      if (currentDelivery) {
+                        await addOrderToDelivery(currentDelivery.id, order.id);
+                      } else {
+                        await OrdersApi.updateOrder(order.id, {
+                          deliveryId: "DEL-001",
+                        });
+                      }
                       onOrderAddedToDelivery?.(order.id);
                       onRefreshRequested?.();
                     } else {
-                      // Remove from delivery
-                      await OrdersApi.updateOrder(order.id, {
-                        deliveryId: undefined,
-                      });
+                      // Remove from delivery using the proper delivery context
+                      if (currentDelivery) {
+                        await removeOrderFromDelivery(
+                          currentDelivery.id,
+                          order.id
+                        );
+                      } else {
+                        await OrdersApi.updateOrder(order.id, {
+                          deliveryId: undefined,
+                        });
+                      }
                       onRefreshRequested?.();
                     }
                   } catch (error) {
