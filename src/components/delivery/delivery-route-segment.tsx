@@ -1,6 +1,7 @@
 import React from "react";
 import type { RouteSegment } from "@/types/map-provider";
 import type { RouteManager } from "@/services/RouteManager";
+import { RefreshCcw } from "lucide-react";
 
 interface DeliveryRouteSegmentProps {
   segment: RouteSegment;
@@ -55,38 +56,46 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
 
   return (
     <div
-      className="delivery-route-segment"
+      className="delivery-route-segment bg-card rounded-lg border border-border p-3 mb-2 shadow-sm hover:shadow-md transition-shadow duration-200"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div>Segment ID: {segment.id}</div>
-      <div>
-        Start: {segment.fromOrder.location.lat.toFixed(6)},{" "}
-        {segment.fromOrder.location.lng.toFixed(6)}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <div className="text-xs text-muted-foreground mb-1">
+            Route Segment:{" "}
+            <span className="font-medium text-foreground">{segment.id}</span>
+          </div>
+          <div className="space-y-1 text-sm">
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground">Distance:</span>
+              <span className="font-medium text-foreground">
+                {segment.routeData?.distance
+                  ? formatDistance(segment.routeData.distance)
+                  : "Nie dostępna"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground">Duration:</span>
+              <span className="font-medium text-foreground">
+                {segment.routeData?.duration
+                  ? formatDuration(segment.routeData.duration)
+                  : "Nie dostępna"}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="flex-shrink-0">
+          <button
+            onClick={handleRecalculate}
+            disabled={isCalculating}
+            className="p-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label={isCalculating ? "Recalculating..." : "Refresh route"}
+          >
+            <RefreshCcw className="h-4 w-4" />
+          </button>
+        </div>
       </div>
-      <div>
-        End: {segment.toOrder.location.lat.toFixed(6)},{" "}
-        {segment.toOrder.location.lng.toFixed(6)}
-      </div>
-      <div>
-        Distance:{" "}
-        {segment.routeData?.distance
-          ? formatDistance(segment.routeData.distance)
-          : "Nie dostępna"}
-      </div>
-      <div>
-        Duration (from provider):{" "}
-        {segment.routeData?.duration
-          ? formatDuration(segment.routeData.duration)
-          : "Nie dostępna"}
-      </div>
-      <button
-        onClick={handleRecalculate}
-        disabled={isCalculating}
-        className="whitespace-nowrap overflow-visible"
-      >
-        {isCalculating ? "Recalculating..." : "Recalculate"}
-      </button>
     </div>
   );
 };
