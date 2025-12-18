@@ -1,6 +1,7 @@
 import React from "react";
 import type { RouteSegment } from "@/types/map-provider";
 import type { RouteManager } from "@/services/RouteManager";
+import { RefreshCcw, Route, Clock, ArrowRight } from "lucide-react";
 
 interface DeliveryRouteSegmentProps {
   segment: RouteSegment;
@@ -42,9 +43,9 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
     const minutes = totalMinutes % 60;
 
     if (hours > 0) {
-      return `${hours} hours ${minutes} minutes`;
+      return `${hours} h ${minutes} m`;
     } else {
-      return `${minutes} minutes`;
+      return `${minutes} m`;
     }
   };
 
@@ -55,38 +56,46 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
 
   return (
     <div
-      className="delivery-route-segment"
+      className="delivery-route-segment bg-card/50 rounded-lg p-2 mb-1 hover:bg-card transition-colors duration-200"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div>Segment ID: {segment.id}</div>
-      <div>
-        Start: {segment.fromOrder.location.lat.toFixed(6)},{" "}
-        {segment.fromOrder.location.lng.toFixed(6)}
+      <div className="flex items-center justify-between gap-2">
+        <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <div className="text-xs text-muted-foreground mb-1">
+            Route Segment:{" "}
+            <span className="font-medium text-foreground">{segment.id}</span>
+          </div>
+          <div className="text-sm">
+            <div className="flex items-center gap-2">
+              <Route className="h-4 w-4 text-muted-foreground" />
+              <span className="font-medium text-foreground">
+                {segment.routeData?.distance
+                  ? formatDistance(segment.routeData.distance)
+                  : "Nie dostępna"}
+              </span>
+              <span className="text-muted-foreground">|</span>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <span className="font-medium text-foreground">
+                {segment.routeData?.duration
+                  ? formatDuration(segment.routeData.duration)
+                  : "Nie dostępna"}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="flex-shrink-0">
+          <button
+            onClick={handleRecalculate}
+            disabled={isCalculating}
+            className="p-2 hover:bg-primary/10 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-primary hover:text-primary"
+            aria-label={isCalculating ? "Recalculating..." : "Refresh route"}
+          >
+            <RefreshCcw className="h-4 w-4" />
+          </button>
+        </div>
       </div>
-      <div>
-        End: {segment.toOrder.location.lat.toFixed(6)},{" "}
-        {segment.toOrder.location.lng.toFixed(6)}
-      </div>
-      <div>
-        Distance:{" "}
-        {segment.routeData?.distance
-          ? formatDistance(segment.routeData.distance)
-          : "Nie dostępna"}
-      </div>
-      <div>
-        Duration (from provider):{" "}
-        {segment.routeData?.duration
-          ? formatDuration(segment.routeData.duration)
-          : "Nie dostępna"}
-      </div>
-      <button
-        onClick={handleRecalculate}
-        disabled={isCalculating}
-        className="whitespace-nowrap overflow-visible"
-      >
-        {isCalculating ? "Recalculating..." : "Recalculate"}
-      </button>
     </div>
   );
 };
