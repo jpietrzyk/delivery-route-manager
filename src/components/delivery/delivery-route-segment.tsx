@@ -45,11 +45,6 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
     return (meters / 1000).toFixed(2) + " km";
   };
 
-  // Format duration from seconds to minutes
-  const formatDriveTime = (seconds: number): string => {
-    return Math.round(seconds / 60).toString();
-  };
-
   return (
     <div
       className="delivery-route-segment"
@@ -66,21 +61,15 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
         {segment.toOrder.location.lng.toFixed(6)}
       </div>
       <div>
-        Duration:{" "}
-        {segment.duration
-          ? formatDuration(segment.duration) + " min"
-          : "Nie dostępna"}
-      </div>
-      <div>
         Distance:{" "}
         {segment.routeData?.distance
           ? formatDistance(segment.routeData.distance)
           : "Nie dostępna"}
       </div>
       <div>
-        Drive Time (from provider):{" "}
+        Duration (from provider):{" "}
         {segment.routeData?.duration
-          ? formatDriveTime(segment.routeData.duration) + " min"
+          ? formatDuration(segment.routeData.duration) + " min"
           : "Nie dostępna"}
       </div>
       <button onClick={handleRecalculate} disabled={isCalculating}>
