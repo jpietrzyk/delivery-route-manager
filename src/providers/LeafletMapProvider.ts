@@ -118,8 +118,8 @@ export class LeafletMapProvider implements MapProvider {
    * Estimate driving duration based on distance (simple estimation)
    */
   private estimateDuration(distance: number): number {
-    // Average driving speed: 30 km/h = 8.333 m/s
-    const drivingSpeed = 8.333;
+    // Average driving speed: 60 km/h = 16.667 m/s
+    const drivingSpeed = 16.667;
     return distance / drivingSpeed;
   }
 

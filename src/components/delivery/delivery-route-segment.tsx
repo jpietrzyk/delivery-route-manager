@@ -35,9 +35,17 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
     }
   };
 
-  // Format duration from seconds to minutes
+  // Format duration from seconds to hours and minutes
   const formatDuration = (seconds: number): string => {
-    return Math.round(seconds / 60).toString();
+    const totalMinutes = Math.round(seconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours > 0) {
+      return `${hours} hours ${minutes} minutes`;
+    } else {
+      return `${minutes} minutes`;
+    }
   };
 
   // Format distance from meters to kilometers
@@ -69,7 +77,7 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
       <div>
         Duration (from provider):{" "}
         {segment.routeData?.duration
-          ? formatDuration(segment.routeData.duration) + " min"
+          ? formatDuration(segment.routeData.duration)
           : "Nie dostępna"}
       </div>
       <button onClick={handleRecalculate} disabled={isCalculating}>
