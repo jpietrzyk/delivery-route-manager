@@ -10,8 +10,9 @@ module.exports = {
   },
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
-      tsconfig: 'tsconfig.json',
-      useESM: true
+      tsconfig: 'tsconfig.app.json',
+      useESM: true,
+      isolatedModules: true
     }]
   },
   testMatch: [
