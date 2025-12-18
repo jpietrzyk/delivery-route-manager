@@ -40,6 +40,11 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
     return Math.round(seconds / 60).toString();
   };
 
+  // Format distance from meters to kilometers
+  const formatDistance = (meters: number): string => {
+    return (meters / 1000).toFixed(2) + " km";
+  };
+
   return (
     <div
       className="delivery-route-segment"
@@ -59,6 +64,12 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
         Duration:{" "}
         {segment.duration
           ? formatDuration(segment.duration) + " min"
+          : "Nie dostępna"}
+      </div>
+      <div>
+        Distance:{" "}
+        {segment.routeData?.distance
+          ? formatDistance(segment.routeData.distance)
           : "Nie dostępna"}
       </div>
       <button onClick={handleRecalculate} disabled={isCalculating}>
