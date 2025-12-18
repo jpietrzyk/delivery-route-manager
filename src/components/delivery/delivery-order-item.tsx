@@ -82,7 +82,7 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
               </div>
               <div className="min-w-0 flex-1">
                 <h4 className="truncate text-sm font-medium text-foreground">
-                  {order.product?.name || "Unknown Product"}
+                  {order.product?.name || order.comment || "Unknown Product"}
                 </h4>
                 <p className="truncate text-xs text-muted-foreground">
                   {order.customer}
