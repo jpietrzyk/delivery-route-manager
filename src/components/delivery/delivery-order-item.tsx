@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import type { Order } from "@/types/order";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, MapPin, Clock, Hammer } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -50,6 +50,13 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
       });
     };
 
+    // Calculate assembly time based on complexity (30 minutes per complexity level)
+    const getAssemblyTime = () => {
+      const complexity = order.product?.complexity || 1; // Default to 1 if not specified
+      const minutes = complexity * 30;
+      return `${minutes} minutes`;
+    };
+
     const handleRemove = (e: React.MouseEvent) => {
       e.stopPropagation(); // Prevent triggering mouse leave/enter on parent
       e.preventDefault(); // Prevent any drag operations
@@ -71,9 +78,9 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
         <div className="flex items-start justify-between gap-3 p-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 text-primary">
                 <svg
-                  className="h-4 w-4"
+                  className="h-3 w-3"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -89,12 +96,16 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
                 </p>
               </div>
             </div>
-            <div className="mt-2 flex items-center gap-4 text-xs">
-              <div className="flex items-center gap-1 text-muted-foreground/80">
-                <span className="flex h-2 w-2 rounded-full bg-green-500"></span>
-                <span>Status: {order.status}</span>
+            <div className="mt-2 flex items-center text-xs">
+              <div className="flex items-center gap-1 text-muted-foreground/80 flex-1 min-w-0">
+                <Clock className="h-3 w-3 flex-shrink-0" />
+                <span className="truncate">{order.status}</span>
               </div>
-              <div className="text-muted-foreground/60">
+              <div className="flex items-center gap-1 text-muted-foreground/80 flex-1 min-w-0">
+                <Hammer className="h-3 w-3 flex-shrink-0" />
+                <span className="truncate">{getAssemblyTime()}</span>
+              </div>
+              <div className="flex-shrink-0 text-muted-foreground/60">
                 {arrivalTime && departureTime ? (
                   <>
                     <span className="font-medium text-foreground">
@@ -104,9 +115,12 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
                   </>
                 ) : (
                   <>
-                    <span className="font-medium text-foreground">
-                      {order.location.lat.toFixed(4)},{" "}
-                      {order.location.lng.toFixed(4)}
+                    <span
+                      title={`Lat: ${order.location.lat.toFixed(
+                        4
+                      )}, Lng: ${order.location.lng.toFixed(4)}`}
+                    >
+                      <MapPin className="h-4 w-4 text-muted-foreground/80 hover:text-foreground cursor-help" />
                     </span>
                   </>
                 )}
