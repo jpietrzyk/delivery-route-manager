@@ -63,7 +63,7 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
       <div className="flex items-center justify-between gap-2">
         <ArrowRight
           data-testid="connection-icon"
-          className="h-4 w-4 text-muted-foreground flex-shrink-0"
+          className="h-4 w-4 text-muted-foreground shrink-0"
         />
         <div className="flex-1 min-w-0">
           <div className="text-xs text-muted-foreground mb-1">
@@ -88,7 +88,7 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
             </div>
           </div>
         </div>
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <button
             onClick={handleRecalculate}
             disabled={isCalculating}

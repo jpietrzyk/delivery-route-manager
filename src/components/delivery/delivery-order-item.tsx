@@ -98,20 +98,17 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
             </div>
             <div className="mt-2 flex items-center text-xs">
               <div className="flex items-center gap-1 text-muted-foreground/80 flex-1 min-w-0">
-                <Clock
-                  data-testid="status-icon"
-                  className="h-3 w-3 flex-shrink-0"
-                />
+                <Clock data-testid="status-icon" className="h-3 w-3 shrink-0" />
                 <span className="truncate">{order.status}</span>
               </div>
               <div className="flex items-center gap-1 text-muted-foreground/80 flex-1 min-w-0">
                 <Hammer
                   data-testid="assembly-icon"
-                  className="h-3 w-3 flex-shrink-0"
+                  className="h-3 w-3 shrink-0"
                 />
                 <span className="truncate">{getAssemblyTime()}</span>
               </div>
-              <div className="flex-shrink-0 text-muted-foreground/60">
+              <div className="shrink-0 text-muted-foreground/60">
                 {arrivalTime && departureTime ? (
                   <>
                     <span className="font-medium text-foreground">
