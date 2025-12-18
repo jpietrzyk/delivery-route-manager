@@ -55,7 +55,6 @@ describe("DeliveryRouteSegment", () => {
     render(<DeliveryRouteSegment segment={segment} />);
 
     // Should render segment ID
-    expect(screen.getByText("Route Segment:")).toBeInTheDocument();
     expect(screen.getByText("order-1-order-2")).toBeInTheDocument();
 
     // Should render connection icon

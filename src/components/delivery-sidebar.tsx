@@ -124,7 +124,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     >
       {/* Distinctive Header with Brand Accent */}
       <SidebarHeader className="px-6 py-5 border-b-0 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-primary/10"></div>
         <div className="relative z-10 flex items-center justify-center">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-primary text-primary-foreground rounded-lg flex items-center justify-center shadow-md">
@@ -137,7 +137,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
             </span>
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-primary/20 to-transparent"></div>
       </SidebarHeader>
 
       {/* Content Area with Clear Separation */}

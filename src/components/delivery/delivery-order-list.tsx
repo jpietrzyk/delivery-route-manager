@@ -106,9 +106,10 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
             </div>
           ) : (
             <ul className="space-y-2">
-              {orders.map((order, idx) => (
-                <React.Fragment key={order.id}>
+              {orders
+                .flatMap((order, idx) => [
                   <DeliveryOrderItem
+                    key={order.id}
                     id={order.id}
                     order={order}
                     isHighlighted={highlightedOrderId === order.id}
@@ -129,9 +130,10 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                       }
                     }}
                     onRemove={onRemoveOrder}
-                  />
-                  {idx < orders.length - 1 && routeManager && (
+                  />,
+                  idx < orders.length - 1 && routeManager && (
                     <DeliveryRouteSegment
+                      key={`${order.id}-${orders[idx + 1].id}-segment`}
                       segment={
                         routeManager.getSegment(
                           `${order.id}-${orders[idx + 1].id}`
@@ -154,9 +156,10 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                       )}
                       routeManager={routeManager}
                     />
-                  )}
-                  {idx < orders.length - 1 && !routeManager && (
+                  ),
+                  idx < orders.length - 1 && !routeManager && (
                     <DeliveryRouteSegment
+                      key={`${order.id}-${orders[idx + 1].id}-segment`}
                       segment={{
                         id: `${order.id}-${orders[idx + 1].id}`,
                         fromOrder: order,
@@ -182,9 +185,9 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                         updatedAt: new Date(),
                       }}
                     />
-                  )}
-                </React.Fragment>
-              ))}
+                  ),
+                ])
+                .filter(Boolean)}
             </ul>
           )}
         </div>

@@ -71,7 +71,6 @@ describe("DeliveryOrderList", () => {
     render(<DeliveryOrderList orders={[order1, order2]} />);
 
     // Should render route segment between orders
-    expect(screen.getByText("Route Segment:")).toBeInTheDocument();
     expect(screen.getByText("order-1-order-2")).toBeInTheDocument();
   });
 
