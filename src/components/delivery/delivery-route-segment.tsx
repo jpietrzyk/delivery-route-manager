@@ -80,7 +80,11 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
           ? formatDuration(segment.routeData.duration)
           : "Nie dostępna"}
       </div>
-      <button onClick={handleRecalculate} disabled={isCalculating}>
+      <button
+        onClick={handleRecalculate}
+        disabled={isCalculating}
+        className="whitespace-nowrap overflow-visible"
+      >
         {isCalculating ? "Recalculating..." : "Recalculate"}
       </button>
     </div>
