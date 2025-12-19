@@ -63,6 +63,7 @@ declare global {
 
   interface MapMarker {
     setData: (data: unknown) => void;
+    getData: () => unknown;
     setIcon: (icon: MapIcon) => void;
     addEventListener: (event: string, handler: (event?: Event) => void) => void;
     getGeometry: () => unknown;

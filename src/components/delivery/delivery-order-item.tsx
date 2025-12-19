@@ -4,6 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Trash2, MapPin, Clock, Hammer } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 interface DeliveryOrderItemProps {
   order: Order;
@@ -101,9 +106,27 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
                 </svg>
               </div>
               <div className="min-w-0 flex-1">
-                <h4 className="truncate text-sm font-medium text-foreground">
-                  {order.product?.name || order.comment || "Unknown Product"}
-                </h4>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <h4 className="truncate text-sm font-medium text-foreground cursor-help">
+                      {order.product?.name ||
+                        order.comment ||
+                        "Unknown Product"}
+                    </h4>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" align="start" sideOffset={4}>
+                    <div className="max-w-[300px] break-words">
+                      <p className="font-medium text-background">
+                        {order.product?.name || "Unknown Product"}
+                      </p>
+                      {order.comment && (
+                        <p className="mt-1 text-xs text-background/80">
+                          {order.comment}
+                        </p>
+                      )}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
                 <p className="truncate text-xs text-muted-foreground">
                   {order.customer}
                 </p>

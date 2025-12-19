@@ -33,9 +33,9 @@ describe('RouteManager', () => {
 
   const createMockOrder = (id: string, lat: number, lng: number) => ({
     id,
-    product: { name: 'Test Product', price: 100, complexity: 1 as 1 },
-    status: 'pending' as 'pending',
-    priority: 'medium' as 'medium',
+    product: { name: 'Test Product', price: 100, complexity: 1 } as const,
+    status: 'pending' as const,
+    priority: 'medium' as const,
     active: true,
     createdAt: new Date(),
     updatedAt: new Date(),

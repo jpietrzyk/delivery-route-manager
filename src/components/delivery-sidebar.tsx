@@ -156,13 +156,24 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
               <div className="px-6 py-5 border-b border-border/50">
                 <h3 className="text-lg font-semibold text-foreground flex items-center gap-3">
                   <svg
-                    className="w-6 h-6 text-primary"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
+                    className="w-5 h-5 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    viewBox="0 0 24 24"
                   >
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15 11l3-3m-3 3l-3-3m3 3v-6"
+                    />
                   </svg>
-                  Delivery #{currentDelivery?.id || "D-001"} Orders
+                  #{currentDelivery?.id || "D-001"}
                 </h3>
                 <p className="text-sm text-muted-foreground mt-2">
                   {deliveryOrders.length} orders assigned to this delivery

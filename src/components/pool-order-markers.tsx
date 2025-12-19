@@ -4,6 +4,7 @@ import { useDelivery } from "@/hooks/use-delivery";
 import { useOrderRoute } from "@/hooks/use-order-route";
 import { mapConfig } from "@/config/map.config";
 import type { Order } from "@/types/order";
+import type { MapMarker } from "@/types/here-maps";
 
 // Extend marker interface to include custom properties
 import type { HereMapsNamespace } from "@/types/here-maps";
@@ -108,8 +109,7 @@ const PoolOrderMarkers = () => {
   const { isReady, mapRef } = useHereMap();
   const { poolOrders, currentDelivery, addOrderToDelivery } = useDelivery();
   const { refreshOrders } = useOrderRoute();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const markersRef = useRef<Map<string, any>>(new Map());
+  const markersRef = useRef<Map<string, MapMarker>>(new Map());
 
   // Create marker icon for pool orders (configurable: bitmap or SVG)
   const createPoolMarkerIcon = useCallback(() => {
@@ -207,9 +207,9 @@ const PoolOrderMarkers = () => {
 
         // Add click event listener to show popup
         // TODO: Fix When add more abstraction over maps handling
-        marker.addEventListener("tap", (evt: any) => {
+        marker.addEventListener("tap", (evt: { target: MapMarker }) => {
           // Get order data from the marker itself to avoid closure issues
-          const markerData = evt.target.getData();
+          const markerData = evt.target.getData() as { order: Order };
           const clickedOrder = markerData.order;
 
           if (!clickedOrder) {
