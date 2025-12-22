@@ -10,13 +10,13 @@ import { useEffect, useState } from "react";
 
 import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
-import { PoolOrderList } from "@/components/delivery/pool-order-list";
+import { UnassignedOrderList } from "@/components/delivery/unassigned-order-list";
 import { OrdersApi } from "@/services/ordersApi";
 
 interface DeliverySidebarProps {
   onOrderRemoved?: () => void;
   onDeliveryOrdersUpdated?: (updatedOrders: Order[]) => void;
-  poolOrders?: Order[];
+  unassignedOrders?: Order[];
   onAddOrderToDelivery?: (orderId: string) => void;
   refreshTrigger?: number;
 }
@@ -24,7 +24,7 @@ interface DeliverySidebarProps {
 const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   onOrderRemoved,
   onDeliveryOrdersUpdated,
-  poolOrders = [],
+  unassignedOrders = [],
   onAddOrderToDelivery,
   refreshTrigger = 0,
 }) => {
@@ -191,8 +191,8 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
               </div>
             </div>
 
-            {/* Pool Orders Section */}
-            {poolOrders.length > 0 && (
+            {/* Unassigned Orders Section */}
+            {unassignedOrders.length > 0 && (
               <div className="bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden">
                 <div className="px-6 py-5 border-b border-border/50">
                   <h3 className="text-lg font-semibold text-foreground flex items-center gap-3">
@@ -207,15 +207,15 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                         clipRule="evenodd"
                       />
                     </svg>
-                    Available Pool Orders
+                    Available Unassigned Orders
                   </h3>
                   <p className="text-sm text-muted-foreground mt-2">
-                    {poolOrders.length} orders available to assign
+                    {unassignedOrders.length} orders available to assign
                   </p>
                 </div>
                 <div className="p-2">
-                  <PoolOrderList
-                    poolOrders={poolOrders}
+                  <UnassignedOrderList
+                    unassignedOrders={unassignedOrders}
                     onAddToDelivery={onAddOrderToDelivery || (() => {})}
                     title=""
                   />

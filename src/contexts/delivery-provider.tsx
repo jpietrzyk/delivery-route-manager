@@ -12,21 +12,21 @@ export default function DeliveryProvider({
 }) {
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [currentDelivery, setCurrentDelivery] = useState<Delivery | null>(null);
-  const [poolOrders, setPoolOrders] = useState<Order[]>([]);
+  const [unassignedOrders, setUnassignedOrders] = useState<Order[]>([]);
 
-  // Fetch pool orders (unassigned)
-  const refreshPoolOrders = useCallback(async () => {
+  // Fetch unassigned orders
+  const refreshUnassignedOrders = useCallback(async () => {
     try {
       const orders = await OrdersApi.getOrders();
       const unassigned = orders.filter((order) => !order.deliveryId);
       console.log(
-        "[DeliveryProvider] Pool orders (unassigned):",
+        "[DeliveryProvider] Unassigned orders:",
         unassigned.length,
         unassigned.map((o) => o.id)
       );
-      setPoolOrders(unassigned);
+      setUnassignedOrders(unassigned);
     } catch (error) {
-      console.error("Error fetching pool orders:", error);
+      console.error("Error fetching unassigned orders:", error);
     }
   }, []);
 
@@ -40,11 +40,11 @@ export default function DeliveryProvider({
     }
   }, []);
 
-  // Load deliveries and pool orders on mount
+  // Load deliveries and unassigned orders on mount
   useEffect(() => {
     const loadData = async () => {
       await refreshDeliveries();
-      await refreshPoolOrders();
+      await refreshUnassignedOrders();
     };
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,7 +113,7 @@ export default function DeliveryProvider({
     [currentDelivery]
   );
 
-  // Add an order to a delivery (pulls from pool)
+  // Add an order to a delivery (pulls from unassigned)
   const addOrderToDelivery = useCallback(
     async (deliveryId: string, orderId: string, atIndex?: number) => {
       try {
@@ -133,21 +133,21 @@ export default function DeliveryProvider({
           if (currentDelivery?.id === deliveryId) {
             setCurrentDelivery(updatedDelivery);
           }
-          // Refresh pool (order is now removed from pool)
-          await refreshPoolOrders();
+          // Refresh unassigned (order is now removed from unassigned)
+          await refreshUnassignedOrders();
         }
       } catch (error) {
         console.error("Error adding order to delivery:", error);
       }
     },
-    [currentDelivery, refreshPoolOrders]
+    [currentDelivery, refreshUnassignedOrders]
   );
 
-  // Remove an order from a delivery (returns to pool)
+  // Remove an order from a delivery (returns to unassigned)
   const removeOrderFromDelivery = useCallback(
     async (deliveryId: string, orderId: string) => {
       try {
-        // First, remove delivery assignment from order (returns to pool)
+        // First, remove delivery assignment from order (returns to unassigned)
         await OrdersApi.updateOrder(orderId, { deliveryId: undefined });
 
         // Then remove from delivery
@@ -162,14 +162,14 @@ export default function DeliveryProvider({
           if (currentDelivery?.id === deliveryId) {
             setCurrentDelivery(updatedDelivery);
           }
-          // Refresh pool (order is now returned to pool)
-          await refreshPoolOrders();
+          // Refresh unassigned (order is now returned to unassigned)
+          await refreshUnassignedOrders();
         }
       } catch (error) {
         console.error("Error removing order from delivery:", error);
       }
     },
-    [currentDelivery, refreshPoolOrders]
+    [currentDelivery, refreshUnassignedOrders]
   );
 
   // Reorder orders in a delivery
@@ -199,7 +199,7 @@ export default function DeliveryProvider({
   const value = {
     deliveries,
     currentDelivery,
-    poolOrders,
+    unassignedOrders,
     setCurrentDelivery,
     setDeliveries,
     createDelivery,
@@ -209,7 +209,7 @@ export default function DeliveryProvider({
     removeOrderFromDelivery,
     reorderDeliveryOrders,
     refreshDeliveries,
-    refreshPoolOrders,
+    refreshUnassignedOrders,
   };
 
   return (

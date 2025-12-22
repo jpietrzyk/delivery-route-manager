@@ -74,6 +74,9 @@ export class RouteManager {
 
       // Draw new route
       const mapRoute = this.mapProvider.drawRouteSegment(routeData);
+      if (!mapRoute) {
+        throw new Error(`Map provider failed to draw route segment for ${segment.id}`);
+      }
       mapRoute.segmentId = segment.id;
 
       // Update segment

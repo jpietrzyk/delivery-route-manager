@@ -14,16 +14,16 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-interface PoolOrderListProps {
-  poolOrders: Order[];
+interface UnassignedOrderListProps {
+  unassignedOrders: Order[];
   onAddToDelivery: (orderId: string) => void;
   title?: string;
 }
 
-export const PoolOrderList: React.FC<PoolOrderListProps> = ({
-  poolOrders,
+export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
+  unassignedOrders,
   onAddToDelivery,
-  title = "Available Pool Orders",
+  title = "Available Unassigned Orders",
 }) => {
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -37,18 +37,18 @@ export const PoolOrderList: React.FC<PoolOrderListProps> = ({
       <div className="font-semibold text-sm mb-2 text-foreground/70">
         {title}
       </div>
-      {poolOrders.length === 0 ? (
+      {unassignedOrders.length === 0 ? (
         <div className="text-xs text-muted-foreground">
-          No pool orders available
+          No unassigned orders available
         </div>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter}>
           <SortableContext
-            items={poolOrders}
+            items={unassignedOrders}
             strategy={verticalListSortingStrategy}
           >
             <ul className="space-y-2">
-              {poolOrders.map((order) => (
+              {unassignedOrders.map((order) => (
                 <li
                   key={order.id}
                   className="rounded border p-2 bg-accent/40 cursor-pointer hover:bg-accent/60 transition-colors"

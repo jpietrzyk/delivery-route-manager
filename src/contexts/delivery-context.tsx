@@ -5,7 +5,7 @@ import type { Order } from "@/types/order";
 export interface DeliveryContextType {
   deliveries: Delivery[];
   currentDelivery: Delivery | null;
-  poolOrders: Order[];
+  unassignedOrders: Order[];
   setCurrentDelivery: (delivery: Delivery | null) => void;
   setDeliveries: (deliveries: Delivery[]) => void;
   createDelivery: (
@@ -28,7 +28,7 @@ export interface DeliveryContextType {
     toIndex: number
   ) => Promise<void>;
   refreshDeliveries: () => Promise<void>;
-  refreshPoolOrders: () => Promise<void>;
+  refreshUnassignedOrders: () => Promise<void>;
 }
 
 export const DeliveryContext = createContext<DeliveryContextType | undefined>(
