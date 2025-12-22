@@ -7,6 +7,7 @@ import {
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useDelivery } from "@/hooks/use-delivery";
 import { useEffect, useState } from "react";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
 import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
@@ -32,6 +33,8 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   const { currentDelivery, removeOrderFromDelivery } = useDelivery();
   const [deliveryOrders, setDeliveryOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeliveryCollapsed, setIsDeliveryCollapsed] = useState(false);
+  const [isUnassignedCollapsed, setIsUnassignedCollapsed] = useState(true); // collapsed by default
 
   console.log("DeliverySidebar: currentDelivery", currentDelivery);
 
@@ -152,75 +155,111 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
         ) : (
           <div className="space-y-6 p-4">
             {/* Delivery Orders Section */}
-            <div className="bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden">
-              <div className="px-6 py-5 border-b border-border/50">
-                <h3 className="text-lg font-semibold text-foreground flex items-center gap-3">
-                  <svg
-                    className="w-5 h-5 text-primary"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    viewBox="0 0 24 24"
+            <Collapsible open={!isDeliveryCollapsed} onOpenChange={(open) => setIsDeliveryCollapsed(!open)}>
+              <div className="bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden">
+                <CollapsibleTrigger asChild>
+                  <button
+                    className="w-full flex items-center justify-between px-6 py-5 border-b border-border/50 bg-transparent hover:bg-accent/10 transition-colors"
+                    aria-expanded={!isDeliveryCollapsed}
+                    aria-controls="delivery-orders-section"
+                    type="button"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    <span className="flex items-center gap-3 text-lg font-semibold text-foreground">
+                      <svg
+                        className="w-5 h-5 text-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 11l3-3m-3 3l-3-3m3 3v-6"
+                        />
+                      </svg>
+                      #{currentDelivery?.id || "D-001"}
+                    </span>
+                    <span className="ml-2 text-muted-foreground">
+                      {isDeliveryCollapsed ? (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                      )}
+                    </span>
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div id="delivery-orders-section" className="p-2">
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {deliveryOrders.length} orders assigned to this delivery
+                    </p>
+                    <DeliveryOrderList
+                      orders={deliveryOrders}
+                      highlightedOrderId={highlightedOrderId}
+                      setHighlightedOrderId={setHighlightedOrderId}
+                      onRemoveOrder={handleRemoveOrder}
+                      onReorder={handleReorder}
+                      title=""
                     />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15 11l3-3m-3 3l-3-3m3 3v-6"
-                    />
-                  </svg>
-                  #{currentDelivery?.id || "D-001"}
-                </h3>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {deliveryOrders.length} orders assigned to this delivery
-                </p>
+                  </div>
+                </CollapsibleContent>
               </div>
-              <div className="p-2">
-                <DeliveryOrderList
-                  orders={deliveryOrders}
-                  highlightedOrderId={highlightedOrderId}
-                  setHighlightedOrderId={setHighlightedOrderId}
-                  onRemoveOrder={handleRemoveOrder}
-                  onReorder={handleReorder}
-                  title=""
-                />
-              </div>
-            </div>
+            </Collapsible>
 
             {/* Unassigned Orders Section */}
             {unassignedOrders.length > 0 && (
-              <div className="bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden">
-                <div className="px-6 py-5 border-b border-border/50">
-                  <h3 className="text-lg font-semibold text-foreground flex items-center gap-3">
-                    <svg
-                      className="w-6 h-6 text-muted-foreground"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
+              <Collapsible open={!isUnassignedCollapsed} onOpenChange={(open) => setIsUnassignedCollapsed(!open)}>
+                <div className="bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden">
+                  <CollapsibleTrigger asChild>
+                    <button
+                      className="w-full flex items-center justify-between px-6 py-5 border-b border-border/50 bg-transparent hover:bg-accent/10 transition-colors"
+                      aria-expanded={!isUnassignedCollapsed}
+                      aria-controls="unassigned-orders-section"
+                      type="button"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
-                        clipRule="evenodd"
+                      <span className="flex items-center gap-3 text-lg font-semibold text-foreground">
+                        <svg
+                          className="w-6 h-6 text-muted-foreground"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        Available Unassigned Orders
+                      </span>
+                      <span className="ml-2 text-muted-foreground">
+                        {isUnassignedCollapsed ? (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                        )}
+                      </span>
+                    </button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div id="unassigned-orders-section" className="p-2">
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {unassignedOrders.length} orders available to assign
+                      </p>
+                      <UnassignedOrderList
+                        unassignedOrders={unassignedOrders}
+                        onAddToDelivery={onAddOrderToDelivery || (() => {})}
+                        title=""
                       />
-                    </svg>
-                    Available Unassigned Orders
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {unassignedOrders.length} orders available to assign
-                  </p>
+                    </div>
+                  </CollapsibleContent>
                 </div>
-                <div className="p-2">
-                  <UnassignedOrderList
-                    unassignedOrders={unassignedOrders}
-                    onAddToDelivery={onAddOrderToDelivery || (() => {})}
-                    title=""
-                  />
-                </div>
-              </div>
+              </Collapsible>
             )}
           </div>
         )}
