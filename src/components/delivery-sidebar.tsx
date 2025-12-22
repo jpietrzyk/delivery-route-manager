@@ -230,7 +230,10 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                     <p className="text-sm text-muted-foreground mb-2">
                       {deliveryOrders.length} orders assigned to this delivery
                     </p>
-                    <div style={{ maxHeight: 260, overflowY: 'auto' }} className="custom-scrollbar">
+                    <div
+                      style={{ maxHeight: 260, overflowY: "auto" }}
+                      className="custom-scrollbar"
+                    >
                       <DeliveryOrderList
                         orders={deliveryOrders}
                         highlightedOrderId={highlightedOrderId}
@@ -311,7 +314,10 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                       <p className="text-sm text-muted-foreground mb-2">
                         {unassignedOrders.length} orders available to assign
                       </p>
-                      <div style={{ maxHeight: 260, overflowY: 'auto' }} className="custom-scrollbar">
+                      <div
+                        style={{ maxHeight: 260, overflowY: "auto" }}
+                        className="custom-scrollbar"
+                      >
                         <UnassignedOrderList
                           unassignedOrders={unassignedOrders}
                           onAddToDelivery={onAddOrderToDelivery || (() => {})}
