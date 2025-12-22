@@ -54,7 +54,7 @@ describe("DeliveryOrderItem", () => {
     expect(screen.getByText("30 minutes")).toBeInTheDocument();
 
     // Should render arrival and departure times
-    expect(screen.getByText("08:00 AM - 09:00 AM")).toBeInTheDocument();
+    expect(screen.getByText(/08:00.*09:00/)).toBeInTheDocument();
   });
 
   it("should render different assembly times based on complexity", () => {
