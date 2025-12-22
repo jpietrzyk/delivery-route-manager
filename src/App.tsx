@@ -7,7 +7,7 @@ import type { Order } from "@/types/order";
 
 function App() {
   const [deliveryOrders, setDeliveryOrders] = useState<Order[]>([]);
-  const [poolOrders, setPoolOrders] = useState<Order[]>([]);
+  const [unassignedOrders, setUnassignedOrders] = useState<Order[]>([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
@@ -17,11 +17,11 @@ function App() {
         (order) => order.deliveryId
       );
       setDeliveryOrders(initialDeliveryOrders);
-      // Initialize poolOrders with orders that are NOT assigned to a delivery
-      const initialPoolOrders = fetchedOrders.filter(
+      // Initialize unassignedOrders with orders that are NOT assigned to a delivery
+      const initialUnassignedOrders = fetchedOrders.filter(
         (order) => !order.deliveryId
       );
-      setPoolOrders(initialPoolOrders);
+      setUnassignedOrders(initialUnassignedOrders);
     });
   }, []);
 
@@ -44,12 +44,12 @@ function App() {
   // Update delivery orders when an order is removed or added
   const handleDeliveryOrdersUpdated = (updatedOrders: Order[]) => {
     setDeliveryOrders(updatedOrders);
-    // When delivery orders are updated, we need to refresh pool orders too
+    // When delivery orders are updated, we need to refresh unassigned orders too
     OrdersApi.getOrders().then((fetchedOrders) => {
-      const initialPoolOrders = fetchedOrders.filter(
+      const initialUnassignedOrders = fetchedOrders.filter(
         (order) => !order.deliveryId
       );
-      setPoolOrders(initialPoolOrders);
+      setUnassignedOrders(initialUnassignedOrders);
     });
   };
 
@@ -59,18 +59,18 @@ function App() {
         {/* Map layer at the bottom */}
         <div className="absolute inset-0 z-0">
           <LeafletMap
-            orders={[...deliveryOrders, ...poolOrders]}
+            orders={[...deliveryOrders, ...unassignedOrders]}
             onOrderAddedToDelivery={async () => {
-              // Refresh both delivery and pool orders
+              // Refresh both delivery and unassigned orders
               const allOrders = await OrdersApi.getOrders();
               const updatedDeliveryOrders = allOrders.filter(
                 (order) => order.deliveryId
               );
-              const updatedPoolOrders = allOrders.filter(
+              const updatedUnassignedOrders = allOrders.filter(
                 (order) => !order.deliveryId
               );
               setDeliveryOrders(updatedDeliveryOrders);
-              setPoolOrders(updatedPoolOrders);
+              setUnassignedOrders(updatedUnassignedOrders);
               handleDeliveryOrdersUpdated(updatedDeliveryOrders);
             }}
             onRefreshRequested={handleOrderRemoved}
@@ -86,7 +86,7 @@ function App() {
           <DeliverySidebar
             onOrderRemoved={handleOrderRemoved}
             onDeliveryOrdersUpdated={handleDeliveryOrdersUpdated}
-            poolOrders={poolOrders}
+            unassignedOrders={unassignedOrders}
             refreshTrigger={refreshTrigger}
             onAddOrderToDelivery={async (orderId: string) => {
               try {
@@ -94,16 +94,16 @@ function App() {
                 await OrdersApi.updateOrder(orderId, {
                   deliveryId: "DEL-001", // Default delivery ID
                 });
-                // Refresh both delivery and pool orders
+                // Refresh both delivery and unassigned orders
                 const allOrders = await OrdersApi.getOrders();
                 const updatedDeliveryOrders = allOrders.filter(
                   (order) => order.deliveryId
                 );
-                const updatedPoolOrders = allOrders.filter(
+                const updatedUnassignedOrders = allOrders.filter(
                   (order) => !order.deliveryId
                 );
                 setDeliveryOrders(updatedDeliveryOrders);
-                setPoolOrders(updatedPoolOrders);
+                setUnassignedOrders(updatedUnassignedOrders);
                 handleDeliveryOrdersUpdated(updatedDeliveryOrders);
               } catch (error) {
                 console.error("Failed to add order to delivery:", error);
