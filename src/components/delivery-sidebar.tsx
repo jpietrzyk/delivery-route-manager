@@ -231,7 +231,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                       {deliveryOrders.length} orders assigned to this delivery
                     </p>
                     <div
-                      style={{ maxHeight: 260, overflowY: "auto" }}
+                      style={{ maxHeight: 400, overflowY: "auto" }}
                       className="custom-scrollbar"
                     >
                       <DeliveryOrderList
