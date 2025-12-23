@@ -41,6 +41,9 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     // If delivery is being opened, close unassigned
     if (open) {
       setIsUnassignedCollapsed(true);
+    } else {
+      // If delivery is being closed, open unassigned (always one expanded)
+      setIsUnassignedCollapsed(false);
     }
   };
 
@@ -50,6 +53,9 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     // If unassigned is being opened, close delivery
     if (open) {
       setIsDeliveryCollapsed(true);
+    } else {
+      // If unassigned is being closed, open delivery (always one expanded)
+      setIsDeliveryCollapsed(false);
     }
   };
 
