@@ -58,7 +58,7 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <div className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0" data-testid="product-icon">
                         <svg
                           className="h-3 w-3"
                           fill="currentColor"

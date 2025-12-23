@@ -22,107 +22,58 @@ describe("DeliveryOrderItem", () => {
     location: { lat: 51.505, lng: -0.09 },
   });
 
-  const createArrivalDepartureTimes = () => {
-    const arrivalTime = new Date();
-    arrivalTime.setHours(8, 0, 0, 0); // 8:00 AM
-    const departureTime = new Date();
-    departureTime.setHours(9, 0, 0, 0); // 9:00 AM
-    return { arrivalTime, departureTime };
-  };
-
   it("should render basic order information", () => {
     const order = createMockOrder();
-    const { arrivalTime, departureTime } = createArrivalDepartureTimes();
 
-    render(
-      <DeliveryOrderItem
-        id={order.id}
-        order={order}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
-      />
-    );
+    render(<DeliveryOrderItem id={order.id} order={order} />);
 
     // Should render product name and customer
     expect(screen.getByText("Test Product")).toBeInTheDocument();
     expect(screen.getByText("Test Customer")).toBeInTheDocument();
 
-    // Should render status
-    expect(screen.getByText("pending")).toBeInTheDocument();
-
-    // Should render assembly time
-    expect(screen.getByText("30 minutes")).toBeInTheDocument();
-
-    // Should render arrival and departure times
-    expect(screen.getByText(/08:00.*09:00/)).toBeInTheDocument();
+    // Should not render status, assembly time, or times (removed for compactness)
+    expect(screen.queryByText("pending")).not.toBeInTheDocument();
+    expect(screen.queryByText("30 minutes")).not.toBeInTheDocument();
+    expect(screen.queryByText(/08:00.*09:00/)).not.toBeInTheDocument();
   });
 
   it("should render different assembly times based on complexity", () => {
     // Test complexity level 1 (30 minutes)
     const order1 = createMockOrder("order-1", 1);
-    const { arrivalTime, departureTime } = createArrivalDepartureTimes();
 
     const { rerender } = render(
-      <DeliveryOrderItem
-        id={order1.id}
-        order={order1}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
-      />
+      <DeliveryOrderItem id={order1.id} order={order1} />
     );
 
-    expect(screen.getByText("30 minutes")).toBeInTheDocument();
+    // Assembly time is no longer shown in compact view
+    expect(screen.queryByText("30 minutes")).not.toBeInTheDocument();
 
     // Test complexity level 2 (60 minutes)
     const order2 = createMockOrder("order-2", 2);
-    rerender(
-      <DeliveryOrderItem
-        id={order2.id}
-        order={order2}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
-      />
-    );
-    expect(screen.getByText("60 minutes")).toBeInTheDocument();
+    rerender(<DeliveryOrderItem id={order2.id} order={order2} />);
+    expect(screen.queryByText("60 minutes")).not.toBeInTheDocument();
 
     // Test complexity level 3 (90 minutes)
     const order3 = createMockOrder("order-3", 3);
-    rerender(
-      <DeliveryOrderItem
-        id={order3.id}
-        order={order3}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
-      />
-    );
-    expect(screen.getByText("90 minutes")).toBeInTheDocument();
+    rerender(<DeliveryOrderItem id={order3.id} order={order3} />);
+    expect(screen.queryByText("90 minutes")).not.toBeInTheDocument();
   });
 
-  it("should show location icon when no times are provided", () => {
+  it("should not show location icon or times in compact view", () => {
     const order = createMockOrder();
 
     render(<DeliveryOrderItem id={order.id} order={order} />);
 
-    // Should show location icon instead of times
-    const locationIcon = screen.getByTestId("location-icon");
-    expect(locationIcon).toBeInTheDocument();
-
-    // Should not show time range
+    // Should not show location icon or times (removed for compactness)
+    expect(screen.queryByTestId("location-icon")).not.toBeInTheDocument();
     expect(screen.queryByText(/\d{2}:\d{2}/)).not.toBeInTheDocument();
   });
 
   it("should apply highlighted styling when isHighlighted is true", () => {
     const order = createMockOrder();
-    const { arrivalTime, departureTime } = createArrivalDepartureTimes();
 
     const { container } = render(
-      <DeliveryOrderItem
-        id={order.id}
-        order={order}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
-        isHighlighted={true}
-      />
+      <DeliveryOrderItem id={order.id} order={order} isHighlighted={true} />
     );
 
     // Should have ring class when highlighted
@@ -132,7 +83,6 @@ describe("DeliveryOrderItem", () => {
 
   it("should call onMouseEnter and onMouseLeave callbacks", () => {
     const order = createMockOrder();
-    const { arrivalTime, departureTime } = createArrivalDepartureTimes();
     const mockMouseEnter = jest.fn();
     const mockMouseLeave = jest.fn();
 
@@ -140,8 +90,6 @@ describe("DeliveryOrderItem", () => {
       <DeliveryOrderItem
         id={order.id}
         order={order}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
         onMouseEnter={mockMouseEnter}
         onMouseLeave={mockMouseLeave}
       />
@@ -159,17 +107,10 @@ describe("DeliveryOrderItem", () => {
 
   it("should call onRemove callback when remove button is clicked", () => {
     const order = createMockOrder();
-    const { arrivalTime, departureTime } = createArrivalDepartureTimes();
     const mockRemove = jest.fn();
 
     render(
-      <DeliveryOrderItem
-        id={order.id}
-        order={order}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
-        onRemove={mockRemove}
-      />
+      <DeliveryOrderItem id={order.id} order={order} onRemove={mockRemove} />
     );
 
     // Find and click the remove button
@@ -181,16 +122,8 @@ describe("DeliveryOrderItem", () => {
 
   it("should not show remove button when onRemove is not provided", () => {
     const order = createMockOrder();
-    const { arrivalTime, departureTime } = createArrivalDepartureTimes();
 
-    render(
-      <DeliveryOrderItem
-        id={order.id}
-        order={order}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
-      />
-    );
+    render(<DeliveryOrderItem id={order.id} order={order} />);
 
     // Should not find remove button
     expect(
@@ -218,14 +151,10 @@ describe("DeliveryOrderItem", () => {
       product: { name: "", price: 100, complexity: 1 as const },
     };
 
-    const { arrivalTime, departureTime } = createArrivalDepartureTimes();
-
     render(
       <DeliveryOrderItem
         id={orderWithoutProductName.id}
         order={orderWithoutProductName}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
       />
     );
 
@@ -247,42 +176,25 @@ describe("DeliveryOrderItem", () => {
       location: { lat: 51.505, lng: -0.09 },
     };
 
-    const { arrivalTime, departureTime } = createArrivalDepartureTimes();
-
     const { rerender } = render(
-      <DeliveryOrderItem
-        id={order.id}
-        order={order}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
-      />
+      <DeliveryOrderItem id={order.id} order={order} />
     );
 
-    // Test pending status
-    expect(screen.getByText("pending")).toBeInTheDocument();
+    // Status is no longer shown in compact view
+    expect(screen.queryByText("pending")).not.toBeInTheDocument();
 
     // Test in-progress status
     const orderInProgress = { ...order, status: "in-progress" as const };
     rerender(
-      <DeliveryOrderItem
-        id={orderInProgress.id}
-        order={orderInProgress}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
-      />
+      <DeliveryOrderItem id={orderInProgress.id} order={orderInProgress} />
     );
-    expect(screen.getByText("in-progress")).toBeInTheDocument();
+    expect(screen.queryByText("in-progress")).not.toBeInTheDocument();
 
     // Test completed status
     const orderCompleted = { ...order, status: "completed" as const };
     rerender(
-      <DeliveryOrderItem
-        id={orderCompleted.id}
-        order={orderCompleted}
-        arrivalTime={arrivalTime}
-        departureTime={departureTime}
-      />
+      <DeliveryOrderItem id={orderCompleted.id} order={orderCompleted} />
     );
-    expect(screen.getByText("completed")).toBeInTheDocument();
+    expect(screen.queryByText("completed")).not.toBeInTheDocument();
   });
 });

@@ -54,8 +54,8 @@ describe("DeliveryRouteSegment", () => {
 
     render(<DeliveryRouteSegment segment={segment} />);
 
-    // Should render segment ID
-    expect(screen.getByText("order-1-order-2")).toBeInTheDocument();
+    // Should render N/A for distance and duration when no route data
+    expect(screen.getAllByText("N/A")).toHaveLength(2);
 
     // Should render connection icon
     expect(screen.getByTestId("connection-icon")).toBeInTheDocument();
@@ -78,13 +78,13 @@ describe("DeliveryRouteSegment", () => {
     expect(screen.getByText("15 m")).toBeInTheDocument();
   });
 
-  it("should display 'Nie dostępna' when route data is missing", () => {
+  it("should display 'N/A' when route data is missing", () => {
     const segment = createMockRouteSegment();
 
     render(<DeliveryRouteSegment segment={segment} />);
 
-    // Should display "Nie dostępna" for both distance and duration
-    const notAvailableElements = screen.getAllByText("Nie dostępna");
+    // Should display "N/A" for both distance and duration
+    const notAvailableElements = screen.getAllByText("N/A");
     expect(notAvailableElements).toHaveLength(2); // One for distance, one for duration
   });
 
@@ -182,10 +182,12 @@ describe("DeliveryRouteSegment", () => {
 
     const { rerender } = render(<DeliveryRouteSegment segment={segment1} />);
 
-    expect(screen.getByText("order-A-order-B")).toBeInTheDocument();
+    // Should show N/A for both segments since they have no route data
+    expect(screen.getAllByText("N/A")).toHaveLength(2);
 
     rerender(<DeliveryRouteSegment segment={segment2} />);
 
-    expect(screen.getByText("order-X-order-Y")).toBeInTheDocument();
+    // Should still show N/A for the new segment
+    expect(screen.getAllByText("N/A")).toHaveLength(2);
   });
 });

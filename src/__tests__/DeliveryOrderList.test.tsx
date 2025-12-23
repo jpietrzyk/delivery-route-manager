@@ -71,7 +71,9 @@ describe("DeliveryOrderList", () => {
     render(<DeliveryOrderList orders={[order1, order2]} />);
 
     // Should render route segment between orders
-    expect(screen.getByText("order-1-order-2")).toBeInTheDocument();
+    // The segment should be present with route data calculated from the order locations
+    const routeSegments = screen.getAllByTestId("connection-icon");
+    expect(routeSegments).toHaveLength(1); // One segment between the two orders
   });
 
   it("should handle orders with different statuses", () => {
@@ -92,10 +94,10 @@ describe("DeliveryOrderList", () => {
 
     render(<DeliveryOrderList orders={[order1, order2, order3]} />);
 
-    // Should render all orders with their respective statuses
-    expect(screen.getByText("pending")).toBeInTheDocument();
-    expect(screen.getByText("in-progress")).toBeInTheDocument();
-    expect(screen.getByText("completed")).toBeInTheDocument();
+    // Should render all orders (statuses are now shown in tooltips, not main UI)
+    expect(screen.getByText("Customer 1")).toBeInTheDocument();
+    expect(screen.getByText("Customer 2")).toBeInTheDocument();
+    expect(screen.getByText("Customer 3")).toBeInTheDocument();
   });
 
   it("should handle orders with different priorities", () => {
