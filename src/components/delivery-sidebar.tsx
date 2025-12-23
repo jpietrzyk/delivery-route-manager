@@ -7,11 +7,6 @@ import {
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useDelivery } from "@/hooks/use-delivery";
 import { useEffect, useState } from "react";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "@/components/ui/collapsible";
 
 import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
@@ -39,6 +34,24 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isDeliveryCollapsed, setIsDeliveryCollapsed] = useState(false);
   const [isUnassignedCollapsed, setIsUnassignedCollapsed] = useState(true); // collapsed by default
+
+  // Handle delivery collapsible state change
+  const handleDeliveryCollapseChange = (open: boolean) => {
+    setIsDeliveryCollapsed(!open);
+    // If delivery is being opened, close unassigned
+    if (open) {
+      setIsUnassignedCollapsed(true);
+    }
+  };
+
+  // Handle unassigned collapsible state change
+  const handleUnassignedCollapseChange = (open: boolean) => {
+    setIsUnassignedCollapsed(!open);
+    // If unassigned is being opened, close delivery
+    if (open) {
+      setIsDeliveryCollapsed(true);
+    }
+  };
 
   console.log("DeliverySidebar: currentDelivery", currentDelivery);
 
@@ -157,19 +170,126 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
             </p>
           </div>
         ) : (
-          <div className="space-y-6 p-4">
-            {/* Delivery Orders Section */}
-            <Collapsible
-              open={!isDeliveryCollapsed}
-              onOpenChange={(open) => setIsDeliveryCollapsed(!open)}
-            >
-              <div className="bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden">
-                <CollapsibleTrigger asChild>
+          <div className="h-full flex flex-col">
+            {/* Delivery Orders Section - Full height when expanded */}
+            {!isDeliveryCollapsed && (
+              <div className="flex-1 flex flex-col bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden">
+                <div className="flex items-center justify-between px-6 py-5 border-b border-border/50 bg-transparent">
+                  <span className="flex items-center gap-2 text-base font-semibold text-foreground">
+                    <svg
+                      className="w-4 h-4 text-primary"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15 11l3-3m-3 3l-3-3m3 3v-6"
+                      />
+                    </svg>
+                    Delivery #{currentDelivery?.id || "D-001"}
+                  </span>
                   <button
-                    className="w-full flex items-center justify-between px-6 py-5 border-b border-border/50 bg-transparent hover:bg-accent/10 transition-colors"
-                    aria-expanded={!isDeliveryCollapsed}
+                    onClick={() => handleDeliveryCollapseChange(false)}
+                    className="ml-2 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Collapse delivery orders"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 15l7-7 7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div className="flex-1 p-2 overflow-y-auto">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {deliveryOrders.length} orders assigned to this delivery
+                  </p>
+                  <DeliveryOrderList
+                    orders={deliveryOrders}
+                    highlightedOrderId={highlightedOrderId}
+                    setHighlightedOrderId={setHighlightedOrderId}
+                    onRemoveOrder={handleRemoveOrder}
+                    onReorder={handleReorder}
+                    title=""
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Unassigned Orders Section - Full height when expanded */}
+            {!isUnassignedCollapsed && unassignedOrders.length > 0 && (
+              <div className="flex-1 flex flex-col bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-transparent">
+                  <span className="flex items-center gap-2 text-sm font-medium text-foreground">
+                    <svg
+                      className="w-4 h-4 text-muted-foreground"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Unassigned ({unassignedOrders.length})
+                  </span>
+                  <button
+                    onClick={() => handleUnassignedCollapseChange(false)}
+                    className="ml-2 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Collapse unassigned orders"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 15l7-7 7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div className="flex-1 p-2 overflow-y-auto">
+                  <UnassignedOrderList
+                    unassignedOrders={unassignedOrders}
+                    onAddToDelivery={onAddOrderToDelivery || (() => {})}
+                    title=""
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Collapsed triggers - only show when both are collapsed or one is expanded */}
+            {(isDeliveryCollapsed || isUnassignedCollapsed) && (
+              <div className="space-y-4 p-4">
+                {/* Delivery Orders Trigger (collapsed) */}
+                {isDeliveryCollapsed && (
+                  <button
+                    onClick={() => handleDeliveryCollapseChange(true)}
+                    className="w-full flex items-center justify-between px-6 py-5 rounded-2xl shadow-sm border border-border/50 bg-background hover:bg-accent/10 transition-colors"
+                    aria-expanded={false}
                     aria-controls="delivery-orders-section"
-                    type="button"
                   >
                     <span className="flex items-center gap-2 text-base font-semibold text-foreground">
                       <svg
@@ -193,138 +313,63 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                       Delivery #{currentDelivery?.id || "D-001"}
                     </span>
                     <span className="ml-2 text-muted-foreground">
-                      {isDeliveryCollapsed ? (
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M5 15l7-7 7 7"
-                          />
-                        </svg>
-                      )}
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
                     </span>
                   </button>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div id="delivery-orders-section" className="p-2">
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {deliveryOrders.length} orders assigned to this delivery
-                    </p>
-                    <div
-                      style={{ maxHeight: 400, overflowY: "auto" }}
-                      className="custom-scrollbar"
-                    >
-                      <DeliveryOrderList
-                        orders={deliveryOrders}
-                        highlightedOrderId={highlightedOrderId}
-                        setHighlightedOrderId={setHighlightedOrderId}
-                        onRemoveOrder={handleRemoveOrder}
-                        onReorder={handleReorder}
-                        title=""
-                      />
-                    </div>
-                  </div>
-                </CollapsibleContent>
-              </div>
-            </Collapsible>
+                )}
 
-            {/* Unassigned Orders Section */}
-            {unassignedOrders.length > 0 && (
-              <Collapsible
-                open={!isUnassignedCollapsed}
-                onOpenChange={(open) => setIsUnassignedCollapsed(!open)}
-              >
-                <div className="bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden">
-                  <CollapsibleTrigger asChild>
-                    <button
-                      className="w-full flex items-center justify-between px-4 py-3 border-b border-border/50 bg-transparent hover:bg-accent/10 transition-colors"
-                      aria-expanded={!isUnassignedCollapsed}
-                      aria-controls="unassigned-orders-section"
-                      type="button"
-                    >
-                      <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                        <svg
-                          className="w-4 h-4 text-muted-foreground"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        Unassigned ({unassignedOrders.length})
-                      </span>
-                      <span className="ml-2 text-muted-foreground">
-                        {isUnassignedCollapsed ? (
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        ) : (
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M5 15l7-7 7 7"
-                            />
-                          </svg>
-                        )}
-                      </span>
-                    </button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <div id="unassigned-orders-section" className="p-2">
-                      <div
-                        style={{ maxHeight: 260, overflowY: "auto" }}
-                        className="custom-scrollbar"
+                {/* Unassigned Orders Trigger (collapsed) */}
+                {isUnassignedCollapsed && unassignedOrders.length > 0 && (
+                  <button
+                    onClick={() => handleUnassignedCollapseChange(true)}
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-2xl shadow-sm border border-border/50 bg-background hover:bg-accent/10 transition-colors"
+                    aria-expanded={false}
+                    aria-controls="unassigned-orders-section"
+                  >
+                    <span className="flex items-center gap-2 text-sm font-medium text-foreground">
+                      <svg
+                        className="w-4 h-4 text-muted-foreground"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
                       >
-                        <UnassignedOrderList
-                          unassignedOrders={unassignedOrders}
-                          onAddToDelivery={onAddOrderToDelivery || (() => {})}
-                          title=""
+                        <path
+                          fillRule="evenodd"
+                          d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
+                          clipRule="evenodd"
                         />
-                      </div>
-                    </div>
-                  </CollapsibleContent>
-                </div>
-              </Collapsible>
+                      </svg>
+                      Unassigned ({unassignedOrders.length})
+                    </span>
+                    <span className="ml-2 text-muted-foreground">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                )}
+              </div>
             )}
           </div>
         )}
