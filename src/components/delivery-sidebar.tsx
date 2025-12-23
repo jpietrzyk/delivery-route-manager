@@ -257,12 +257,12 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                 <div className="bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden">
                   <CollapsibleTrigger asChild>
                     <button
-                      className="w-full flex items-center justify-between px-6 py-5 border-b border-border/50 bg-transparent hover:bg-accent/10 transition-colors"
+                      className="w-full flex items-center justify-between px-4 py-3 border-b border-border/50 bg-transparent hover:bg-accent/10 transition-colors"
                       aria-expanded={!isUnassignedCollapsed}
                       aria-controls="unassigned-orders-section"
                       type="button"
                     >
-                      <span className="flex items-center gap-2 text-base font-semibold text-foreground">
+                      <span className="flex items-center gap-2 text-sm font-medium text-foreground">
                         <svg
                           className="w-4 h-4 text-muted-foreground"
                           fill="currentColor"
@@ -274,7 +274,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                             clipRule="evenodd"
                           />
                         </svg>
-                        Unassigned
+                        Unassigned ({unassignedOrders.length})
                       </span>
                       <span className="ml-2 text-muted-foreground">
                         {isUnassignedCollapsed ? (
@@ -311,9 +311,6 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <div id="unassigned-orders-section" className="p-2">
-                      <p className="text-sm text-muted-foreground mb-2">
-                        {unassignedOrders.length} orders available to assign
-                      </p>
                       <div
                         style={{ maxHeight: 260, overflowY: "auto" }}
                         className="custom-scrollbar"

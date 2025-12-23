@@ -56,48 +56,37 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
 
   return (
     <div
-      className="delivery-route-segment bg-card/30 border-l-2 border-border/50 rounded-lg p-2 ml-4 mb-1 hover:bg-card/50 transition-colors duration-200"
+      className="delivery-route-segment bg-card/30 border-l-2 border-border/50 rounded p-1 ml-4 mb-1 hover:bg-card/50 transition-colors duration-200 flex items-center gap-2"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="flex items-center justify-between gap-2">
-        <ArrowRight
-          data-testid="connection-icon"
-          className="h-4 w-4 text-muted-foreground shrink-0"
-        />
-        <div className="flex-1 min-w-0">
-          <div className="text-xs text-muted-foreground mb-1">
-            <span className="font-medium text-foreground">{segment.id}</span>
-          </div>
-          <div className="text-xs">
-            <div className="flex items-center gap-2">
-              <Route className="h-3 w-3 text-muted-foreground" />
-              <span className="font-medium text-foreground">
-                {segment.routeData?.distance
-                  ? formatDistance(segment.routeData.distance)
-                  : "Nie dostępna"}
-              </span>
-              <span className="text-muted-foreground">|</span>
-              <Clock className="h-3 w-3 text-muted-foreground" />
-              <span className="font-medium text-foreground">
-                {segment.routeData?.duration
-                  ? formatDuration(segment.routeData.duration)
-                  : "Nie dostępna"}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="shrink-0">
-          <button
-            onClick={handleRecalculate}
-            disabled={isCalculating}
-            className="p-2 hover:bg-primary/10 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-primary hover:text-primary"
-            aria-label={isCalculating ? "Recalculating..." : "Refresh route"}
-          >
-            <RefreshCcw className="h-4 w-4" />
-          </button>
-        </div>
+      <ArrowRight
+        data-testid="connection-icon"
+        className="h-4 w-4 text-muted-foreground shrink-0"
+      />
+      <div className="flex items-center gap-2 flex-1 min-w-0">
+        <Route className="h-3 w-3 text-muted-foreground" />
+        <span className="font-medium text-xs text-foreground truncate">
+          {segment.routeData?.distance
+            ? formatDistance(segment.routeData.distance)
+            : "N/A"}
+        </span>
+        <span className="text-muted-foreground text-xs">|</span>
+        <Clock className="h-3 w-3 text-muted-foreground" />
+        <span className="font-medium text-xs text-foreground truncate">
+          {segment.routeData?.duration
+            ? formatDuration(segment.routeData.duration)
+            : "N/A"}
+        </span>
       </div>
+      <button
+        onClick={handleRecalculate}
+        disabled={isCalculating}
+        className="p-1 hover:bg-primary/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-primary hover:text-primary"
+        aria-label={isCalculating ? "Recalculating..." : "Refresh route"}
+      >
+        <RefreshCcw className="h-3 w-3" />
+      </button>
     </div>
   );
 };
