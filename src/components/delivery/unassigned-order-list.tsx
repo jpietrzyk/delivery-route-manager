@@ -53,12 +53,12 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
               {unassignedOrders.map((order) => (
                 <li
                   key={order.id}
-                  className="group relative overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer"
+                  className="group relative overflow-hidden rounded border border-border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer p-2"
                   onClick={() => onAddToDelivery(order.id)}
                 >
-                  <div className="flex items-center justify-between gap-3 p-3">
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
                         <svg
                           className="h-3 w-3"
                           fill="currentColor"
@@ -68,12 +68,9 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                         </svg>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h4 className="truncate text-sm font-medium text-foreground">
+                        <h4 className="truncate text-xs font-medium text-foreground">
                           {order.product?.name || `Order ${order.id}`}
                         </h4>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {order.customer}
-                        </p>
                       </div>
                     </div>
                     <Button
@@ -81,14 +78,13 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                         e.stopPropagation();
                         onAddToDelivery(order.id);
                       }}
-                      size="sm"
-                      className="shrink-0 h-8 w-8 p-2 bg-primary hover:bg-primary/90"
+                      size="icon"
+                      className="shrink-0 h-6 w-6 p-1 bg-primary hover:bg-primary/90"
                       aria-label={`Add order ${order.id} to delivery`}
                     >
-                      <Plus className="h-4 w-4" />
+                      <Plus className="h-3 w-3" />
                     </Button>
                   </div>
-                  <div className="h-1 w-full bg-linear-to-r from-transparent via-primary/10 to-transparent"></div>
                 </li>
               ))}
             </ul>
