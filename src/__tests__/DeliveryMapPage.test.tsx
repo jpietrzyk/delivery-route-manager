@@ -1,7 +1,9 @@
 // import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import DeliveryMapPage from "@/pages/DeliveryMapPage";
-import { MemoryRouter, Route } from "react-router-dom";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
+import DeliveryProvider from "@/contexts/delivery-provider";
+import MarkerHighlightProvider from "@/contexts/marker-highlight-provider";
 import { OrdersApi } from "@/services/ordersApi";
 import type { Order } from "@/types/order";
 
@@ -58,9 +60,16 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
   it("should increment refreshTrigger when order is added to delivery", async () => {
     render(
       <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
-        <Route path="/delivery/:deliveryId">
-          <DeliveryMapPage />
-        </Route>
+        <DeliveryProvider>
+          <MarkerHighlightProvider>
+            <Routes>
+              <Route
+                path="/delivery/:deliveryId"
+                element={<DeliveryMapPage />}
+              />
+            </Routes>
+          </MarkerHighlightProvider>
+        </DeliveryProvider>
       </MemoryRouter>
     );
 
@@ -90,9 +99,16 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
   it("should update both delivery and unassigned orders when adding order", async () => {
     render(
       <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
-        <Route path="/delivery/:deliveryId">
-          <DeliveryMapPage />
-        </Route>
+        <DeliveryProvider>
+          <MarkerHighlightProvider>
+            <Routes>
+              <Route
+                path="/delivery/:deliveryId"
+                element={<DeliveryMapPage />}
+              />
+            </Routes>
+          </MarkerHighlightProvider>
+        </DeliveryProvider>
       </MemoryRouter>
     );
 

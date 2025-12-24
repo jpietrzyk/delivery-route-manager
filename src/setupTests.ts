@@ -1,8 +1,15 @@
 // Jest setup file for React Testing Library
 import '@testing-library/jest-dom';
 
+// Polyfill TextEncoder for Jest
+import { TextEncoder, TextDecoder } from 'text-encoding';
+
+// Add TextEncoder and TextDecoder to global scope
+(global as any).TextEncoder = TextEncoder;
+(global as any).TextDecoder = TextDecoder;
+
 // Mock browser APIs
-global.ResizeObserver = class ResizeObserver {
+(global as any).ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
   disconnect() {}

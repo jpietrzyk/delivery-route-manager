@@ -3,13 +3,15 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
+  setupFiles: ['<rootDir>/jest.setup.js'],
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
+    '\.(css|less|scss|sass)$': '<rootDir>/__mocks__/styleMock.js',
+    '^react-leaflet$': '<rootDir>/__mocks__/react-leaflet.js'
   },
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
+    '^.+\.tsx?$': ['ts-jest', {
       tsconfig: 'tsconfig.app.json',
       useESM: true,
       isolatedModules: true
