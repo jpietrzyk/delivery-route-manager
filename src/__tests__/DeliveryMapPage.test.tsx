@@ -93,7 +93,11 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
 
     // The key test: verify that getOrders was called again after the update
     // This indicates that the refreshTrigger was incremented
-    expect(OrdersApi.getOrders).toHaveBeenCalledTimes(2);
+    // Note: DeliveryProvider calls getOrders during initialization, so we expect 3 calls:
+    // 1. Initial load by DeliveryProvider
+    // 2. Initial load by DeliveryMapPage
+    // 3. Refresh after order is added
+    expect(OrdersApi.getOrders).toHaveBeenCalledTimes(3);
   });
 
   it("should update both delivery and unassigned orders when adding order", async () => {
@@ -132,6 +136,11 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
     });
 
     // After adding, getOrders should be called again to refresh the data
-    expect(OrdersApi.getOrders).toHaveBeenCalledTimes(2);
+    // Note: DeliveryProvider calls getOrders during initialization, so we expect 4 calls:
+    // 1. Initial load by DeliveryProvider
+    // 2. Initial load by DeliveryMapPage
+    // 3. Refresh after order is added (from MapView)
+    // 4. Refresh after order is added (from DeliverySidebar)
+    expect(OrdersApi.getOrders).toHaveBeenCalledTimes(4);
   });
 });
