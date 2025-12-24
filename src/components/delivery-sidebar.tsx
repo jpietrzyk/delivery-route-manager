@@ -331,6 +331,8 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                         unassignedOrders={unassignedOrders}
                         onAddToDelivery={onAddOrderToDelivery || (() => {})}
                         title=""
+                        highlightedOrderId={highlightedOrderId}
+                        setHighlightedOrderId={setHighlightedOrderId}
                       />
                     </div>
                   </div>
