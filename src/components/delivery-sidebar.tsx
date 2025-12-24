@@ -209,10 +209,10 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                 <span className="ml-2 text-muted-foreground"></span>
               </button>
             ) : (
-              <div className="flex-1 flex flex-col bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden m-4 w-full max-w-full">
+              <div className="flex-1 flex flex-col bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden m-4  max-w-full">
                 <button
                   onClick={() => handleDeliveryCollapseChange(false)}
-                  className="flex items-center justify-between px-6 py-5 border-b border-border/50 bg-primary/5 hover:bg-primary/10 w-full text-left transition-colors"
+                  className="flex items-center justify-between px-6 py-5 border-b border-border/50 bg-primary/5 hover:bg-primary/10  text-left transition-colors"
                   aria-label="Collapse delivery orders"
                 >
                   <span className="flex items-center gap-2 text-sm font-medium text-foreground">
@@ -242,14 +242,16 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                     <p className="text-sm text-muted-foreground mb-2">
                       {deliveryOrders.length} orders assigned to this delivery
                     </p>
-                    <DeliveryOrderList
-                      orders={deliveryOrders}
-                      highlightedOrderId={highlightedOrderId}
-                      setHighlightedOrderId={setHighlightedOrderId}
-                      onRemoveOrder={handleRemoveOrder}
-                      onReorder={handleReorder}
-                      title=""
-                    />
+                    <div className="w-full max-w-full overflow-hidden">
+                      <DeliveryOrderList
+                        orders={deliveryOrders}
+                        highlightedOrderId={highlightedOrderId}
+                        setHighlightedOrderId={setHighlightedOrderId}
+                        onRemoveOrder={handleRemoveOrder}
+                        onReorder={handleReorder}
+                        title=""
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -301,10 +303,10 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                 </button>
               )
             ) : (
-              <div className="flex-1 flex flex-col bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden mx-4 mb-4 w-full max-w-full">
+              <div className="flex-1 flex flex-col bg-background rounded-2xl shadow-sm border border-border/50 overflow-hidden mx-4 mb-4 max-w-full">
                 <button
                   onClick={() => handleUnassignedCollapseChange(false)}
-                  className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-transparent w-full text-left hover:bg-accent/10 transition-colors"
+                  className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-transparent text-left hover:bg-accent/10 transition-colors"
                   aria-label="Collapse unassigned orders"
                 >
                   <span className="flex items-center gap-2 text-sm font-medium text-foreground">
@@ -338,12 +340,14 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                   </span>
                 </button>
                 <div className="flex-1 p-2 overflow-y-auto overflow-x-hidden">
-                  <div className="w-full max-w-full">
-                    <UnassignedOrderList
-                      unassignedOrders={unassignedOrders}
-                      onAddToDelivery={onAddOrderToDelivery || (() => {})}
-                      title=""
-                    />
+                  <div className="max-w-full">
+                    <div className="max-w-full overflow-hidden">
+                      <UnassignedOrderList
+                        unassignedOrders={unassignedOrders}
+                        onAddToDelivery={onAddOrderToDelivery || (() => {})}
+                        title=""
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

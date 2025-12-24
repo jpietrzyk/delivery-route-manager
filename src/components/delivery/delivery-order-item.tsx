@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 import type { Order } from "@/types/order";
-import type { Product } from "@/types /order";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
@@ -10,7 +9,6 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import { RouterProvider } from "react-router-dom";
 
 interface DeliveryOrderItemProps {
   order: Order;
@@ -42,7 +40,7 @@ const createExpandedTooltipContent = (order: Order) => {
   const statusColors = getStatusColor(order.status);
 
   return (
-    <div className="p-4 max-w-[320px] bg-background border border-border rounded-lg shadow-lg">
+    <div className="p-4 max-w-[320px] bg-background border border-border rounded-sm shadow-sm">
       <div className="font-semibold text-lg mb-3 text-foreground">
         {order.product?.name || "Unknown Order"}
       </div>
@@ -207,36 +205,48 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
           <div className="min-w-0 flex-1">
             <Tooltip>
               <TooltipTrigger asChild>
-                <h4 className="truncate text-sm font-medium text-foreground cursor-help flex items-center gap-2">
-                   <div className="flex flex-col">
-                     {order.product?.name || order.product?.id || order.id}
-                     <div className="text-xs text-muted-foreground">
-                       {order.id} | {order.product?.complexity ? order.product.complexity * 30 : 0} min | {order.priority}
-                     </div>
-                   </div>
-                    <svg
-                      className="inline h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="10"
+                <div className="w-full max-w-full overflow-hidden">
+                  <h4 className="truncate text-sm font-medium text-foreground cursor-help flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate">
+                        {order.product?.name || order.id}
+                      </div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {order.id} |{" "}
+                        {order.product?.complexity
+                          ? order.product.complexity * 30
+                          : 0}{" "}
+                        min | {order.priority}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
-                        fill="none"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 6v6l4 2"
-                      />
-                    </svg>
-                    {order.product?.complexity ?? 0}
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          fill="none"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 6v6l4 2"
+                        />
+                      </svg>
+                      <span className="text-xs text-muted-foreground">
+                        {order.product?.complexity ?? 0}
+                      </span>
+                    </div>
                   </h4>
+                </div>
               </TooltipTrigger>
               <TooltipContent
                 side="bottom"
