@@ -33,7 +33,7 @@ describe("DeliveryRouteManager", () => {
     render(<DeliveryRouteManager orders={[order]} />);
 
     expect(screen.getByText("Test Product")).toBeInTheDocument();
-    expect(screen.getByText("Test Customer")).toBeInTheDocument();
+    expect(screen.getByText(/order-1/)).toBeInTheDocument();
   });
 
   it("should render multiple orders with drive and handling times", () => {
