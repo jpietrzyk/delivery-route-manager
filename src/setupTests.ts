@@ -5,11 +5,15 @@ import '@testing-library/jest-dom';
 import { TextEncoder, TextDecoder } from 'text-encoding';
 
 // Add TextEncoder and TextDecoder to global scope
-(global as any).TextEncoder = TextEncoder;
-(global as any).TextDecoder = TextDecoder;
+// Use simple assignment for Jest environment
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(globalThis as any).TextEncoder = TextEncoder;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(globalThis as any).TextDecoder = TextDecoder;
 
 // Mock browser APIs
-(global as any).ResizeObserver = class ResizeObserver {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(globalThis as any).ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
   disconnect() {}
