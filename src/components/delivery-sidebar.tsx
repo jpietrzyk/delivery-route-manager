@@ -12,7 +12,7 @@ import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
 import { UnassignedOrderList } from "@/components/delivery/unassigned-order-list";
 import { OrdersApi } from "@/services/ordersApi";
-import { applyPendingOrderUpdates } from "@/lib/localStorageUtils";
+import { applyPendingOrderUpdates } from "@/lib/local-storage-utils";
 
 interface DeliverySidebarProps {
   onOrderRemoved?: () => void;

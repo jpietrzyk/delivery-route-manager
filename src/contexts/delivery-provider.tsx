@@ -13,7 +13,7 @@ import {
   markOrderUpdateFailed,
   applyPendingOrderUpdates,
   applyPendingDeliveryUpdates,
-} from "@/lib/localStorageUtils";
+} from "@/lib/local-storage-utils";
 
 export default function DeliveryProvider({
   children,
