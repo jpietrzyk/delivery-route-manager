@@ -4,6 +4,16 @@ import { DeliveriesApi } from "@/services/deliveriesApi";
 import { OrdersApi } from "@/services/ordersApi";
 import type { Delivery } from "@/types/delivery";
 import type { Order } from "@/types/order";
+import {
+  addOptimisticDeliveryUpdate,
+  addOptimisticOrderUpdate,
+  markDeliveryUpdateCompleted,
+  markOrderUpdateCompleted,
+  markDeliveryUpdateFailed,
+  markOrderUpdateFailed,
+  applyPendingOrderUpdates,
+  applyPendingDeliveryUpdates,
+} from "@/lib/localStorageUtils";
 
 export default function DeliveryProvider({
   children,
@@ -18,7 +28,11 @@ export default function DeliveryProvider({
   const refreshUnassignedOrders = useCallback(async () => {
     try {
       const orders = await OrdersApi.getOrders();
-      const unassigned = orders.filter((order) => !order.deliveryId);
+      // Apply pending optimistic updates
+      const ordersWithPendingUpdates = applyPendingOrderUpdates(orders);
+      const unassigned = ordersWithPendingUpdates.filter(
+        (order) => !order.deliveryId
+      );
       console.log(
         "[DeliveryProvider] Unassigned orders:",
         unassigned.length,
@@ -34,7 +48,14 @@ export default function DeliveryProvider({
   const refreshDeliveries = useCallback(async () => {
     try {
       const fetchedDeliveries = await DeliveriesApi.getDeliveries();
-      setDeliveries(fetchedDeliveries);
+      const allOrders = await OrdersApi.getOrders();
+
+      // Apply pending optimistic updates to each delivery
+      const deliveriesWithPendingUpdates = fetchedDeliveries.map((delivery) =>
+        applyPendingDeliveryUpdates(delivery, allOrders)
+      );
+
+      setDeliveries(deliveriesWithPendingUpdates);
     } catch (error) {
       console.error("Error fetching deliveries:", error);
     }
@@ -117,59 +138,217 @@ export default function DeliveryProvider({
   const addOrderToDelivery = useCallback(
     async (deliveryId: string, orderId: string, atIndex?: number) => {
       try {
-        // First, mark the order as assigned to this delivery
-        await OrdersApi.updateOrder(orderId, { deliveryId });
-
-        // Then add it to the delivery
-        const updatedDelivery = await DeliveriesApi.addOrderToDelivery(
+        // Optimistic update - add to local storage first
+        addOptimisticDeliveryUpdate({
           deliveryId,
           orderId,
-          atIndex
+          action: "add",
+        });
+        addOptimisticOrderUpdate({
+          orderId,
+          deliveryId,
+        });
+
+        // Optimistic UI update - update local state immediately
+        setDeliveries((prev) => {
+          return prev.map((d) => {
+            if (d.id === deliveryId) {
+              // Add the order to the delivery
+              const updatedOrders = [...d.orders];
+              const newIndex = atIndex ?? updatedOrders.length;
+
+              // Check if order is already in delivery
+              const orderAlreadyInDelivery = updatedOrders.some(
+                (order) => order.orderId === orderId
+              );
+
+              if (!orderAlreadyInDelivery) {
+                updatedOrders.splice(newIndex, 0, {
+                  orderId,
+                  sequence: newIndex,
+                  status: "pending",
+                });
+
+                // Resequence
+                updatedOrders.forEach((order, index) => {
+                  order.sequence = index;
+                });
+              }
+
+              return {
+                ...d,
+                orders: updatedOrders,
+              };
+            }
+            return d;
+          });
+        });
+
+        // Update current delivery if it's the one being modified
+        if (currentDelivery?.id === deliveryId) {
+          setCurrentDelivery((prev) => {
+            if (!prev) return null;
+
+            const updatedOrders = [...prev.orders];
+            const newIndex = atIndex ?? updatedOrders.length;
+
+            // Check if order is already in delivery
+            const orderAlreadyInDelivery = updatedOrders.some(
+              (order) => order.orderId === orderId
+            );
+
+            if (!orderAlreadyInDelivery) {
+              updatedOrders.splice(newIndex, 0, {
+                orderId,
+                sequence: newIndex,
+                status: "pending",
+              });
+
+              // Resequence
+              updatedOrders.forEach((order, index) => {
+                order.sequence = index;
+              });
+            }
+
+            return {
+              ...prev,
+              orders: updatedOrders,
+            };
+          });
+        }
+
+        // Optimistic update - remove from unassigned orders
+        setUnassignedOrders((prev) =>
+          prev.filter((order) => order.id !== orderId)
         );
-        if (updatedDelivery) {
-          setDeliveries((prev) =>
-            prev.map((d) => (d.id === deliveryId ? updatedDelivery : d))
+
+        // Perform API calls in background
+        try {
+          // First, mark the order as assigned to this delivery
+          await OrdersApi.updateOrder(orderId, { deliveryId });
+
+          // Then add it to the delivery
+          const updatedDelivery = await DeliveriesApi.addOrderToDelivery(
+            deliveryId,
+            orderId,
+            atIndex
           );
-          if (currentDelivery?.id === deliveryId) {
-            setCurrentDelivery(updatedDelivery);
+
+          if (updatedDelivery) {
+            // Mark updates as completed
+            markDeliveryUpdateCompleted(deliveryId, orderId);
+            markOrderUpdateCompleted(orderId);
           }
-          // Refresh unassigned (order is now removed from unassigned)
-          await refreshUnassignedOrders();
+        } catch (error) {
+          console.error("Error adding order to delivery:", error);
+          // Mark updates as failed
+          markDeliveryUpdateFailed(deliveryId, orderId);
+          markOrderUpdateFailed(orderId);
+
+          // TODO: Revert optimistic updates (would need to refetch data)
         }
       } catch (error) {
         console.error("Error adding order to delivery:", error);
       }
     },
-    [currentDelivery, refreshUnassignedOrders]
+    [currentDelivery]
   );
 
   // Remove an order from a delivery (returns to unassigned)
   const removeOrderFromDelivery = useCallback(
     async (deliveryId: string, orderId: string) => {
       try {
-        // First, remove delivery assignment from order (returns to unassigned)
-        await OrdersApi.updateOrder(orderId, { deliveryId: undefined });
-
-        // Then remove from delivery
-        const updatedDelivery = await DeliveriesApi.removeOrderFromDelivery(
+        // Optimistic update - add to local storage first
+        addOptimisticDeliveryUpdate({
           deliveryId,
-          orderId
-        );
-        if (updatedDelivery) {
-          setDeliveries((prev) =>
-            prev.map((d) => (d.id === deliveryId ? updatedDelivery : d))
+          orderId,
+          action: "remove",
+        });
+        addOptimisticOrderUpdate({
+          orderId,
+          deliveryId: undefined,
+        });
+
+        // Optimistic UI update - update local state immediately
+        setDeliveries((prev) => {
+          return prev.map((d) => {
+            if (d.id === deliveryId) {
+              // Remove the order from the delivery
+              const updatedOrders = d.orders
+                .filter((order) => order.orderId !== orderId)
+                .map((order, index) => ({
+                  ...order,
+                  sequence: index,
+                }));
+
+              return {
+                ...d,
+                orders: updatedOrders,
+              };
+            }
+            return d;
+          });
+        });
+
+        // Update current delivery if it's the one being modified
+        if (currentDelivery?.id === deliveryId) {
+          setCurrentDelivery((prev) => {
+            if (!prev) return null;
+
+            const updatedOrders = prev.orders
+              .filter((order) => order.orderId !== orderId)
+              .map((order, index) => ({
+                ...order,
+                sequence: index,
+              }));
+
+            return {
+              ...prev,
+              orders: updatedOrders,
+            };
+          });
+        }
+
+        // Optimistic update - add back to unassigned orders
+        // We need to find the order from the original orders data
+        const allOrders = await OrdersApi.getAllOrders();
+        const orderToRestore = allOrders.find((order) => order.id === orderId);
+        if (orderToRestore) {
+          setUnassignedOrders((prev) => [
+            ...prev,
+            { ...orderToRestore, deliveryId: undefined },
+          ]);
+        }
+
+        // Perform API calls in background
+        try {
+          // First, remove delivery assignment from order (returns to unassigned)
+          await OrdersApi.updateOrder(orderId, { deliveryId: undefined });
+
+          // Then remove from delivery
+          const updatedDelivery = await DeliveriesApi.removeOrderFromDelivery(
+            deliveryId,
+            orderId
           );
-          if (currentDelivery?.id === deliveryId) {
-            setCurrentDelivery(updatedDelivery);
+
+          if (updatedDelivery) {
+            // Mark updates as completed
+            markDeliveryUpdateCompleted(deliveryId, orderId);
+            markOrderUpdateCompleted(orderId);
           }
-          // Refresh unassigned (order is now returned to unassigned)
-          await refreshUnassignedOrders();
+        } catch (error) {
+          console.error("Error removing order from delivery:", error);
+          // Mark updates as failed
+          markDeliveryUpdateFailed(deliveryId, orderId);
+          markOrderUpdateFailed(orderId);
+
+          // TODO: Revert optimistic updates (would need to refetch data)
         }
       } catch (error) {
         console.error("Error removing order from delivery:", error);
       }
     },
-    [currentDelivery, refreshUnassignedOrders]
+    [currentDelivery]
   );
 
   // Reorder orders in a delivery

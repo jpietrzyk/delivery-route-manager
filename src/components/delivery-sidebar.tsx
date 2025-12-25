@@ -12,6 +12,7 @@ import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
 import { UnassignedOrderList } from "@/components/delivery/unassigned-order-list";
 import { OrdersApi } from "@/services/ordersApi";
+import { applyPendingOrderUpdates } from "@/lib/localStorageUtils";
 
 interface DeliverySidebarProps {
   onOrderRemoved?: () => void;
@@ -75,7 +76,11 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
           "All order IDs:",
           allOrders.map((o) => o.id)
         );
-        const ordersInDelivery = allOrders.filter(
+
+        // Apply pending optimistic updates
+        const ordersWithPendingUpdates = applyPendingOrderUpdates(allOrders);
+
+        const ordersInDelivery = ordersWithPendingUpdates.filter(
           (order) => order.deliveryId === currentDelivery.id
         );
         console.log("Orders in delivery:", ordersInDelivery);
@@ -83,7 +88,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
         console.log("All orders count:", allOrders.length);
 
         // Debug: Check if any order IDs match
-        const matchingIds = allOrders
+        const matchingIds = ordersWithPendingUpdates
           .filter((order) => order.deliveryId === currentDelivery.id)
           .map((o) => o.id);
         console.log("Matching order IDs:", matchingIds);
@@ -124,11 +129,30 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   };
 
   const handleAddOrderToDelivery = async (orderId: string) => {
+    console.log("handleAddOrderToDelivery called with orderId:", orderId);
     // Optimistic update
     const orderToAdd = unassignedOrders.find((order) => order.id === orderId);
-    if (orderToAdd) {
-      setDeliveryOrders((prev) => [...prev, orderToAdd]);
+    console.log("orderToAdd:", orderToAdd);
+    console.log("currentDelivery:", currentDelivery);
+
+    if (orderToAdd && currentDelivery) {
+      // Add the order with the correct deliveryId set
+      const orderWithDeliveryId = {
+        ...orderToAdd,
+        deliveryId: currentDelivery.id,
+      };
+      console.log("Adding order optimistically:", orderWithDeliveryId);
+      setDeliveryOrders((prev) => {
+        const newOrders = [...prev, orderWithDeliveryId];
+        console.log("Updated delivery orders count:", newOrders.length);
+        return newOrders;
+      });
+    } else if (orderToAdd && !currentDelivery) {
+      console.log(
+        "currentDelivery not available yet, will rely on DeliveryProvider update"
+      );
     }
+
     await onAddOrderToDelivery?.(orderId);
   };
 
