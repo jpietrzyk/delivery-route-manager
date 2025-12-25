@@ -15,6 +15,12 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import { createExpandedTooltipContent } from "./order-tooltip-utils";
 
 interface UnassignedOrderListProps {
   unassignedOrders: Order[];
@@ -79,9 +85,21 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                         </svg>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h4 className="truncate text-xs font-medium text-foreground">
-                          {order.product?.name || `Order ${order.id}`}
-                        </h4>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <h4 className="truncate text-xs font-medium text-foreground cursor-help">
+                              {order.product?.name || `Order ${order.id}`}
+                            </h4>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            side="left"
+                            align="center"
+                            sideOffset={12}
+                            className="p-0 overflow-hidden"
+                          >
+                            {createExpandedTooltipContent(order)}
+                          </TooltipContent>
+                        </Tooltip>
                       </div>
                     </div>
                     <Button
