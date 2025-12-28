@@ -16,7 +16,6 @@ import {
   applyPendingOrderUpdates,
   resetLocalStorageAndFetchData,
 } from "@/lib/local-storage-utils";
-import { Button } from "@/components/ui/button";
 
 interface DeliverySidebarProps {
   onOrderRemoved?: () => void;
@@ -36,7 +35,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   const [deliveryOrders, setDeliveryOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeliveryExpanded, setIsDeliveryExpanded] = useState(true);
-  const [isUnassignedCollapsed, setIsUnassignedCollapsed] = useState(false); // expanded by default
+  const [isUnassignedCollapsed, setIsUnassignedCollapsed] = useState(true); // collapsed by default
 
   // Handle delivery expand/collapse state change
   const handleDeliveryExpandChange = (expanded: boolean) => {
@@ -396,29 +395,15 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
             © {new Date().getFullYear()} Delivery Manager
           </span>
           <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
+            <button
               onClick={resetLocalStorageAndFetchData}
-              className="text-xs px-2 py-1 h-6"
+              className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+              aria-label="Reset Data"
             >
-              Reset Data
-            </Button>
-            <button className="text-muted-foreground hover:text-foreground transition-colors duration-200">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path
-                  fillRule="evenodd"
-                  d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-            <button className="text-muted-foreground hover:text-foreground transition-colors duration-200">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
-                  d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
                   clipRule="evenodd"
                 />
               </svg>
