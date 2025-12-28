@@ -27,7 +27,7 @@ export const LeafletMapProvider: MapProvider = {
       duration: 0,
     };
   },
-  drawRouteSegment(routeData: RouteData): MapRoute {
+  drawRouteSegment(): MapRoute {
     // TODO: Implement drawing logic
     return {
       id: "",
