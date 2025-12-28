@@ -11,6 +11,7 @@ import {
 import L from "leaflet";
 import React from "react";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
+import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useDelivery } from "@/hooks/use-delivery";
 import type { Order } from "@/types/order";
 import { OrdersApi } from "@/services/ordersApi";
@@ -232,8 +233,14 @@ const LeafletMap = ({
     unassignedOrders.length
   );
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
+  const { currentOrderId, previousOrderId } = useOrderHighlight();
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDelivery();
+
+  // Debug logging for order highlighting
+  console.log("LeafletMap: highlightedOrderId:", highlightedOrderId);
+  console.log("LeafletMap: currentOrderId:", currentOrderId);
+  console.log("LeafletMap: previousOrderId:", previousOrderId);
 
   // Preload icons
   const defaultIcon = React.useMemo(
@@ -284,6 +291,38 @@ const LeafletMap = ({
       L.icon({
         iconUrl:
           "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowUrl:
+          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+        shadowSize: [41, 41],
+      }),
+    []
+  );
+
+  // Current order icon (blue)
+  const currentOrderIcon = React.useMemo(
+    () =>
+      L.icon({
+        iconUrl:
+          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowUrl:
+          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+        shadowSize: [41, 41],
+      }),
+    []
+  );
+
+  // Previous order icon (yellow)
+  const previousOrderIcon = React.useMemo(
+    () =>
+      L.icon({
+        iconUrl:
+          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
@@ -346,6 +385,10 @@ const LeafletMap = ({
         }
         if (highlightedOrderId === order.id) {
           icon = highlightIcon;
+        } else if (currentOrderId === order.id) {
+          icon = currentOrderIcon;
+        } else if (previousOrderId === order.id) {
+          icon = previousOrderIcon;
         }
         return (
           <Marker
