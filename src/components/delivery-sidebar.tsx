@@ -223,7 +223,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                   ? isUnassignedCollapsed
                     ? "flex-1"
                     : "h-[67%] min-h-75"
-                  : "h-1/2 min-h-50"
+                  : "h-[67%] min-h-75"
               }`}
             >
               <button
