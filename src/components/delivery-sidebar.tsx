@@ -220,7 +220,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                 isDeliveryExpanded
                   ? isUnassignedCollapsed
                     ? "flex-1"
-                    : "h-[67%] min-h-[300px]"
+                    : "h-[67%] min-h-75"
                   : "h-1/2 min-h-50"
               }`}
             >
@@ -334,7 +334,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                 </button>
               )
             ) : (
-              <div className="flex flex-col bg-background rounded-2sm shadow-sm border border-border/50 overflow-hidden mx-4 mb-4 max-w-full h-[33%] min-h-[200px]">
+              <div className="flex flex-col bg-background rounded-2sm shadow-sm border border-border/50 overflow-hidden mx-4 mb-4 max-w-full h-[33%] min-h-50">
                 <button
                   onClick={() => handleUnassignedCollapseChange(false)}
                   className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-transparent text-left hover:bg-accent/10 transition-colors"
