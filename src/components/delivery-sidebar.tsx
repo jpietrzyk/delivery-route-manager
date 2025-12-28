@@ -12,7 +12,11 @@ import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
 import { UnassignedOrderList } from "@/components/delivery/unassigned-order-list";
 import { OrdersApi } from "@/services/ordersApi";
-import { applyPendingOrderUpdates } from "@/lib/local-storage-utils";
+import {
+  applyPendingOrderUpdates,
+  resetLocalStorageAndFetchData,
+} from "@/lib/local-storage-utils";
+import { Button } from "@/components/ui/button";
 
 interface DeliverySidebarProps {
   onOrderRemoved?: () => void;
@@ -392,6 +396,14 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
             © {new Date().getFullYear()} Delivery Manager
           </span>
           <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={resetLocalStorageAndFetchData}
+              className="text-xs px-2 py-1 h-6"
+            >
+              Reset Data
+            </Button>
             <button className="text-muted-foreground hover:text-foreground transition-colors duration-200">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />

@@ -214,6 +214,22 @@ export function clearCompletedUpdates(): void {
 }
 
 /**
+ * Reset all local storage data and fetch all data from the endpoint
+ */
+export function resetLocalStorageAndFetchData(): void {
+  try {
+    // Clear all local storage data
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.OPTIMISTIC_DELIVERY_UPDATES);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.OPTIMISTIC_ORDER_UPDATES);
+
+    // Reload the page to fetch all data from the endpoint
+    window.location.reload();
+  } catch (error) {
+    console.error('Error resetting local storage:', error);
+  }
+}
+
+/**
  * Apply pending optimistic updates to orders
  */
 export function applyPendingOrderUpdates(orders: Order[]): Order[] {
