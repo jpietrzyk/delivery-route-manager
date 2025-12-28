@@ -71,11 +71,12 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
 
   return (
     <div
-      className={`delivery-route-segment bg-card/30 border-l-2 border-border/50 rounded p-1 ml-4 mb-1 hover:bg-card/50 transition-colors duration-200 flex items-center gap-2 ${
+      className={`delivery-route-segment bg-card/30 border-l-2 border-border/50 rounded p-1 ml-4 mb-1 hover:bg-card/50 transition-colors duration-200 flex items-center gap-2 cursor-pointer ${
         isSegmentHighlighted ? "bg-primary/10 border-primary/50" : ""
       }`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      style={{ userSelect: "none", WebkitUserSelect: "none" }}
     >
       <ArrowRight
         data-testid="connection-icon"
