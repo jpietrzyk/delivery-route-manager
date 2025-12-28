@@ -181,14 +181,21 @@ const createOrderPopupContent = (
 
 interface LeafletMapProps {
   orders?: Order[];
+  unassignedOrders?: Order[];
   onOrderAddedToDelivery?: (orderId: string) => void;
   onRefreshRequested?: () => void;
 }
 
-function MapFitter({ orders }: { orders: Order[] }) {
+function MapFitter({
+  orders,
+  unassignedOrders,
+}: {
+  orders: Order[];
+  unassignedOrders: Order[];
+}) {
   const map = useMap();
   React.useEffect(() => {
-    if (orders.length === 0) return;
+    if (orders.length === 0 && unassignedOrders.length === 0) return;
 
     // Filter to get only delivery orders for primary focus
     const deliveryOrders = orders.filter((order) => order.deliveryId);
@@ -197,9 +204,7 @@ function MapFitter({ orders }: { orders: Order[] }) {
       map.setView(deliveryOrders[0].location, 13);
     } else if (deliveryOrders.length > 1) {
       // Focus on delivery orders, but include pool orders in bounds for context
-      const allOrders = orders.filter(
-        (order) => order.deliveryId || (deliveryOrders.length === 0 && order) // Include pool orders if no delivery orders
-      );
+      const allOrders = [...deliveryOrders, ...unassignedOrders];
       const bounds = L.latLngBounds(
         allOrders.map((o) => [o.location.lat, o.location.lng])
       );
@@ -207,19 +212,25 @@ function MapFitter({ orders }: { orders: Order[] }) {
     } else {
       // If no delivery orders, show all orders (pool orders)
       const bounds = L.latLngBounds(
-        orders.map((o) => [o.location.lat, o.location.lng])
+        unassignedOrders.map((o) => [o.location.lat, o.location.lng])
       );
       map.fitBounds(bounds, { padding: [40, 40] });
     }
-  }, [orders, map]);
+  }, [orders, unassignedOrders, map]);
   return null;
 }
 
 const LeafletMap = ({
   orders = [],
+  unassignedOrders = [],
   onOrderAddedToDelivery,
   onRefreshRequested,
 }: LeafletMapProps) => {
+  console.log("LeafletMap: Rendering with delivery orders:", orders.length);
+  console.log(
+    "LeafletMap: Rendering with unassigned orders:",
+    unassignedOrders.length
+  );
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDelivery();
@@ -288,7 +299,7 @@ const LeafletMap = ({
 
   // Draw straight lines between consecutive DELIVERY order markers only
   const polylinePositions: [number, number][][] = [];
-  const deliveryOrders = orders.filter((order) => order.deliveryId);
+  const deliveryOrders = orders;
   if (deliveryOrders.length >= 2) {
     for (let i = 0; i < deliveryOrders.length - 1; i++) {
       polylinePositions.push([
@@ -303,7 +314,7 @@ const LeafletMap = ({
 
   return (
     <MapContainer style={{ width: "100%", height: "100%" }}>
-      <MapFitter orders={orders} />
+      <MapFitter orders={orders} unassignedOrders={unassignedOrders} />
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {polylinePositions.length > 0 &&
         polylinePositions.map((positions, index) => {
@@ -323,7 +334,7 @@ const LeafletMap = ({
             />
           );
         })}
-      {orders.map((order) => {
+      {[...orders, ...unassignedOrders].map((order) => {
         const isPool = !order.deliveryId;
         let icon = defaultIcon;
         if (isPool) {

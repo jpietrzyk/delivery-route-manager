@@ -12,7 +12,11 @@ import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
 import { UnassignedOrderList } from "@/components/delivery/unassigned-order-list";
 import { OrdersApi } from "@/services/ordersApi";
-import { applyPendingOrderUpdates } from "@/lib/local-storage-utils";
+import {
+  applyPendingOrderUpdates,
+  resetLocalStorageAndFetchData,
+} from "@/lib/local-storage-utils";
+import { Button } from "@/components/ui/button";
 
 interface DeliverySidebarProps {
   onOrderRemoved?: () => void;
@@ -57,23 +61,26 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   // Sync delivery orders with current delivery and all orders
   useEffect(() => {
     const updateDeliveryOrders = async () => {
-      console.log("Updating delivery orders...");
+      console.log("DeliverySidebar: Updating delivery orders...");
       setIsLoading(true);
 
       if (!currentDelivery) {
-        console.log("No current delivery");
+        console.log("DeliverySidebar: No current delivery");
         setDeliveryOrders([]);
         setIsLoading(false);
         return;
       }
 
       try {
-        console.log("Current delivery orders:", currentDelivery.orders);
+        console.log(
+          "DeliverySidebar: Current delivery orders:",
+          currentDelivery.orders
+        );
         // Get all orders and filter to only those in current delivery
         const allOrders = await OrdersApi.getOrders();
-        console.log("All orders:", allOrders);
+        console.log("DeliverySidebar: All orders:", allOrders.length);
         console.log(
-          "All order IDs:",
+          "DeliverySidebar: All order IDs:",
           allOrders.map((o) => o.id)
         );
 
@@ -83,18 +90,27 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
         const ordersInDelivery = ordersWithPendingUpdates.filter(
           (order) => order.deliveryId === currentDelivery.id
         );
-        console.log("Orders in delivery:", ordersInDelivery);
-        console.log("Orders in delivery count:", ordersInDelivery.length);
-        console.log("All orders count:", allOrders.length);
+        console.log(
+          "DeliverySidebar: Orders in delivery:",
+          ordersInDelivery.length
+        );
+        console.log(
+          "DeliverySidebar: Orders in delivery count:",
+          ordersInDelivery.length
+        );
+        console.log("DeliverySidebar: All orders count:", allOrders.length);
 
         // Debug: Check if any order IDs match
         const matchingIds = ordersWithPendingUpdates
           .filter((order) => order.deliveryId === currentDelivery.id)
           .map((o) => o.id);
-        console.log("Matching order IDs:", matchingIds);
+        console.log("DeliverySidebar: Matching order IDs:", matchingIds);
         setDeliveryOrders(ordersInDelivery);
       } catch (error) {
-        console.error("Error updating delivery orders:", error);
+        console.error(
+          "DeliverySidebar: Error updating delivery orders:",
+          error
+        );
       } finally {
         setIsLoading(false);
       }
@@ -380,6 +396,14 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
             © {new Date().getFullYear()} Delivery Manager
           </span>
           <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={resetLocalStorageAndFetchData}
+              className="text-xs px-2 py-1 h-6"
+            >
+              Reset Data
+            </Button>
             <button className="text-muted-foreground hover:text-foreground transition-colors duration-200">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />

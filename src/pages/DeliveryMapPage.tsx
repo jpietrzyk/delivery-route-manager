@@ -14,16 +14,23 @@ export default function DeliveryMapPage() {
   const [unassignedOrders, setUnassignedOrders] = useState<Order[]>([]);
 
   useEffect(() => {
+    console.log("DeliveryMapPage: Fetching orders for deliveryId:", deliveryId);
     OrdersApi.getOrders().then((fetchedOrders) => {
-      // Filter orders for the specific delivery or all deliveries if no deliveryId
+      console.log("DeliveryMapPage: Fetched orders:", fetchedOrders.length);
+      // Filter orders for the specific delivery
       const deliveryOrders = fetchedOrders.filter(
-        (order) => order.deliveryId === deliveryId || !deliveryId
+        (order) => order.deliveryId === deliveryId
       );
+      console.log("DeliveryMapPage: Delivery orders:", deliveryOrders.length);
       setDeliveryOrders(deliveryOrders);
 
       // Get unassigned orders
       const initialUnassignedOrders = fetchedOrders.filter(
         (order) => !order.deliveryId
+      );
+      console.log(
+        "DeliveryMapPage: Unassigned orders:",
+        initialUnassignedOrders.length
       );
       setUnassignedOrders(initialUnassignedOrders);
     });
@@ -33,7 +40,7 @@ export default function DeliveryMapPage() {
   const handleOrderRemoved = () => {
     OrdersApi.getOrders().then((fetchedOrders) => {
       const deliveryOrders = fetchedOrders.filter(
-        (order) => order.deliveryId === deliveryId || !deliveryId
+        (order) => order.deliveryId === deliveryId
       );
       setDeliveryOrders(deliveryOrders);
       const initialUnassignedOrders = fetchedOrders.filter(
@@ -61,12 +68,13 @@ export default function DeliveryMapPage() {
         {/* Map layer at the bottom */}
         <div className="absolute inset-0 z-0">
           <MapView
-            orders={[...deliveryOrders, ...unassignedOrders]}
+            orders={deliveryOrders}
+            unassignedOrders={unassignedOrders}
             onOrderAddedToDelivery={async () => {
               // Refresh both delivery and unassigned orders
               const allOrders = await OrdersApi.getOrders();
               const updatedDeliveryOrders = allOrders.filter(
-                (order) => order.deliveryId === deliveryId || !deliveryId
+                (order) => order.deliveryId === deliveryId
               );
               const updatedUnassignedOrders = allOrders.filter(
                 (order) => !order.deliveryId
@@ -98,7 +106,7 @@ export default function DeliveryMapPage() {
                 // Refresh local state to match the updated context
                 const allOrders = await OrdersApi.getOrders();
                 const updatedDeliveryOrders = allOrders.filter(
-                  (order) => order.deliveryId === deliveryId || !deliveryId
+                  (order) => order.deliveryId === deliveryId
                 );
                 const updatedUnassignedOrders = allOrders.filter(
                   (order) => !order.deliveryId
