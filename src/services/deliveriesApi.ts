@@ -16,17 +16,86 @@ import type { Order } from '@/types/order';
  * to update order.deliveryId. For now, we mock this behavior.
  */
 class DeliveriesApiClass {
-  private deliveries: Delivery[] = [...sampleDeliveries];
+  private deliveries: Delivery[] = [];
+  private loaded = false;
+
+  constructor() {
+    this.initialize();
+  }
+
+  private async initialize(): Promise<void> {
+    if (this.loaded) return;
+
+    try {
+      // Check if we're in a browser environment (fetch is available)
+      if (typeof fetch !== 'undefined') {
+        // Load delivery data from JSON file
+        const response = await fetch('/assets/delivery-DEL-001.json');
+        if (!response.ok) {
+          throw new Error('Failed to load delivery data');
+        }
+
+        const deliveryData = await response.json();
+
+        // Define interface for the JSON route item
+        interface JsonRouteItem {
+          id: string;
+          orderId: string;
+        }
+
+        // Convert the JSON structure to our Delivery interface
+        const delivery: Delivery = {
+          id: deliveryData.id,
+          name: deliveryData.description || `Delivery ${deliveryData.id}`,
+          status: 'scheduled', // Default status
+          createdAt: new Date(deliveryData.createdAt),
+          updatedAt: new Date(deliveryData.updatedAt),
+          orders: deliveryData.routeItems.map((item: JsonRouteItem, index: number) => ({
+            orderId: item.orderId,
+            sequence: index,
+            status: 'pending' as const,
+            driveTimeEstimate: 0,
+            driveTimeActual: 0,
+          })),
+          notes: 'Delivery route loaded from JSON',
+          estimatedDistance: 0,
+          estimatedDuration: 0,
+        };
+
+        this.deliveries = [delivery];
+      } else {
+        // In Node.js environment (tests), use sample data
+        this.deliveries = [...sampleDeliveries];
+      }
+
+      this.loaded = true;
+    } catch (error) {
+      console.error('Error loading delivery data:', error);
+      // Fallback to sample data if loading fails
+      this.deliveries = [...sampleDeliveries];
+      this.loaded = true;
+    }
+  }
 
   // Get all deliveries
   async getDeliveries(): Promise<Delivery[]> {
+    // Ensure initialization is complete
+    await this.ensureInitialized();
+
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 100));
     return [...this.deliveries];
   }
 
+  private async ensureInitialized(): Promise<void> {
+    if (!this.loaded) {
+      await this.initialize();
+    }
+  }
+
   // Get a single delivery by ID
   async getDelivery(id: string): Promise<Delivery | null> {
+    await this.ensureInitialized();
     await new Promise((resolve) => setTimeout(resolve, 100));
     const delivery = this.deliveries.find((d) => d.id === id);
     return delivery ? { ...delivery } : null;
@@ -61,6 +130,7 @@ class DeliveriesApiClass {
 
   // Create a new delivery
   async createDelivery(delivery: Omit<Delivery, 'id' | 'createdAt' | 'updatedAt'>): Promise<Delivery> {
+    await this.ensureInitialized();
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const now = new Date();
@@ -77,6 +147,7 @@ class DeliveriesApiClass {
 
   // Update an existing delivery
   async updateDelivery(id: string, updates: Partial<Delivery>): Promise<Delivery | null> {
+    await this.ensureInitialized();
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const index = this.deliveries.findIndex((d) => d.id === id);
@@ -94,6 +165,7 @@ class DeliveriesApiClass {
 
   // Delete a delivery
   async deleteDelivery(id: string): Promise<boolean> {
+    await this.ensureInitialized();
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const index = this.deliveries.findIndex((d) => d.id === id);

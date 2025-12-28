@@ -1,5 +1,8 @@
 import type { Order } from "./order";
 
+// Re-export Order for use in map provider implementations
+export type { Order };
+
 /**
  * Map Provider Interface - Abstracts map-specific operations
  * All map providers (Leaflet, HERE Maps, Google Maps) must implement this interface

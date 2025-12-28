@@ -184,70 +184,70 @@ export const sampleDeliveries: Delivery[] = [
     updatedAt: new Date('2025-12-05T15:30:00Z'),
     orders: [
       {
-        orderId: 'PROD-001',
+        orderId: 'ORD-001',
         sequence: 0,
         status: 'pending',
         driveTimeEstimate: 0, // Starting point, no drive time
         driveTimeActual: 0,
       },
       {
-        orderId: 'PROD-002',
+        orderId: 'ORD-002',
         sequence: 1,
         status: 'pending',
         driveTimeEstimate: 45, // 45 minutes drive from previous location
         driveTimeActual: 0,
       },
       {
-        orderId: 'PROD-003',
+        orderId: 'ORD-003',
         sequence: 2,
         status: 'pending',
         driveTimeEstimate: 30, // 30 minutes drive from previous location
         driveTimeActual: 0,
       },
       {
-        orderId: 'PROD-013',
+        orderId: 'ORD-013',
         sequence: 3,
         status: 'pending',
         driveTimeEstimate: 25, // 25 minutes drive from previous location
         driveTimeActual: 0,
       },
       {
-        orderId: 'PROD-014',
+        orderId: 'ORD-014',
         sequence: 4,
         status: 'pending',
         driveTimeEstimate: 20, // 20 minutes drive from previous location
         driveTimeActual: 0,
       },
       {
-        orderId: 'PROD-015',
+        orderId: 'ORD-015',
         sequence: 5,
         status: 'pending',
         driveTimeEstimate: 15, // 15 minutes drive from previous location
         driveTimeActual: 0,
       },
       {
-        orderId: 'PROD-016',
+        orderId: 'ORD-016',
         sequence: 6,
         status: 'pending',
         driveTimeEstimate: 18, // 18 minutes drive from previous location
         driveTimeActual: 0,
       },
       {
-        orderId: 'PROD-017',
+        orderId: 'ORD-017',
         sequence: 7,
         status: 'pending',
         driveTimeEstimate: 22, // 22 minutes drive from previous location
         driveTimeActual: 0,
       },
       {
-        orderId: 'PROD-018',
+        orderId: 'ORD-018',
         sequence: 8,
         status: 'pending',
         driveTimeEstimate: 12, // 12 minutes drive from previous location
         driveTimeActual: 0,
       },
       {
-        orderId: 'PROD-019',
+        orderId: 'ORD-019',
         sequence: 9,
         status: 'pending',
         driveTimeEstimate: 10, // 10 minutes drive from previous location

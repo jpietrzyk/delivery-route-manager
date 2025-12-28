@@ -19,7 +19,7 @@ export const LeafletMapProvider: MapProvider = {
     // TODO: Implement marker removal logic
     void markerId;
   },
-  async createRouteSegment(from: Order, to: Order): Promise<RouteData> {
+  async createRouteSegment(): Promise<RouteData> {
     // TODO: Implement route calculation logic
     return {
       polyline: [],
@@ -27,7 +27,7 @@ export const LeafletMapProvider: MapProvider = {
       duration: 0,
     };
   },
-  drawRouteSegment(routeData: RouteData): MapRoute {
+  drawRouteSegment(): MapRoute {
     // TODO: Implement drawing logic
     return {
       id: "",
