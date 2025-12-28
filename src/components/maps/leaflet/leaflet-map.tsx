@@ -13,6 +13,7 @@ import React from "react";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
+import { usePolylineHighlight } from "@/hooks/use-polyline-highlight";
 import { useDelivery } from "@/hooks/use-delivery";
 import type { Order } from "@/types/order";
 import { OrdersApi } from "@/services/ordersApi";
@@ -235,12 +236,17 @@ const LeafletMap = ({
   );
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
   const { currentOrderId, previousOrderId } = useOrderHighlight();
+  const { highlightedPolylineOrderId } = usePolylineHighlight();
   const { setHighlightedSegmentId } = useSegmentHighlight();
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDelivery();
 
   // Debug logging for order highlighting
   console.log("LeafletMap: highlightedOrderId:", highlightedOrderId);
+  console.log(
+    "LeafletMap: highlightedPolylineOrderId:",
+    highlightedPolylineOrderId
+  );
   console.log("LeafletMap: currentOrderId:", currentOrderId);
   console.log("LeafletMap: previousOrderId:", previousOrderId);
 
@@ -363,7 +369,9 @@ const LeafletMap = ({
           const fromOrderId = deliveryOrders[index]?.id;
           const toOrderId = deliveryOrders[index + 1]?.id;
           const segmentId = `${fromOrderId}-${toOrderId}`;
-          const isHighlighted = highlightedOrderId === fromOrderId;
+          const isHighlighted =
+            highlightedOrderId === fromOrderId ||
+            highlightedPolylineOrderId === fromOrderId;
 
           return (
             <Polyline

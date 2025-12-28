@@ -115,18 +115,42 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                     isHighlighted={highlightedOrderId === order.id}
                     onMouseEnter={() => {
                       setHighlightedOrderId?.(order.id);
-                      // Highlight the route segment to the next order
-                      if (routeManager && idx < orders.length - 1) {
-                        const segmentId = `${order.id}-${orders[idx + 1].id}`;
-                        routeManager.highlightSegment(segmentId);
+                      // Highlight both previous and next route segments
+                      if (routeManager) {
+                        // Highlight next segment (current order to next order)
+                        if (idx < orders.length - 1) {
+                          const nextSegmentId = `${order.id}-${
+                            orders[idx + 1].id
+                          }`;
+                          routeManager.highlightSegment(nextSegmentId);
+                        }
+                        // Highlight previous segment (previous order to current order)
+                        if (idx > 0) {
+                          const previousSegmentId = `${orders[idx - 1].id}-${
+                            order.id
+                          }`;
+                          routeManager.highlightSegment(previousSegmentId);
+                        }
                       }
                     }}
                     onMouseLeave={() => {
                       setHighlightedOrderId?.(null);
-                      // Unhighlight the route segment to the next order
-                      if (routeManager && idx < orders.length - 1) {
-                        const segmentId = `${order.id}-${orders[idx + 1].id}`;
-                        routeManager.unhighlightSegment(segmentId);
+                      // Unhighlight both previous and next route segments
+                      if (routeManager) {
+                        // Unhighlight next segment (current order to next order)
+                        if (idx < orders.length - 1) {
+                          const nextSegmentId = `${order.id}-${
+                            orders[idx + 1].id
+                          }`;
+                          routeManager.unhighlightSegment(nextSegmentId);
+                        }
+                        // Unhighlight previous segment (previous order to current order)
+                        if (idx > 0) {
+                          const previousSegmentId = `${orders[idx - 1].id}-${
+                            order.id
+                          }`;
+                          routeManager.unhighlightSegment(previousSegmentId);
+                        }
                       }
                     }}
                     onRemove={onRemoveOrder}
