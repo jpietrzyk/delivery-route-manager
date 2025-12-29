@@ -382,6 +382,16 @@ const LeafletMap = ({
             highlightedSegmentId === segmentId ||
             hoveredPolylineIndex === index;
 
+          // Determine highlight color based on context
+          let highlightColor = "#10b981"; // Default green for most cases
+          if (highlightedOrderId === toOrderId) {
+            // This polyline ends at the highlighted order (comes BEFORE the highlighted order)
+            highlightColor = "#eab308"; // Yellow for "incoming" polyline
+          } else if (highlightedOrderId === fromOrderId) {
+            // This polyline starts at the highlighted order (comes AFTER the highlighted order)
+            highlightColor = "#10b981"; // Green for "outgoing" polyline
+          }
+
           console.log(
             `LeafletMap: Polyline ${segmentId} - fromOrderId: ${fromOrderId}, toOrderId: ${toOrderId}, highlightedOrderId: ${highlightedOrderId}, highlightedPolylineOrderId: ${highlightedPolylineOrderId}, hoveredPolylineIndex: ${hoveredPolylineIndex}, isHighlighted: ${isHighlighted}`
           );
@@ -391,7 +401,7 @@ const LeafletMap = ({
               key={index}
               positions={positions}
               pathOptions={{
-                color: isHighlighted ? "#10b981" : "#2563eb", // Highlighted segment green, others blue
+                color: isHighlighted ? highlightColor : "#2563eb", // Use different highlight colors (yellow for incoming, green for outgoing)
                 weight: isHighlighted ? 6 : 4, // Highlighted segment thicker
                 opacity: isHighlighted ? 1.0 : 0.8, // Highlighted segment more opaque
               }}
