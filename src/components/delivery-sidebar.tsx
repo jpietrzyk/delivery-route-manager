@@ -149,6 +149,22 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     updateDeliveryOrders();
   }, [currentDelivery]);
 
+  // Recalculate time and distance when delivery orders sequence changes
+  useEffect(() => {
+    if (deliveryOrders.length > 0) {
+      console.log(
+        "DeliverySidebar: Recalculating time and distance for reordered sequence"
+      );
+      const totalTime = calculateTotalEstimatedTime(deliveryOrders);
+      const distance = calculateTotalDistance(deliveryOrders);
+      setTotalEstimatedTime(totalTime);
+      setTotalDistance(distance);
+
+      console.log("DeliverySidebar: Recalculated time:", totalTime, "minutes");
+      console.log("DeliverySidebar: Recalculated distance:", distance, "km");
+    }
+  }, [deliveryOrders]);
+
   const handleRemoveOrder = async (orderId: string) => {
     if (!currentDelivery) {
       console.warn("No current delivery selected");
