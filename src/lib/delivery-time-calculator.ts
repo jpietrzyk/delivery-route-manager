@@ -29,6 +29,23 @@ export function calculateTotalEstimatedTime(orders: Order[]): number {
   return totalTime;
 }
 
+export function calculateTotalDistance(orders: Order[]): number {
+  if (orders.length < 2) {
+    return 0;
+  }
+
+  let totalDistance = 0;
+
+  // Calculate distances between consecutive orders
+  for (let i = 1; i < orders.length; i++) {
+    const prevOrder = orders[i - 1];
+    const currentOrder = orders[i];
+    totalDistance += getDistanceKm(prevOrder.location, currentOrder.location);
+  }
+
+  return totalDistance;
+}
+
 export function formatDuration(minutes: number): string {
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
@@ -38,4 +55,8 @@ export function formatDuration(minutes: number): string {
   } else {
     return `${remainingMinutes}m`;
   }
+}
+
+export function formatDistance(km: number): string {
+  return `${km.toFixed(1)} km`;
 }

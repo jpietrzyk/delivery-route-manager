@@ -20,7 +20,9 @@ import {
 } from "@/lib/local-storage-utils";
 import {
   calculateTotalEstimatedTime,
+  calculateTotalDistance,
   formatDuration,
+  formatDistance,
 } from "@/lib/delivery-time-calculator";
 
 interface DeliverySidebarProps {
@@ -45,6 +47,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   const [isDeliveryExpanded, setIsDeliveryExpanded] = useState(true);
   const [isUnassignedCollapsed, setIsUnassignedCollapsed] = useState(true); // collapsed by default
   const [totalEstimatedTime, setTotalEstimatedTime] = useState<number>(0);
+  const [totalDistance, setTotalDistance] = useState<number>(0);
 
   // Handle delivery expand/collapse state change
   const handleDeliveryExpandChange = (expanded: boolean) => {
@@ -122,11 +125,17 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
         // Calculate total estimated time
         const totalTime = calculateTotalEstimatedTime(ordersInDelivery);
         setTotalEstimatedTime(totalTime);
+
+        // Calculate total distance
+        const distance = calculateTotalDistance(ordersInDelivery);
+        setTotalDistance(distance);
+
         console.log(
           "DeliverySidebar: Total estimated time:",
           totalTime,
           "minutes"
         );
+        console.log("DeliverySidebar: Total distance:", distance, "km");
       } catch (error) {
         console.error(
           "DeliverySidebar: Error updating delivery orders:",
@@ -333,6 +342,13 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                       <Clock className="w-4 h-4 text-muted-foreground" />
                       <span className="text-xs text-muted-foreground">
                         {formatDuration(totalEstimatedTime)}
+                      </span>
+                    </div>
+                  )}
+                  {totalDistance > 0 && (
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-muted-foreground">
+                        {formatDistance(totalDistance)}
                       </span>
                     </div>
                   )}
