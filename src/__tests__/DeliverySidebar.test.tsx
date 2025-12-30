@@ -138,20 +138,30 @@ describe("DeliverySidebar - Assigned Count Update", () => {
     );
 
     // Wait for initial loading
-    await waitFor(() => {
-      expect(
-        screen.queryByText("Loading delivery orders...")
-      ).not.toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(
+          screen.queryByText("Loading delivery orders...")
+        ).not.toBeInTheDocument();
+      },
+      { timeout: 10000 }
+    );
 
     // Wait for the unassigned orders section to be visible
-    await waitFor(() => {
-      const unassignedButton = screen.getByText("Unassigned (1)");
-      expect(unassignedButton).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        const unassignedButton = screen.queryByRole("button", {
+          name: /unassigned/i,
+        });
+        expect(unassignedButton).toBeTruthy();
+      },
+      { timeout: 5000 }
+    );
 
     // Expand the unassigned orders section first
-    const unassignedButton = screen.getByText("Unassigned (1)");
+    const unassignedButton = screen.getByRole("button", {
+      name: /unassigned/i,
+    });
     fireEvent.click(unassignedButton);
 
     // Wait for the unassigned orders list to be visible

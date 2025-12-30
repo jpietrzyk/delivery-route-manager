@@ -8,7 +8,12 @@ import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useDelivery } from "@/hooks/use-delivery";
 import { useEffect, useState } from "react";
-import { Package, Clock } from "lucide-react";
+import { Package, Clock, Route } from "lucide-react";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
@@ -347,26 +352,51 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                 }
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1">
-                    <Package className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">
-                      {deliveryOrders.length}
-                    </span>
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1">
+                        <Package className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium text-foreground">
+                          {deliveryOrders.length}
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      {deliveryOrders.length}{" "}
+                      {deliveryOrders.length === 1 ? "order" : "orders"} in this
+                      delivery
+                    </TooltipContent>
+                  </Tooltip>
                   {totalEstimatedTime > 0 && (
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-4 h-4 text-primary" />
+                          <span className="text-xs text-foreground">
+                            {formatDuration(totalEstimatedTime)}
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        Total estimated time:{" "}
                         {formatDuration(totalEstimatedTime)}
-                      </span>
-                    </div>
+                      </TooltipContent>
+                    </Tooltip>
                   )}
                   {totalDistance > 0 && (
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs text-muted-foreground">
-                        {formatDistance(totalDistance)}
-                      </span>
-                    </div>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1">
+                          <Route className="w-4 h-4 text-primary" />
+                          <span className="text-xs text-foreground">
+                            {formatDistance(totalDistance)}
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        Total route distance: {formatDistance(totalDistance)}
+                      </TooltipContent>
+                    </Tooltip>
                   )}
                 </div>
                 <span className="ml-2 text-muted-foreground">
