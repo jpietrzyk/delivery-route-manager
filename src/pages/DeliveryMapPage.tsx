@@ -1,6 +1,7 @@
 import MapView from "@/components/maps/abstraction/map-view";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-sidebar";
+import OrdersCountDisplay from "@/components/ui/orders-count-display";
 import { useEffect, useState } from "react";
 import { OrdersApi } from "@/services/ordersApi";
 import type { Order } from "@/types/order";
@@ -12,6 +13,7 @@ export default function DeliveryMapPage() {
   const { addOrderToDelivery } = useDelivery();
   const [deliveryOrders, setDeliveryOrders] = useState<Order[]>([]);
   const [unassignedOrders, setUnassignedOrders] = useState<Order[]>([]);
+  const [totalOrdersCount, setTotalOrdersCount] = useState<number>(0);
 
   useEffect(() => {
     console.log("DeliveryMapPage: Fetching orders for deliveryId:", deliveryId);
@@ -33,6 +35,9 @@ export default function DeliveryMapPage() {
         initialUnassignedOrders.length
       );
       setUnassignedOrders(initialUnassignedOrders);
+
+      // Calculate total orders count (both assigned and unassigned)
+      setTotalOrdersCount(fetchedOrders.length);
     });
   }, [deliveryId]);
 
@@ -90,6 +95,12 @@ export default function DeliveryMapPage() {
         <div className="relative w-full flex justify-end items-start z-10 pointer-events-none">
           <div className="pointer-events-auto">
             <SidebarTrigger />
+          </div>
+        </div>
+        {/* Total orders count display - positioned at top left, moved right to avoid zoom buttons */}
+        <div className="absolute top-4 left-16 z-10 pointer-events-none">
+          <div className="pointer-events-auto">
+            <OrdersCountDisplay count={totalOrdersCount} />
           </div>
         </div>
         <div className="pointer-events-auto">
