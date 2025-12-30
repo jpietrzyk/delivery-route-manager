@@ -344,7 +344,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
             >
               <button
                 onClick={() => handleDeliveryExpandChange(!isDeliveryExpanded)}
-                className="max-w-full flex items-center justify-between px-6 py-5 border-b border-border/50 bg-primary/5 hover:bg-primary/10 text-left transition-colors"
+                className="max-w-full flex items-center justify-between px-4 py-3 border-b border-border/50 bg-primary/2 hover:bg-primary/5 text-left transition-colors"
                 aria-label={
                   isDeliveryExpanded
                     ? "Collapse delivery orders"
