@@ -8,6 +8,12 @@ import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useDelivery } from "@/hooks/use-delivery";
 import { useEffect, useState } from "react";
+import { Package, Clock, Route } from "lucide-react";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery/delivery-order-list";
@@ -17,6 +23,12 @@ import {
   applyPendingOrderUpdates,
   resetLocalStorageAndFetchData,
 } from "@/lib/local-storage-utils";
+import {
+  calculateTotalEstimatedTime,
+  calculateTotalDistance,
+  formatDuration,
+  formatDistance,
+} from "@/lib/delivery-time-calculator";
 
 interface DeliverySidebarProps {
   onOrderRemoved?: () => void;
@@ -39,6 +51,8 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isDeliveryExpanded, setIsDeliveryExpanded] = useState(true);
   const [isUnassignedCollapsed, setIsUnassignedCollapsed] = useState(true); // collapsed by default
+  const [totalEstimatedTime, setTotalEstimatedTime] = useState<number>(0);
+  const [totalDistance, setTotalDistance] = useState<number>(0);
 
   // Handle delivery expand/collapse state change
   const handleDeliveryExpandChange = (expanded: boolean) => {
@@ -72,6 +86,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
       if (!currentDelivery) {
         console.log("DeliverySidebar: No current delivery");
         setDeliveryOrders([]);
+        setTotalEstimatedTime(0);
         setIsLoading(false);
         return;
       }
@@ -111,6 +126,21 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
           .map((o) => o.id);
         console.log("DeliverySidebar: Matching order IDs:", matchingIds);
         setDeliveryOrders(ordersInDelivery);
+
+        // Calculate total estimated time
+        const totalTime = calculateTotalEstimatedTime(ordersInDelivery);
+        setTotalEstimatedTime(totalTime);
+
+        // Calculate total distance
+        const distance = calculateTotalDistance(ordersInDelivery);
+        setTotalDistance(distance);
+
+        console.log(
+          "DeliverySidebar: Total estimated time:",
+          totalTime,
+          "minutes"
+        );
+        console.log("DeliverySidebar: Total distance:", distance, "km");
       } catch (error) {
         console.error(
           "DeliverySidebar: Error updating delivery orders:",
@@ -123,6 +153,22 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
 
     updateDeliveryOrders();
   }, [currentDelivery]);
+
+  // Recalculate time and distance when delivery orders sequence changes
+  useEffect(() => {
+    if (deliveryOrders.length > 0) {
+      console.log(
+        "DeliverySidebar: Recalculating time and distance for reordered sequence"
+      );
+      const totalTime = calculateTotalEstimatedTime(deliveryOrders);
+      const distance = calculateTotalDistance(deliveryOrders);
+      setTotalEstimatedTime(totalTime);
+      setTotalDistance(distance);
+
+      console.log("DeliverySidebar: Recalculated time:", totalTime, "minutes");
+      console.log("DeliverySidebar: Recalculated distance:", distance, "km");
+    }
+  }, [deliveryOrders]);
 
   const handleRemoveOrder = async (orderId: string) => {
     if (!currentDelivery) {
@@ -191,18 +237,10 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
       className="bg-background/95 backdrop-blur-sm text-foreground shadow-2xl relative z-20 flex flex-col h-screen pointer-events-auto w-96 transition-all duration-300"
     >
       {/* Distinctive Header with Brand Accent */}
-      <SidebarHeader className="px-6 py-5 border-b-0 relative overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-primary/10"></div>
-        <div className="relative z-10 flex items-center justify-between">
+      <SidebarHeader className="px-6 py-4 border-b-0 bg-card/30">
+        <div className="flex items-center justify-between h-full">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-5 bg-primary text-primary-foreground rounded-sm flex items-center justify-center shadow-s">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z" />
-              </svg>
-            </div>
-            <span className="text-xl font-bold text-foreground tracking-wide">
-              Profi-Stahl
-            </span>
+            <Route className="w-6 h-6 text-primary" />
           </div>
           {/* Order Highlight Controls */}
           <div className="flex items-center gap-2">
@@ -272,7 +310,6 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
             </button>
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-primary/20 to-transparent"></div>
       </SidebarHeader>
 
       {/* Content Area with Clear Separation */}
@@ -298,34 +335,61 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
             >
               <button
                 onClick={() => handleDeliveryExpandChange(!isDeliveryExpanded)}
-                className="max-w-full flex items-center justify-between px-6 py-5 border-b border-border/50 bg-primary/5 hover:bg-primary/10 text-left transition-colors"
+                className="max-w-full flex items-center justify-between px-4 py-3 border-b border-border/50 bg-primary/2 hover:bg-primary/5 text-left transition-colors"
                 aria-label={
                   isDeliveryExpanded
                     ? "Collapse delivery orders"
                     : "Expand delivery orders"
                 }
               >
-                <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                  <svg
-                    className="w-4 h-4 text-primary"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15 11l3-3m-3 3l-3-3m3 3v-6"
-                    />
-                  </svg>
-                  {deliveryOrders.length} orders assigned to this delivery
-                </span>
+                <div className="flex items-center gap-3">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1">
+                        <Package className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium text-foreground">
+                          {deliveryOrders.length}
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      {deliveryOrders.length}{" "}
+                      {deliveryOrders.length === 1 ? "order" : "orders"} in this
+                      delivery
+                    </TooltipContent>
+                  </Tooltip>
+                  {totalEstimatedTime > 0 && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-4 h-4 text-primary" />
+                          <span className="text-xs text-foreground">
+                            {formatDuration(totalEstimatedTime)}
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        Total estimated time:{" "}
+                        {formatDuration(totalEstimatedTime)}
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                  {totalDistance > 0 && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1">
+                          <Route className="w-4 h-4 text-primary" />
+                          <span className="text-xs text-foreground">
+                            {formatDistance(totalDistance)}
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        Total route distance: {formatDistance(totalDistance)}
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
                 <span className="ml-2 text-muted-foreground">
                   <svg
                     className="w-4 h-4"

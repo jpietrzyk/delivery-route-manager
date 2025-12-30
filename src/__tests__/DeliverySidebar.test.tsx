@@ -138,10 +138,38 @@ describe("DeliverySidebar - Assigned Count Update", () => {
     );
 
     // Wait for initial loading
+    await waitFor(
+      () => {
+        expect(
+          screen.queryByText("Loading delivery orders...")
+        ).not.toBeInTheDocument();
+      },
+      { timeout: 10000 }
+    );
+
+    // Wait for the unassigned orders section to be visible
+    await waitFor(
+      () => {
+        const unassignedButton = screen.queryByRole("button", {
+          name: /unassigned/i,
+        });
+        expect(unassignedButton).toBeTruthy();
+      },
+      { timeout: 5000 }
+    );
+
+    // Expand the unassigned orders section first
+    const unassignedButton = screen.getByRole("button", {
+      name: /unassigned/i,
+    });
+    fireEvent.click(unassignedButton);
+
+    // Wait for the unassigned orders list to be visible
     await waitFor(() => {
-      expect(
-        screen.queryByText("Loading delivery orders...")
-      ).not.toBeInTheDocument();
+      const addButton = screen.getByLabelText(
+        new RegExp(`Add order ${mockOrders[1].id} to delivery`, "i")
+      );
+      expect(addButton).toBeInTheDocument();
     });
 
     // Find the unassigned order and click the add button
@@ -153,13 +181,8 @@ describe("DeliverySidebar - Assigned Count Update", () => {
     // Wait for the update to complete
     await waitFor(() => {
       // The assigned count should be updated to 2 (from 1)
-      // Use a more flexible matcher that can find the text even if broken by elements
-      const countElement = screen.getByText((content) => {
-        return (
-          content.includes("orders assigned to this delivery") &&
-          content.includes("2")
-        );
-      });
+      // Look for the delivery orders count display
+      const countElement = screen.getByText("2");
       expect(countElement).toBeInTheDocument();
     });
   });
@@ -175,12 +198,8 @@ describe("DeliverySidebar - Assigned Count Update", () => {
 
     // Wait for the assigned count to be updated
     await waitFor(() => {
-      const countElement = screen.getByText((content) => {
-        return (
-          content.includes("orders assigned to this delivery") &&
-          content.includes("1")
-        );
-      });
+      // Look for the delivery orders count display
+      const countElement = screen.getByText("1");
       expect(countElement).toBeInTheDocument();
     });
   });
