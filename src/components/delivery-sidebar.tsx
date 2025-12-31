@@ -96,7 +96,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
           "DeliverySidebar: Current delivery orders:",
           currentDelivery.orders
         );
-        // Get all orders and filter to only those in current delivery
+        // Get all orders and filter to only those in current delivery using Delivery.orders
         const allOrders = await OrdersApi.getOrders();
         console.log("DeliverySidebar: All orders:", allOrders.length);
         console.log(
@@ -107,8 +107,17 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
         // Apply pending optimistic updates
         const ordersWithPendingUpdates = applyPendingOrderUpdates(allOrders);
 
-        const ordersInDelivery = ordersWithPendingUpdates.filter(
-          (order) => order.deliveryId === currentDelivery.id
+        // Use Delivery.orders to get the correct order IDs in proper sequence
+        const deliveryOrderIds = currentDelivery.orders.map(
+          (item) => item.orderId
+        );
+        console.log(
+          "DeliverySidebar: Delivery order IDs from delivery model:",
+          deliveryOrderIds
+        );
+
+        const ordersInDelivery = ordersWithPendingUpdates.filter((order) =>
+          deliveryOrderIds.includes(order.id)
         );
         console.log(
           "DeliverySidebar: Orders in delivery:",
@@ -120,12 +129,18 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
         );
         console.log("DeliverySidebar: All orders count:", allOrders.length);
 
-        // Debug: Check if any order IDs match
-        const matchingIds = ordersWithPendingUpdates
-          .filter((order) => order.deliveryId === currentDelivery.id)
-          .map((o) => o.id);
-        console.log("DeliverySidebar: Matching order IDs:", matchingIds);
-        setDeliveryOrders(ordersInDelivery);
+        // Sort orders according to the sequence defined in delivery.orders
+        const sortedOrders = deliveryOrderIds
+          .map((orderId) =>
+            ordersInDelivery.find((order) => order.id === orderId)
+          )
+          .filter((order): order is Order => order !== undefined);
+
+        console.log(
+          "DeliverySidebar: Sorted orders count:",
+          sortedOrders.length
+        );
+        setDeliveryOrders(sortedOrders);
 
         // Calculate total estimated time
         const totalTime = calculateTotalEstimatedTime(ordersInDelivery);
@@ -203,14 +218,10 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     console.log("currentDelivery:", currentDelivery);
 
     if (orderToAdd && currentDelivery) {
-      // Add the order with the correct deliveryId set
-      const orderWithDeliveryId = {
-        ...orderToAdd,
-        deliveryId: currentDelivery.id,
-      };
-      console.log("Adding order optimistically:", orderWithDeliveryId);
+      // Add the order optimistically - just add to the end of current orders
+      console.log("Adding order optimistically:", orderToAdd);
       setDeliveryOrders((prev) => {
-        const newOrders = [...prev, orderWithDeliveryId];
+        const newOrders = [...prev, orderToAdd];
         console.log("Updated delivery orders count:", newOrders.length);
         return newOrders;
       });
