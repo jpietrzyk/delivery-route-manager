@@ -21,24 +21,14 @@ export default function DeliveryMapPage() {
       console.log("DeliveryMapPage: Fetched orders:", fetchedOrders.length);
 
       // Use delivery model to get orders in proper sequence
-      let deliveryOrders: Order[] = [];
-      if (currentDelivery && currentDelivery.orders) {
-        // Get order IDs from delivery model in correct sequence
-        const deliveryOrderIds = currentDelivery.orders.map(
-          (item) => item.orderId
-        );
-        console.log("DeliveryMapPage: Delivery order IDs:", deliveryOrderIds);
+      const deliveryOrderIds =
+        currentDelivery?.orders?.map((item) => item.orderId) || [];
+      console.log("DeliveryMapPage: Delivery order IDs:", deliveryOrderIds);
 
-        // Filter and sort orders according to delivery sequence
-        deliveryOrders = deliveryOrderIds
-          .map((orderId) => fetchedOrders.find((order) => order.id === orderId))
-          .filter((order): order is Order => order !== undefined);
-      } else {
-        // Fallback to old method if no delivery data
-        deliveryOrders = fetchedOrders.filter(
-          (order) => order.deliveryId === deliveryId
-        );
-      }
+      // Filter and sort orders according to delivery sequence
+      const deliveryOrders = deliveryOrderIds
+        .map((orderId) => fetchedOrders.find((order) => order.id === orderId))
+        .filter((order): order is Order => order !== undefined);
 
       console.log("DeliveryMapPage: Delivery orders:", deliveryOrders.length);
       setDeliveryOrders(deliveryOrders);
@@ -62,19 +52,11 @@ export default function DeliveryMapPage() {
   const handleOrderRemoved = () => {
     OrdersApi.getOrders().then((fetchedOrders) => {
       // Use delivery model to get orders in proper sequence
-      let deliveryOrders: Order[] = [];
-      if (currentDelivery && currentDelivery.orders) {
-        const deliveryOrderIds = currentDelivery.orders.map(
-          (item) => item.orderId
-        );
-        deliveryOrders = deliveryOrderIds
-          .map((orderId) => fetchedOrders.find((order) => order.id === orderId))
-          .filter((order): order is Order => order !== undefined);
-      } else {
-        deliveryOrders = fetchedOrders.filter(
-          (order) => order.deliveryId === deliveryId
-        );
-      }
+      const deliveryOrderIds =
+        currentDelivery?.orders?.map((item) => item.orderId) || [];
+      const deliveryOrders = deliveryOrderIds
+        .map((orderId) => fetchedOrders.find((order) => order.id === orderId))
+        .filter((order): order is Order => order !== undefined);
       setDeliveryOrders(deliveryOrders);
       const initialUnassignedOrders = fetchedOrders.filter(
         (order) => !order.deliveryId
@@ -103,25 +85,20 @@ export default function DeliveryMapPage() {
           <MapView
             orders={deliveryOrders}
             unassignedOrders={unassignedOrders}
+            deliveryOrderIds={
+              currentDelivery?.orders?.map((item) => item.orderId) || []
+            }
             onOrderAddedToDelivery={async () => {
               // Refresh both delivery and unassigned orders
               const allOrders = await OrdersApi.getOrders();
               // Use delivery model to get orders in proper sequence
-              let updatedDeliveryOrders: Order[] = [];
-              if (currentDelivery && currentDelivery.orders) {
-                const deliveryOrderIds = currentDelivery.orders.map(
-                  (item) => item.orderId
-                );
-                updatedDeliveryOrders = deliveryOrderIds
-                  .map((orderId) =>
-                    allOrders.find((order) => order.id === orderId)
-                  )
-                  .filter((order): order is Order => order !== undefined);
-              } else {
-                updatedDeliveryOrders = allOrders.filter(
-                  (order) => order.deliveryId === deliveryId
-                );
-              }
+              const deliveryOrderIds =
+                currentDelivery?.orders?.map((item) => item.orderId) || [];
+              const updatedDeliveryOrders = deliveryOrderIds
+                .map((orderId) =>
+                  allOrders.find((order) => order.id === orderId)
+                )
+                .filter((order): order is Order => order !== undefined);
               const updatedUnassignedOrders = allOrders.filter(
                 (order) => !order.deliveryId
               );
@@ -158,21 +135,13 @@ export default function DeliveryMapPage() {
                 // Refresh local state to match the updated context
                 const allOrders = await OrdersApi.getOrders();
                 // Use delivery model to get orders in proper sequence
-                let updatedDeliveryOrders: Order[] = [];
-                if (currentDelivery && currentDelivery.orders) {
-                  const deliveryOrderIds = currentDelivery.orders.map(
-                    (item) => item.orderId
-                  );
-                  updatedDeliveryOrders = deliveryOrderIds
-                    .map((orderId) =>
-                      allOrders.find((order) => order.id === orderId)
-                    )
-                    .filter((order): order is Order => order !== undefined);
-                } else {
-                  updatedDeliveryOrders = allOrders.filter(
-                    (order) => order.deliveryId === deliveryId
-                  );
-                }
+                const deliveryOrderIds =
+                  currentDelivery?.orders?.map((item) => item.orderId) || [];
+                const updatedDeliveryOrders = deliveryOrderIds
+                  .map((orderId) =>
+                    allOrders.find((order) => order.id === orderId)
+                  )
+                  .filter((order): order is Order => order !== undefined);
                 const updatedUnassignedOrders = allOrders.filter(
                   (order) => !order.deliveryId
                 );

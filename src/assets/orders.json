@@ -20,7 +20,7 @@
       "lng": 18.580731
    },
    "address": "Deák Ferenc u. 2  WCHODZI 1 8111 Seregélyes",
-   "deliveryId": "DEL-001"
+   "deliveryId": ""
 },
  {
    "id": "ORD-002",
@@ -43,7 +43,7 @@
       "lng": 20.039065
    },
    "address": "I. 41. TANYA 261 NIE WCHODZI 6763 Szatymaz",
-   "deliveryId": "DEL-001"
+   "deliveryId": ""
 },
  {
    "id": "ORD-003",
@@ -66,7 +66,7 @@
       "lng": 17.753661
    },
    "address": "Páskom utca . 94 9011 Győr",
-   "deliveryId": "DEL-001"
+   "deliveryId": ""
 },
  {
    "id": "ORD-004",
@@ -89,7 +89,7 @@
       "lng": 19.787069
    },
    "address": "Farmosi u. 5 2711 Tápiószentmárton",
-   "deliveryId": "DEL-001"
+   "deliveryId": ""
 },
  {
    "id": "ORD-005",
@@ -112,7 +112,7 @@
       "lng": 17.961157
    },
    "address": "Vadrózsa utca i na rogu Mhas utca 8227 Felsőörs",
-   "deliveryId": "DEL-001"
+   "deliveryId": ""
 },
  {
    "id": "ORD-006",

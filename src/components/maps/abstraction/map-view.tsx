@@ -5,6 +5,7 @@ import LeafletMap from "../leaflet/leaflet-map";
 interface MapViewProps {
   orders: Order[];
   unassignedOrders?: Order[];
+  deliveryOrderIds?: string[];
   onOrderAddedToDelivery?: (orderId: string) => void;
   onRefreshRequested?: () => void;
 }

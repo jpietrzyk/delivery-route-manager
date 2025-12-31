@@ -1,6 +1,30 @@
 import type { Delivery, DeliveryRouteItem } from '@/types/delivery';
-import { sampleDeliveries } from '@/types/delivery';
 import type { Order } from '@/types/order';
+import deliveryData from '@/assets/delivery-DEL-001.json';
+
+// Mock delay to simulate network request
+const mockDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Convert JSON data to Delivery[] with proper Date objects
+const sampleDeliveryData: Delivery[] = [
+  {
+    id: deliveryData.id,
+    name: deliveryData.description || `Delivery ${deliveryData.id}`,
+    status: 'scheduled' as const, // Default status
+    createdAt: new Date(deliveryData.createdAt),
+    updatedAt: new Date(deliveryData.updatedAt),
+    orders: deliveryData.routeItems.map((item: { id: string; orderId: string }, index: number) => ({
+      orderId: item.orderId,
+      sequence: index,
+      status: 'pending' as const,
+      driveTimeEstimate: 0,
+      driveTimeActual: 0,
+    })),
+    notes: 'Delivery route loaded from JSON',
+    estimatedDistance: 0,
+    estimatedDuration: 0,
+  }
+];
 
 /**
  * DeliveriesApi - Manages delivery planning and order assignment
@@ -15,94 +39,33 @@ import type { Order } from '@/types/order';
  * NOTE: In a real implementation, this would coordinate with OrdersApi
  * to update order.deliveryId. For now, we mock this behavior.
  */
-class DeliveriesApiClass {
-  private deliveries: Delivery[] = [];
-  private loaded = false;
+export class DeliveriesApi {
+  /**
+   * Fetch all deliveries
+   * In the future, this will make a real HTTP request to the backend
+   */
+  static async getDeliveries(): Promise<Delivery[]> {
+    // Simulate network delay
+    await mockDelay(100);
 
-  constructor() {
-    this.initialize();
+    // Return a copy of the data to prevent external mutations
+    return sampleDeliveryData.map(delivery => ({ ...delivery }));
   }
 
-  private async initialize(): Promise<void> {
-    if (this.loaded) return;
+  /**
+   * Get a specific delivery by ID
+   */
+  static async getDelivery(id: string): Promise<Delivery | null> {
+    await mockDelay(100);
 
-    try {
-      // Check if we're in a browser environment (fetch is available)
-      if (typeof fetch !== 'undefined') {
-        // Load delivery data from JSON file
-        const response = await fetch('/assets/delivery-DEL-001.json');
-        if (!response.ok) {
-          throw new Error('Failed to load delivery data');
-        }
-
-        const deliveryData = await response.json();
-
-        // Define interface for the JSON route item
-        interface JsonRouteItem {
-          id: string;
-          orderId: string;
-        }
-
-        // Convert the JSON structure to our Delivery interface
-        const delivery: Delivery = {
-          id: deliveryData.id,
-          name: deliveryData.description || `Delivery ${deliveryData.id}`,
-          status: 'scheduled', // Default status
-          createdAt: new Date(deliveryData.createdAt),
-          updatedAt: new Date(deliveryData.updatedAt),
-          orders: deliveryData.routeItems.map((item: JsonRouteItem, index: number) => ({
-            orderId: item.orderId,
-            sequence: index,
-            status: 'pending' as const,
-            driveTimeEstimate: 0,
-            driveTimeActual: 0,
-          })),
-          notes: 'Delivery route loaded from JSON',
-          estimatedDistance: 0,
-          estimatedDuration: 0,
-        };
-
-        this.deliveries = [delivery];
-      } else {
-        // In Node.js environment (tests), use sample data
-        this.deliveries = [...sampleDeliveries];
-      }
-
-      this.loaded = true;
-    } catch (error) {
-      console.error('Error loading delivery data:', error);
-      // Fallback to sample data if loading fails
-      this.deliveries = [...sampleDeliveries];
-      this.loaded = true;
-    }
-  }
-
-  // Get all deliveries
-  async getDeliveries(): Promise<Delivery[]> {
-    // Ensure initialization is complete
-    await this.ensureInitialized();
-
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    return [...this.deliveries];
-  }
-
-  private async ensureInitialized(): Promise<void> {
-    if (!this.loaded) {
-      await this.initialize();
-    }
-  }
-
-  // Get a single delivery by ID
-  async getDelivery(id: string): Promise<Delivery | null> {
-    await this.ensureInitialized();
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    const delivery = this.deliveries.find((d) => d.id === id);
+    const delivery = sampleDeliveryData.find(delivery => delivery.id === id);
     return delivery ? { ...delivery } : null;
   }
 
-  // Get delivery with populated order data
-  async getDeliveryWithOrders(
+  /**
+   * Get delivery with populated order data
+   */
+  static async getDeliveryWithOrders(
     id: string,
     orders: Order[]
   ): Promise<(Delivery & { orders: (DeliveryRouteItem & { order: Order })[] }) | null> {
@@ -128,10 +91,12 @@ class DeliveriesApiClass {
     };
   }
 
-  // Create a new delivery
-  async createDelivery(delivery: Omit<Delivery, 'id' | 'createdAt' | 'updatedAt'>): Promise<Delivery> {
-    await this.ensureInitialized();
-    await new Promise((resolve) => setTimeout(resolve, 100));
+  /**
+   * Mock method for creating a new delivery
+   * Future: This will be a POST request to the backend
+   */
+  static async createDelivery(delivery: Omit<Delivery, 'id' | 'createdAt' | 'updatedAt'>): Promise<Delivery> {
+    await mockDelay(100);
 
     const now = new Date();
     const newDelivery: Delivery = {
@@ -141,42 +106,49 @@ class DeliveriesApiClass {
       updatedAt: now,
     };
 
-    this.deliveries.push(newDelivery);
+    sampleDeliveryData.push(newDelivery);
     return { ...newDelivery };
   }
 
-  // Update an existing delivery
-  async updateDelivery(id: string, updates: Partial<Delivery>): Promise<Delivery | null> {
-    await this.ensureInitialized();
-    await new Promise((resolve) => setTimeout(resolve, 100));
+  /**
+   * Mock method for updating an existing delivery
+   * Future: This will be a PUT/PATCH request to the backend
+   */
+  static async updateDelivery(id: string, updates: Partial<Delivery>): Promise<Delivery | null> {
+    await mockDelay(100);
 
-    const index = this.deliveries.findIndex((d) => d.id === id);
+    const index = sampleDeliveryData.findIndex((d) => d.id === id);
     if (index === -1) return null;
 
-    this.deliveries[index] = {
-      ...this.deliveries[index],
+    sampleDeliveryData[index] = {
+      ...sampleDeliveryData[index],
       ...updates,
       id, // Ensure ID doesn't change
       updatedAt: new Date(),
     };
 
-    return { ...this.deliveries[index] };
+    return { ...sampleDeliveryData[index] };
   }
 
-  // Delete a delivery
-  async deleteDelivery(id: string): Promise<boolean> {
-    await this.ensureInitialized();
-    await new Promise((resolve) => setTimeout(resolve, 100));
+  /**
+   * Mock method for deleting a delivery
+   * Future: This will be a DELETE request to the backend
+   */
+  static async deleteDelivery(id: string): Promise<boolean> {
+    await mockDelay(100);
 
-    const index = this.deliveries.findIndex((d) => d.id === id);
+    const index = sampleDeliveryData.findIndex((d) => d.id === id);
     if (index === -1) return false;
 
-    this.deliveries.splice(index, 1);
+    sampleDeliveryData.splice(index, 1);
     return true;
   }
 
-  // Add an order to a delivery
-  async addOrderToDelivery(
+  /**
+   * Mock method for adding an order to a delivery
+   * Future: This will be a PUT/PATCH request to the backend
+   */
+  static async addOrderToDelivery(
     deliveryId: string,
     orderId: string,
     atIndex?: number
@@ -205,8 +177,11 @@ class DeliveriesApiClass {
     return this.updateDelivery(deliveryId, { orders: updatedOrders });
   }
 
-  // Remove an order from a delivery
-  async removeOrderFromDelivery(deliveryId: string, orderId: string): Promise<Delivery | null> {
+  /**
+   * Mock method for removing an order from a delivery
+   * Future: This will be a PUT/PATCH request to the backend
+   */
+  static async removeOrderFromDelivery(deliveryId: string, orderId: string): Promise<Delivery | null> {
     const delivery = await this.getDelivery(deliveryId);
     if (!delivery) return null;
 
@@ -220,8 +195,11 @@ class DeliveriesApiClass {
     return this.updateDelivery(deliveryId, { orders: updatedOrders });
   }
 
-  // Reorder orders within a delivery
-  async reorderDeliveryOrders(
+  /**
+   * Mock method for reordering orders within a delivery
+   * Future: This will be a PUT/PATCH request to the backend
+   */
+  static async reorderDeliveryOrders(
     deliveryId: string,
     fromIndex: number,
     toIndex: number
@@ -241,8 +219,11 @@ class DeliveriesApiClass {
     return this.updateDelivery(deliveryId, { orders: updatedOrders });
   }
 
-  // Update the status of an order within a delivery
-  async updateDeliveryOrderStatus(
+  /**
+   * Mock method for updating the status of an order within a delivery
+   * Future: This will be a PUT/PATCH request to the backend
+   */
+  static async updateDeliveryOrderStatus(
     deliveryId: string,
     orderId: string,
     status: DeliveryRouteItem['status'],
@@ -266,8 +247,11 @@ class DeliveriesApiClass {
     return this.updateDelivery(deliveryId, { orders: updatedOrders });
   }
 
-  // Update delivery status
-  async updateDeliveryStatus(
+  /**
+   * Mock method for updating delivery status
+   * Future: This will be a PUT/PATCH request to the backend
+   */
+  static async updateDeliveryStatus(
     deliveryId: string,
     status: Delivery['status'],
     startedAt?: Date,
@@ -286,5 +270,3 @@ class DeliveriesApiClass {
     return this.updateDelivery(deliveryId, updates);
   }
 }
-
-export const DeliveriesApi = new DeliveriesApiClass();

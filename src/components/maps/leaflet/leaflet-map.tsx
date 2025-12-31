@@ -185,6 +185,7 @@ const createOrderPopupContent = (
 interface LeafletMapProps {
   orders?: Order[];
   unassignedOrders?: Order[];
+  deliveryOrderIds?: string[]; // Order IDs that belong to the current delivery
   onOrderAddedToDelivery?: (orderId: string) => void;
   onRefreshRequested?: () => void;
 }
@@ -192,16 +193,20 @@ interface LeafletMapProps {
 function MapFitter({
   orders,
   unassignedOrders,
+  deliveryOrderIds = [],
 }: {
   orders: Order[];
   unassignedOrders: Order[];
+  deliveryOrderIds?: string[];
 }) {
   const map = useMap();
   React.useEffect(() => {
     if (orders.length === 0 && unassignedOrders.length === 0) return;
 
-    // Filter to get only delivery orders for primary focus
-    const deliveryOrders = orders.filter((order) => order.deliveryId);
+    // Use deliveryOrderIds to determine which orders are delivery orders
+    const deliveryOrders = orders.filter((order) =>
+      deliveryOrderIds.includes(order.id)
+    );
 
     if (deliveryOrders.length === 1) {
       map.setView(deliveryOrders[0].location, 13);
@@ -219,13 +224,14 @@ function MapFitter({
       );
       map.fitBounds(bounds, { padding: [40, 40] });
     }
-  }, [orders, unassignedOrders, map]);
+  }, [orders, unassignedOrders, deliveryOrderIds, map]);
   return null;
 }
 
 const LeafletMap = ({
   orders = [],
   unassignedOrders = [],
+  deliveryOrderIds = [],
   onOrderAddedToDelivery,
   onRefreshRequested,
 }: LeafletMapProps) => {
@@ -367,7 +373,11 @@ const LeafletMap = ({
 
   return (
     <MapContainer style={{ width: "100%", height: "100%" }}>
-      <MapFitter orders={orders} unassignedOrders={unassignedOrders} />
+      <MapFitter
+        orders={orders}
+        unassignedOrders={unassignedOrders}
+        deliveryOrderIds={deliveryOrderIds}
+      />
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {polylinePositions.length > 0 &&
         polylinePositions.map((positions, index) => {
@@ -423,7 +433,7 @@ const LeafletMap = ({
           );
         })}
       {[...orders, ...unassignedOrders].map((order) => {
-        const isPool = !order.deliveryId;
+        const isPool = !deliveryOrderIds.includes(order.id);
         let icon = defaultIcon;
         if (isPool) {
           if ((order.totalAmount ?? 0) > ORANGE_THRESHOLD) {
