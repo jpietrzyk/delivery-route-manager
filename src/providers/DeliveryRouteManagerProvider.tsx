@@ -191,6 +191,132 @@ export default function DeliveryRouteManagerProvider({
     [currentDelivery]
   );
 
+  // Centralized optimistic helpers to keep deliveryOrders and unassignedOrders in sync
+  const applyOptimisticAdd = useCallback(
+    (deliveryId: string, orderId: string, atIndex?: number) => {
+      const orderFromPool = unassignedOrders.find(
+        (order) => order.id === orderId
+      );
+
+      setDeliveries((prev) =>
+        prev.map((d) => {
+          if (d.id !== deliveryId) return d;
+          const updatedOrders = [...d.orders];
+          const newIndex = atIndex ?? updatedOrders.length;
+          const orderAlreadyInDelivery = updatedOrders.some(
+            (order) => order.orderId === orderId
+          );
+
+          if (!orderAlreadyInDelivery) {
+            updatedOrders.splice(newIndex, 0, {
+              orderId,
+              sequence: newIndex,
+              status: "pending",
+            });
+            updatedOrders.forEach((order, index) => {
+              order.sequence = index;
+            });
+          }
+
+          return {
+            ...d,
+            orders: updatedOrders,
+          };
+        })
+      );
+
+      if (currentDelivery?.id === deliveryId) {
+        setCurrentDelivery((prev) => {
+          if (!prev) return null;
+          const updatedOrders = [...prev.orders];
+          const newIndex = atIndex ?? updatedOrders.length;
+          const orderAlreadyInDelivery = updatedOrders.some(
+            (order) => order.orderId === orderId
+          );
+
+          if (!orderAlreadyInDelivery) {
+            updatedOrders.splice(newIndex, 0, {
+              orderId,
+              sequence: newIndex,
+              status: "pending",
+            });
+            updatedOrders.forEach((order, index) => {
+              order.sequence = index;
+            });
+          }
+
+          return {
+            ...prev,
+            orders: updatedOrders,
+          };
+        });
+      }
+
+      setUnassignedOrders((prev) =>
+        prev.filter((order) => order.id !== orderId)
+      );
+
+      setDeliveryOrders((prev) => {
+        if (prev.some((order) => order.id === orderId)) return prev;
+        if (!orderFromPool) return prev;
+        const insertAt = atIndex ?? prev.length;
+        const next = [...prev];
+        next.splice(insertAt, 0, { ...orderFromPool, deliveryId });
+        return next;
+      });
+    },
+    [currentDelivery, unassignedOrders]
+  );
+
+  const applyOptimisticRemove = useCallback(
+    (deliveryId: string, orderId: string, restoredOrder?: Order) => {
+      setDeliveries((prev) =>
+        prev.map((d) => {
+          if (d.id !== deliveryId) return d;
+          const updatedOrders = d.orders
+            .filter((order) => order.orderId !== orderId)
+            .map((order, index) => ({
+              ...order,
+              sequence: index,
+            }));
+
+          return {
+            ...d,
+            orders: updatedOrders,
+          };
+        })
+      );
+
+      if (currentDelivery?.id === deliveryId) {
+        setCurrentDelivery((prev) => {
+          if (!prev) return null;
+
+          const updatedOrders = prev.orders
+            .filter((order) => order.orderId !== orderId)
+            .map((order, index) => ({
+              ...order,
+              sequence: index,
+            }));
+
+          return {
+            ...prev,
+            orders: updatedOrders,
+          };
+        });
+      }
+
+      if (restoredOrder) {
+        setUnassignedOrders((prev) => [
+          ...prev,
+          { ...restoredOrder, deliveryId: undefined },
+        ]);
+      }
+
+      setDeliveryOrders((prev) => prev.filter((order) => order.id !== orderId));
+    },
+    [currentDelivery]
+  );
+
   // Add an order to a delivery (pulls from unassigned)
   const addOrderToDelivery = useCallback(
     async (deliveryId: string, orderId: string, atIndex?: number) => {
@@ -207,90 +333,7 @@ export default function DeliveryRouteManagerProvider({
         });
 
         // Optimistic UI update - update local state immediately
-        setDeliveries((prev) => {
-          return prev.map((d) => {
-            if (d.id === deliveryId) {
-              // Add the order to the delivery
-              const updatedOrders = [...d.orders];
-              const newIndex = atIndex ?? updatedOrders.length;
-
-              // Check if order is already in delivery
-              const orderAlreadyInDelivery = updatedOrders.some(
-                (order) => order.orderId === orderId
-              );
-
-              if (!orderAlreadyInDelivery) {
-                updatedOrders.splice(newIndex, 0, {
-                  orderId,
-                  sequence: newIndex,
-                  status: "pending",
-                });
-
-                // Resequence
-                updatedOrders.forEach((order, index) => {
-                  order.sequence = index;
-                });
-              }
-
-              return {
-                ...d,
-                orders: updatedOrders,
-              };
-            }
-            return d;
-          });
-        });
-
-        // Update current delivery if it's the one being modified
-        if (currentDelivery?.id === deliveryId) {
-          setCurrentDelivery((prev) => {
-            if (!prev) return null;
-
-            const updatedOrders = [...prev.orders];
-            const newIndex = atIndex ?? updatedOrders.length;
-
-            // Check if order is already in delivery
-            const orderAlreadyInDelivery = updatedOrders.some(
-              (order) => order.orderId === orderId
-            );
-
-            if (!orderAlreadyInDelivery) {
-              updatedOrders.splice(newIndex, 0, {
-                orderId,
-                sequence: newIndex,
-                status: "pending",
-              });
-
-              // Resequence
-              updatedOrders.forEach((order, index) => {
-                order.sequence = index;
-              });
-            }
-
-            return {
-              ...prev,
-              orders: updatedOrders,
-            };
-          });
-        }
-
-        // Optimistic update - remove from unassigned orders
-        setUnassignedOrders((prev) =>
-          prev.filter((order) => order.id !== orderId)
-        );
-
-        // Optimistic update - add to deliveryOrders list for consumers
-        setDeliveryOrders((prev) => {
-          if (prev.some((order) => order.id === orderId)) return prev;
-          const fromPool = unassignedOrders.find(
-            (order) => order.id === orderId
-          );
-          if (!fromPool) return prev;
-          const insertAt = atIndex ?? prev.length;
-          const next = [...prev];
-          next.splice(insertAt, 0, { ...fromPool, deliveryId });
-          return next;
-        });
+        applyOptimisticAdd(deliveryId, orderId, atIndex);
 
         // Perform API calls in background
         try {
@@ -325,8 +368,7 @@ export default function DeliveryRouteManagerProvider({
       }
     },
     [
-      currentDelivery,
-      unassignedOrders,
+      applyOptimisticAdd,
       refreshDeliveryOrders,
       refreshUnassignedOrders,
       refreshDeliveries,
@@ -348,61 +390,16 @@ export default function DeliveryRouteManagerProvider({
           deliveryId: undefined,
         });
 
-        // Optimistic UI update - update local state immediately
-        setDeliveries((prev) => {
-          return prev.map((d) => {
-            if (d.id === deliveryId) {
-              // Remove the order from the delivery
-              const updatedOrders = d.orders
-                .filter((order) => order.orderId !== orderId)
-                .map((order, index) => ({
-                  ...order,
-                  sequence: index,
-                }));
-
-              return {
-                ...d,
-                orders: updatedOrders,
-              };
-            }
-            return d;
-          });
-        });
-
-        // Update current delivery if it's the one being modified
-        if (currentDelivery?.id === deliveryId) {
-          setCurrentDelivery((prev) => {
-            if (!prev) return null;
-
-            const updatedOrders = prev.orders
-              .filter((order) => order.orderId !== orderId)
-              .map((order, index) => ({
-                ...order,
-                sequence: index,
-              }));
-
-            return {
-              ...prev,
-              orders: updatedOrders,
-            };
-          });
-        }
-
-        // Optimistic update - add back to unassigned orders
-        // We need to find the order from the original orders data
-        const allOrders = await OrdersApi.getAllOrders();
-        const orderToRestore = allOrders.find((order) => order.id === orderId);
-        if (orderToRestore) {
-          setUnassignedOrders((prev) => [
-            ...prev,
-            { ...orderToRestore, deliveryId: undefined },
-          ]);
-        }
-
-        // Optimistic update - remove from deliveryOrders list
-        setDeliveryOrders((prev) =>
-          prev.filter((order) => order.id !== orderId)
+        let restoredOrder = deliveryOrders.find(
+          (order) => order.id === orderId
         );
+        if (!restoredOrder) {
+          const allOrders = await OrdersApi.getAllOrders();
+          restoredOrder = allOrders.find((order) => order.id === orderId);
+        }
+
+        // Optimistic UI update - update local state immediately
+        applyOptimisticRemove(deliveryId, orderId, restoredOrder);
 
         // Perform API calls in background
         try {
@@ -436,7 +433,8 @@ export default function DeliveryRouteManagerProvider({
       }
     },
     [
-      currentDelivery,
+      applyOptimisticRemove,
+      deliveryOrders,
       refreshDeliveryOrders,
       refreshUnassignedOrders,
       refreshDeliveries,
