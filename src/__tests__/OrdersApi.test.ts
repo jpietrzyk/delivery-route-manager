@@ -5,7 +5,7 @@ import { OrdersApi } from '@/services/ordersApi';
 import type { Order } from '@/types/order';
 
 // Mock fetch globally
-global.fetch = jest.fn();
+(globalThis as typeof globalThis).fetch = jest.fn();
 
 describe('OrdersApi', () => {
   const mockOrdersData: Order[] = [
@@ -64,7 +64,7 @@ describe('OrdersApi', () => {
 
   describe('getOrders', () => {
     it('should fetch and return only active orders', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -78,7 +78,7 @@ describe('OrdersApi', () => {
     });
 
     it('should return a copy of orders data to prevent external mutations', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -95,7 +95,7 @@ describe('OrdersApi', () => {
 
     it('should handle fetch errors gracefully', async () => {
       OrdersApi.resetCache();
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false
       });
 
@@ -105,7 +105,7 @@ describe('OrdersApi', () => {
 
   describe('getAllOrders', () => {
     it('should fetch and return all orders including inactive', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -117,7 +117,7 @@ describe('OrdersApi', () => {
     });
 
     it('should return a copy to prevent mutations', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -132,7 +132,7 @@ describe('OrdersApi', () => {
 
   describe('getOrderById', () => {
     it('should return an active order by ID', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -145,7 +145,7 @@ describe('OrdersApi', () => {
     });
 
     it('should return null for inactive orders', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -156,7 +156,7 @@ describe('OrdersApi', () => {
     });
 
     it('should return null if order is not found', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -167,7 +167,7 @@ describe('OrdersApi', () => {
     });
 
     it('should return a copy of the order', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -184,20 +184,20 @@ describe('OrdersApi', () => {
 
   describe('updateOrderStatus', () => {
     it('should update order status', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
 
-      const updatedOrder = await OrdersApi.updateOrderStatus('ORD-001', 'in-transit');
+      const updatedOrder = await OrdersApi.updateOrderStatus('ORD-001', 'in-progress');
 
       expect(updatedOrder).toBeDefined();
-      expect(updatedOrder?.status).toBe('in-transit');
+      expect(updatedOrder?.status).toBe('in-progress');
       expect(updatedOrder?.updatedAt instanceof Date).toBe(true);
     });
 
     it('should update the updatedAt timestamp', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -209,7 +209,7 @@ describe('OrdersApi', () => {
     });
 
     it('should return null if order is not found', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -222,7 +222,7 @@ describe('OrdersApi', () => {
 
   describe('updateOrderActiveStatus', () => {
     it('should update order active status', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -233,7 +233,7 @@ describe('OrdersApi', () => {
     });
 
     it('should set updated timestamp', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -247,7 +247,7 @@ describe('OrdersApi', () => {
     });
 
     it('should return null if order is not found', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -260,7 +260,7 @@ describe('OrdersApi', () => {
 
   describe('updateOrder', () => {
     it('should update multiple order fields', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -277,7 +277,7 @@ describe('OrdersApi', () => {
     });
 
     it('should preserve the order ID during update', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -291,14 +291,14 @@ describe('OrdersApi', () => {
     });
 
     it('should update the updatedAt timestamp', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
 
       const beforeUpdate = new Date();
       const updatedOrder = await OrdersApi.updateOrder('ORD-001', {
-        status: 'in-transit'
+        status: 'in-progress'
       });
       const afterUpdate = new Date();
 
@@ -307,7 +307,7 @@ describe('OrdersApi', () => {
     });
 
     it('should return null if order is not found', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -330,7 +330,7 @@ describe('OrdersApi', () => {
         }
       ];
 
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => dataWithDates
       });
@@ -344,7 +344,7 @@ describe('OrdersApi', () => {
 
   describe('Data persistence', () => {
     it('should persist data across multiple calls', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });
@@ -355,11 +355,11 @@ describe('OrdersApi', () => {
       // Second call should use cached data (fetch should only be called once)
       await OrdersApi.getOrders();
 
-      expect((global.fetch as jest.Mock).mock.calls).toHaveLength(1);
+      expect((globalThis.fetch as jest.Mock).mock.calls).toHaveLength(1);
     });
 
     it('should update persisted data when order is modified', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
       });

@@ -5,7 +5,7 @@ import { DeliveryRouteWaypointsApi } from '@/services/deliveryRouteWaypointsApi'
 import type { DeliveryRouteWaypoint } from '@/types/delivery';
 
 // Mock fetch globally
-global.fetch = jest.fn();
+(globalThis as typeof globalThis).fetch = jest.fn();
 
 describe('DeliveryRouteWaypointsApi', () => {
   const mockWaypointsData: DeliveryRouteWaypoint[] = [
@@ -41,7 +41,7 @@ describe('DeliveryRouteWaypointsApi', () => {
 
   describe('getWaypoints', () => {
     it('should fetch and return all waypoints', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -55,7 +55,7 @@ describe('DeliveryRouteWaypointsApi', () => {
     });
 
     it('should return a copy of waypoints data to prevent external mutations', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -72,7 +72,7 @@ describe('DeliveryRouteWaypointsApi', () => {
 
     it('should handle fetch errors gracefully', async () => {
       DeliveryRouteWaypointsApi.resetCache();
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false
       });
 
@@ -84,7 +84,7 @@ describe('DeliveryRouteWaypointsApi', () => {
 
   describe('getWaypointByOrderId', () => {
     it('should return a waypoint by order ID', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -98,7 +98,7 @@ describe('DeliveryRouteWaypointsApi', () => {
     });
 
     it('should return null if waypoint is not found', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -109,7 +109,7 @@ describe('DeliveryRouteWaypointsApi', () => {
     });
 
     it('should return a copy of the waypoint', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -126,7 +126,7 @@ describe('DeliveryRouteWaypointsApi', () => {
 
   describe('getWaypointsByDeliveryId', () => {
     it('should return waypoints for a delivery', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -140,7 +140,7 @@ describe('DeliveryRouteWaypointsApi', () => {
 
   describe('updateWaypointStatus', () => {
     it('should update waypoint status', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -157,7 +157,7 @@ describe('DeliveryRouteWaypointsApi', () => {
     });
 
     it('should set deliveredAt when status is delivered', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -171,7 +171,7 @@ describe('DeliveryRouteWaypointsApi', () => {
     });
 
     it('should not set deliveredAt for non-delivered statuses', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -186,7 +186,7 @@ describe('DeliveryRouteWaypointsApi', () => {
     });
 
     it('should return null if waypoint is not found', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -202,7 +202,7 @@ describe('DeliveryRouteWaypointsApi', () => {
 
   describe('updateWaypointTiming', () => {
     it('should update waypoint timing information', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -225,7 +225,7 @@ describe('DeliveryRouteWaypointsApi', () => {
     });
 
     it('should return null if waypoint is not found', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -241,7 +241,7 @@ describe('DeliveryRouteWaypointsApi', () => {
 
   describe('updateWaypoint', () => {
     it('should update any waypoint fields', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -262,7 +262,7 @@ describe('DeliveryRouteWaypointsApi', () => {
     });
 
     it('should preserve orderId during update', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -279,7 +279,7 @@ describe('DeliveryRouteWaypointsApi', () => {
     });
 
     it('should return null if waypoint is not found', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockWaypointsData
       });
@@ -306,7 +306,7 @@ describe('DeliveryRouteWaypointsApi', () => {
         }
       ];
 
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => dataWithDates
       });
@@ -328,7 +328,7 @@ describe('DeliveryRouteWaypointsApi', () => {
         }
       ];
 
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => dataWithoutDates
       });

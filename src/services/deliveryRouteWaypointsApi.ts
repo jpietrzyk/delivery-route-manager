@@ -74,7 +74,7 @@ export class DeliveryRouteWaypointsApi {
   /**
    * Get waypoints for a specific delivery route
    */
-  static async getWaypointsByDeliveryId(deliveryId: string): Promise<DeliveryRouteWaypoint[]> {
+  static async getWaypointsByDeliveryId(): Promise<DeliveryRouteWaypoint[]> {
     await loadWaypoints();
     await mockDelay(400);
 
