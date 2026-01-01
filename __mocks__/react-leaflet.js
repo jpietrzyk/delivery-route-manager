@@ -9,9 +9,10 @@ const MapContainer = ({ children, ...props }) => {
 // Mock TileLayer
 const TileLayer = () => React.createElement('div');
 
-// Mock Marker
-const Marker = ({ children, ...props }) => {
-  return React.createElement('div', { ...props }, children);
+// Mock Marker - drop leaflet-only props so they don't leak to DOM
+const Marker = ({ children, eventHandlers, icon, position, ...props }) => {
+  const safeProps = { ...props };
+  return React.createElement('div', safeProps, children);
 };
 
 // Mock Popup
@@ -19,8 +20,9 @@ const Popup = ({ children, ...props }) => {
   return React.createElement('div', { ...props }, children);
 };
 
-// Mock Polyline
-const Polyline = () => React.createElement('div');
+// Mock Polyline - ignore leaflet-only props to avoid React DOM warnings
+const Polyline = ({ eventHandlers, pathOptions, positions, ...props }) =>
+  React.createElement('div', props);
 
 // Mock useMap hook
 const useMap = () => ({

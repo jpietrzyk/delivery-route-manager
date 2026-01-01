@@ -5,6 +5,7 @@ import type { Order } from "@/types/order";
 export interface DeliveryContextType {
   deliveries: DeliveryRoute[];
   currentDelivery: DeliveryRoute | null;
+  deliveryOrders: Order[];
   unassignedOrders: Order[];
   setCurrentDelivery: (delivery: DeliveryRoute | null) => void;
   setDeliveries: (deliveries: DeliveryRoute[]) => void;
@@ -31,6 +32,7 @@ export interface DeliveryContextType {
     toIndex: number
   ) => Promise<void>;
   refreshDeliveries: () => Promise<void>;
+  refreshDeliveryOrders: (deliveryId?: string) => Promise<void>;
   refreshUnassignedOrders: () => Promise<void>;
 }
 

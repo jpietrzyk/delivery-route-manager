@@ -54,6 +54,7 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    localStorage.clear();
   });
 
   it("should increment refreshTrigger when order is added to delivery", async () => {
@@ -77,7 +78,7 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
       .length;
 
     // Find the unassigned order and click the add button
-    const addButton = screen.getByLabelText(
+    const addButton = await screen.findByLabelText(
       `Add order ${mockOrders[1].id} to delivery`
     );
     fireEvent.click(addButton);
@@ -119,7 +120,7 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
     // (based on our mock data)
 
     // Find the unassigned order and click the add button
-    const addButton = screen.getByLabelText(
+    const addButton = await screen.findByLabelText(
       `Add order ${mockOrders[1].id} to delivery`
     );
     fireEvent.click(addButton);

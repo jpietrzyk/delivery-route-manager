@@ -31,6 +31,7 @@ export default function DeliveryRouteManagerProvider({
   const [currentDelivery, setCurrentDelivery] = useState<DeliveryRoute | null>(
     null
   );
+  const [deliveryOrders, setDeliveryOrders] = useState<Order[]>([]);
   const [unassignedOrders, setUnassignedOrders] = useState<Order[]>([]);
 
   // Route manager state
@@ -86,11 +87,37 @@ export default function DeliveryRouteManagerProvider({
     }
   }, []);
 
+  // Fetch orders for the current or provided delivery
+  const refreshDeliveryOrders = useCallback(
+    async (deliveryId?: string) => {
+      try {
+        const targetId = deliveryId ?? currentDelivery?.id;
+        if (!targetId) {
+          setDeliveryOrders([]);
+          return [];
+        }
+
+        const allOrders = await OrdersApi.getOrders();
+        const ordersWithPending = applyPendingOrderUpdates(allOrders);
+        const inDelivery = ordersWithPending.filter(
+          (order) => order.deliveryId === targetId
+        );
+        setDeliveryOrders(inDelivery);
+        return inDelivery;
+      } catch (error) {
+        console.error("Error fetching delivery orders:", error);
+        return [];
+      }
+    },
+    [currentDelivery]
+  );
+
   // Load deliveries and unassigned orders on mount
   useEffect(() => {
     const loadData = async () => {
       await refreshDeliveries();
       await refreshUnassignedOrders();
+      await refreshDeliveryOrders();
     };
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,6 +133,11 @@ export default function DeliveryRouteManagerProvider({
       setCurrentDelivery(deliveries[0]);
     }
   }, [deliveries, currentDelivery]);
+
+  // Refresh delivery orders when current delivery changes
+  useEffect(() => {
+    void refreshDeliveryOrders();
+  }, [currentDelivery, refreshDeliveryOrders]);
 
   // Create a new delivery
   const createDelivery = useCallback(
@@ -247,6 +279,17 @@ export default function DeliveryRouteManagerProvider({
           prev.filter((order) => order.id !== orderId)
         );
 
+        // Optimistic update - add to deliveryOrders list for consumers
+        setDeliveryOrders((prev) => {
+          if (prev.some((order) => order.id === orderId)) return prev;
+          const fromPool = unassignedOrders.find((order) => order.id === orderId);
+          if (!fromPool) return prev;
+          const insertAt = atIndex ?? prev.length;
+          const next = [...prev];
+          next.splice(insertAt, 0, { ...fromPool, deliveryId });
+          return next;
+        });
+
         // Perform API calls in background
         try {
           // First, mark the order as assigned to this delivery
@@ -276,7 +319,7 @@ export default function DeliveryRouteManagerProvider({
         console.error("Error adding order to delivery:", error);
       }
     },
-    [currentDelivery]
+    [currentDelivery, unassignedOrders]
   );
 
   // Remove an order from a delivery (returns to unassigned)
@@ -345,6 +388,11 @@ export default function DeliveryRouteManagerProvider({
           ]);
         }
 
+        // Optimistic update - remove from deliveryOrders list
+        setDeliveryOrders((prev) =>
+          prev.filter((order) => order.id !== orderId)
+        );
+
         // Perform API calls in background
         try {
           // First, remove delivery assignment from order (returns to unassigned)
@@ -403,6 +451,7 @@ export default function DeliveryRouteManagerProvider({
   const deliveryContextValue = {
     deliveries,
     currentDelivery,
+    deliveryOrders,
     unassignedOrders,
     setCurrentDelivery,
     setDeliveries,
@@ -413,6 +462,7 @@ export default function DeliveryRouteManagerProvider({
     removeOrderFromDelivery,
     reorderDeliveryOrders,
     refreshDeliveries,
+    refreshDeliveryOrders,
     refreshUnassignedOrders,
   };
 
