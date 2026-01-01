@@ -30,7 +30,7 @@ class DeliveriesApiClass {
       // Check if we're in a browser environment (fetch is available)
       if (typeof fetch !== 'undefined') {
         // Load delivery data from JSON file
-        const response = await fetch('/assets/delivery-DEL-001.json');
+        const response = await fetch('/delivery-DEL-001.json');
         if (!response.ok) {
           throw new Error('Failed to load delivery data');
         }

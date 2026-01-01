@@ -1,50 +1,53 @@
 import type { Order, Product } from "@/types/order";
-import ordersJson from "@/assets/orders.json";
 
 // Mock delay to simulate network request
 const mockDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Convert JSON data to Order[] with proper Date objects
-const sampleOrdersData: Order[] = ordersJson.map(order => ({
-  id: order.id,
-  product: order.product as Product,
-  comment: order.comment,
-  status: order.status as Order['status'],
-  priority: order.priority as Order['priority'],
-  active: order.active,
-  deliveryId: order.deliveryId || undefined,
-  createdAt: new Date(order.createdAt),
-  updatedAt: new Date(order.updatedAt),
-  customer: order.customer,
-  totalAmount: order.totalAmount,
-  items: order.items,
-  location: order.location
-}));
+// Store for in-memory data that can be modified
+let sampleOrdersData: Order[] = [];
+let ordersLoaded = false;
 
-/**
- * Mock API service for orders
- *
- * This service currently simulates a real API endpoint but returns static data.
- * It's designed to be easily replaceable with actual HTTP requests when a real
- * backend becomes available.
- *
- * FUTURE IMPLEMENTATION:
- * - Replace mockDelay with actual HTTP requests using fetch/axios
- * - Add proper error handling for network failures
- * - Implement request cancellation for better user experience
- * - Add request/response interceptors for authentication, logging, etc.
- * - Implement caching strategies if needed
- *
- * USAGE:
- * Current: OrdersApi.getOrders() // Returns mock data
- * Future:   fetch('/api/orders').then(res => res.json()) // Real HTTP request
- */
+// Load and convert JSON data to Order[] with proper Date objects
+async function loadOrders(): Promise<void> {
+  if (ordersLoaded) return;
+
+  try {
+    const response = await fetch('/orders.json');
+    if (!response.ok) {
+      throw new Error('Failed to load orders data');
+    }
+
+    const ordersJson = await response.json();
+    sampleOrdersData = ordersJson.map((order: any) => ({
+      id: order.id,
+      product: order.product as Product,
+      comment: order.comment,
+      status: order.status as Order['status'],
+      priority: order.priority as Order['priority'],
+      active: order.active,
+      deliveryId: order.deliveryId || undefined,
+      createdAt: new Date(order.createdAt),
+      updatedAt: new Date(order.updatedAt),
+      customer: order.customer,
+      totalAmount: order.totalAmount,
+      items: order.items,
+      location: order.location
+    }));
+
+    ordersLoaded = true;
+  } catch (error) {
+    console.error('Failed to load orders:', error);
+    throw error;
+  }
+}
+
 export class OrdersApi {
   /**
    * Fetch all orders
    * In the future, this will make a real HTTP request to the backend
    */
   static async getOrders(): Promise<Order[]> {
+    await loadOrders();
     // Simulate network delay
     await mockDelay(500);
 
@@ -56,6 +59,7 @@ export class OrdersApi {
    * Fetch all orders (including inactive)
    */
   static async getAllOrders(): Promise<Order[]> {
+    await loadOrders();
     // Simulate network delay
     await mockDelay(500);
 
@@ -67,6 +71,7 @@ export class OrdersApi {
    * Get a specific order by ID
    */
   static async getOrderById(id: string): Promise<Order | null> {
+    await loadOrders();
     await mockDelay(300);
 
     const order = sampleOrdersData.find(order => order.id === id && order.active);
@@ -78,6 +83,7 @@ export class OrdersApi {
    * Future: This will be a PUT/PATCH request to the backend
    */
   static async updateOrderStatus(id: string, status: Order['status']): Promise<Order | null> {
+    await loadOrders();
     await mockDelay(400);
 
     const orderIndex = sampleOrdersData.findIndex(order => order.id === id);
@@ -100,6 +106,7 @@ export class OrdersApi {
    * Future: This will be a PUT/PATCH request to the backend
    */
   static async updateOrderActiveStatus(id: string, active: boolean): Promise<Order | null> {
+    await loadOrders();
     await mockDelay(400);
 
     const orderIndex = sampleOrdersData.findIndex(order => order.id === id);
@@ -122,6 +129,7 @@ export class OrdersApi {
    * Future: This will be a PUT/PATCH request to the backend
    */
   static async updateOrder(id: string, updates: Partial<Order>): Promise<Order | null> {
+    await loadOrders();
     await mockDelay(400);
 
     const orderIndex = sampleOrdersData.findIndex(order => order.id === id);
