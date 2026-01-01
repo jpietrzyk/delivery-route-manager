@@ -1,0 +1,3406 @@
+[
+ {
+   "id": "ORD-001",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Fanczi Lászlóné",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.097999,
+      "lng": 18.580731
+   },
+   "address": "Deák Ferenc u. 2  WCHODZI 1 8111 Seregélyes",
+   "deliveryId": "DEL-001"
+},
+ {
+   "id": "ORD-002",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Lecourbe Paul",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.342652,
+      "lng": 20.039065
+   },
+   "address": "I. 41. TANYA 261 NIE WCHODZI 6763 Szatymaz",
+   "deliveryId": "DEL-001"
+},
+ {
+   "id": "ORD-003",
+   "product": {
+      "name": "3x2 kojec dla psa 3 #",
+      "price": "194000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Csiszár Dávid",
+   "totalAmmount": 194000,
+   "items": [],
+   "location": {
+      "lat": 47.702565,
+      "lng": 17.753661
+   },
+   "address": "Páskom utca . 94 9011 Győr",
+   "deliveryId": "DEL-001"
+},
+ {
+   "id": "ORD-004",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama GARAŻ RAL ????",
+      "price": "298000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Borsh Eniko",
+   "totalAmmount": 298000,
+   "items": [],
+   "location": {
+      "lat": 47.347772,
+      "lng": 19.787069
+   },
+   "address": "Farmosi u. 5 2711 Tápiószentmárton",
+   "deliveryId": "DEL-001"
+},
+ {
+   "id": "ORD-005",
+   "product": {
+      "name": "4x5 dwuspad brama uchylna szeroki panel pośrodku CAŁY GARAŻ CIEMNY ORZECH",
+      "price": "565000 ",
+      "complexity": 1
+   },
+   "comment": "FAKTURA IMIENNA Keller Ádám 8220 Balatonalmádi, Szabolcs u. 48",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Keller Ádám",
+   "totalAmmount": 565000,
+   "items": [],
+   "location": {
+      "lat": 47.021006,
+      "lng": 17.961157
+   },
+   "address": "Vadrózsa utca i na rogu Mhas utca 8227 Felsőörs",
+   "deliveryId": "DEL-001"
+},
+ {
+   "id": "ORD-006",
+   "product": {
+      "name": "3x2 kojec dla psa 6 #",
+      "price": "205000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Zátrok Gyula",
+   "totalAmmount": 205000,
+   "items": [],
+   "location": {
+      "lat": 47.242874,
+      "lng": 19.620719
+   },
+   "address": "Fecske u.7  WCHODZI 1-7 obok Pesti ut ? 2730 Albertirsa",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-007",
+   "product": {
+      "name": "4,5x5,5 dwuspad brama uchylna szeroki panel 3,5 m szeroka pośrodku + okucia przód dachu CAŁY GARAŻ CIEMNY ORZECH",
+      "price": "650000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Popovics Gyula",
+   "totalAmmount": 650000,
+   "items": [],
+   "location": {
+      "lat": 46.957207,
+      "lng": 20.243918
+   },
+   "address": "Döbrei János út 25 5430 Tiszaföldvár",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-008",
+   "product": {
+      "name": "3x6 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "299000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": 299000,
+   "items": [],
+   "location": {
+      "lat": 46.197248,
+      "lng": 18.72473
+   },
+   "address": "Bajai u. Ipari Park 61/31 NIE WCHODZI 7140 Bátaszék",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-009",
+   "product": {
+      "name": "7x6 dwuspad 2 x brama uchylna szeroki panel + drzwiczki 0,90 szeroki panel na prawym boku z przodu + ZMF + 2 x okno 80x50 na lewym i prawym boku z tyłu 1 m od tylnych słupków + okucia przód dachu + 4 x narożne + rynny + 2 X AUTOMAT CAŁY GARAŻ PANEL POZIOMY ZŁOTY DĄB 1",
+      "price": "1,57900",
+      "complexity": 2
+   },
+   "comment": "FAKTURA Hiména House Kft 2120 Dunakeszi, István utca 4 NIP 32070992-2-13",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": "1,57900",
+   "items": [],
+   "location": {
+      "lat": 47.650062,
+      "lng": 19.125517
+   },
+   "address": "liget utca 22 2120 Dunakeszi",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-010",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Benedek Marton",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.720417,
+      "lng": 19.547765
+   },
+   "address": "Dózsa György u. 26 WCHODZI 23 2174 Verseg",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-011",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Törő István",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 47.991272,
+      "lng": 21.780276
+   },
+   "address": "Lejtő u. ?? 1611 nie wchodzi 4531 Nyírpazony",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-012",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Vigh Norbert",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.2173,
+      "lng": 16.59235
+   },
+   "address": "Aranyhegyi u.?? 9700 Szombathely",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-013",
+   "product": {
+      "name": "3x2 kojec dla psa 4 #",
+      "price": "194000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Mészáros László",
+   "totalAmmount": 194000,
+   "items": [],
+   "location": {
+      "lat": 47.607439,
+      "lng": 20.280129
+   },
+   "address": "Mária u. 22 3360 Heves",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-014",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Mező Péter",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 48.040709,
+      "lng": 18.909381
+   },
+   "address": "Petőfi u. 14 2639 Bernecebaráti",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-015",
+   "product": {
+      "name": "4,5 x 6 dwuspad 2 skrzydłowa brama po prawo po lewo drzwiczki 0,90 GARAŻ RAL 8017 BRAMA + DRZWICZKI RAL 1002",
+      "price": "550000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Szaki Krisztián",
+   "totalAmmount": 550000,
+   "items": [],
+   "location": {
+      "lat": 47.74311,
+      "lng": 19.073521
+   },
+   "address": "Nyulas u. 44 2022 Tahitótfalu",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-016",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Molnar Ferenc",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 46.628914,
+      "lng": 16.544321
+   },
+   "address": "Csörgő u 9 8960 Lenti",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-017",
+   "product": {
+      "name": "3,5x5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "270000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Nyéki Tibor",
+   "totalAmmount": 270000,
+   "items": [],
+   "location": {
+      "lat": 47.383039,
+      "lng": 19.356908
+   },
+   "address": "Nagy Sándor u. 8/a wchodzi 8 2225 Üllő",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-018",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Bősze Cintia",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.625734,
+      "lng": 18.65541
+   },
+   "address": "Lajos utca ?? wąska ul ?? 7044 Nagydorog",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-019",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 3
+   },
+   "comment": "FAKTURA FEBEKO Kft. FEBEKO 4200 Hajdúszoboszló Földvár utca 26 NIP 23014987-2-09",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.437512,
+      "lng": 21.403632
+   },
+   "address": "Földvár u. 26 4200 Hajdúszoboszló",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-020",
+   "product": {
+      "name": "4 x 6 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "330000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Christoff Sandler Kitty",
+   "totalAmmount": 330000,
+   "items": [],
+   "location": {
+      "lat": 47.085491,
+      "lng": 18.397025
+   },
+   "address": "Táncsics Mihály u. 32 8121 Tác",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-021",
+   "product": {
+      "name": "9,9 x 6 spad do tyłu 3 x 2 skrzydłowa brama garaż w ocynku",
+      "price": "980000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Loar Sándor",
+   "totalAmmount": 980000,
+   "items": [],
+   "location": {
+      "lat": 47.488736,
+      "lng": 19.284838
+   },
+   "address": "Rákoscsaba u. 9 1171 Budapest",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-022",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Morvai József",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 47.631537,
+      "lng": 18.062186
+   },
+   "address": "Kandó Kálmán u.??? 2942 Nagyigmánd",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-023",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Szelmák Gyula Lászlóné",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 48.016462,
+      "lng": 21.920198
+   },
+   "address": "Szabadság u. 123 4554 Nyírtét",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-024",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Szabóné Salánki Mária",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.711716,
+      "lng": 21.662976
+   },
+   "address": "Szilágyi Erzsébet u. 8 4243 Téglás",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-025",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kanalas Róbert",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.359086,
+      "lng": 20.157783
+   },
+   "address": "Vendel u. 33 5055 Jászladány",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-026",
+   "product": {
+      "name": "9x6 dwuspad 3 x brama uchylna szeroki panel brama środkowa 2,20 wysoka + drzwiczki 0,90 na lewym boku z przodu + 2 x okno 100x50 na tylnej ścianie równo rozdzielić + 4 x okucia narożne + FILC + 2 X AUTOMAT DO ŚRODKOWEJ I PRAWEJ BRAMY CAŁY GARAŻ MULTIGRASS 2",
+      "price": "2,19800",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Tőzsér Anita",
+   "totalAmmount": "2,19800",
+   "items": [],
+   "location": {
+      "lat": 46.693361,
+      "lng": 17.844575
+   },
+   "address": "Május 1. u. 7 8676 Karád",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-027",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Schrack Margit",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.925757,
+      "lng": 19.651543
+   },
+   "address": "Máriahegy 94/D 6000 Kecskemét",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-028",
+   "product": {
+      "name": "3x2 kojec dla psa 4 #",
+      "price": "194000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Németh Péter",
+   "totalAmmount": 194000,
+   "items": [],
+   "location": {
+      "lat": 47.241942,
+      "lng": 16.533888
+   },
+   "address": "Petőfi Sándor u. 18 WCHODZI 28 9791 Torony",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-029",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama GARAŻ RAL 8017",
+      "price": "298000 ",
+      "complexity": 1
+   },
+   "comment": "FAKTURA LÖ-MIX KFT.8900 Zalaegerszeg, Zrínyi M út 35 NIP 11999595-2-20",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": 298000,
+   "items": [],
+   "location": {
+      "lat": 46.857393,
+      "lng": 16.848599
+   },
+   "address": "Kakukkfű u. ? 8900 Zalaegerszeg",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-030",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Keszthelyi Edit",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.01878,
+      "lng": 19.03745
+   },
+   "address": "Széchenyi út 79 6098 Tass",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-031",
+   "product": {
+      "name": "4x5 dwuspad 2 skrzydłowa brama szeroki panel pośrodku + drzwiczki 0,90 na prawym boku z tyłu 1 m od tylnego słupka otwierane na prawo + okno 80x60 na lewym boku pośrodku + 1 m taras na tylnej ścianie + FILC CAŁY GARAŻ MULTIGRASS",
+      "price": "730000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Végső János",
+   "totalAmmount": 730000,
+   "items": [],
+   "location": {
+      "lat": 47.176537,
+      "lng": 18.952508
+   },
+   "address": "Alsó-Dunasor BAGOLY UTCA 16 NIE WCHODZI 2340 Kiskunlacháza",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-032",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Lakatos Egan",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.735904,
+      "lng": 21.360966
+   },
+   "address": "Széchenyi u. 15 5720 Sarkad",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-033",
+   "product": {
+      "name": "4x6 dwuspad 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "400000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Baricz Bálint",
+   "totalAmmount": 400000,
+   "items": [],
+   "location": {
+      "lat": 47.141507,
+      "lng": 18.760494
+   },
+   "address": "Szilágyi Erzsébet u. ??? 2490 Pusztaszabolcs",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-034",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Vainel Gabor",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 47.140972,
+      "lng": 18.384717
+   },
+   "address": "Szürkebarát dűlő 21 21 nie wchodzi 8151 Szabadbattyán",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-035",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Deak Zsuzsa",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 47.048898,
+      "lng": 18.972114
+   },
+   "address": "Dunasor u. 124 6098 Tass",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-036",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "FAKTURA TOLDI DIESEL PERFORMANCE KFT 8994 Zalaszentgyörgy, Ady Endre utca 12 NIP 32734377-2-20",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.851964,
+      "lng": 16.814241
+   },
+   "address": "Hock János u. 72 8900 Zalaegerszeg",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-037",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "FAKTURA Bársony Mancsok Menedéke 2117 Isaszeg, Május 1. utca. 62 NIP 19403597-1-13",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Bársony Mancsok Menedéke",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.537014,
+      "lng": 19.410874
+   },
+   "address": "Május 1. u. 62 2117 Isaszeg",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-038",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Palocznyik Lászlóné",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.633598,
+      "lng": 19.289584
+   },
+   "address": "Madách Imre u. 29 6200 Kiskőrös",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-039",
+   "product": {
+      "name": "4,80 x 5,5 spad do tyłu brama uchylna zwykła 3,5 m szeroka pośrodku + drzwiczki 0,90 na ??? CAŁY GARAŻ CIEMNY ORZECH",
+      "price": "742000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Gömörei Zsolt",
+   "totalAmmount": 742000,
+   "items": [],
+   "location": {
+      "lat": 47.420275,
+      "lng": 19.028193
+   },
+   "address": "Bérkocsi u. 31 1222 Budapest",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-040",
+   "product": {
+      "name": "4x6 spad na prawo brama 2 skrzydłowa po lewo + drzwiczki 0,90 na lewym boku z tyłu garaż w ocynku",
+      "price": "410000 ",
+      "complexity": 3
+   },
+   "comment": "FAKTURA IMIENNA Leles Gyula Tamás 7148 Alsónyék Sárvízpart utca. 10",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Leles Gyula Tamás",
+   "totalAmmount": 410000,
+   "items": [],
+   "location": {
+      "lat": 46.201314,
+      "lng": 18.73039
+   },
+   "address": "Sárvízpart u. 10 7148 Alsónyék",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-041",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Keresztesi József",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 48.244074,
+      "lng": 21.423451
+   },
+   "address": "Rákóczi út 14 3933 Olaszliszka",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-042",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Nardi Béla",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.608216,
+      "lng": 21.099111
+   },
+   "address": "major 12 5712 Szabadkígyós",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-043",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Hrabovszki Tibor",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 48.153578,
+      "lng": 20.795474
+   },
+   "address": "erdősor utca 2, 3711 Szirmabesenyő",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-044",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Müller Mihály",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.65366,
+      "lng": 17.859936
+   },
+   "address": "Kodály u. 13 9073 Bőny",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-045",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Szabó András",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.378076,
+      "lng": 17.698782
+   },
+   "address": "Arany János u. 7 WCHODZI 36 8556 Pápateszér",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-046",
+   "product": {
+      "name": "3x2 kojec dla psa 1 #",
+      "price": "179000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Balogh Gábor",
+   "totalAmmount": 179000,
+   "items": [],
+   "location": {
+      "lat": 48.154671,
+      "lng": 21.252569
+   },
+   "address": "Béke u. 34 3931 Mezőzombor",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-047",
+   "product": {
+      "name": "3x2 kojec dla psa 1 #",
+      "price": "179000 ",
+      "complexity": 1
+   },
+   "comment": "FAKTURA LTZS Kft.2724 Újlengyel, Petőfi Sándor utca 48 NIP 13872111-2-13",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": 179000,
+   "items": [],
+   "location": {
+      "lat": 46.616987,
+      "lng": 19.479094
+   },
+   "address": "Kecskeméti út 26 OBOK KOŚCIŁ KATOLICKI 6235 Bócsa",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-048",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa + FILC",
+      "price": "224000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Doktor Molnár Manta",
+   "totalAmmount": 224000,
+   "items": [],
+   "location": {
+      "lat": 46.703162,
+      "lng": 20.14661
+   },
+   "address": "Rákóczi Ferenc u. 2 6640 Csongrád zapytać o kod",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-049",
+   "product": {
+      "name": "5x5 spad do tyłu brama uchylna po prawo po lewo drzwiczki 0,90 + okno 100x50 między bramą a drzwiczkami garaż w ocynku",
+      "price": "550000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Simon István",
+   "totalAmmount": 550000,
+   "items": [],
+   "location": {
+      "lat": 47.523982,
+      "lng": 17.748027
+   },
+   "address": "Országút u. 27 9091 Ravazd",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-050",
+   "product": {
+      "name": "3x2 kojec dla psa 3 #",
+      "price": "194000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Tassy Csaba",
+   "totalAmmount": 194000,
+   "items": [],
+   "location": {
+      "lat": 47.770071,
+      "lng": 19.586878
+   },
+   "address": "Kossuth u. 1 3041 Héhalom",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-051",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Baranyai -Végh Judit",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.622535,
+      "lng": 16.884088
+   },
+   "address": "Petőfi u. 21 9431 Fertőd",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-052",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Pelczéder Imre Martin",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.591868,
+      "lng": 17.760987
+   },
+   "address": "Halomalja utca . 57 9084 Győrság",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-053",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Mislyenác Péter",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.061909,
+      "lng": 18.128097
+   },
+   "address": "Malom kertészet, Szikuti dűlő 7633 Cserkút",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-054",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Dr.Trencsényi György",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.631195,
+      "lng": 21.60704
+   },
+   "address": "Guhér u. 102 4224 Hajdúböszörmény",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-055",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kiss Gabor",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 47.099866,
+      "lng": 21.213496
+   },
+   "address": "Dobó u. 28 5525 Füzesgyarmat",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-056",
+   "product": {
+      "name": "3x2 kojec dla psa 1 #",
+      "price": "179000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Balogh Sándor",
+   "totalAmmount": 179000,
+   "items": [],
+   "location": {
+      "lat": 48.16205,
+      "lng": 21.551513
+   },
+   "address": "Kölcsey Ferenc u. 51 4472 Gávavencsellő",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-057",
+   "product": {
+      "name": "3x2,5 spad do tyłu drzwiczki 0,90 po prawo przy słupku po lewo okno 80x50 + rynny spad wody po lewo patrząc z przodu schowek + 4 x okucia narożne UWAGA !!!! SCHOWEK PANEL POZIOMY ZŁOTY DĄB DACH RAL 8017",
+      "price": "410000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Jutka Zoltan",
+   "totalAmmount": 410000,
+   "items": [],
+   "location": {
+      "lat": 47.036028,
+      "lng": 18.119189
+   },
+   "address": "Csokonai Vitéz Mihály u. 26/4 WCHODZI 26 8174 Balatonkenese",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-058",
+   "product": {
+      "name": "3x2 kojec dla psa 1 #",
+      "price": "179000 ",
+      "complexity": 3
+   },
+   "comment": "FAKTURA Török Imre 9783 Egyházasrádóc Petőfi Sándor utca 18.",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Török Imre",
+   "totalAmmount": 179000,
+   "items": [],
+   "location": {
+      "lat": 47.088201,
+      "lng": 16.629179
+   },
+   "address": "Petőfi Sándor utca 18. 9783 Egyházasrádóc",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-059",
+   "product": {
+      "name": "4x5 spad do tyłu brama uchylna po lewo + drzwiczki 0,90 po prawo + FILC garaż w ocynku 439 000 FT + 27 % 118 ,530 FT=",
+      "price": "557530 ",
+      "complexity": 1
+   },
+   "comment": "FAKTURA WĘGIERSKA Puháné Doktor Zita 2435 Nagylók Hunyadi János utca. 17 75 % Anyag - Materiał 25 % Munkadíj - Wykonanie pracy",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Puháné Doktor Zita",
+   "totalAmmount": 557530,
+   "items": [],
+   "location": {
+      "lat": 46.976389,
+      "lng": 18.645036
+   },
+   "address": "Hunyadi János utca. 17 2435 Nagylók",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-060",
+   "product": {
+      "name": "3x2 kojec dla psa 6 #",
+      "price": "205000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kása János",
+   "totalAmmount": 205000,
+   "items": [],
+   "location": {
+      "lat": 46.432014,
+      "lng": 21.233161
+   },
+   "address": "Petőfi u. 44 5743 Lőkösháza",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-061",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Zámbók Tamás",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 47.483441,
+      "lng": 20.615454
+   },
+   "address": "Petőfi Sándor út 34 5241 Abádszalók",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-062",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Szucs Norbert",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 47.855506,
+      "lng": 20.479016
+   },
+   "address": "Mátyás út 49 Külterület nie wchodzi 3327 Novaj",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-063",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Hantiné Barna Julianna",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.045886,
+      "lng": 19.826267
+   },
+   "address": "Gátér dűlő,23 23 nie wchodzi 2750 Nagykőrös",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-064",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Szabics Antal",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.967922,
+      "lng": 19.820781
+   },
+   "address": "Szorospataki út 5 3070 Bátonyterenye",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-065",
+   "product": {
+      "name": "3x2 kojec dla psa 1 #",
+      "price": "179000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Gurez Metin",
+   "totalAmmount": 179000,
+   "items": [],
+   "location": {
+      "lat": 47.685057,
+      "lng": 18.810704
+   },
+   "address": "Napsugár u. 45 2519 Piliscsév",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-066",
+   "product": {
+      "name": "3x2 kojec dla psa 1 #",
+      "price": "179000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Török Imre",
+   "totalAmmount": 179000,
+   "items": [],
+   "location": {
+      "lat": 47.088201,
+      "lng": 16.629178
+   },
+   "address": "Petőfi Sándor u. 18 9783 Egyházasrádóc",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-067",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kégl István",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.736896,
+      "lng": 18.144271
+   },
+   "address": "Komárom, Szőnyi út 82, 2921",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-068",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Harti Vince",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.480857,
+      "lng": 17.951064
+   },
+   "address": "Bem u. 5 2884 Bakonyszombathely",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-069",
+   "product": {
+      "name": "3,5 x 5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "270000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Balogh László",
+   "totalAmmount": 270000,
+   "items": [],
+   "location": {
+      "lat": 47.499445,
+      "lng": 21.675768
+   },
+   "address": "Naspolya u. 5 4002 Debrecen",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-070",
+   "product": {
+      "name": "3,5 x 5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "270000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Horváth Szabó Ildikó",
+   "totalAmmount": 270000,
+   "items": [],
+   "location": {
+      "lat": 47.558491,
+      "lng": 17.570028
+   },
+   "address": "Győri út 132 9121 Győrszemere",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-071",
+   "product": {
+      "name": "3x2 kojec dla psa 5 #",
+      "price": "209000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Bem u. 16",
+   "totalAmmount": 209000,
+   "items": [],
+   "location": {
+      "lat": 47.431431,
+      "lng": 18.601958
+   },
+   "address": "8087 Alcsútdoboz",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-072",
+   "product": {
+      "name": "4x6 dwuspad brama uchylna szeroki panel pośrodku + drzwiczki 0,90 na prawym boku z przodu + okno 80x60 na prawym boku z tyłu + okucia przód dachu + 4 x narożne CAŁY GARAŻ CIEMNY ORZECH",
+      "price": "690000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Galasi Gyula",
+   "totalAmmount": 690000,
+   "items": [],
+   "location": {
+      "lat": 46.384977,
+      "lng": 18.153733
+   },
+   "address": "Szondi György u. 21 7200 Dombóvár",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-073",
+   "product": {
+      "name": "3x2 kojec dla psa 2 # RAL 7016",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kovács Mihályné",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.805832,
+      "lng": 17.18828
+   },
+   "address": "Császárrét major 7/C WCHODZI 7 9244 Újrónafő",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-074",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kiss József",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.112642,
+      "lng": 20.733266
+   },
+   "address": "Kinizsi u. 49 5420 Túrkeve",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-075",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Józsa Zoltán",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.291863,
+      "lng": 17.207559
+   },
+   "address": "Bajcsy-Zsilinszky u. 26 9531 Mersevát",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-076",
+   "product": {
+      "name": "3,5x6 spad do tyłu brama uchylna szeroki panel ciemny orzech pośrodku + okucia przód boki i tył dachu czarne drzewo + 4 x okucia narożne ciemny orzech ? GARAŻ CZARNE DRZEWO",
+      "price": "610000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Edmond Miklós",
+   "totalAmmount": 610000,
+   "items": [],
+   "location": {
+      "lat": 46.468039,
+      "lng": 19.989459
+   },
+   "address": "Pusztaszeri u. 39 6760 Kistelek",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-077",
+   "product": {
+      "name": "3x2 kojec dla psa 2 # 189 000 FT x 2 =",
+      "price": "378000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Gőbölös Péter",
+   "totalAmmount": 378000,
+   "items": [],
+   "location": {
+      "lat": 47.618221,
+      "lng": 17.734955
+   },
+   "address": "Alma u. 52 9086 Töltéstava",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-078",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Békés László",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.753948,
+      "lng": 17.173574
+   },
+   "address": "Kossuth u. 9 8394 Alsópáhok",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-079",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kéri Csaba",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.353021,
+      "lng": 19.458669
+   },
+   "address": "Zöldmező u. 9 2200 Monor",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-080",
+   "product": {
+      "name": "7x6 dwuspad 2 x brama uchylna szeroki panel ciemny orzech + 2 x okno 100 x 50 na lewym i prawym boku z tyłu 1 m od tylnych słupków + okucia przód dachu + 4 x narożne + rynny GARAŻ RAL 8017 1",
+      "price": "1,09900",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Nagy Sándor",
+   "totalAmmount": "1,09900",
+   "items": [],
+   "location": {
+      "lat": 46.690796,
+      "lng": 21.079918
+   },
+   "address": "Berényi út 86-1 5600 Békéscsaba",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-081",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kantár József",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 46.337912,
+      "lng": 19.050364
+   },
+   "address": "Malom u. 14 6345 Nemesnádudvar",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-082",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Mészáros Gáborné",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.211205,
+      "lng": 19.38424
+   },
+   "address": "Zöldfa u. 38 6449 Mélykút",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-083",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Damatorfy Attila",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 46.325113,
+      "lng": 17.006134
+   },
+   "address": "Kossuth Lajos u. Bardakert szolohegy 1247 nie wchodzi 8857 Nemespátró",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-084",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Halek Józsefné",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.552106,
+      "lng": 18.106728
+   },
+   "address": "Hunyadi u. 74 7213 Szakcs",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-085",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Vetro Zsolt",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.447954,
+      "lng": 19.356677
+   },
+   "address": "Linné Károly u. 17 2234 Maglód",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-086",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa 199 000 FT x 2 =",
+      "price": "398000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Szabó Márton",
+   "totalAmmount": 398000,
+   "items": [],
+   "location": {
+      "lat": 47.681142,
+      "lng": 21.514917
+   },
+   "address": "Vitéz u. 30 4220 Hajdúböszörmény",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-087",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Szabadas Attila",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 48.181186,
+      "lng": 21.063566
+   },
+   "address": "Esze Tamás út 35 3718 Megyaszó",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-088",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kaldenecker Mihály",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.226616,
+      "lng": 19.451628
+   },
+   "address": "Nyári Pál u. 32/A WCHODZI 32 2724 Újlengyel",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-089",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Asbóth Istvánné",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.266047,
+      "lng": 17.066648
+   },
+   "address": "Széchenyi István u. 6 9561 Nagysimonyi",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-090",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Pető Gábor Márk",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.082913,
+      "lng": 16.607708
+   },
+   "address": "Gábor Áron u. 3 9783 Egyházasrádóc",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-091",
+   "product": {
+      "name": "3,5x5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "270000 ",
+      "complexity": 3
+   },
+   "comment": "FAKTURA Nagy Mihályné E.V. 5137 Jászkisér Mező utca. 29 NIP 65107830-2-36 DZIAŁALNOŚĆ 1 OSOBOWA",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Nagy Mihályné",
+   "totalAmmount": 270000,
+   "items": [],
+   "location": {
+      "lat": 47.463847,
+      "lng": 20.224939
+   },
+   "address": "Mező u. 29 5137 Jászkisér",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-092",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa 199 000 FT x 4 =",
+      "price": "796000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Berkes Attila",
+   "totalAmmount": 796000,
+   "items": [],
+   "location": {
+      "lat": 46.344712,
+      "lng": 17.350555
+   },
+   "address": "Széchenyi u. 38 7562 Segesd",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-093",
+   "product": {
+      "name": "4x6 dwuspad brama uchylna szeroki panel pośrodku + drzwiczki 0,90 na lewym boku z przodu 1,5 m od przedniego słupka + okno 80x50 na lewym boku z tyłu 0,5 m od tylnego słupka + okucia przód dachu + 4 x narożne + FILC CAŁY GARAŻ CIEMNY ORZECH",
+      "price": "725000 ",
+      "complexity": 2
+   },
+   "comment": "FAKTURA IMIENNA Aebercki Judith 6320 Solt Vendéglő utca . 37 KOTWIENIE WPISAĆ DO FAKTURY",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Aebercki ? Judith",
+   "totalAmmount": 725000,
+   "items": [],
+   "location": {
+      "lat": 46.79893,
+      "lng": 19.006059
+   },
+   "address": "Vendéglő u. 37 6320 Solt",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-094",
+   "product": {
+      "name": "3x5 dwuspad 2 skrzydłowa brama RAL 1002 + 2 x okno 100x50 na prawym boku równo rozdzielić GARAŻ RAL 9010",
+      "price": "421000 ",
+      "complexity": 3
+   },
+   "comment": "FAKTURA MARINA YACHT Sport Kft 1032 Budapest, San Marco utca 56. fszt. 1 NIP 10505946-2-41",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": 421000,
+   "items": [],
+   "location": {
+      "lat": 46.838593,
+      "lng": 17.850034
+   },
+   "address": "Kültelek utca 1 8624 Balatonszárszó",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-095",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "597000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Lénárt Dezső",
+   "totalAmmount": 597000,
+   "items": [],
+   "location": {
+      "lat": 46.872681,
+      "lng": 20.479394
+   },
+   "address": "Bajcsy-Zsilinszky u. 1/b 5561 Békésszentandrás",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-096",
+   "product": {
+      "name": "3x2 kojec 5 # 209 000 FT x 2 =",
+      "price": "418000 ",
+      "complexity": 2
+   },
+   "comment": "FAKTURA Németh Kft 9700 Szombathely, Farkas Károly utca 81 NIP HU 14126808",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": 418000,
+   "items": [],
+   "location": {
+      "lat": 47.25802,
+      "lng": 16.611927
+   },
+   "address": "Farkas Károly u. 81 9700 Szombathely",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-097",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Molnár Béla",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.089412,
+      "lng": 19.001617
+   },
+   "address": "Bucsi köz 2 2344 Dömsöd",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-098",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "255000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Szalai Zsolt",
+   "totalAmmount": 255000,
+   "items": [],
+   "location": {
+      "lat": 46.542011,
+      "lng": 18.467524
+   },
+   "address": "Kossuth u. 107 7071 Szakadát",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-099",
+   "product": {
+      "name": "4,5x3 spad do tyłu tylko drzwiczki 0,90 BTX 7016 szeroki panel pośrodku + 2 x okno 80x60 po prawo i po lewo parapet 120 + okucia BTX 7016 przód dachu + 4 x narożne + rynny, UWAGA !!!!! SCHOWEK PANEL POZIOMY CIEMNY ORZECH",
+      "price": "590000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Bocskai Dénes",
+   "totalAmmount": 590000,
+   "items": [],
+   "location": {
+      "lat": 48.071822,
+      "lng": 19.298403
+   },
+   "address": "Pozsonyi u. 18 2660 Balassagyarma",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-100",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Snóbli Gyula",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.037457,
+      "lng": 17.663547
+   },
+   "address": "Hunyadi u. 11 7985 Nagydobsza",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-101",
+   "product": {
+      "name": "3x4,5 spad do tyłu + drzwiczki 0,90 na prawym boku z przodu GARAŻ RAL 8017",
+      "price": "328000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Bakarne Gömör Bernadett",
+   "totalAmmount": 328000,
+   "items": [],
+   "location": {
+      "lat": 45.960526,
+      "lng": 17.447479
+   },
+   "address": "Rákóczi Ferenc u. 17 7570 Barcs",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-102",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Madai István",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.406979,
+      "lng": 20.902629
+   },
+   "address": "Dózsa György u. 7 5800 Mezőkovácsháza",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-103",
+   "product": {
+      "name": "3x2 Kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "FAKTURA Elasto Art Kft. 6065 Lakitelek, Kisalpár 93/a NIP 10490990-2-03",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 46.86864,
+      "lng": 19.985772
+   },
+   "address": "Zsák Károly u. 8 8 NIE WCHODZI 6065 Lakitelek",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-104",
+   "product": {
+      "name": "3x6 dwuspad 2 skrzydłowa brama garaż w ocynku",
+      "price": "330000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Nagy Csaba",
+   "totalAmmount": 330000,
+   "items": [],
+   "location": {
+      "lat": 46.921518,
+      "lng": 19.600335
+   },
+   "address": "Úrihegy ? 6000 Kecskemét",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-105",
+   "product": {
+      "name": "4x3 spad do tyłu tylko drzwiczki 1,20 BTX 7016 szeroki panel po prawo po lewo okno 100x50 + okucia przód, boki i tył dachu + 4 x narożne CAŁY SCHOWEK PANEL POZIOMY CIEMNY ORZECH",
+      "price": "566000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Mester Klára",
+   "totalAmmount": 566000,
+   "items": [],
+   "location": {
+      "lat": 47.248911,
+      "lng": 16.615249
+   },
+   "address": "Damjanich János u. 18 9700 Szombathely",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-106",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Utasi Miklós",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 45.981305,
+      "lng": 17.517296
+   },
+   "address": "Barcs 76/6 76/6 NIE WCHODZI 7570 Középrigóc",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-107",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Thiesz Jenő",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.838141,
+      "lng": 18.955642
+   },
+   "address": "Lenin tér Leito utca 14 nie wchodzi 6323 Dunaegyháza",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-108",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Marsi Tünde",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.502731,
+      "lng": 21.097817
+   },
+   "address": "Petőfi u. 15 5752 Medgyesegyháza Bánkút",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-109",
+   "product": {
+      "name": "3x5 spad do tyłu brama uchylna szeroki panel ciemny orzech + 2 x okucia narożne przód GARAŻ RAL 8017 364",
+      "price": "500000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kovács István",
+   "totalAmmount": 500000,
+   "items": [],
+   "location": {
+      "lat": 47.49132,
+      "lng": 19.256975
+   },
+   "address": "Gózon Gyula u. XIII/23 kerület NIE WCHODZI 1172 Budapest",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-110",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Czepán István",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.314196,
+      "lng": 20.914843
+   },
+   "address": "Csokonai u. 27 5300 Karcag",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-111",
+   "product": {
+      "name": "4x6 dwuspad 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "400000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Ottmayer Antal",
+   "totalAmmount": 400000,
+   "items": [],
+   "location": {
+      "lat": 47.633857,
+      "lng": 19.315062
+   },
+   "address": "Székely Bertalan út JAKA UL ? 2111 Szada",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-112",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Erdeiné Barta Zsuzsanna",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.341252,
+      "lng": 19.80032
+   },
+   "address": "Hóvirág út 32 2711 Tápiószentmárton",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-113",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 1
+   },
+   "comment": "FAKTURA Kárpáti Árpád E.V. 7900 Szigetvár, Hunyadi János u. 27 NIP 68378071-2-22",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kárpáti Árpád",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 46.045016,
+      "lng": 17.773778
+   },
+   "address": "Gábor Áron u. 15 7900 Szigetvár",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-114",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Czimre János",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 47.39947,
+      "lng": 21.629852
+   },
+   "address": "Bajcsy-Zsilinszky u. 10 4272 Sáránd",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-115",
+   "product": {
+      "name": "3,5x6 spad do0 tyłu 2 skrzydłowa brama pośrodku + FILC garaż w ocynku",
+      "price": "357000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Gyepesi Józsefné",
+   "totalAmmount": 357000,
+   "items": [],
+   "location": {
+      "lat": 46.949954,
+      "lng": 18.228591
+   },
+   "address": "Fő u. 33/a 8131 Enying",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-116",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Gabor Martin",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.157493,
+      "lng": 16.919831
+   },
+   "address": "Petőfi u. ul ?? 9683 Bejcgyertyános",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-117",
+   "product": {
+      "name": "3x2 kojec dla psa 3 #",
+      "price": "194000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Sebők Zsanett",
+   "totalAmmount": 194000,
+   "items": [],
+   "location": {
+      "lat": 48.12654,
+      "lng": 19.592055
+   },
+   "address": "Rákóczi út 17 3165 Endrefalva",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-118",
+   "product": {
+      "name": "4x6 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "330000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Varga Balázs",
+   "totalAmmount": 330000,
+   "items": [],
+   "location": {
+      "lat": 46.81407,
+      "lng": 21.275069
+   },
+   "address": "Tarhos ??? Tarhos külterület nie wchodzi 6641 Vizesfás",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-119",
+   "product": {
+      "name": "3x5 spad do tyłu brama uchylna szeroki panel ciemny orzech + 2 x okucia narożne przód GARAŻ RAL 8017",
+      "price": "364500 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Ortner Aliz",
+   "totalAmmount": 364500,
+   "items": [],
+   "location": {
+      "lat": 47.02984,
+      "lng": 18.520669
+   },
+   "address": "Petőfi Sándor u. 84 8127 Aba",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-120",
+   "product": {
+      "name": "4x5 dwuspad brama uchylna szeroki panel pośrodku CAŁY GARAŻ CIEMNY ORZECH",
+      "price": "565000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Széll Boglárka",
+   "totalAmmount": 565000,
+   "items": [],
+   "location": {
+      "lat": 46.346313,
+      "lng": 20.029831
+   },
+   "address": "Rózsa u. 85 85 NIE WCHODZI 6763 Szatymaz",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-121",
+   "product": {
+      "name": "3x3 spad do tyłu 2 skrzydłowa brama schowek + okno 80x50 na lewym boku z tyłu garaż w ocynku",
+      "price": "260000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Gruba Nikolett",
+   "totalAmmount": 260000,
+   "items": [],
+   "location": {
+      "lat": 47.407387,
+      "lng": 18.894201
+   },
+   "address": "Bogyó u. 60 2030 Érd",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-122",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Godó Dániel",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.22172,
+      "lng": 16.565332
+   },
+   "address": "Jégpince út NA KOŃCU UL 9700 Szombathely",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-123",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "János Nikolett",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 46.037278,
+      "lng": 17.339211
+   },
+   "address": "Zrínyi u. 27 7584 Babócsa",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-124",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Baras Ferenc",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.310616,
+      "lng": 16.932067
+   },
+   "address": "Felsőpatyi u. 79 9641 Rábapaty",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-125",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama garaż w ocynku",
+      "price": "249000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Juhász István",
+   "totalAmmount": 249000,
+   "items": [],
+   "location": {
+      "lat": 46.810778,
+      "lng": 18.482598
+   },
+   "address": "Mártírok útja 8 7017 Mezőszilas",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-126",
+   "product": {
+      "name": "3x2 kojec dla psa 5 #",
+      "price": "208000 ",
+      "complexity": 2
+   },
+   "comment": "FAKTURA Handsolart Kft 3588 Hejőkürt, Kassai utca 8. NIP 25466452-1-05",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": 208000,
+   "items": [],
+   "location": {
+      "lat": 47.857755,
+      "lng": 20.992953
+   },
+   "address": "Kassai u. 8 3588 Hejőkürt",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-127",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama + okno 80x50 na prawym boku pośrodku GARAŻ RAL 3005",
+      "price": "330000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kiszely Jeno",
+   "totalAmmount": 330000,
+   "items": [],
+   "location": {
+      "lat": 46.317881,
+      "lng": 20.003574
+   },
+   "address": "Hársfa u. 5 6792 Zsombó",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-128",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa + FILC",
+      "price": "224000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Domán István",
+   "totalAmmount": 224000,
+   "items": [],
+   "location": {
+      "lat": 47.944871,
+      "lng": 20.537811
+   },
+   "address": "Bethlen Gábor út 5 5 NIE WCHODZI 3413 Cserépfalu",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-129",
+   "product": {
+      "name": "4x7 dwuspad UWAGA !!!! tylko drzwiczki 0,90 na prawym boku z przodu i za drzwiczkami okno 80x50 GARAŻ RAL 7016",
+      "price": "570000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kover Kiss Imréné",
+   "totalAmmount": 570000,
+   "items": [],
+   "location": {
+      "lat": 46.581812,
+      "lng": 20.485838
+   },
+   "address": "Rózsa u. 4 6622 Nagymágocs",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-130",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama GARAŻ RAL 1002",
+      "price": "298500 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "FIRMA",
+   "totalAmmount": 298500,
+   "items": [],
+   "location": {
+      "lat": 47.016789,
+      "lng": 18.000808
+   },
+   "address": "Szabadságkilátó út KURCSAG UT NIE WCHODZI 8220 Balatonalmádi",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-131",
+   "product": {
+      "name": "4x3 spad do tyłu tylko drzwiczki 1,20 szeroki panel BTX 7016 po prawo a po lewo okno 100x50 + okucia przód i tył i boki dachu + 4 x narożne ciemny orzech SCHOWEK PANEL POZIOMY CIEMNY ORZECH",
+      "price": "565900 ",
+      "complexity": 1
+   },
+   "comment": "FAKTURA IMIENNA Antalné Deák Anita 2318 Szigetszentmárton Völgy utca . 6",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Antalné Deák Anita",
+   "totalAmmount": 565900,
+   "items": [],
+   "location": {
+      "lat": 47.228632,
+      "lng": 18.95113
+   },
+   "address": "Völgy u. 6 2318 Szigetszentmárton",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-132",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Grünfelder Gábor",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.035885,
+      "lng": 19.04207
+   },
+   "address": "Petőfi Sándor u. 28 28 NIE WCHODZI 6522 Gara",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-133",
+   "product": {
+      "name": "3x2 kojec dla psa 2 # 189 000 FT x 2 =",
+      "price": "388000 ",
+      "complexity": 3
+   },
+   "comment": "FAKTURA Egyesület A Hangtalanokért 4484 Ibrány, Zrínyi utca. 47 NIP ??",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Kói utca 90",
+   "totalAmmount": 388000,
+   "items": [],
+   "location": {
+      "lat": 48.141272,
+      "lng": 21.728034
+   },
+   "address": "4484 Ibrány",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-134",
+   "product": {
+      "name": "3,5x5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "270000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Rab Károly",
+   "totalAmmount": 270000,
+   "items": [],
+   "location": {
+      "lat": 47.245451,
+      "lng": 19.610555
+   },
+   "address": "Árpád u. 8 2730 Albertirsa",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-135",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Hegedus Saralta",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.566112,
+      "lng": 19.075133
+   },
+   "address": "Zsilip u. 2 1044 Budapest",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-136",
+   "product": {
+      "name": "4x5 dwuspad brama uchylna szeroki panel pośrodku CAŁY GARAŻ CIEMNY ORZECH",
+      "price": "565000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Szalai Zoltan",
+   "totalAmmount": 565000,
+   "items": [],
+   "location": {
+      "lat": 46.355246,
+      "lng": 19.905026
+   },
+   "address": "Átokháza dűlő 69 69 nie wchodzi 6793 Forráskút",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-137",
+   "product": {
+      "name": "6x5 spad do tyłu 2 skrzydłowa brama po prawo tuż przy bramie drzwiczki 0,90 + okno 100x50 na prawym boku pośrodku GARAŻ BTX 8004",
+      "price": "610000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Farkas Réka",
+   "totalAmmount": 610000,
+   "items": [],
+   "location": {
+      "lat": 47.106384,
+      "lng": 20.750786
+   },
+   "address": "Szénási u. 9 WCHODZI 14 5420 Túrkeve",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-138",
+   "product": {
+      "name": "3,5x5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "270000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Vágner Viktor",
+   "totalAmmount": 270000,
+   "items": [],
+   "location": {
+      "lat": 47.318989,
+      "lng": 18.287893
+   },
+   "address": "Arany János u. 26 8072 Söréd",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-139",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Nagy Tibor",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 47.900337,
+      "lng": 20.948675
+   },
+   "address": "Kossuth u. 14 3593 Hejőbába",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-140",
+   "product": {
+      "name": "4x6 dwuspad 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "400000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Roda Sandor",
+   "totalAmmount": 400000,
+   "items": [],
+   "location": {
+      "lat": 46.081423,
+      "lng": 18.321719
+   },
+   "address": "Rákóczi u. 21 7742 Bogád",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-141",
+   "product": {
+      "name": "3,5x5 spad do tyłu 2 skrzydłowa brama pośrodku garaż w ocynku",
+      "price": "270000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Bályi Sándor",
+   "totalAmmount": 270000,
+   "items": [],
+   "location": {
+      "lat": 47.753586,
+      "lng": 20.511429
+   },
+   "address": "Szabadság út ?? 3378 Mezőszemere",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-142",
+   "product": {
+      "name": "4x5 dwuspad brama uchylna szeroki panel pośrodku CAŁY GARAŻ CIEMNY ORZECH",
+      "price": "565000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Gátfalve Balázs",
+   "totalAmmount": 565000,
+   "items": [],
+   "location": {
+      "lat": 47.394846,
+      "lng": 19.408834
+   },
+   "address": "Szent István u. 26 2209 Péteri",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-143",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Nagy Janos",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 46.394568,
+      "lng": 20.290355
+   },
+   "address": "Öreg-Kishomok Vanyai utca 36 nie wchodzi 6800 Öreg-Kishomok",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-144",
+   "product": {
+      "name": "3x2 kojec dla psa 2 #",
+      "price": "189000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Buzsáki Csaba",
+   "totalAmmount": 189000,
+   "items": [],
+   "location": {
+      "lat": 46.67827,
+      "lng": 19.301642
+   },
+   "address": "Liszt Ferenc u. 41 6224 Tabdi",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-145",
+   "product": {
+      "name": "4x3 spad do tyłu tylko drzwiczki 1,20 szeroki panel BTX 7016 po prawo a po lewo okno 100x50 + okucia przód i tył i boki dachu + 4 x narożne ciemny orzech SCHOWEK PANEL POZIOMY CIEMNY ORZECH",
+      "price": "565000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Varga Tibor",
+   "totalAmmount": 565000,
+   "items": [],
+   "location": {
+      "lat": 47.850155,
+      "lng": 20.139466
+   },
+   "address": "Mester u. 11 3264 Kisnána",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-146",
+   "product": {
+      "name": "3x5 spad do tyłu 2 skrzydłowa brama GARAŻ RAL ???",
+      "price": "298000 ",
+      "complexity": 1
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Sike István",
+   "totalAmmount": 298000,
+   "items": [],
+   "location": {
+      "lat": 48.029151,
+      "lng": 20.254602
+   },
+   "address": "Szabadság u. 85 85 NIE WCHODZI 3337 Egerbocs",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-147",
+   "product": {
+      "name": "3x2 kojec dla psa 4 #",
+      "price": "194000 ",
+      "complexity": 2
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Zimmermann Mihály",
+   "totalAmmount": 194000,
+   "items": [],
+   "location": {
+      "lat": 47.384892,
+      "lng": 18.937103
+   },
+   "address": "Rába u. 3 2030 Érd",
+   "deliveryId": ""
+},
+ {
+   "id": "ORD-148",
+   "product": {
+      "name": "3x5 spad do tyłu 2 klasa",
+      "price": "199000 ",
+      "complexity": 3
+   },
+   "comment": "",
+   "status": "pending",
+   "priority": "medium",
+   "active": true,
+   "createdAt": "2025-11-29T18:30:50.000Z",
+   "updatedAt": "2025-11-29T18:30:50.000Z",
+   "customer": "Dombi Krisztian",
+   "totalAmmount": 199000,
+   "items": [],
+   "location": {
+      "lat": 47.605475,
+      "lng": 17.90957
+   },
+   "address": "Széchenyi u. 102 9074 Rétalap",
+   "deliveryId": ""
+}
+]
