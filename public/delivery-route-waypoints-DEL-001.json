@@ -1,0 +1,32 @@
+[
+  {
+      "id": "DRW-001",
+      "orderId": "ORD-001",
+      "deliveryRouteId": "DEL-001",
+      "sequence": 1
+  },
+  {
+      "id": "DRW-002",
+      "orderId": "ORD-002",
+      "deliveryRouteId": "DEL-001",
+      "sequence": 2
+  },
+  {
+      "id": "DRW-003",
+      "orderId": "ORD-003",
+      "deliveryRouteId": "DEL-001",
+      "sequence": 3
+  },
+  {
+      "id": "DRW-004",
+      "orderId": "ORD-013",
+      "deliveryRouteId": "DEL-001",
+      "sequence": 4
+  },
+  {
+      "id": "DRW-005",
+      "orderId": "ORD-014",
+      "deliveryRouteId": "DEL-001",
+      "sequence": 5
+  }
+]
