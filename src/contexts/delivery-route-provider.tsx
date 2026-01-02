@@ -25,6 +25,7 @@ export default function DeliveryRouteProvider({
     null
   );
   const [unassignedOrders, setUnassignedOrders] = useState<Order[]>([]);
+  const [deliveryOrders, setDeliveryOrders] = useState<Order[]>([]);
 
   // Fetch unassigned orders
   const refreshUnassignedOrders = useCallback(async () => {
@@ -32,9 +33,12 @@ export default function DeliveryRouteProvider({
       const orders = await OrdersApi.getOrders();
       // Apply pending optimistic updates
       const ordersWithPendingUpdates = applyPendingOrderUpdates(orders);
+
+      // Filter out orders that are assigned to any delivery (double-check safety)
       const unassigned = ordersWithPendingUpdates.filter(
         (order) => !order.deliveryId
       );
+
       console.log(
         "[DeliveryRouteProvider] Unassigned orders:",
         unassigned.length,
@@ -45,6 +49,40 @@ export default function DeliveryRouteProvider({
       console.error("Error fetching unassigned orders:", error);
     }
   }, []);
+
+  // Fetch orders for a specific delivery
+  const refreshDeliveryOrders = useCallback(
+    async (deliveryId?: string) => {
+      try {
+        const targetDeliveryId = deliveryId || currentDelivery?.id;
+        if (!targetDeliveryId) {
+          setDeliveryOrders([]);
+          return;
+        }
+
+        const allOrders = await OrdersApi.getOrders();
+        // Apply pending optimistic updates
+        const ordersWithPendingUpdates = applyPendingOrderUpdates(allOrders);
+
+        // Filter to get only orders assigned to this delivery
+        const assignedOrders = ordersWithPendingUpdates.filter(
+          (order) => order.deliveryId === targetDeliveryId
+        );
+
+        console.log(
+          "[DeliveryRouteProvider] Delivery orders for",
+          targetDeliveryId,
+          ":",
+          assignedOrders.length,
+          assignedOrders.map((o) => o.id)
+        );
+        setDeliveryOrders(assignedOrders);
+      } catch (error) {
+        console.error("Error fetching delivery orders:", error);
+      }
+    },
+    [currentDelivery?.id]
+  );
 
   // Fetch all deliveries
   const refreshDeliveries = useCallback(async () => {
@@ -83,6 +121,41 @@ export default function DeliveryRouteProvider({
       setCurrentDelivery(deliveries[0]);
     }
   }, [deliveries, currentDelivery]);
+
+  // Auto-refresh delivery orders when currentDelivery changes
+  useEffect(() => {
+    if (currentDelivery?.id) {
+      void refreshDeliveryOrders(currentDelivery.id);
+    } else {
+      setDeliveryOrders([]);
+    }
+  }, [currentDelivery?.id, refreshDeliveryOrders]);
+
+  // Synchronize delivery and unassigned orders to avoid duplicates
+  useEffect(() => {
+    if (deliveryOrders.length === 0 || unassignedOrders.length === 0) {
+      return;
+    }
+
+    // Create a Set of delivery order IDs
+    const deliveryOrderIds = new Set(deliveryOrders.map((o) => o.id));
+
+    // Filter out any unassigned orders that are also in delivery orders
+    const uniqueUnassignedOrders = unassignedOrders.filter(
+      (order) => !deliveryOrderIds.has(order.id)
+    );
+
+    // Only update if there were duplicates
+    if (uniqueUnassignedOrders.length !== unassignedOrders.length) {
+      console.log(
+        "[DeliveryRouteProvider] Removed duplicate orders from unassigned list:",
+        unassignedOrders
+          .filter((o) => deliveryOrderIds.has(o.id))
+          .map((o) => o.id)
+      );
+      setUnassignedOrders(uniqueUnassignedOrders);
+    }
+  }, [deliveryOrders, unassignedOrders]);
 
   // Create a new delivery
   const createDelivery = useCallback(
@@ -384,6 +457,7 @@ export default function DeliveryRouteProvider({
   const value = {
     deliveries,
     currentDelivery,
+    deliveryOrders,
     unassignedOrders,
     setCurrentDelivery,
     setDeliveries,
@@ -394,6 +468,7 @@ export default function DeliveryRouteProvider({
     removeOrderFromDelivery,
     reorderDeliveryOrders,
     refreshDeliveries,
+    refreshDeliveryOrders,
     refreshUnassignedOrders,
   };
 

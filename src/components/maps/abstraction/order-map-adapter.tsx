@@ -209,7 +209,15 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
 
   // Transform orders to markers
   const markers: MapMarkerData[] = React.useMemo(() => {
-    const allOrders = [...orders, ...unassignedOrders];
+    // Create a Set of delivery order IDs to avoid duplicates
+    const deliveryOrderIds = new Set(orders.map((o) => o.id));
+
+    // Combine arrays, but filter out any unassigned orders that are also in delivery orders
+    const allOrders = [
+      ...orders,
+      ...unassignedOrders.filter((order) => !deliveryOrderIds.has(order.id)),
+    ];
+
     return allOrders.map((order) => {
       const isPool = !order.deliveryId;
       let type: MapMarkerData["type"] = "delivery";
@@ -325,7 +333,15 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
 
   // Calculate bounds
   const bounds: MapBounds = React.useMemo(() => {
-    const allOrders = [...orders, ...unassignedOrders];
+    // Create a Set of delivery order IDs to avoid duplicates
+    const deliveryOrderIds = new Set(orders.map((o) => o.id));
+
+    // Combine arrays, filtering out duplicates
+    const allOrders = [
+      ...orders,
+      ...unassignedOrders.filter((order) => !deliveryOrderIds.has(order.id)),
+    ];
+
     return {
       points: allOrders.map((order) => order.location),
     };
