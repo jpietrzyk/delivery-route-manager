@@ -7,6 +7,7 @@ import {
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useDelivery } from "@/hooks/use-delivery";
+import { useRouteManager } from "@/hooks/use-route-manager";
 import { useEffect, useState } from "react";
 import { Package, Clock, Route } from "lucide-react";
 import {
@@ -45,6 +46,9 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   const { currentOrderId, setCurrentOrderId, setPreviousOrderId } =
     useOrderHighlight();
   const { currentDelivery, removeOrderFromDelivery } = useDelivery();
+  const routeManagerContext = useRouteManager();
+  const routeManager = routeManagerContext?.routeManager ?? null;
+
   const [deliveryOrders, setDeliveryOrders] =
     useState<Order[]>(deliveryOrdersProp);
   const [isDeliveryExpanded, setIsDeliveryExpanded] = useState(true);
@@ -344,6 +348,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                     setHighlightedOrderId={setHighlightedOrderId}
                     onRemoveOrder={handleRemoveOrder}
                     onReorder={handleReorder}
+                    routeManager={routeManager}
                     title=""
                   />
                 </div>

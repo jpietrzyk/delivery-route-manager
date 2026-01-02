@@ -2,9 +2,10 @@ import MapView from "@/components/maps/abstraction/map-view";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-sidebar";
 import OrdersCountDisplay from "@/components/ui/orders-count-display";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDelivery } from "@/hooks/use-delivery";
+import type { Order } from "@/types/order";
 
 export default function DeliveryMapPage() {
   const { deliveryId } = useParams<{ deliveryId: string }>();
@@ -19,7 +20,11 @@ export default function DeliveryMapPage() {
     refreshDeliveryOrders,
   } = useDelivery();
 
-  const totalOrdersCount = deliveryOrders.length + unassignedOrders.length;
+  // Local state to track reordered orders for the map
+  const [displayedOrders, setDisplayedOrders] =
+    useState<Order[]>(deliveryOrders);
+
+  const totalOrdersCount = displayedOrders.length + unassignedOrders.length;
 
   useEffect(() => {
     void refreshDeliveryOrders(deliveryId);
@@ -41,8 +46,17 @@ export default function DeliveryMapPage() {
     void refreshUnassignedOrders();
   };
 
+  // Update displayed orders when context orders change (initial load or API refresh)
+  useEffect(() => {
+    setDisplayedOrders(deliveryOrders);
+  }, [deliveryOrders]);
+
   // Update delivery orders when an order is removed or added
-  const handleDeliveryOrdersUpdated = () => {
+  const handleDeliveryOrdersUpdated = (updatedOrders?: Order[]) => {
+    if (updatedOrders) {
+      // Update the displayed orders with the reordered sequence
+      setDisplayedOrders(updatedOrders);
+    }
     void refreshUnassignedOrders();
   };
 
@@ -52,7 +66,7 @@ export default function DeliveryMapPage() {
         {/* Map layer at the bottom */}
         <div className="absolute inset-0 z-0">
           <MapView
-            orders={deliveryOrders}
+            orders={displayedOrders}
             unassignedOrders={unassignedOrders}
             onOrderAddedToDelivery={async () => {
               await refreshDeliveryOrders(deliveryId);
@@ -77,7 +91,7 @@ export default function DeliveryMapPage() {
           <DeliverySidebar
             onOrderRemoved={handleOrderRemoved}
             onDeliveryOrdersUpdated={handleDeliveryOrdersUpdated}
-            deliveryOrders={deliveryOrders}
+            deliveryOrders={displayedOrders}
             unassignedOrders={unassignedOrders}
             onAddOrderToDelivery={async (orderId: string) => {
               try {
