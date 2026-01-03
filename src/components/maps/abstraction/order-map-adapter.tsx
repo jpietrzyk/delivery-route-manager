@@ -209,17 +209,17 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
 
   // Transform orders to markers
   const markers: MapMarkerData[] = React.useMemo(() => {
-    // Create a Set of delivery order IDs to avoid duplicates
+    // Deduplicate on initialization: filter unassigned orders that are also in delivery orders
     const deliveryOrderIds = new Set(orders.map((o) => o.id));
-
-    // Combine arrays, but filter out any unassigned orders that are also in delivery orders
-    const allOrders = [
-      ...orders,
-      ...unassignedOrders.filter((order) => !deliveryOrderIds.has(order.id)),
-    ];
+    const uniqueUnassignedOrders = unassignedOrders.filter(
+      (order) => !deliveryOrderIds.has(order.id)
+    );
+    const allOrders = [...orders, ...uniqueUnassignedOrders];
 
     return allOrders.map((order) => {
-      const isPool = !order.deliveryId;
+      // Check if order is in delivery by checking if it's in the orders array (not by deliveryId field)
+      // This is because orders from waypoint system don't have deliveryId set on the Order object
+      const isPool = !deliveryOrderIds.has(order.id);
       let type: MapMarkerData["type"] = "delivery";
 
       if (isPool) {
@@ -333,14 +333,12 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
 
   // Calculate bounds
   const bounds: MapBounds = React.useMemo(() => {
-    // Create a Set of delivery order IDs to avoid duplicates
+    // Deduplicate: filter unassigned orders that are also in delivery orders
     const deliveryOrderIds = new Set(orders.map((o) => o.id));
-
-    // Combine arrays, filtering out duplicates
-    const allOrders = [
-      ...orders,
-      ...unassignedOrders.filter((order) => !deliveryOrderIds.has(order.id)),
-    ];
+    const uniqueUnassignedOrders = unassignedOrders.filter(
+      (order) => !deliveryOrderIds.has(order.id)
+    );
+    const allOrders = [...orders, ...uniqueUnassignedOrders];
 
     return {
       points: allOrders.map((order) => order.location),
