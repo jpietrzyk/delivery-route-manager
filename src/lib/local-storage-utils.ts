@@ -257,65 +257,16 @@ export function applyPendingOrderUpdates(orders: Order[]): Order[] {
 /**
  * Apply pending optimistic updates to delivery orders
  */
+/**
+ * @deprecated This function is no longer used in the waypoint-based architecture
+ * Deliveries are now metadata-only, and orders are managed via DeliveryRouteWaypointsApi
+ *
+ * Kept for reference only - can be removed in future cleanup
+ */
 export function applyPendingDeliveryUpdates(
-  delivery: DeliveryRoute,
-  orders: Order[]
+  delivery: DeliveryRoute
 ): DeliveryRoute {
-  try {
-    const pendingUpdates = getPendingDeliveryUpdates();
-
-    // Get delivery-specific updates
-    const deliveryUpdates = pendingUpdates.filter(function(update) {
-      return update.deliveryId === delivery.id;
-    });
-
-    if (deliveryUpdates.length === 0) {
-      return delivery;
-    }
-
-    // Apply updates to delivery orders
-    let updatedOrders = [...delivery.orders];
-
-    for (let i = 0; i < deliveryUpdates.length; i++) {
-      const update = deliveryUpdates[i];
-      if (update.action === 'add') {
-        // Check if order exists in the orders array
-        const orderExists = orders.some(function(order) {
-          return order.id === update.orderId;
-        });
-        const orderAlreadyInDelivery = updatedOrders.some(function(deliveryOrder) {
-          return deliveryOrder.orderId === update.orderId;
-        });
-
-        if (orderExists && !orderAlreadyInDelivery) {
-          updatedOrders.push({
-            deliveryId: delivery.id,
-            orderId: update.orderId,
-            sequence: updatedOrders.length,
-            status: 'pending' as const,
-          });
-        }
-      } else if (update.action === 'remove') {
-        updatedOrders = updatedOrders.filter(function(deliveryOrder) {
-          return deliveryOrder.orderId !== update.orderId;
-        });
-      }
-    }
-
-    // Resequence orders
-    updatedOrders = updatedOrders.map(function(order, index) {
-      return {
-        ...order,
-        sequence: index,
-      };
-    });
-
-    return {
-      ...delivery,
-      orders: updatedOrders,
-    };
-  } catch (error) {
-    console.error('Error applying pending delivery updates:', error);
-    return delivery;
-  }
+  // No longer applies delivery-order updates since deliveries no longer embed orders
+  // Orders are managed separately via the waypoint API
+  return delivery;
 }

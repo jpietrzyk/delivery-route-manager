@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MapyTiledMap } from "@/components/maps/mapy-tiled-map";
 import { OrdersApi } from "@/services/ordersApi";
 import { DeliveryRoutesApi } from "@/services/deliveryRoutesApi";
+import { DeliveryRouteWaypointsApi } from "@/services/deliveryRouteWaypointsApi";
 import { MapyRoutingApi } from "@/services/mapyRoutingApi";
 import type { Order } from "@/types/order";
-import type { DeliveryRoute } from "@/types/delivery-route";
 
 interface MapMarker {
   id: string;
@@ -39,12 +39,13 @@ export default function MapyCzMapPage() {
         console.log("Orders fetched:", orders.length);
         console.log("Delivery routes fetched:", deliveryRoutes.length);
 
-        // Get order IDs from first delivery route
-        const firstRouteOrderIds = new Set(
-          deliveryRoutes.length > 0 && deliveryRoutes[0].orders
-            ? deliveryRoutes[0].orders.map((wp) => wp.orderId)
-            : []
-        );
+        // Get waypoints for first delivery route
+        const firstRoute = deliveryRoutes.length > 0 ? deliveryRoutes[0] : null;
+        const waypoints = firstRoute
+          ? DeliveryRouteWaypointsApi.getWaypointsByDelivery(firstRoute.id)
+          : [];
+
+        const firstRouteOrderIds = new Set(waypoints.map((wp) => wp.orderId));
         console.log("First route order IDs:", Array.from(firstRouteOrderIds));
 
         // Create order markers - only for orders in the first delivery route
@@ -68,111 +69,106 @@ export default function MapyCzMapPage() {
         setMarkers(orderMarkers);
 
         // Create polyline between first two waypoints of first delivery route using real routing
-        if (deliveryRoutes.length > 0 && mapyApiKey) {
-          const firstRoute = deliveryRoutes[0];
+        if (firstRoute && mapyApiKey && waypoints.length >= 2) {
           console.log(
             "First route:",
             firstRoute.id,
             "waypoints:",
-            firstRoute.orders?.length
+            waypoints.length
           );
 
-          if (firstRoute.orders && firstRoute.orders.length >= 2) {
-            const waypoint1OrderId = firstRoute.orders[0].orderId;
-            const waypoint2OrderId = firstRoute.orders[1].orderId;
+          const waypoint1OrderId = waypoints[0].orderId;
+          const waypoint2OrderId = waypoints[1].orderId;
 
-            console.log(
-              "Looking for orders:",
-              waypoint1OrderId,
-              waypoint2OrderId
-            );
+          console.log(
+            "Looking for orders:",
+            waypoint1OrderId,
+            waypoint2OrderId
+          );
 
-            const order1 = orders.find((o) => o.id === waypoint1OrderId);
-            const order2 = orders.find((o) => o.id === waypoint2OrderId);
+          const order1 = orders.find((o) => o.id === waypoint1OrderId);
+          const order2 = orders.find((o) => o.id === waypoint2OrderId);
 
-            console.log("Found order1:", order1?.id, order1?.location);
-            console.log("Found order2:", order2?.id, order2?.location);
+          console.log("Found order1:", order1?.id, order1?.location);
+          console.log("Found order2:", order2?.id, order2?.location);
 
-            if (
-              order1?.location &&
-              order2?.location &&
-              order1.location.lat &&
-              order1.location.lng &&
-              order2.location.lat &&
-              order2.location.lng
-            ) {
-              try {
-                console.log("Calculating route...");
-                const routingResponse = await MapyRoutingApi.calculateRoute(
-                  {
-                    start: [order1.location.lng, order1.location.lat], // [lng, lat]
-                    end: [order2.location.lng, order2.location.lat], // [lng, lat]
-                    routeType: "car_fast",
-                    format: "geojson",
-                  },
-                  mapyApiKey
-                );
+          if (
+            order1?.location &&
+            order2?.location &&
+            order1.location.lat &&
+            order1.location.lng &&
+            order2.location.lat &&
+            order2.location.lng
+          ) {
+            try {
+              console.log("Calculating route...");
+              const routingResponse = await MapyRoutingApi.calculateRoute(
+                {
+                  start: [order1.location.lng, order1.location.lat], // [lng, lat]
+                  end: [order2.location.lng, order2.location.lat], // [lng, lat]
+                  routeType: "car_fast",
+                  format: "geojson",
+                },
+                mapyApiKey
+              );
 
-                console.log("Route calculated:", {
-                  length: routingResponse.length,
-                  duration: routingResponse.duration,
-                  coordinates:
-                    routingResponse.geometry.geometry.coordinates.length,
-                });
-                console.log("Full routing response:", routingResponse);
-                console.log(
-                  "Geometry coordinates sample (first 5):",
-                  routingResponse.geometry.geometry.coordinates.slice(0, 5)
-                );
+              console.log("Route calculated:", {
+                length: routingResponse.length,
+                duration: routingResponse.duration,
+                coordinates:
+                  routingResponse.geometry.geometry.coordinates.length,
+              });
+              console.log("Full routing response:", routingResponse);
+              console.log(
+                "Geometry coordinates sample (first 5):",
+                routingResponse.geometry.geometry.coordinates.slice(0, 5)
+              );
 
-                // Convert GeoJSON coordinates to polyline positions
-                const positions = MapyRoutingApi.convertGeoJSONToPositions(
-                  routingResponse.geometry.geometry.coordinates
-                );
+              // Convert GeoJSON coordinates to polyline positions
+              const positions = MapyRoutingApi.convertGeoJSONToPositions(
+                routingResponse.geometry.geometry.coordinates
+              );
 
-                console.log(
-                  "Converted positions sample (first 5):",
-                  positions.slice(0, 5)
-                );
+              console.log(
+                "Converted positions sample (first 5):",
+                positions.slice(0, 5)
+              );
 
-                const routePolyline: MapPolyline = {
-                  id: `${firstRoute.id}-segment-0-1`,
-                  positions,
-                  color: "#ff6b6b",
-                  weight: 4,
-                  opacity: 0.8,
-                };
-                console.log(
-                  "Polyline created with",
-                  positions.length,
-                  "points:",
-                  routePolyline
-                );
-                setPolylines([routePolyline]);
-              } catch (error) {
-                console.error("Failed to calculate route:", error);
-                // Fallback to straight line
-                const routePolyline: MapPolyline = {
-                  id: `${firstRoute.id}-segment-0-1`,
-                  positions: [
-                    { lat: order1.location.lat, lng: order1.location.lng },
-                    { lat: order2.location.lat, lng: order2.location.lng },
-                  ],
-                  color: "#ff6b6b",
-                  weight: 4,
-                  opacity: 0.8,
-                };
-                console.log("Polyline created (fallback straight line)");
-                setPolylines([routePolyline]);
-              }
-            } else {
-              console.log("Missing location data for one or both orders");
+              const routePolyline: MapPolyline = {
+                id: `${firstRoute.id}-segment-0-1`,
+                positions,
+                color: "#ff6b6b",
+                weight: 4,
+                opacity: 0.8,
+              };
+              console.log(
+                "Polyline created with",
+                positions.length,
+                "points:",
+                routePolyline
+              );
+              setPolylines([routePolyline]);
+            } catch (error) {
+              console.error("Failed to calculate route:", error);
+              // Fallback to straight line
+              const routePolyline: MapPolyline = {
+                id: `${firstRoute.id}-segment-0-1`,
+                positions: [
+                  { lat: order1.location.lat, lng: order1.location.lng },
+                  { lat: order2.location.lat, lng: order2.location.lng },
+                ],
+                color: "#ff6b6b",
+                weight: 4,
+                opacity: 0.8,
+              };
+              console.log("Polyline created (fallback straight line)");
+              setPolylines([routePolyline]);
             }
           } else {
-            console.log("Not enough waypoints in first route");
+            console.log("Missing location data for one or both orders");
           }
         } else {
-          console.log("No delivery routes found or API key missing");
+          console.log("Not enough waypoints in first route");
         }
       } catch (error) {
         console.error("Failed to load data:", error);

@@ -18,7 +18,6 @@ import {
   markDeliveryUpdateFailed,
   markOrderUpdateFailed,
   applyPendingOrderUpdates,
-  applyPendingDeliveryUpdates,
 } from "@/lib/local-storage-utils";
 import { RouteManager } from "@/services/RouteManager";
 
@@ -75,14 +74,8 @@ export default function DeliveryRouteManagerProvider({
   const refreshDeliveries = useCallback(async () => {
     try {
       const fetchedDeliveries = await DeliveryRoutesApi.getDeliveries();
-      const allOrders = await OrdersApi.getOrders();
-
-      // Apply pending optimistic updates to each delivery
-      const deliveriesWithPendingUpdates = fetchedDeliveries.map((delivery) =>
-        applyPendingDeliveryUpdates(delivery, allOrders)
-      );
-
-      setDeliveries(deliveriesWithPendingUpdates);
+      // Deliveries are now metadata-only, no need to apply order-related updates
+      setDeliveries(fetchedDeliveries);
     } catch (error) {
       console.error("Error fetching deliveries:", error);
     }
@@ -208,131 +201,43 @@ export default function DeliveryRouteManagerProvider({
   );
 
   // Centralized optimistic helpers to keep deliveryOrders and unassignedOrders in sync
+  // NEW: Simplified since deliveries no longer have embedded orders
   const applyOptimisticAdd = useCallback(
     (deliveryId: string, orderId: string, atIndex?: number) => {
       const orderFromPool = unassignedOrders.find(
         (order) => order.id === orderId
       );
 
-      setDeliveries((prev) =>
-        prev.map((d) => {
-          if (d.id !== deliveryId) return d;
-          const updatedOrders = [...d.orders];
-          const newIndex = atIndex ?? updatedOrders.length;
-          const orderAlreadyInDelivery = updatedOrders.some(
-            (order) => order.orderId === orderId
-          );
-
-          if (!orderAlreadyInDelivery) {
-            updatedOrders.splice(newIndex, 0, {
-              deliveryId,
-              orderId,
-              sequence: newIndex,
-              status: "pending",
-            });
-            updatedOrders.forEach((order, index) => {
-              order.sequence = index;
-            });
-          }
-
-          return {
-            ...d,
-            orders: updatedOrders,
-          };
-        })
-      );
-
-      if (currentDelivery?.id === deliveryId) {
-        setCurrentDelivery((prev) => {
-          if (!prev) return null;
-          const updatedOrders = [...prev.orders];
-          const newIndex = atIndex ?? updatedOrders.length;
-          const orderAlreadyInDelivery = updatedOrders.some(
-            (order) => order.orderId === orderId
-          );
-
-          if (!orderAlreadyInDelivery) {
-            updatedOrders.splice(newIndex, 0, {
-              deliveryId,
-              orderId,
-              sequence: newIndex,
-              status: "pending",
-            });
-            updatedOrders.forEach((order, index) => {
-              order.sequence = index;
-            });
-          }
-
-          return {
-            ...prev,
-            orders: updatedOrders,
-          };
-        });
-      }
-
+      // Remove from unassigned orders
       setUnassignedOrders((prev) =>
         prev.filter((order) => order.id !== orderId)
       );
 
-      setDeliveryOrders((prev) => {
-        if (prev.some((order) => order.id === orderId)) return prev;
-        if (!orderFromPool) return prev;
-        const insertAt = atIndex ?? prev.length;
-        const next = [...prev];
-        next.splice(insertAt, 0, { ...orderFromPool, deliveryId });
-        return next;
-      });
+      // Add to delivery orders (if it's the current delivery)
+      if (currentDelivery?.id === deliveryId && orderFromPool) {
+        setDeliveryOrders((prev) => {
+          if (prev.some((order) => order.id === orderId)) return prev;
+          const insertAt = atIndex ?? prev.length;
+          const next = [...prev];
+          next.splice(insertAt, 0, orderFromPool);
+          return next;
+        });
+      }
     },
-    [currentDelivery, unassignedOrders]
+    [currentDelivery?.id, unassignedOrders]
   );
 
   const applyOptimisticRemove = useCallback(
-    (deliveryId: string, orderId: string, restoredOrder?: Order) => {
-      setDeliveries((prev) =>
-        prev.map((d) => {
-          if (d.id !== deliveryId) return d;
-          const updatedOrders = d.orders
-            .filter((order) => order.orderId !== orderId)
-            .map((order, index) => ({
-              ...order,
-              sequence: index,
-            }));
-
-          return {
-            ...d,
-            orders: updatedOrders,
-          };
-        })
-      );
-
-      if (currentDelivery?.id === deliveryId) {
-        setCurrentDelivery((prev) => {
-          if (!prev) return null;
-
-          const updatedOrders = prev.orders
-            .filter((order) => order.orderId !== orderId)
-            .map((order, index) => ({
-              ...order,
-              sequence: index,
-            }));
-
-          return {
-            ...prev,
-            orders: updatedOrders,
-          };
-        });
-      }
-
-      if (restoredOrder) {
-        setUnassignedOrders((prev) => [
-          ...prev,
-          { ...restoredOrder, deliveryId: undefined },
-        ]);
-      }
-
+    (_deliveryId: string, orderId: string, restoredOrder?: Order) => {
+      // Remove from delivery orders (if it's the current delivery)
       setDeliveryOrders((prev) => prev.filter((order) => order.id !== orderId));
+
+      // Add back to unassigned orders
+      if (restoredOrder) {
+        setUnassignedOrders((prev) => [...prev, restoredOrder]);
+      }
     },
-    [currentDelivery]
+    []
   );
 
   // Add an order to a delivery (pulls from unassigned)

@@ -1,48 +1,11 @@
 {
   "id": "DEL-001",
-  "description": "Delivery 001",
+  "name": "Delivery Route 001",
+  "description": "First delivery route",
+  "status": "scheduled",
   "createdAt": "2024-07-01T07:30:00Z",
   "updatedAt": "2024-07-01T07:45:00Z",
-  "routeItems": [
-    {
-      "id": "RI-001",
-      "orderId": "ORD-001"
-    },
-    {
-      "id": "RI-002",
-      "orderId": "ORD-002"
-    },
-    {
-      "id": "RI-003",
-      "orderId": "ORD-003"
-    },
-    {
-      "id": "RI-004",
-      "orderId": "ORD-013"
-    },
-    {
-      "id": "RI-005",
-      "orderId": "ORD-014"
-    },
-    {
-      "id": "RI-006",
-      "orderId": "ORD-015"
-    },
-    {
-      "id": "RI-007",
-      "orderId": "ORD-016"
-    },
-    {
-      "id": "RI-008",
-      "orderId": "ORD-017"
-    },
-    {
-      "id": "RI-009",
-      "orderId": "ORD-018"
-    },
-    {
-      "id": "RI-010",
-      "orderId": "ORD-019"
-    }
-  ]
+  "notes": "Delivery route for Budapest area",
+  "estimatedDistance": 0,
+  "estimatedDuration": 0
 }

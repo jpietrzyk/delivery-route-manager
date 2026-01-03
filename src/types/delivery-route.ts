@@ -1,9 +1,9 @@
 import type { Order } from './order';
 
 /**
- * DeliveryRoute represents a delivery plan with metadata and its waypoint list.
+ * DeliveryRoute represents a delivery plan with metadata ONLY.
  * Orders are linked via DeliveryRouteWaypoint junction table (many-to-many relationship).
- * The `orders` array is kept on the route instance for convenience in the UI layer.
+ * Waypoints are loaded separately via DeliveryRouteWaypointsApi, NOT embedded here.
  */
 export interface DeliveryRoute {
   id: string;
@@ -24,7 +24,8 @@ export interface DeliveryRoute {
   totalDriveTime?: number; // Total time spent driving between locations (minutes)
   totalBuildTime?: number; // Total time spent building garages (minutes)
   totalTime?: number; // Total delivery time including all activities (minutes)
-  orders: DeliveryRouteWaypoint[]; // Waypoints in order for this route
+  // NOTE: NO 'orders' or 'waypoints' array here!
+  // Load waypoints separately using DeliveryRouteWaypointsApi.getWaypointsByDelivery(id)
 }
 
 /**
@@ -66,7 +67,6 @@ export const sampleDeliveries: DeliveryRoute[] = [
     notes: 'First delivery of the day. Start at warehouse.',
     estimatedDistance: 45.5,
     estimatedDuration: 120,
-    orders: [],
   },
 ];
 

@@ -6,38 +6,25 @@ import { getOrdersInSequence } from '@/lib/delivery-route-waypoint-helpers';
 import { OrdersApi } from './ordersApi';
 
 /**
- * DeliveryRoutesApi - Manages delivery planning and order assignment
+ * DeliveryRoutesApi - Manages delivery metadata and routing operations
+ *
+ * ARCHITECTURE: Many-to-Many Relationship
+ * - DeliveryRoute: Contains ONLY metadata (name, status, driver, etc.)
+ * - DeliveryRouteWaypoint: Junction table linking deliveries to orders
+ * - Orders: Linked via waypoints, can appear in multiple draft deliveries
  *
  * WORKFLOW:
- * 1. Orders start in the "pool" (order.deliveryId = null, waiting for delivery)
- * 2. Create delivery and "pull" orders from pool → assigns them to delivery
- * 3. Assigned orders are removed from pool (order.deliveryId is set)
- * 4. Can add more orders from pool or remove orders (back to pool)
- * 5. Delivered orders leave the system (status = 'completed')
+ * 1. Create delivery (metadata only, no orders yet)
+ * 2. Add orders via DeliveryRouteWaypointsApi.addWaypoint()
+ * 3. Reorder via DeliveryRouteWaypointsApi.reorderWaypoints()
+ * 4. Remove orders via DeliveryRouteWaypointsApi.removeWaypoint()
+ * 5. Get populated delivery: use getDeliveryWithOrders() convenience method
  *
- * NOTE: In a real implementation, this would coordinate with OrdersApi
- * to update order.deliveryId. For now, we mock this behavior.
+ * NOTE: This API now uses DeliveryRouteWaypointsApi for all order operations
  */
 class DeliveryRoutesApiClass {
   private deliveries: DeliveryRoute[] = [];
   private loaded = false;
-
-  private normalizeOrders(
-    orders: DeliveryRouteWaypoint[] | undefined,
-    deliveryId: string
-  ): DeliveryRouteWaypoint[] {
-    return (orders ?? []).map((order, index) => ({
-      deliveryId: order.deliveryId ?? deliveryId,
-      orderId: order.orderId,
-      sequence: order.sequence ?? index,
-      status: order.status ?? 'pending',
-      driveTimeEstimate: order.driveTimeEstimate ?? 0,
-      driveTimeActual: order.driveTimeActual ?? 0,
-      deliveredAt: order.deliveredAt,
-      notes: order.notes,
-      order: order.order,
-    }));
-  }
 
   /**
    * Reset the loaded state - useful for testing
@@ -57,7 +44,7 @@ class DeliveryRoutesApiClass {
     try {
       // Check if we're in a browser environment (fetch is available)
       if (typeof fetch !== 'undefined') {
-        // Load delivery data from JSON file
+        // Load delivery metadata from JSON file
         const response = await fetch('/delivery-DEL-001.json');
         if (!response.ok) {
           throw new Error('Failed to load delivery data');
@@ -65,50 +52,34 @@ class DeliveryRoutesApiClass {
 
         const deliveryData = await response.json();
 
-        // Define interface for the JSON route item
-        interface JsonRouteItem {
-          id: string;
-          orderId: string;
-        }
-
-        // Convert the JSON structure to our DeliveryRoute interface
-        const id = deliveryData.id;
+        // Convert the JSON structure to our DeliveryRoute interface (metadata only)
         const delivery: DeliveryRoute = {
-          id,
-          name: deliveryData.description || `Delivery ${deliveryData.id}`,
-          status: 'scheduled', // Default status
+          id: deliveryData.id,
+          name: deliveryData.name || `Delivery ${deliveryData.id}`,
+          status: deliveryData.status || 'scheduled',
+          driver: deliveryData.driver,
+          vehicle: deliveryData.vehicle,
+          scheduledDate: deliveryData.scheduledDate ? new Date(deliveryData.scheduledDate) : undefined,
+          startedAt: deliveryData.startedAt ? new Date(deliveryData.startedAt) : undefined,
+          completedAt: deliveryData.completedAt ? new Date(deliveryData.completedAt) : undefined,
           createdAt: new Date(deliveryData.createdAt),
           updatedAt: new Date(deliveryData.updatedAt),
-          orders: deliveryData.routeItems.map((item: JsonRouteItem, index: number) => ({
-            deliveryId: id,
-            orderId: item.orderId,
-            sequence: index,
-            status: 'pending' as const,
-            driveTimeEstimate: 0,
-            driveTimeActual: 0,
-          })),
-          notes: 'Delivery route loaded from JSON',
-          estimatedDistance: 0,
-          estimatedDuration: 0,
+          notes: deliveryData.notes,
+          estimatedDistance: deliveryData.estimatedDistance,
+          estimatedDuration: deliveryData.estimatedDuration,
         };
 
         this.deliveries = [delivery];
       } else {
         // In Node.js environment (tests), use sample data
-        this.deliveries = sampleDeliveries.map((delivery) => ({
-          ...delivery,
-          orders: this.normalizeOrders(delivery.orders, delivery.id),
-        }));
+        this.deliveries = [...sampleDeliveries];
       }
 
       this.loaded = true;
     } catch (error) {
       console.error('Error loading delivery data:', error);
       // Fallback to sample data if loading fails
-      this.deliveries = sampleDeliveries.map((delivery) => ({
-        ...delivery,
-        orders: this.normalizeOrders(delivery.orders, delivery.id),
-      }));
+      this.deliveries = [...sampleDeliveries];
       this.loaded = true;
     }
   }
@@ -138,6 +109,7 @@ class DeliveryRoutesApiClass {
   }
 
   // Get delivery with populated order data
+  // This convenience method loads waypoints and populates with order data
   async getDeliveryWithOrders(
     id: string,
     orders: Order[]
@@ -145,14 +117,25 @@ class DeliveryRoutesApiClass {
     const delivery = await this.getDelivery(id);
     if (!delivery) return null;
 
+    // Get waypoints for this delivery
+    const waypoints = DeliveryRouteWaypointsApi.getWaypointsByDelivery(id);
+
+    if (waypoints.length === 0) {
+      return {
+        ...delivery,
+        orders: [],
+      };
+    }
+
     const ordersMap = new Map(orders.map((order) => [order.id, order]));
 
-    const populatedOrders = delivery.orders
-      .map((deliveryOrder) => {
-        const order = ordersMap.get(deliveryOrder.orderId);
+    const populatedOrders = waypoints
+      .sort((a, b) => a.sequence - b.sequence)
+      .map((waypoint) => {
+        const order = ordersMap.get(waypoint.orderId);
         if (!order) return null;
         return {
-          ...deliveryOrder,
+          ...waypoint,
           order,
         };
       })
@@ -203,26 +186,44 @@ class DeliveryRoutesApiClass {
     };
   }
 
-  // Create a new delivery
-  async createDelivery(delivery: Omit<DeliveryRoute, 'id' | 'createdAt' | 'updatedAt'>): Promise<DeliveryRoute> {
+  // Create a new delivery (metadata only)
+  // Orders are added separately via DeliveryRouteWaypointsApi.addWaypoint()
+  // For backward compatibility: if 'orders' is passed in delivery object, they will be added as waypoints
+  async createDelivery(delivery: Omit<DeliveryRoute, 'id' | 'createdAt' | 'updatedAt'> & { orders?: DeliveryRouteWaypoint[] }): Promise<DeliveryRoute> {
     await this.ensureInitialized();
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const now = new Date();
     const id = `DEL-${Date.now()}`;
+
+    // Extract orders if provided (for backward compatibility)
+    const { orders, ...deliveryData } = delivery as any;
+
     const newDelivery: DeliveryRoute = {
-      ...delivery,
+      ...deliveryData,
       id,
-      orders: this.normalizeOrders(delivery.orders, id),
       createdAt: now,
       updatedAt: now,
     };
 
     this.deliveries.push(newDelivery);
+
+    // If orders were passed in, add them as waypoints for backward compatibility
+    if (orders && Array.isArray(orders)) {
+      for (const order of orders) {
+        try {
+          DeliveryRouteWaypointsApi.addWaypoint(id, order.orderId, order.sequence);
+        } catch (e) {
+          // Ignore duplicates
+        }
+      }
+    }
+
     return { ...newDelivery };
   }
 
-  // Update an existing delivery
+  // Update an existing delivery (metadata only)
+  // To change orders, use DeliveryRouteWaypointsApi methods
   async updateDelivery(id: string, updates: Partial<DeliveryRoute>): Promise<DeliveryRoute | null> {
     await this.ensureInitialized();
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -230,15 +231,9 @@ class DeliveryRoutesApiClass {
     const index = this.deliveries.findIndex((d) => d.id === id);
     if (index === -1) return null;
 
-    const normalizedOrders =
-      updates.orders !== undefined
-        ? this.normalizeOrders(updates.orders, id)
-        : this.deliveries[index].orders;
-
     this.deliveries[index] = {
       ...this.deliveries[index],
       ...updates,
-      orders: normalizedOrders,
       id, // Ensure ID doesn't change
       updatedAt: new Date(),
     };
@@ -258,7 +253,13 @@ class DeliveryRoutesApiClass {
     return true;
   }
 
-  // Add an order to a delivery
+  // ====== DEPRECATED METHODS: Use DeliveryRouteWaypointsApi instead ======
+
+  /**
+   * @deprecated Use DeliveryRouteWaypointsApi.addWaypoint() instead
+   * This method remains for backward compatibility during migration
+   * Returns delivery with populated orders for backward compatibility
+   */
   async addOrderToDelivery(
     deliveryId: string,
     orderId: string,
@@ -267,44 +268,50 @@ class DeliveryRoutesApiClass {
     const delivery = await this.getDelivery(deliveryId);
     if (!delivery) return null;
 
-    const newDeliveryRouteItem: DeliveryRouteWaypoint = {
-      deliveryId,
-      orderId,
-      sequence: atIndex ?? delivery.orders.length,
-      status: 'pending',
-    };
-
-    const updatedOrders = [...delivery.orders];
-
-    if (atIndex !== undefined && atIndex >= 0 && atIndex <= delivery.orders.length) {
-      updatedOrders.splice(atIndex, 0, newDeliveryRouteItem);
-      // Resequence
-      updatedOrders.forEach((order, index) => {
-        order.sequence = index;
-      });
-    } else {
-      updatedOrders.push(newDeliveryRouteItem);
+    // Delegate to waypoint API
+    try {
+      DeliveryRouteWaypointsApi.addWaypoint(deliveryId, orderId, atIndex);
+    } catch (e) {
+      console.error('Error adding waypoint:', e);
     }
 
-    return this.updateDelivery(deliveryId, { orders: updatedOrders });
+    // Return delivery with populated orders for backward compatibility
+    const waypoints = DeliveryRouteWaypointsApi.getWaypointsByDelivery(deliveryId);
+    return {
+      ...delivery,
+      orders: waypoints
+    } as any;
   }
 
-  // Remove an order from a delivery
+  /**
+   * @deprecated Use DeliveryRouteWaypointsApi.removeWaypoint() instead
+   * This method remains for backward compatibility during migration
+   * Returns delivery with populated orders for backward compatibility
+   */
   async removeOrderFromDelivery(deliveryId: string, orderId: string): Promise<DeliveryRoute | null> {
     const delivery = await this.getDelivery(deliveryId);
     if (!delivery) return null;
 
-    const updatedOrders = delivery.orders
-      .filter((order) => order.orderId !== orderId)
-      .map((order, index) => ({
-        ...order,
-        sequence: index,
-      }));
+    // Delegate to waypoint API
+    try {
+      DeliveryRouteWaypointsApi.removeWaypoint(deliveryId, orderId);
+    } catch (e) {
+      console.error('Error removing waypoint:', e);
+    }
 
-    return this.updateDelivery(deliveryId, { orders: updatedOrders });
+    // Return delivery with populated orders for backward compatibility
+    const waypoints = DeliveryRouteWaypointsApi.getWaypointsByDelivery(deliveryId);
+    return {
+      ...delivery,
+      orders: waypoints
+    } as any;
   }
 
-  // Reorder orders within a delivery
+  /**
+   * @deprecated Use DeliveryRouteWaypointsApi.reorderWaypoints() instead
+   * This method remains for backward compatibility during migration
+   * Returns delivery with populated orders for backward compatibility
+   */
   async reorderDeliveryOrders(
     deliveryId: string,
     fromIndex: number,
@@ -313,19 +320,26 @@ class DeliveryRoutesApiClass {
     const delivery = await this.getDelivery(deliveryId);
     if (!delivery) return null;
 
-    const updatedOrders = [...delivery.orders];
-    const [removed] = updatedOrders.splice(fromIndex, 1);
-    updatedOrders.splice(toIndex, 0, removed);
+    // Delegate to waypoint API
+    try {
+      DeliveryRouteWaypointsApi.reorderWaypoints(deliveryId, fromIndex, toIndex);
+    } catch (e) {
+      console.error('Error reordering waypoints:', e);
+    }
 
-    // Resequence
-    updatedOrders.forEach((order, index) => {
-      order.sequence = index;
-    });
-
-    return this.updateDelivery(deliveryId, { orders: updatedOrders });
+    // Return delivery with populated orders for backward compatibility
+    const waypoints = DeliveryRouteWaypointsApi.getWaypointsByDelivery(deliveryId);
+    return {
+      ...delivery,
+      orders: waypoints
+    } as any;
   }
 
-  // Update the status of an order within a delivery
+  /**
+   * @deprecated Use DeliveryRouteWaypointsApi.updateWaypointStatus() instead
+   * This method remains for backward compatibility during migration
+   * Returns delivery with populated orders for backward compatibility
+   */
   async updateDeliveryOrderStatus(
     deliveryId: string,
     orderId: string,
@@ -336,18 +350,24 @@ class DeliveryRoutesApiClass {
     const delivery = await this.getDelivery(deliveryId);
     if (!delivery) return null;
 
-    const updatedOrders = delivery.orders.map((order) =>
-      order.orderId === orderId
-        ? {
-            ...order,
-            status,
-            deliveredAt: status === 'delivered' ? deliveredAt ?? new Date() : order.deliveredAt,
-            notes: notes ?? order.notes,
-          }
-        : order
-    );
+    // Delegate to waypoint API
+    try {
+      DeliveryRouteWaypointsApi.updateWaypointStatus(deliveryId, orderId, status, deliveredAt);
 
-    return this.updateDelivery(deliveryId, { orders: updatedOrders });
+      // Update notes if provided
+      if (notes) {
+        DeliveryRouteWaypointsApi.updateWaypoint(deliveryId, orderId, { notes });
+      }
+    } catch (e) {
+      console.error('Error updating waypoint status:', e);
+    }
+
+    // Return delivery with populated orders for backward compatibility
+    const waypoints = DeliveryRouteWaypointsApi.getWaypointsByDelivery(deliveryId);
+    return {
+      ...delivery,
+      orders: waypoints
+    } as any;
   }
 
   // Update delivery status
