@@ -1,11 +1,19 @@
 import React, { useEffect, useRef } from "react";
 import L from "leaflet";
 
+interface MapyMarker {
+  id: string;
+  lat: number;
+  lng: number;
+  title?: string;
+}
+
 interface MapyTiledMapProps {
   center: { lat: number; lng: number };
   zoom?: number;
   mapset?: "basic" | "outdoor" | "winter" | "aerial" | "names-overlay";
   apiKey: string;
+  markers?: MapyMarker[];
   className?: string;
 }
 
@@ -14,11 +22,14 @@ export const MapyTiledMap: React.FC<MapyTiledMapProps> = ({
   zoom = 13,
   mapset = "basic",
   apiKey,
+  markers = [],
   className,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
+  const markerLayerRef = useRef<L.LayerGroup | null>(null);
 
+  // Initialize map
   useEffect(() => {
     if (!containerRef.current || !apiKey) return;
 
@@ -53,13 +64,37 @@ export const MapyTiledMap: React.FC<MapyTiledMapProps> = ({
     });
     new (LogoControl as typeof L.Control)().addTo(map);
 
+    // Create marker layer group
+    const markerLayer = L.layerGroup().addTo(map);
+    markerLayerRef.current = markerLayer;
+
     mapRef.current = map;
 
     return () => {
       map.remove();
       mapRef.current = null;
+      markerLayerRef.current = null;
     };
   }, [apiKey, center.lat, center.lng, zoom, mapset]);
+
+  // Update markers
+  useEffect(() => {
+    if (!markerLayerRef.current) return;
+
+    // Clear existing markers
+    markerLayerRef.current.clearLayers();
+
+    // Add new markers
+    markers.forEach((marker) => {
+      const leafletMarker = L.marker([marker.lat, marker.lng]).addTo(
+        markerLayerRef.current!
+      );
+
+      if (marker.title) {
+        leafletMarker.bindPopup(marker.title);
+      }
+    });
+  }, [markers]);
 
   return (
     <div
