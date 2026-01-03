@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { MapyTiledMap } from "@/components/maps/mapy-tiled-map";
 import { OrdersApi } from "@/services/ordersApi";
+import { DeliveryRoutesApi } from "@/services/deliveryRoutesApi";
 import type { Order } from "@/types/order";
+import type { DeliveryRoute } from "@/types/delivery-route";
 
 interface MapMarker {
   id: string;
@@ -10,15 +12,33 @@ interface MapMarker {
   title?: string;
 }
 
+interface MapPolyline {
+  id: string;
+  positions: Array<{ lat: number; lng: number }>;
+  color?: string;
+  weight?: number;
+  opacity?: number;
+}
+
 export default function MapyCzMapPage() {
   const mapyApiKey = import.meta.env.VITE_MAPY_CZ_API_KEY as string | undefined;
   const [markers, setMarkers] = useState<MapMarker[]>([]);
+  const [polylines, setPolylines] = useState<MapPolyline[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchData = async () => {
       try {
-        const orders = await OrdersApi.getOrders();
+        console.log("Fetching data...");
+        const [orders, deliveryRoutes] = await Promise.all([
+          OrdersApi.getOrders(),
+          DeliveryRoutesApi.getDeliveries(),
+        ]);
+
+        console.log("Orders fetched:", orders.length);
+        console.log("Delivery routes fetched:", deliveryRoutes.length);
+
+        // Create order markers
         const orderMarkers: MapMarker[] = orders
           .filter(
             (order: Order) =>
@@ -32,15 +52,72 @@ export default function MapyCzMapPage() {
               order.product?.name || "No product"
             })`,
           }));
+        console.log("Order markers created:", orderMarkers.length);
         setMarkers(orderMarkers);
+
+        // Create polyline between first two waypoints of first delivery route
+        if (deliveryRoutes.length > 0) {
+          const firstRoute = deliveryRoutes[0];
+          console.log(
+            "First route:",
+            firstRoute.id,
+            "waypoints:",
+            firstRoute.orders?.length
+          );
+
+          if (firstRoute.orders && firstRoute.orders.length >= 2) {
+            const waypoint1OrderId = firstRoute.orders[0].orderId;
+            const waypoint2OrderId = firstRoute.orders[1].orderId;
+
+            console.log(
+              "Looking for orders:",
+              waypoint1OrderId,
+              waypoint2OrderId
+            );
+
+            const order1 = orders.find((o) => o.id === waypoint1OrderId);
+            const order2 = orders.find((o) => o.id === waypoint2OrderId);
+
+            console.log("Found order1:", order1?.id, order1?.location);
+            console.log("Found order2:", order2?.id, order2?.location);
+
+            if (
+              order1?.location &&
+              order2?.location &&
+              order1.location.lat &&
+              order1.location.lng &&
+              order2.location.lat &&
+              order2.location.lng
+            ) {
+              const routePolyline: MapPolyline = {
+                id: `${firstRoute.id}-segment-0-1`,
+                positions: [
+                  { lat: order1.location.lat, lng: order1.location.lng },
+                  { lat: order2.location.lat, lng: order2.location.lng },
+                ],
+                color: "#ff6b6b",
+                weight: 4,
+                opacity: 0.8,
+              };
+              console.log("Polyline created:", routePolyline);
+              setPolylines([routePolyline]);
+            } else {
+              console.log("Missing location data for one or both orders");
+            }
+          } else {
+            console.log("Not enough waypoints in first route");
+          }
+        } else {
+          console.log("No delivery routes found");
+        }
       } catch (error) {
-        console.error("Failed to load orders:", error);
+        console.error("Failed to load data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOrders();
+    fetchData();
   }, []);
 
   return (
@@ -61,6 +138,7 @@ export default function MapyCzMapPage() {
               mapset="basic"
               apiKey={mapyApiKey}
               markers={markers}
+              polylines={polylines}
               className="w-full h-full"
             />
           ) : (

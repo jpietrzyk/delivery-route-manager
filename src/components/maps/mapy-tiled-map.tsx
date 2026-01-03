@@ -8,12 +8,21 @@ interface MapyMarker {
   title?: string;
 }
 
+interface MapyPolyline {
+  id: string;
+  positions: Array<{ lat: number; lng: number }>;
+  color?: string;
+  weight?: number;
+  opacity?: number;
+}
+
 interface MapyTiledMapProps {
   center: { lat: number; lng: number };
   zoom?: number;
   mapset?: "basic" | "outdoor" | "winter" | "aerial" | "names-overlay";
   apiKey: string;
   markers?: MapyMarker[];
+  polylines?: MapyPolyline[];
   className?: string;
 }
 
@@ -23,11 +32,13 @@ export const MapyTiledMap: React.FC<MapyTiledMapProps> = ({
   mapset = "basic",
   apiKey,
   markers = [],
+  polylines = [],
   className,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const markerLayerRef = useRef<L.LayerGroup | null>(null);
+  const polylineLayerRef = useRef<L.LayerGroup | null>(null);
 
   // Initialize map
   useEffect(() => {
@@ -68,12 +79,17 @@ export const MapyTiledMap: React.FC<MapyTiledMapProps> = ({
     const markerLayer = L.layerGroup().addTo(map);
     markerLayerRef.current = markerLayer;
 
+    // Create polyline layer group
+    const polylineLayer = L.layerGroup().addTo(map);
+    polylineLayerRef.current = polylineLayer;
+
     mapRef.current = map;
 
     return () => {
       map.remove();
       mapRef.current = null;
       markerLayerRef.current = null;
+      polylineLayerRef.current = null;
     };
   }, [apiKey, center.lat, center.lng, zoom, mapset]);
 
@@ -95,6 +111,26 @@ export const MapyTiledMap: React.FC<MapyTiledMapProps> = ({
       }
     });
   }, [markers]);
+
+  // Update polylines
+  useEffect(() => {
+    if (!polylineLayerRef.current) return;
+
+    // Clear existing polylines
+    polylineLayerRef.current.clearLayers();
+
+    // Add new polylines
+    polylines.forEach((polyline) => {
+      const positions = polyline.positions.map(
+        (pos) => [pos.lat, pos.lng] as [number, number]
+      );
+      L.polyline(positions, {
+        color: polyline.color || "#3388ff",
+        weight: polyline.weight || 3,
+        opacity: polyline.opacity || 0.8,
+      }).addTo(polylineLayerRef.current!);
+    });
+  }, [polylines]);
 
   return (
     <div
