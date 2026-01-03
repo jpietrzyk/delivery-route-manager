@@ -142,11 +142,9 @@ export class RouteManager {
   upsertSegment(fromOrder: Order, toOrder: Order): RouteSegment {
     const segmentId = `${fromOrder.id}-${toOrder.id}`;
     let segment = this.segments.get(segmentId);
-    let isUpdated = false;
 
     if (!segment) {
       segment = this.createNewSegment(segmentId, fromOrder, toOrder);
-      isUpdated = true;
     } else {
       // Check if the orders have changed (comparing by location)
       const fromOrderChanged =
@@ -157,7 +155,6 @@ export class RouteManager {
         segment.toOrder.location.lng !== toOrder.location.lng;
 
       if (fromOrderChanged || toOrderChanged) {
-        isUpdated = true;
         // Clear route data when orders change, so it gets recalculated
         segment.routeData = undefined;
         segment.mapRoute = undefined;

@@ -289,6 +289,7 @@ export function applyPendingDeliveryUpdates(
 
         if (orderExists && !orderAlreadyInDelivery) {
           updatedOrders.push({
+            deliveryId: delivery.id,
             orderId: update.orderId,
             sequence: updatedOrders.length,
             status: 'pending' as const,

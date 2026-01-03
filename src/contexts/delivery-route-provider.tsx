@@ -51,13 +51,15 @@ export default function DeliveryRouteProvider({
   }, []);
 
   // Fetch orders for a specific delivery
-  const refreshDeliveryOrders = useCallback(
+  const refreshDeliveryOrders = useCallback<
+    (deliveryId?: string) => Promise<Order[]>
+  >(
     async (deliveryId?: string) => {
       try {
         const targetDeliveryId = deliveryId || currentDelivery?.id;
         if (!targetDeliveryId) {
           setDeliveryOrders([]);
-          return;
+          return [];
         }
 
         const allOrders = await OrdersApi.getOrders();
@@ -77,8 +79,10 @@ export default function DeliveryRouteProvider({
           assignedOrders.map((o) => o.id)
         );
         setDeliveryOrders(assignedOrders);
+        return assignedOrders;
       } catch (error) {
         console.error("Error fetching delivery orders:", error);
+        return [];
       }
     },
     [currentDelivery?.id]
@@ -242,6 +246,7 @@ export default function DeliveryRouteProvider({
 
               if (!orderAlreadyInDelivery) {
                 updatedOrders.splice(newIndex, 0, {
+                  deliveryId,
                   orderId,
                   sequence: newIndex,
                   status: "pending",
@@ -277,6 +282,7 @@ export default function DeliveryRouteProvider({
 
             if (!orderAlreadyInDelivery) {
               updatedOrders.splice(newIndex, 0, {
+                deliveryId,
                 orderId,
                 sequence: newIndex,
                 status: "pending",

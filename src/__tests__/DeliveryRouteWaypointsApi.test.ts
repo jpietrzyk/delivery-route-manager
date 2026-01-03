@@ -11,35 +11,6 @@ import type { DeliveryRouteWaypoint } from '@/types/delivery-route';
 (globalThis as typeof globalThis).fetch = jest.fn();
 
 describe('DeliveryRouteWaypointsApi', () => {
-  // Mock data matching the new waypoint structure with deliveryId
-  const mockWaypoints: DeliveryRouteWaypoint[] = [
-    {
-      deliveryId: 'DEL-001',
-      orderId: 'ORD-001',
-      sequence: 0,
-      status: 'pending',
-      driveTimeEstimate: 10,
-      notes: 'First delivery'
-    },
-    {
-      deliveryId: 'DEL-001',
-      orderId: 'ORD-002',
-      sequence: 1,
-      status: 'pending',
-      driveTimeEstimate: 15,
-      notes: 'Second delivery'
-    },
-    {
-      deliveryId: 'DEL-001',
-      orderId: 'ORD-003',
-      sequence: 2,
-      status: 'in-transit',
-      driveTimeEstimate: 12,
-      arrivalTime: new Date('2026-01-01T10:00:00'),
-      notes: 'In transit'
-    },
-  ];
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -170,11 +141,15 @@ describe('DeliveryRouteWaypointsApi', () => {
     it('should preserve deliveryId and orderId during update', () => {
       DeliveryRouteWaypointsApi.addWaypoint('DEL-008', 'ORD-034');
 
-      const updated = DeliveryRouteWaypointsApi.updateWaypoint('DEL-008', 'ORD-034', {
-        orderId: 'ORD-999', // Attempt to change
-        deliveryId: 'DEL-999', // Attempt to change
-        status: 'delivered'
-      });
+      const updated = DeliveryRouteWaypointsApi.updateWaypoint(
+        'DEL-008',
+        'ORD-034',
+        {
+          orderId: 'ORD-999', // Attempt to change
+          deliveryId: 'DEL-999', // Attempt to change
+          status: 'delivered',
+        } as unknown as Partial<Omit<DeliveryRouteWaypoint, 'deliveryId' | 'orderId' | 'sequence'>>
+      );
 
       expect(updated?.orderId).toBe('ORD-034');
       expect(updated?.deliveryId).toBe('DEL-008');

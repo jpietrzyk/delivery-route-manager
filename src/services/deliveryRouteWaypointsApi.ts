@@ -2,9 +2,6 @@ import type { DeliveryRouteWaypoint } from '@/types/delivery-route';
 import { sampleDeliveryWaypoints } from '@/types/delivery-route';
 import { resequenceWaypoints } from '@/lib/delivery-route-waypoint-helpers';
 
-// Mock delay to simulate network request
-const mockDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 // Store for in-memory data that can be modified
 // Key: deliveryId, Value: array of waypoints for that delivery
 let waypointsData: Map<string, DeliveryRouteWaypoint[]> = new Map();
@@ -16,10 +13,14 @@ function loadWaypoints(): void {
 
   // Initialize with sample data
   for (const waypoint of sampleDeliveryWaypoints) {
-    if (!waypointsData.has(waypoint.deliveryId)) {
-      waypointsData.set(waypoint.deliveryId, []);
+    if (!waypoint.deliveryId) continue;
+
+    const deliveryId = waypoint.deliveryId;
+
+    if (!waypointsData.has(deliveryId)) {
+      waypointsData.set(deliveryId, []);
     }
-    waypointsData.get(waypoint.deliveryId)!.push({ ...waypoint });
+    waypointsData.get(deliveryId)!.push({ ...waypoint, deliveryId });
   }
 
   waypointsLoaded = true;

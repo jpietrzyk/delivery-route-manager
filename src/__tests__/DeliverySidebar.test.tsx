@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";

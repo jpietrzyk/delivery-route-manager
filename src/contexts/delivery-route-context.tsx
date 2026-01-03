@@ -32,7 +32,7 @@ export interface DeliveryRouteContextType {
     toIndex: number
   ) => Promise<void>;
   refreshDeliveries: () => Promise<void>;
-  refreshDeliveryOrders: (deliveryId?: string) => Promise<void>;
+  refreshDeliveryOrders: (deliveryId?: string) => Promise<Order[]>;
   refreshUnassignedOrders: () => Promise<void>;
 }
 

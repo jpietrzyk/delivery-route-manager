@@ -30,7 +30,7 @@ interface DeliveryOrderListProps {
   onRemoveOrder?: (orderId: string) => void;
   title?: string;
   onReorder?: (newOrders: Order[]) => void;
-  routeManager?: RouteManager;
+  routeManager?: RouteManager | null;
 }
 
 export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({

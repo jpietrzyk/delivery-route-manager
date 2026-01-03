@@ -22,6 +22,23 @@ class DeliveryRoutesApiClass {
   private deliveries: DeliveryRoute[] = [];
   private loaded = false;
 
+  private normalizeOrders(
+    orders: DeliveryRouteWaypoint[] | undefined,
+    deliveryId: string
+  ): DeliveryRouteWaypoint[] {
+    return (orders ?? []).map((order, index) => ({
+      deliveryId: order.deliveryId ?? deliveryId,
+      orderId: order.orderId,
+      sequence: order.sequence ?? index,
+      status: order.status ?? 'pending',
+      driveTimeEstimate: order.driveTimeEstimate ?? 0,
+      driveTimeActual: order.driveTimeActual ?? 0,
+      deliveredAt: order.deliveredAt,
+      notes: order.notes,
+      order: order.order,
+    }));
+  }
+
   /**
    * Reset the loaded state - useful for testing
    */
@@ -55,13 +72,15 @@ class DeliveryRoutesApiClass {
         }
 
         // Convert the JSON structure to our DeliveryRoute interface
+        const id = deliveryData.id;
         const delivery: DeliveryRoute = {
-          id: deliveryData.id,
+          id,
           name: deliveryData.description || `Delivery ${deliveryData.id}`,
           status: 'scheduled', // Default status
           createdAt: new Date(deliveryData.createdAt),
           updatedAt: new Date(deliveryData.updatedAt),
           orders: deliveryData.routeItems.map((item: JsonRouteItem, index: number) => ({
+            deliveryId: id,
             orderId: item.orderId,
             sequence: index,
             status: 'pending' as const,
@@ -76,14 +95,20 @@ class DeliveryRoutesApiClass {
         this.deliveries = [delivery];
       } else {
         // In Node.js environment (tests), use sample data
-        this.deliveries = [...sampleDeliveries];
+        this.deliveries = sampleDeliveries.map((delivery) => ({
+          ...delivery,
+          orders: this.normalizeOrders(delivery.orders, delivery.id),
+        }));
       }
 
       this.loaded = true;
     } catch (error) {
       console.error('Error loading delivery data:', error);
       // Fallback to sample data if loading fails
-      this.deliveries = [...sampleDeliveries];
+      this.deliveries = sampleDeliveries.map((delivery) => ({
+        ...delivery,
+        orders: this.normalizeOrders(delivery.orders, delivery.id),
+      }));
       this.loaded = true;
     }
   }
@@ -184,9 +209,11 @@ class DeliveryRoutesApiClass {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const now = new Date();
+    const id = `DEL-${Date.now()}`;
     const newDelivery: DeliveryRoute = {
       ...delivery,
-      id: `DEL-${Date.now()}`,
+      id,
+      orders: this.normalizeOrders(delivery.orders, id),
       createdAt: now,
       updatedAt: now,
     };
@@ -203,9 +230,15 @@ class DeliveryRoutesApiClass {
     const index = this.deliveries.findIndex((d) => d.id === id);
     if (index === -1) return null;
 
+    const normalizedOrders =
+      updates.orders !== undefined
+        ? this.normalizeOrders(updates.orders, id)
+        : this.deliveries[index].orders;
+
     this.deliveries[index] = {
       ...this.deliveries[index],
       ...updates,
+      orders: normalizedOrders,
       id, // Ensure ID doesn't change
       updatedAt: new Date(),
     };
@@ -235,6 +268,7 @@ class DeliveryRoutesApiClass {
     if (!delivery) return null;
 
     const newDeliveryRouteItem: DeliveryRouteWaypoint = {
+      deliveryId,
       orderId,
       sequence: atIndex ?? delivery.orders.length,
       status: 'pending',

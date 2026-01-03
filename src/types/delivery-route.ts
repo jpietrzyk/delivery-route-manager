@@ -1,15 +1,9 @@
 import type { Order } from './order';
 
 /**
- * DeliveryRoute represents a delivery plan with metadata only.
- *
- * This type contains NO embedded orders array.
+ * DeliveryRoute represents a delivery plan with metadata and its waypoint list.
  * Orders are linked via DeliveryRouteWaypoint junction table (many-to-many relationship).
- *
- * This separation allows:
- * - Orders to appear in multiple draft deliveries (planning scenarios)
- * - No array synchronization issues
- * - Single source of truth: waypoints table
+ * The `orders` array is kept on the route instance for convenience in the UI layer.
  */
 export interface DeliveryRoute {
   id: string;
@@ -30,6 +24,7 @@ export interface DeliveryRoute {
   totalDriveTime?: number; // Total time spent driving between locations (minutes)
   totalBuildTime?: number; // Total time spent building garages (minutes)
   totalTime?: number; // Total delivery time including all activities (minutes)
+  orders: DeliveryRouteWaypoint[]; // Waypoints in order for this route
 }
 
 /**
@@ -43,7 +38,7 @@ export interface DeliveryRoute {
  * An order can be removed from one delivery without affecting others.
  */
 export interface DeliveryRouteWaypoint {
-  deliveryId: string;  // Foreign key to DeliveryRoute
+  deliveryId?: string;  // Foreign key to DeliveryRoute
   orderId: string;     // Foreign key to Order
   sequence: number;    // Position in the delivery route (0-based)
   status: 'pending' | 'in-transit' | 'delivered' | 'failed';
@@ -71,6 +66,7 @@ export const sampleDeliveries: DeliveryRoute[] = [
     notes: 'First delivery of the day. Start at warehouse.',
     estimatedDistance: 45.5,
     estimatedDuration: 120,
+    orders: [],
   },
 ];
 

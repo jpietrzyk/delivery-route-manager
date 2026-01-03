@@ -225,6 +225,7 @@ export default function DeliveryRouteManagerProvider({
 
           if (!orderAlreadyInDelivery) {
             updatedOrders.splice(newIndex, 0, {
+              deliveryId,
               orderId,
               sequence: newIndex,
               status: "pending",
@@ -252,6 +253,7 @@ export default function DeliveryRouteManagerProvider({
 
           if (!orderAlreadyInDelivery) {
             updatedOrders.splice(newIndex, 0, {
+              deliveryId,
               orderId,
               sequence: newIndex,
               status: "pending",

@@ -19,6 +19,8 @@ interface DeliveryOrderItemProps {
   onMouseLeave?: () => void;
   onRemove?: (orderId: string) => void;
   id: string;
+  arrivalTime?: Date;
+  departureTime?: Date;
 }
 
 export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
