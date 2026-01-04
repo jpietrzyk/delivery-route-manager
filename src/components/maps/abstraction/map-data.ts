@@ -11,6 +11,7 @@ export interface MapMarkerData {
     lng: number;
   };
   type: 'delivery' | 'pool' | 'pool-high-value';
+  waypointIndex?: number; // 1-based position in delivery route when applicable
   isHighlighted?: boolean;
   isCurrentOrder?: boolean;
   isPreviousOrder?: boolean;

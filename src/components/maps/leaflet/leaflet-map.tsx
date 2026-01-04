@@ -342,6 +342,38 @@ const LeafletMap = ({
     []
   );
 
+  // Map of assigned delivery order ids to their 1-based waypoint position
+  const waypointPositionMap = React.useMemo(() => {
+    const map = new Map<string, number>();
+    orders.forEach((order, index) => {
+      map.set(order.id, index + 1);
+    });
+    return map;
+  }, [orders]);
+
+  // Create a numbered div icon so each assigned waypoint shows its sequence number
+  const createNumberedIcon = React.useCallback(
+    (iconUrl: string, badgeNumber?: number) => {
+      const badge =
+        badgeNumber !== undefined
+          ? `<span style="position:absolute;top:2px;left:50%;transform:translateX(-50%);background:#111827;color:white;border-radius:9999px;padding:0 6px;font-size:12px;font-weight:700;line-height:18px;box-shadow:0 1px 2px rgba(0,0,0,0.25);">${badgeNumber}</span>`
+          : "";
+
+      return L.divIcon({
+        html:
+          `<div style="position:relative;display:inline-block;width:25px;height:41px;">` +
+          `<img src="${iconUrl}" alt="marker" style="width:25px;height:41px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.25));" />` +
+          badge +
+          "</div>",
+        className: "",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+      });
+    },
+    []
+  );
+
   // Use fixed threshold for orange marker
   const ORANGE_THRESHOLD = 13000;
 
@@ -424,27 +456,45 @@ const LeafletMap = ({
         })}
       {[...orders, ...unassignedOrders].map((order) => {
         const isPool = !order.deliveryId;
+        const waypointNumber = waypointPositionMap.get(order.id);
+        let iconUrl =
+          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png";
         let icon = defaultIcon;
         if (isPool) {
           if ((order.totalAmount ?? 0) > ORANGE_THRESHOLD) {
+            iconUrl =
+              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png";
             icon = poolHighPriceIcon;
           } else {
+            iconUrl =
+              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png";
             icon = poolIcon;
           }
         }
         if (highlightedOrderId === order.id) {
+          iconUrl =
+            "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png";
           icon = highlightIcon;
         } else if (currentOrderId === order.id) {
+          iconUrl =
+            "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png";
           icon = currentOrderIcon;
         } else if (previousOrderId === order.id) {
+          iconUrl =
+            "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png";
           icon = previousOrderIcon;
         }
+        // For assigned delivery orders, overlay their sequence number on the icon
+        const iconWithBadge =
+          waypointNumber !== undefined
+            ? createNumberedIcon(iconUrl, waypointNumber)
+            : icon;
         return (
           <Marker
             key={order.id}
             position={order.location}
             // @ts-expect-error: icon is supported by react-leaflet Marker but not in type definitions
-            icon={icon as L.Icon}
+            icon={iconWithBadge as L.Icon}
             eventHandlers={{
               mouseover: () => setHighlightedOrderId(order.id),
               mouseout: () => setHighlightedOrderId(null),

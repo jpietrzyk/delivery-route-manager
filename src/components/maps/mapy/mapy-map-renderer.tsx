@@ -86,22 +86,67 @@ const previousOrderIcon = L.icon({
   shadowSize: [41, 41],
 });
 
+// Create a divIcon with a numeric badge for waypoint sequence
+const createNumberedIcon = (iconUrl: string, badgeNumber?: number) => {
+  const badge =
+    badgeNumber !== undefined
+      ? `<span style="position:absolute;top:2px;left:50%;transform:translateX(-50%);background:#111827;color:white;border-radius:9999px;padding:0 6px;font-size:12px;font-weight:700;line-height:18px;box-shadow:0 1px 2px rgba(0,0,0,0.25);">${badgeNumber}</span>`
+      : "";
+
+  return L.divIcon({
+    html:
+      `<div style="position:relative;display:inline-block;width:25px;height:41px;">` +
+      `<img src="${iconUrl}" alt="marker" style="width:25px;height:41px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.25));" />` +
+      badge +
+      "</div>",
+    className: "",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+  });
+};
+
 // Get icon based on marker data
 const getIconForMarker = (marker: MapMarkerData) => {
-  // Priority: highlight > current/previous > type
-  if (marker.isHighlighted) return highlightIcon;
-  if (marker.isCurrentOrder) return currentOrderIcon;
-  if (marker.isPreviousOrder) return previousOrderIcon;
+  const isDelivery = marker.type === "delivery";
 
-  switch (marker.type) {
-    case "pool":
-      return poolIcon;
-    case "pool-high-value":
-      return poolHighValueIcon;
-    case "delivery":
-    default:
-      return defaultIcon;
+  // Determine base icon URL with priority: highlight > current/previous > type
+  let iconUrl = defaultIcon.options.iconUrl as string;
+  // Priority: highlight > current/previous > type
+  if (marker.isHighlighted) {
+    iconUrl = highlightIcon.options.iconUrl as string;
+  } else if (marker.isCurrentOrder) {
+    iconUrl = currentOrderIcon.options.iconUrl as string;
+  } else if (marker.isPreviousOrder) {
+    iconUrl = previousOrderIcon.options.iconUrl as string;
+  } else {
+    switch (marker.type) {
+      case "pool":
+        iconUrl = poolIcon.options.iconUrl as string;
+        break;
+      case "pool-high-value":
+        iconUrl = poolHighValueIcon.options.iconUrl as string;
+        break;
+      case "delivery":
+      default:
+        iconUrl = defaultIcon.options.iconUrl as string;
+        break;
+    }
   }
+
+  if (isDelivery && marker.waypointIndex !== undefined) {
+    return createNumberedIcon(iconUrl, marker.waypointIndex);
+  }
+
+  return L.icon({
+    iconUrl,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+    shadowSize: [41, 41],
+  });
 };
 
 const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
@@ -121,6 +166,21 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
   const routeInstancesRef = useRef<Map<string, ReturnType<typeof L.polyline>>>(
     new Map()
   );
+
+  // Ensure every delivery marker has a 1-based waypoint index (fallback if missing)
+  const markersWithIndex = React.useMemo(() => {
+    let seq = 0;
+    return markers.map((marker) => {
+      if (marker.type === "delivery") {
+        const idx = marker.waypointIndex ?? ++seq;
+        if (marker.waypointIndex === undefined) {
+          seq = idx;
+        }
+        return { ...marker, waypointIndex: idx };
+      }
+      return marker;
+    });
+  }, [markers]);
 
   // Get Mapy.cz API key from environment
   const mapyApiKey = import.meta.env.VITE_MAPY_CZ_API_KEY as string | undefined;
@@ -209,7 +269,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
     const markerInstances = markerInstancesRef.current;
 
     // Get current marker IDs
-    const currentMarkerIds = new Set(markers.map((m) => m.id));
+    const currentMarkerIds = new Set(markersWithIndex.map((m) => m.id));
 
     // Remove markers that no longer exist
     markerInstances.forEach((marker, id) => {
@@ -220,7 +280,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
     });
 
     // Add or update markers
-    markers.forEach((markerData) => {
+    markersWithIndex.forEach((markerData) => {
       const existingMarker = markerInstances.get(markerData.id);
       const icon = getIconForMarker(markerData);
       const position: [number, number] = [
@@ -264,7 +324,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         markerInstances.set(markerData.id, newMarker);
       }
     });
-  }, [markers, onMarkerHover]);
+  }, [markersWithIndex, onMarkerHover]);
 
   // Render route segments
   useEffect(() => {

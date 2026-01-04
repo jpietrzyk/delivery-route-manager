@@ -226,6 +226,15 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
   const ORANGE_THRESHOLD = 13000;
   const mapyApiKey = import.meta.env.VITE_MAPY_CZ_API_KEY as string | undefined;
 
+  // Map delivery order ids to their 1-based waypoint index
+  const waypointIndexMap = React.useMemo(() => {
+    const map = new Map<string, number>();
+    orders.forEach((order, index) => {
+      map.set(order.id, index + 1);
+    });
+    return map;
+  }, [orders]);
+
   // Calculate routes when orders change
   useEffect(() => {
     const calculateRoutes = async () => {
@@ -273,6 +282,8 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         type = isHighValue ? "pool-high-value" : "pool";
       }
 
+      const waypointIndex = waypointIndexMap.get(order.id);
+
       // Handle toggle action
       const handleToggle = async () => {
         if (isPool) {
@@ -297,6 +308,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         id: order.id,
         location: order.location,
         type,
+        waypointIndex,
         isHighlighted: highlightedOrderId === order.id,
         isCurrentOrder: currentOrderId === order.id,
         isPreviousOrder: previousOrderId === order.id,
@@ -319,6 +331,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
     removeOrderFromDelivery,
     onOrderAddedToDelivery,
     onRefreshRequested,
+    waypointIndexMap,
   ]);
 
   // Transform calculated routes to route segments
