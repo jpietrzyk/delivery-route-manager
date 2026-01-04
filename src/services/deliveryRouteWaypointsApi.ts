@@ -7,11 +7,56 @@ import { resequenceWaypoints } from '@/lib/delivery-route-waypoint-helpers';
 let waypointsData: Map<string, DeliveryRouteWaypoint[]> = new Map();
 let waypointsLoaded = false;
 
-// Load sample data into the in-memory store
+/**
+ * Load waypoints from JSON file (browser) or use sample data (Node.js/tests)
+ * This is synchronous to match the existing API design
+ */
 function loadWaypoints(): void {
   if (waypointsLoaded) return;
 
-  // Initialize with sample data
+  // Always start with sample data for synchronous availability
+  loadSampleData();
+
+  // Try to preload waypoints JSON in browser environment
+  // This will override sample data once loaded
+  if (typeof fetch !== 'undefined' && typeof window !== 'undefined') {
+    try {
+      fetch('/delivery-route-waypoints-DEL-001.json')
+        .then(response => {
+          if (!response.ok) {
+            console.warn('Failed to load waypoints from JSON, using sample data');
+            return null;
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data && Array.isArray(data)) {
+            // Replace sample data with loaded data
+            waypointsData.clear();
+            const deliveryId = 'DEL-001';
+            waypointsData.set(deliveryId, data.map((wp: any) => ({
+              ...wp,
+              deliveryId,
+            })));
+            console.log(`Loaded ${data.length} waypoints for delivery ${deliveryId}`);
+          }
+        })
+        .catch(error => {
+          console.warn('Error loading waypoints from JSON:', error);
+          // Silently continue with sample data
+        });
+    } catch (error) {
+      // Silently fail - sample data already loaded
+    }
+  }
+
+  waypointsLoaded = true;
+}
+
+/**
+ * Load sample waypoints into the in-memory store
+ */
+function loadSampleData(): void {
   for (const waypoint of sampleDeliveryWaypoints) {
     if (!waypoint.deliveryId) continue;
 
@@ -22,8 +67,6 @@ function loadWaypoints(): void {
     }
     waypointsData.get(deliveryId)!.push({ ...waypoint, deliveryId });
   }
-
-  waypointsLoaded = true;
 }
 
 export class DeliveryRouteWaypointsApi {
