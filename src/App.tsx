@@ -13,6 +13,7 @@ function App() {
           <Route path="/deliveries" element={<DeliveryMapPage />} />
           <Route path="/deliveries/:deliveryId" element={<DeliveryMapPage />} />
           <Route path="/mapy" element={<MapyCzMapPage />} />
+          <Route path="/mapy/:deliveryId" element={<MapyCzMapPage />} />
         </Routes>
       </DeliveryRouteManagerProvider>
     </Router>

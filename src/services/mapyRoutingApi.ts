@@ -39,8 +39,18 @@ export interface RoutingResponse {
   }>;
 }
 
+export interface RouteSegment {
+  id: string;
+  from: { lat: number; lng: number };
+  to: { lat: number; lng: number };
+  positions?: Array<{ lat: number; lng: number }>; // Full polyline path
+  distance?: number; // meters
+  duration?: number; // seconds
+}
+
 class MapyRoutingApiClass {
   private readonly baseUrl = 'https://api.mapy.com/v1/routing/route';
+  private routeCache = new Map<string, RouteSegment>();
 
   /**
    * Calculate a route between two points
@@ -94,6 +104,92 @@ class MapyRoutingApiClass {
     }
 
     return response.json();
+  }
+
+  /**
+   * Calculate route segments for multiple consecutive waypoints
+   * Calculates separate routes between each pair of consecutive waypoints
+   * This ensures each segment is optimized independently without being affected by the chaotic ordering of all waypoints
+   */
+  async calculateRouteSegments(
+    waypoints: Array<{ lat: number; lng: number }>,
+    apiKey: string,
+    options?: {
+      routeType?: RoutingRequest['routeType'];
+      avoidToll?: boolean;
+      avoidHighways?: boolean;
+    }
+  ): Promise<RouteSegment[]> {
+    if (waypoints.length < 2) {
+      return [];
+    }
+
+    const segments: RouteSegment[] = [];
+
+    // Calculate a separate route for each consecutive pair of waypoints
+    // Route 1: waypoint[0] -> waypoint[1]
+    // Route 2: waypoint[1] -> waypoint[2]
+    // etc.
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      const from = waypoints[i];
+      const to = waypoints[i + 1];
+
+      try {
+        const routeResponse = await this.calculateRoute(
+          {
+            start: [from.lng, from.lat],
+            end: [to.lng, to.lat],
+            routeType: options?.routeType || 'car_fast',
+            format: 'geojson',
+            avoidToll: options?.avoidToll,
+            avoidHighways: options?.avoidHighways,
+          },
+          apiKey
+        );
+
+        console.log(`Segment ${i} (${from.lat},${from.lng} -> ${to.lat},${to.lng}):`, {
+          distance: routeResponse.length,
+          duration: routeResponse.duration,
+          coordinatesCount: routeResponse.geometry.geometry.coordinates.length,
+        });
+
+        // Convert the polyline to positions
+        const positions = this.convertGeoJSONToPositions(
+          routeResponse.geometry.geometry.coordinates
+        );
+
+        const segmentId = `${from.lat},${from.lng}-${to.lat},${to.lng}`;
+        const segment: RouteSegment = {
+          id: segmentId,
+          from: { lat: from.lat, lng: from.lng },
+          to: { lat: to.lat, lng: to.lng },
+          positions: positions.length > 1 ? positions : [{ lat: from.lat, lng: from.lng }, { lat: to.lat, lng: to.lng }],
+          distance: routeResponse.length,
+          duration: routeResponse.duration,
+        };
+
+        segments.push(segment);
+      } catch (error) {
+        console.error(`Failed to calculate route segment ${i}:`, error);
+        // Create a fallback straight-line segment
+        const segmentId = `${from.lat},${from.lng}-${to.lat},${to.lng}`;
+        segments.push({
+          id: segmentId,
+          from: { lat: from.lat, lng: from.lng },
+          to: { lat: to.lat, lng: to.lng },
+          positions: [{ lat: from.lat, lng: from.lng }, { lat: to.lat, lng: to.lng }],
+        });
+      }
+    }
+
+    return segments;
+  }
+
+  /**
+   * Clear the route cache
+   */
+  clearCache(): void {
+    this.routeCache.clear();
   }
 
   /**

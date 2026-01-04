@@ -147,30 +147,37 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
       {/* Render route segments */}
-      {routes.map((route) => (
-        <Polyline
-          key={route.id}
-          positions={[
-            [route.from.lat, route.from.lng],
-            [route.to.lat, route.to.lng],
-          ]}
-          pathOptions={{
-            color: route.isHighlighted
-              ? route.highlightColor || "#10b981"
-              : "#2563eb",
-            weight: route.isHighlighted ? 6 : 4,
-            opacity: route.isHighlighted ? 1.0 : 0.8,
-          }}
-          eventHandlers={{
-            mouseover: () => {
-              onRouteSegmentHover?.(route.id, true);
-            },
-            mouseout: () => {
-              onRouteSegmentHover?.(route.id, false);
-            },
-          }}
-        />
-      ))}
+      {routes.map((route) => {
+        // Use polyline positions if available, otherwise straight line
+        const positions = route.positions
+          ? route.positions.map((pos) => [pos.lat, pos.lng] as [number, number])
+          : [
+              [route.from.lat, route.from.lng] as [number, number],
+              [route.to.lat, route.to.lng] as [number, number],
+            ];
+
+        return (
+          <Polyline
+            key={route.id}
+            positions={positions}
+            pathOptions={{
+              color: route.isHighlighted
+                ? route.highlightColor || "#10b981"
+                : "#2563eb",
+              weight: route.isHighlighted ? 6 : 4,
+              opacity: route.isHighlighted ? 1.0 : 0.8,
+            }}
+            eventHandlers={{
+              mouseover: () => {
+                onRouteSegmentHover?.(route.id, true);
+              },
+              mouseout: () => {
+                onRouteSegmentHover?.(route.id, false);
+              },
+            }}
+          />
+        );
+      })}
 
       {/* Render markers */}
       {markers.map((marker) => {

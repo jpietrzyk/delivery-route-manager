@@ -27,8 +27,14 @@ export interface MapRouteSegmentData {
     lat: number;
     lng: number;
   };
+  positions?: Array<{
+    lat: number;
+    lng: number;
+  }>; // Full polyline path (optional, falls back to straight line)
   isHighlighted?: boolean;
   highlightColor?: string;
+  distance?: number; // meters
+  duration?: number; // seconds
 }
 
 export interface MapBounds {
