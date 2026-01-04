@@ -78,56 +78,56 @@ describe('DeliveryRouteWaypointsApi', () => {
   describe('reorderWaypoints', () => {
     it('should move waypoint from one position to another', async () => {
       // Add waypoints
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-003', 'ORD-020');
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-003', 'ORD-021');
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-003', 'ORD-022');
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-003', 'ORD-020');
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-003', 'ORD-021');
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-003', 'ORD-022');
 
       // Reorder
-      const waypoints = DeliveryRouteWaypointsApi.reorderWaypoints('DEL-003', 0, 2);
+      const waypoints = await DeliveryRouteWaypointsApi.reorderWaypoints('DEL-003', 0, 2);
 
       expect(Array.isArray(waypoints)).toBe(true);
     });
   });
 
   describe('updateWaypointStatus', () => {
-    it('should update waypoint status', () => {
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-004', 'ORD-030');
+    it('should update waypoint status', async () => {
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-004', 'ORD-030');
 
-      const updated = DeliveryRouteWaypointsApi.updateWaypointStatus('DEL-004', 'ORD-030', 'delivered');
+      const updated = await DeliveryRouteWaypointsApi.updateWaypointStatus('DEL-004', 'ORD-030', 'delivered');
 
       expect(updated?.status).toBe('delivered');
     });
 
-    it('should set deliveredAt when status is delivered', () => {
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-005', 'ORD-031');
+    it('should set deliveredAt when status is delivered', async () => {
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-005', 'ORD-031');
 
-      const updated = DeliveryRouteWaypointsApi.updateWaypointStatus('DEL-005', 'ORD-031', 'delivered');
+      const updated = await DeliveryRouteWaypointsApi.updateWaypointStatus('DEL-005', 'ORD-031', 'delivered');
 
       if (updated?.status === 'delivered') {
         expect(updated.deliveredAt).toBeDefined();
       }
     });
 
-    it('should not set deliveredAt for non-delivered statuses', () => {
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-006', 'ORD-032');
+    it('should not set deliveredAt for non-delivered statuses', async () => {
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-006', 'ORD-032');
 
-      const updated = DeliveryRouteWaypointsApi.updateWaypointStatus('DEL-006', 'ORD-032', 'in-transit');
+      const updated = await DeliveryRouteWaypointsApi.updateWaypointStatus('DEL-006', 'ORD-032', 'in-transit');
 
       expect(updated?.status).toBe('in-transit');
     });
 
-    it('should return null if waypoint not found', () => {
-      const updated = DeliveryRouteWaypointsApi.updateWaypointStatus('DEL-999', 'ORD-999', 'delivered');
+    it('should return null if waypoint not found', async () => {
+      const updated = await DeliveryRouteWaypointsApi.updateWaypointStatus('DEL-999', 'ORD-999', 'delivered');
 
       expect(updated).toBeNull();
     });
   });
 
   describe('updateWaypoint', () => {
-    it('should update any waypoint fields', () => {
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-007', 'ORD-033');
+    it('should update any waypoint fields', async () => {
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-007', 'ORD-033');
 
-      const updated = DeliveryRouteWaypointsApi.updateWaypoint('DEL-007', 'ORD-033', {
+      const updated = await DeliveryRouteWaypointsApi.updateWaypoint('DEL-007', 'ORD-033', {
         status: 'delivered',
         notes: 'Updated notes',
         driveTimeEstimate: 20
@@ -138,10 +138,10 @@ describe('DeliveryRouteWaypointsApi', () => {
       expect(updated?.driveTimeEstimate).toBe(20);
     });
 
-    it('should preserve deliveryId and orderId during update', () => {
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-008', 'ORD-034');
+    it('should preserve deliveryId and orderId during update', async () => {
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-008', 'ORD-034');
 
-      const updated = DeliveryRouteWaypointsApi.updateWaypoint(
+      const updated = await DeliveryRouteWaypointsApi.updateWaypoint(
         'DEL-008',
         'ORD-034',
         {
@@ -155,8 +155,8 @@ describe('DeliveryRouteWaypointsApi', () => {
       expect(updated?.deliveryId).toBe('DEL-008');
     });
 
-    it('should return null if waypoint not found', () => {
-      const updated = DeliveryRouteWaypointsApi.updateWaypoint('DEL-999', 'ORD-999', {
+    it('should return null if waypoint not found', async () => {
+      const updated = await DeliveryRouteWaypointsApi.updateWaypoint('DEL-999', 'ORD-999', {
         status: 'delivered'
       });
 
@@ -165,48 +165,48 @@ describe('DeliveryRouteWaypointsApi', () => {
   });
 
   describe('getWaypoint', () => {
-    it('should retrieve a specific waypoint', () => {
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-009', 'ORD-035');
+    it('should retrieve a specific waypoint', async () => {
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-009', 'ORD-035');
 
-      const waypoint = DeliveryRouteWaypointsApi.getWaypoint('DEL-009', 'ORD-035');
+      const waypoint = await DeliveryRouteWaypointsApi.getWaypoint('DEL-009', 'ORD-035');
 
       expect(waypoint?.orderId).toBe('ORD-035');
     });
 
-    it('should return null for non-existent waypoint', () => {
-      const waypoint = DeliveryRouteWaypointsApi.getWaypoint('DEL-999', 'ORD-999');
+    it('should return null for non-existent waypoint', async () => {
+      const waypoint = await DeliveryRouteWaypointsApi.getWaypoint('DEL-999', 'ORD-999');
 
       expect(waypoint).toBeNull();
     });
   });
 
   describe('Many-to-many scenarios', () => {
-    it('should allow same order in multiple deliveries', () => {
-      const wp1 = DeliveryRouteWaypointsApi.addWaypoint('DEL-010', 'ORD-040');
-      const wp2 = DeliveryRouteWaypointsApi.addWaypoint('DEL-011', 'ORD-040');
+    it('should allow same order in multiple deliveries', async () => {
+      const wp1 = await DeliveryRouteWaypointsApi.addWaypoint('DEL-010', 'ORD-040');
+      const wp2 = await DeliveryRouteWaypointsApi.addWaypoint('DEL-011', 'ORD-040');
 
       expect(wp1?.orderId).toBe('ORD-040');
       expect(wp2?.orderId).toBe('ORD-040');
     });
 
-    it('should find all deliveries containing an order', () => {
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-012', 'ORD-041');
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-013', 'ORD-041');
+    it('should find all deliveries containing an order', async () => {
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-012', 'ORD-041');
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-013', 'ORD-041');
 
-      const deliveries = DeliveryRouteWaypointsApi.getDeliveriesForOrder('ORD-041');
+      const deliveries = await DeliveryRouteWaypointsApi.getDeliveriesForOrder('ORD-041');
 
       expect(Array.isArray(deliveries)).toBe(true);
     });
   });
 
   describe('Resequencing', () => {
-    it('should maintain proper sequence after add/remove/reorder', () => {
+    it('should maintain proper sequence after add/remove/reorder', async () => {
       // Add three waypoints
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-014', 'ORD-050');
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-014', 'ORD-051');
-      DeliveryRouteWaypointsApi.addWaypoint('DEL-014', 'ORD-052');
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-014', 'ORD-050');
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-014', 'ORD-051');
+      await DeliveryRouteWaypointsApi.addWaypoint('DEL-014', 'ORD-052');
 
-      let waypoints = DeliveryRouteWaypointsApi.getWaypointsByDelivery('DEL-014');
+      let waypoints = await DeliveryRouteWaypointsApi.getWaypointsByDelivery('DEL-014');
 
       // Sequences should be properly ordered
       if (waypoints.length >= 3) {
@@ -217,9 +217,9 @@ describe('DeliveryRouteWaypointsApi', () => {
       }
 
       // Remove middle waypoint
-      DeliveryRouteWaypointsApi.removeWaypoint('DEL-014', 'ORD-051');
+      await DeliveryRouteWaypointsApi.removeWaypoint('DEL-014', 'ORD-051');
 
-      waypoints = DeliveryRouteWaypointsApi.getWaypointsByDelivery('DEL-014');
+      waypoints = await DeliveryRouteWaypointsApi.getWaypointsByDelivery('DEL-014');
 
       // Remaining should be resequenced
       if (waypoints.length >= 2) {
