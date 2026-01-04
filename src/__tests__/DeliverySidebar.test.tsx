@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MemoryRouter } from "react-router-dom";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -58,16 +59,18 @@ describe("DeliverySidebar - Assigned Count Update", () => {
     );
 
     return (
-      <SidebarProvider>
-        <DeliveryRouteManagerProvider>
-          <DeliverySidebar
-            deliveryOrders={deliveryOrders}
-            unassignedOrders={unassignedOrders}
-            onDeliveryOrdersUpdated={setDeliveryOrders}
-            onAddOrderToDelivery={onAddOrderToDelivery}
-          />
-        </DeliveryRouteManagerProvider>
-      </SidebarProvider>
+      <MemoryRouter>
+        <SidebarProvider>
+          <DeliveryRouteManagerProvider>
+            <DeliverySidebar
+              deliveryOrders={deliveryOrders}
+              unassignedOrders={unassignedOrders}
+              onDeliveryOrdersUpdated={setDeliveryOrders}
+              onAddOrderToDelivery={onAddOrderToDelivery}
+            />
+          </DeliveryRouteManagerProvider>
+        </SidebarProvider>
+      </MemoryRouter>
     );
   };
 
