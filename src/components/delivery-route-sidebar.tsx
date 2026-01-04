@@ -528,7 +528,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                   {currentMapProvider === "mapy" ? "Mapy.cz" : "Leaflet"}
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" side="top">
                 <DropdownMenuItem
                   onClick={() => handleMapProviderChange("leaflet")}
                   className={
