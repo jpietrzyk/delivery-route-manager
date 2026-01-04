@@ -20,6 +20,7 @@ import {
   applyPendingOrderUpdates,
 } from "@/lib/local-storage-utils";
 import { RouteManager } from "@/services/RouteManager";
+import { getUnassignedOrders } from "@/lib/utils";
 
 export default function DeliveryRouteManagerProvider({
   children,
@@ -56,9 +57,23 @@ export default function DeliveryRouteManagerProvider({
       const orders = await OrdersApi.getOrders();
       // Apply pending optimistic updates
       const ordersWithPendingUpdates = applyPendingOrderUpdates(orders);
-      const unassigned = ordersWithPendingUpdates.filter(
-        (order) => !order.deliveryId
+
+      // Get all waypoints across all deliveries
+      const allWaypoints: Array<any> = [];
+      if (deliveries && deliveries.length > 0) {
+        for (const delivery of deliveries) {
+          const waypoints =
+            await DeliveryRouteWaypointsApi.getWaypointsByDelivery(delivery.id);
+          allWaypoints.push(...waypoints);
+        }
+      }
+
+      // Filter orders to get only those not assigned to any delivery
+      const unassigned = getUnassignedOrders(
+        ordersWithPendingUpdates,
+        allWaypoints
       );
+
       console.log(
         "[DeliveryRouteManagerProvider] Unassigned orders:",
         unassigned.length,
@@ -68,7 +83,7 @@ export default function DeliveryRouteManagerProvider({
     } catch (error) {
       console.error("Error fetching unassigned orders:", error);
     }
-  }, []);
+  }, [deliveries]);
 
   // Fetch all deliveries
   const refreshDeliveries = useCallback(async () => {

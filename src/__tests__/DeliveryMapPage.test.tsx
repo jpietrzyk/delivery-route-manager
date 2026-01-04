@@ -4,6 +4,7 @@ import DeliveryMapPage from "@/pages/DeliveryRouteMapPage";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";
 import { OrdersApi } from "@/services/ordersApi";
+import { DeliveryRouteWaypointsApi } from "@/services/deliveryRouteWaypointsApi";
 import type { Order } from "@/types/order";
 
 // Mock the OrdersApi
@@ -16,7 +17,6 @@ const mockOrders: Order[] = [
     status: "pending",
     priority: "medium",
     active: true,
-    deliveryId: "delivery-1",
     createdAt: new Date(),
     updatedAt: new Date(),
     customer: "Customer 1",
@@ -55,6 +55,8 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
   afterEach(() => {
     jest.clearAllMocks();
     localStorage.clear();
+    // Reset the waypoint cache to prevent test contamination
+    DeliveryRouteWaypointsApi.resetCache();
   });
 
   it("should increment refreshTrigger when order is added to delivery", async () => {

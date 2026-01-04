@@ -6,6 +6,7 @@ import { OrdersApi } from "@/services/ordersApi";
 import type { DeliveryRoute } from "@/types/delivery-route";
 import type { Order } from "@/types/order";
 import { getOrdersInSequence } from "@/lib/delivery-route-waypoint-helpers";
+import { getUnassignedOrders } from "@/lib/utils";
 import {
   addOptimisticDeliveryUpdate,
   addOptimisticOrderUpdate,
@@ -35,9 +36,20 @@ export default function DeliveryRouteProvider({
       // Apply pending optimistic updates
       const ordersWithPendingUpdates = applyPendingOrderUpdates(orders);
 
-      // Filter out orders that are assigned to any delivery (double-check safety)
-      const unassigned = ordersWithPendingUpdates.filter(
-        (order) => !order.deliveryId
+      // Get all waypoints across all deliveries
+      const allWaypoints: Array<any> = [];
+      if (deliveries && deliveries.length > 0) {
+        for (const delivery of deliveries) {
+          const waypoints =
+            await DeliveryRouteWaypointsApi.getWaypointsByDelivery(delivery.id);
+          allWaypoints.push(...waypoints);
+        }
+      }
+
+      // Filter orders to get only those not assigned to any delivery
+      const unassigned = getUnassignedOrders(
+        ordersWithPendingUpdates,
+        allWaypoints
       );
 
       console.log(
@@ -49,7 +61,7 @@ export default function DeliveryRouteProvider({
     } catch (error) {
       console.error("Error fetching unassigned orders:", error);
     }
-  }, []);
+  }, [deliveries]);
 
   // Fetch orders for a specific delivery
   // NEW: Uses waypoint-based architecture (many-to-many relationship)
