@@ -5,6 +5,7 @@
 import "leaflet/dist/leaflet.css";
 import React, { useEffect, useRef } from "react";
 import L from "leaflet";
+import { createRoot } from "react-dom/client";
 import type {
   MapMarkerData,
   MapRouteSegmentData,
@@ -296,9 +297,14 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         // Update popup if needed
         if (markerData.popupContent) {
           const popupContainer = document.createElement("div");
-          // Simple DOM rendering without React root for popups
-          popupContainer.innerHTML = String(markerData.popupContent);
-          existingMarker.bindPopup(popupContainer);
+          // Render React content properly using createRoot
+          const root = createRoot(popupContainer);
+          root.render(markerData.popupContent);
+          existingMarker.bindPopup(popupContainer, {
+            closeButton: true,
+            closeOnClick: false,
+            maxWidth: 300,
+          });
         }
       } else {
         // Create new marker
@@ -307,9 +313,14 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         // Add popup if provided
         if (markerData.popupContent) {
           const popupContainer = document.createElement("div");
-          // Simple DOM rendering without React root for popups
-          popupContainer.innerHTML = String(markerData.popupContent);
-          newMarker.bindPopup(popupContainer);
+          // Render React content properly using createRoot
+          const root = createRoot(popupContainer);
+          root.render(markerData.popupContent);
+          newMarker.bindPopup(popupContainer, {
+            closeButton: true,
+            closeOnClick: false,
+            maxWidth: 300,
+          });
         }
 
         // Add hover events
