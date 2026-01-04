@@ -113,6 +113,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   const [isUnassignedCollapsed, setIsUnassignedCollapsed] = useState(true); // collapsed by default
   const [totalEstimatedTime, setTotalEstimatedTime] = useState<number>(0);
   const [totalDistance, setTotalDistance] = useState<number>(0);
+  const [isOperationInProgress, setIsOperationInProgress] = useState(false);
 
   // Handle delivery expand/collapse state change
   const handleDeliveryExpandChange = (expanded: boolean) => {
@@ -177,6 +178,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     }
 
     try {
+      setIsOperationInProgress(true);
       // Optimistic UI update - remove immediately for better UX
       const updatedOrders = deliveryOrders.filter(
         (order) => order.id !== orderId
@@ -192,6 +194,8 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     } catch (error) {
       console.error("Failed to remove order:", error);
       // TODO: Revert optimistic update on error (would need to refetch or cache previous state)
+    } finally {
+      setIsOperationInProgress(false);
     }
   };
 
@@ -202,25 +206,32 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     console.log("orderToAdd:", orderToAdd);
     console.log("currentDelivery:", currentDelivery);
 
-    if (orderToAdd && currentDelivery) {
-      // Add the order with the correct deliveryId set
-      const orderWithDeliveryId = {
-        ...orderToAdd,
-        deliveryId: currentDelivery.id,
-      };
-      console.log("Adding order optimistically:", orderWithDeliveryId);
-      setDeliveryOrders((prev) => {
-        const newOrders = [...prev, orderWithDeliveryId];
-        console.log("Updated delivery orders count:", newOrders.length);
-        return newOrders;
-      });
-    } else if (orderToAdd && !currentDelivery) {
-      console.log(
-        "currentDelivery not available yet, will rely on DeliveryRouteProvider update"
-      );
-    }
+    try {
+      setIsOperationInProgress(true);
+      if (orderToAdd && currentDelivery) {
+        // Add the order with the correct deliveryId set
+        const orderWithDeliveryId = {
+          ...orderToAdd,
+          deliveryId: currentDelivery.id,
+        };
+        console.log("Adding order optimistically:", orderWithDeliveryId);
+        setDeliveryOrders((prev) => {
+          const newOrders = [...prev, orderWithDeliveryId];
+          console.log("Updated delivery orders count:", newOrders.length);
+          return newOrders;
+        });
+      } else if (orderToAdd && !currentDelivery) {
+        console.log(
+          "currentDelivery not available yet, will rely on DeliveryRouteProvider update"
+        );
+      }
 
-    await onAddOrderToDelivery?.(orderId);
+      await onAddOrderToDelivery?.(orderId);
+    } catch (error) {
+      console.error("Failed to add order:", error);
+    } finally {
+      setIsOperationInProgress(false);
+    }
   };
 
   const handleReorder = (newOrders: Order[]) => {
@@ -317,7 +328,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
         <div className="h-full flex flex-col overflow-hidden">
           {/* Delivery Orders Section - Always partially visible, can expand to full height */}
           <div
-            className={`flex flex-col bg-background rounded-2sm shadow-sm border border-border/50 overflow-hidden m-4 max-w-full ${
+            className={`flex flex-col bg-background rounded-2sm shadow-sm border border-border/50 overflow-hidden m-4 max-w-full relative ${
               isDeliveryExpanded
                 ? isUnassignedCollapsed
                   ? "flex-1"
@@ -325,6 +336,19 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                 : "h-[67%] min-h-75"
             }`}
           >
+            {/* Loading Overlay */}
+            {isOperationInProgress && (
+              <div className="absolute inset-0 bg-background/40 backdrop-blur-sm z-50 flex items-center justify-center rounded-2sm">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="relative w-8 h-8">
+                    <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-primary border-r-primary animate-spin"></div>
+                  </div>
+                  <span className="text-xs font-medium text-muted-foreground">
+                    Calculating route...
+                  </span>
+                </div>
+              </div>
+            )}
             <button
               onClick={() => handleDeliveryExpandChange(!isDeliveryExpanded)}
               className="max-w-full flex items-center justify-between px-4 py-3 border-b border-border/50 bg-primary/2 hover:bg-primary/5 text-left transition-colors"
@@ -460,7 +484,20 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
               </button>
             )
           ) : (
-            <div className="flex flex-col bg-background rounded-2sm shadow-sm border border-border/50 overflow-hidden mx-4 mb-4 max-w-full h-[33%] min-h-50">
+            <div className="flex flex-col bg-background rounded-2sm shadow-sm border border-border/50 overflow-hidden mx-4 mb-4 max-w-full h-[33%] min-h-50 relative">
+              {/* Loading Overlay */}
+              {isOperationInProgress && (
+                <div className="absolute inset-0 bg-background/40 backdrop-blur-sm z-50 flex items-center justify-center rounded-2sm">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="relative w-8 h-8">
+                      <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-primary border-r-primary animate-spin"></div>
+                    </div>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      Calculating route...
+                    </span>
+                  </div>
+                </div>
+              )}
               <button
                 onClick={() => handleUnassignedCollapseChange(false)}
                 className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-transparent text-left hover:bg-accent/10 transition-colors"
