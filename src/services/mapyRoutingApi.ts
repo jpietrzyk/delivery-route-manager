@@ -108,8 +108,8 @@ class MapyRoutingApiClass {
 
   /**
    * Calculate route segments for multiple consecutive waypoints
-   * Uses Mapy.cz waypoints parameter to calculate route through all points in a single API call
-   * For routes with >15 waypoints, splits into batches (Mapy.cz limit is 15 waypoints per request)
+   * Calculates separate routes between each pair of consecutive waypoints
+   * This ensures each segment is optimized independently without being affected by the chaotic ordering of all waypoints
    */
   async calculateRouteSegments(
     waypoints: Array<{ lat: number; lng: number }>,
@@ -124,207 +124,65 @@ class MapyRoutingApiClass {
       return [];
     }
 
-    // Mapy.cz API limit: start + end + 15 waypoints = 17 total points
-    // So we can handle up to 17 waypoints in one request
-    const MAX_WAYPOINTS_PER_REQUEST = 15;
-
     const segments: RouteSegment[] = [];
 
-    // If we have more waypoints than the limit, we need to batch them
-    if (waypoints.length > MAX_WAYPOINTS_PER_REQUEST + 2) {
-      // Split into batches with overlap (last point of batch N is first point of batch N+1)
-      for (let batchStart = 0; batchStart < waypoints.length - 1; batchStart += MAX_WAYPOINTS_PER_REQUEST + 1) {
-        const batchEnd = Math.min(batchStart + MAX_WAYPOINTS_PER_REQUEST + 2, waypoints.length);
-        const batchWaypoints = waypoints.slice(batchStart, batchEnd);
-        const batchSegments = await this.calculateRouteBatch(batchWaypoints, apiKey, options);
-        segments.push(...batchSegments);
+    // Calculate a separate route for each consecutive pair of waypoints
+    // Route 1: waypoint[0] -> waypoint[1]
+    // Route 2: waypoint[1] -> waypoint[2]
+    // etc.
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      const from = waypoints[i];
+      const to = waypoints[i + 1];
+
+      try {
+        const routeResponse = await this.calculateRoute(
+          {
+            start: [from.lng, from.lat],
+            end: [to.lng, to.lat],
+            routeType: options?.routeType || 'car_fast',
+            format: 'geojson',
+            avoidToll: options?.avoidToll,
+            avoidHighways: options?.avoidHighways,
+          },
+          apiKey
+        );
+
+        console.log(`Segment ${i} (${from.lat},${from.lng} -> ${to.lat},${to.lng}):`, {
+          distance: routeResponse.length,
+          duration: routeResponse.duration,
+          coordinatesCount: routeResponse.geometry.geometry.coordinates.length,
+        });
+
+        // Convert the polyline to positions
+        const positions = this.convertGeoJSONToPositions(
+          routeResponse.geometry.geometry.coordinates
+        );
+
+        const segmentId = `${from.lat},${from.lng}-${to.lat},${to.lng}`;
+        const segment: RouteSegment = {
+          id: segmentId,
+          from: { lat: from.lat, lng: from.lng },
+          to: { lat: to.lat, lng: to.lng },
+          positions: positions.length > 1 ? positions : [{ lat: from.lat, lng: from.lng }, { lat: to.lat, lng: to.lng }],
+          distance: routeResponse.length,
+          duration: routeResponse.duration,
+        };
+
+        segments.push(segment);
+      } catch (error) {
+        console.error(`Failed to calculate route segment ${i}:`, error);
+        // Create a fallback straight-line segment
+        const segmentId = `${from.lat},${from.lng}-${to.lat},${to.lng}`;
+        segments.push({
+          id: segmentId,
+          from: { lat: from.lat, lng: from.lng },
+          to: { lat: to.lat, lng: to.lng },
+          positions: [{ lat: from.lat, lng: from.lng }, { lat: to.lat, lng: to.lng }],
+        });
       }
-    } else {
-      // All waypoints fit in one request
-      const batchSegments = await this.calculateRouteBatch(waypoints, apiKey, options);
-      segments.push(...batchSegments);
     }
 
     return segments;
-  }
-
-  /**
-   * Calculate route for a batch of waypoints (up to 17 points)
-   * Uses the waypoints parameter to get a single route through all points
-   */
-  private async calculateRouteBatch(
-    waypoints: Array<{ lat: number; lng: number }>,
-    apiKey: string,
-    options?: {
-      routeType?: RoutingRequest['routeType'];
-      avoidToll?: boolean;
-      avoidHighways?: boolean;
-    }
-  ): Promise<RouteSegment[]> {
-    if (waypoints.length < 2) {
-      return [];
-    }
-
-    try {
-      // Build the request with start, end, and intermediate waypoints
-      const start = waypoints[0];
-      const end = waypoints[waypoints.length - 1];
-      const intermediateWaypoints = waypoints.slice(1, -1);
-
-      const routeResponse = await this.calculateRoute(
-        {
-          start: [start.lng, start.lat], // Mapy.cz uses [lng, lat]
-          end: [end.lng, end.lat],
-          waypoints: intermediateWaypoints.length > 0
-            ? intermediateWaypoints.map(w => [w.lng, w.lat] as [number, number])
-            : undefined,
-          routeType: options?.routeType || 'car_fast',
-          format: 'geojson',
-          avoidToll: options?.avoidToll,
-          avoidHighways: options?.avoidHighways,
-        },
-        apiKey
-      );
-
-      console.log('Route calculation:', {
-        waypoints: waypoints.length,
-        routeLength: routeResponse.length,
-        routeDuration: routeResponse.duration,
-        parts: routeResponse.parts?.length,
-        routePoints: routeResponse.routePoints?.length,
-        coordinatesCount: routeResponse.geometry.geometry.coordinates.length,
-      });
-
-      // Convert the full route geometry to positions
-      const positions = this.convertGeoJSONToPositions(
-        routeResponse.geometry.geometry.coordinates
-      );
-
-      // Split the polyline into segments using routePoints data
-      // routePoints[i] corresponds to waypoints[i] and tells us where it was mapped in the route
-      const segments: RouteSegment[] = [];
-
-      if (routeResponse.routePoints && routeResponse.routePoints.length === waypoints.length) {
-        // We have routePoints data - use it to split the polyline accurately
-        for (let i = 0; i < waypoints.length - 1; i++) {
-          // Use the MAPPED positions from the API response, not the original waypoints
-          // The mapped positions are where the routing engine actually placed the waypoints
-          const fromMappedCoords = routeResponse.routePoints[i].mappedPosition;
-          const toMappedCoords = routeResponse.routePoints[i + 1].mappedPosition;
-
-          const from = { lat: fromMappedCoords[1], lng: fromMappedCoords[0] };
-          const to = { lat: toMappedCoords[1], lng: toMappedCoords[0] };
-          const segmentId = `${from.lat},${from.lng}-${to.lat},${to.lng}`;
-
-          const fromMapped = routeResponse.routePoints[i].mappedPosition;
-          const toMapped = routeResponse.routePoints[i + 1].mappedPosition;
-
-          // Find the indices in the positions array that correspond to these mapped positions
-          const fromIndex = this.findClosestPositionIndex(positions, {
-            lat: fromMapped[1],
-            lng: fromMapped[0],
-          });
-          const toIndex = this.findClosestPositionIndex(positions, {
-            lat: toMapped[1],
-            lng: toMapped[0],
-          });
-
-          // Extract the segment's portion of the polyline
-          const segmentPositions = positions.slice(fromIndex, toIndex + 1);
-
-          // Get the part data if available (parts array matches waypoint pairs)
-          const part = routeResponse.parts?.[i];
-
-          const segment: RouteSegment = {
-            id: segmentId,
-            from,
-            to,
-            positions: segmentPositions.length > 1 ? segmentPositions : [from, to],
-            distance: part?.length || routeResponse.length / (waypoints.length - 1),
-            duration: part?.duration || routeResponse.duration / (waypoints.length - 1),
-          };
-
-          console.log(`Segment ${i}: ${from.lat},${from.lng} -> ${to.lat},${to.lng}`, {
-            fromIndex,
-            toIndex,
-            positionsCount: segmentPositions.length,
-            distance: segment.distance,
-            duration: segment.duration,
-          });
-
-          segments.push(segment);
-        }
-      } else {
-        // No routePoints data - split proportionally based on waypoint count
-        // This is a fallback and won't be as accurate
-        for (let i = 0; i < waypoints.length - 1; i++) {
-          const from = waypoints[i];
-          const to = waypoints[i + 1];
-          const segmentId = `${from.lat},${from.lng}-${to.lat},${to.lng}`;
-
-          // Approximate split of positions
-          const segmentStart = Math.floor((i / (waypoints.length - 1)) * positions.length);
-          const segmentEnd = Math.floor(((i + 1) / (waypoints.length - 1)) * positions.length);
-          const segmentPositions = positions.slice(segmentStart, segmentEnd + 1);
-
-          const part = routeResponse.parts?.[i];
-
-          const segment: RouteSegment = {
-            id: segmentId,
-            from,
-            to,
-            positions: segmentPositions.length > 1 ? segmentPositions : [from, to],
-            distance: part?.length || routeResponse.length / (waypoints.length - 1),
-            duration: part?.duration || routeResponse.duration / (waypoints.length - 1),
-          };
-
-          segments.push(segment);
-        }
-      }
-
-      return segments;
-    } catch (error) {
-      console.error(`Failed to calculate route for batch:`, error);
-      // Fallback to straight lines
-      const segments: RouteSegment[] = [];
-      for (let i = 0; i < waypoints.length - 1; i++) {
-        const from = waypoints[i];
-        const to = waypoints[i + 1];
-        segments.push({
-          id: `${from.lat},${from.lng}-${to.lat},${to.lng}`,
-          from,
-          to,
-          positions: [from, to],
-        });
-      }
-      return segments;
-    }
-  }
-
-  /**
-   * Find the index of the closest position in the polyline to a given point
-   */
-  private findClosestPositionIndex(
-    positions: Array<{ lat: number; lng: number }>,
-    target: { lat: number; lng: number }
-  ): number {
-    let minDistance = Infinity;
-    let closestIndex = 0;
-
-    for (let i = 0; i < positions.length; i++) {
-      const pos = positions[i];
-      // Simple Euclidean distance (good enough for small distances)
-      const distance = Math.sqrt(
-        Math.pow(pos.lat - target.lat, 2) + Math.pow(pos.lng - target.lng, 2)
-      );
-
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestIndex = i;
-      }
-    }
-
-    return closestIndex;
   }
 
   /**
