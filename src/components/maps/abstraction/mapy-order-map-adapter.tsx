@@ -289,13 +289,15 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         if (isPool) {
           // Add to delivery
           if (currentDelivery) {
-            await addOrderToDelivery(order.id, currentDelivery.id);
+            await addOrderToDelivery(currentDelivery.id, order.id);
+            // Trigger refresh for both callbacks to ensure routes are recalculated
             onOrderAddedToDelivery?.(order.id);
+            onRefreshRequested?.();
           }
         } else {
           // Remove from delivery
           if (currentDelivery) {
-            await removeOrderFromDelivery(order.id, currentDelivery.id);
+            await removeOrderFromDelivery(currentDelivery.id, order.id);
             onRefreshRequested?.();
           }
         }

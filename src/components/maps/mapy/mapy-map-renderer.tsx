@@ -167,6 +167,9 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
   const routeInstancesRef = useRef<Map<string, ReturnType<typeof L.polyline>>>(
     new Map()
   );
+  const popupDataRef = useRef<
+    Map<string, { container: HTMLElement; root: ReturnType<typeof createRoot> }>
+  >(new Map());
 
   // Ensure every delivery marker has a 1-based waypoint index (fallback if missing)
   const markersWithIndex = React.useMemo(() => {
@@ -277,6 +280,12 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
       if (!currentMarkerIds.has(id)) {
         markerLayer.removeLayer(marker);
         markerInstances.delete(id);
+        // Unmount React root and cleanup for this marker
+        const popupData = popupDataRef.current.get(id);
+        if (popupData) {
+          popupData.root.unmount();
+          popupDataRef.current.delete(id);
+        }
       }
     });
 
@@ -296,11 +305,17 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
 
         // Update popup if needed
         if (markerData.popupContent) {
-          const popupContainer = document.createElement("div");
-          // Render React content properly using createRoot
-          const root = createRoot(popupContainer);
-          root.render(markerData.popupContent);
-          existingMarker.bindPopup(popupContainer, {
+          let popupData = popupDataRef.current.get(markerData.id);
+          if (!popupData) {
+            // Create new container and root if they don't exist
+            const popupContainer = document.createElement("div");
+            const root = createRoot(popupContainer);
+            popupData = { container: popupContainer, root };
+            popupDataRef.current.set(markerData.id, popupData);
+          }
+          // Render content to existing root and container
+          popupData.root.render(markerData.popupContent);
+          existingMarker.bindPopup(popupData.container, {
             closeButton: true,
             closeOnClick: false,
             maxWidth: 300,
@@ -313,8 +328,11 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         // Add popup if provided
         if (markerData.popupContent) {
           const popupContainer = document.createElement("div");
-          // Render React content properly using createRoot
           const root = createRoot(popupContainer);
+          popupDataRef.current.set(markerData.id, {
+            container: popupContainer,
+            root,
+          });
           root.render(markerData.popupContent);
           newMarker.bindPopup(popupContainer, {
             closeButton: true,
