@@ -8,7 +8,10 @@ import { PolylineHighlightContext } from "@/contexts/polyline-highlight-context"
 import { DeliveryRoutesApi } from "@/services/deliveryRoutesApi";
 import { DeliveryRouteWaypointsApi } from "@/services/deliveryRouteWaypointsApi";
 import { OrdersApi } from "@/services/ordersApi";
-import type { DeliveryRoute } from "@/types/delivery-route";
+import type {
+  DeliveryRoute,
+  DeliveryRouteWaypoint,
+} from "@/types/delivery-route";
 import type { Order } from "@/types/order";
 import {
   addOptimisticDeliveryUpdate,
@@ -59,7 +62,7 @@ export default function DeliveryRouteManagerProvider({
       const ordersWithPendingUpdates = applyPendingOrderUpdates(orders);
 
       // Get all waypoints across all deliveries
-      const allWaypoints: Array<any> = [];
+      const allWaypoints: DeliveryRouteWaypoint[] = [];
       if (deliveries && deliveries.length > 0) {
         for (const delivery of deliveries) {
           const waypoints =

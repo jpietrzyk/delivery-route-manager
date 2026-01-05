@@ -17,8 +17,8 @@ async function loadOrders(): Promise<void> {
       throw new Error('Failed to load orders data');
     }
 
-    const ordersJson = await response.json();
-    sampleOrdersData = ordersJson.map((order: any) => ({
+    const ordersJson = (await response.json()) as Order[];
+    sampleOrdersData = ordersJson.map((order) => ({
       id: order.id,
       product: order.product as Product,
       comment: order.comment,

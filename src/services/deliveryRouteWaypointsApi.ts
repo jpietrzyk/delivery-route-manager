@@ -37,16 +37,19 @@ async function loadWaypoints(): Promise<void> {
           const response = await fetch('/delivery-route-waypoints-DEL-001.json');
           console.log('Fetch response:', response.status, response.ok);
           if (response.ok) {
-            const data = await response.json();
+            const data = (await response.json()) as DeliveryRouteWaypoint[];
             console.log('JSON parsed, data:', data);
             if (data && Array.isArray(data)) {
               // Load data from JSON file
               waypointsData.clear();
               const deliveryId = 'DEL-001';
-              waypointsData.set(deliveryId, data.map((wp: any) => ({
-                ...wp,
+              waypointsData.set(
                 deliveryId,
-              })));
+                data.map((wp) => ({
+                  ...wp,
+                  deliveryId,
+                }))
+              );
               console.log(`✅ Loaded ${data.length} waypoints for delivery ${deliveryId} from JSON`);
               waypointsLoaded = true;
               return;
@@ -312,9 +315,9 @@ export class DeliveryRouteWaypointsApi {
     }
 
     // Remove orderId and deliveryId from updates if they were passed (prevent override attempts)
-    const safeUpdates = { ...(updates as any) };
-    delete (safeUpdates as any).orderId;
-    delete (safeUpdates as any).deliveryId;
+    const safeUpdates: Partial<DeliveryRouteWaypoint> = { ...updates };
+    delete safeUpdates.orderId;
+    delete safeUpdates.deliveryId;
 
     Object.assign(waypoint, safeUpdates);
     return { ...waypoint };
