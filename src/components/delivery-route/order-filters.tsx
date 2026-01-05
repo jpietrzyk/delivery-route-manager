@@ -125,18 +125,18 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
 
   return (
     <div className="w-full px-6 py-4 border-b border-border bg-muted/50">
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold text-foreground">Filters</h3>
+      <h3 className="text-sm font-semibold text-foreground mb-4">Filters</h3>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         <div className="space-y-2">
           <p className="text-xs font-medium text-foreground/70">Priority</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Toggle
               pressed={priorities.low}
               onPressedChange={() => handlePriorityChange("low")}
               size="sm"
               aria-label="Filter by Low priority"
-              className="data-[state=on]:text-green-600 data-[state=on]:*:[svg]:stroke-green-600"
+              className="data-[state=on]:text-green-600 data-[state=on]:*:[svg]:stroke-green-600 justify-start"
             >
               <ChevronDown className="h-4 w-4 mr-1" />
               Low
@@ -147,7 +147,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handlePriorityChange("medium")}
               size="sm"
               aria-label="Filter by Medium priority"
-              className="data-[state=on]:text-yellow-600 data-[state=on]:*:[svg]:stroke-yellow-600"
+              className="data-[state=on]:text-yellow-600 data-[state=on]:*:[svg]:stroke-yellow-600 justify-start"
             >
               <AlertCircle className="h-4 w-4 mr-1" />
               Medium
@@ -158,7 +158,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handlePriorityChange("high")}
               size="sm"
               aria-label="Filter by High priority"
-              className="data-[state=on]:text-red-600 data-[state=on]:*:[svg]:stroke-red-600"
+              className="data-[state=on]:text-red-600 data-[state=on]:*:[svg]:stroke-red-600 justify-start col-span-2"
             >
               <Zap className="h-4 w-4 mr-1" />
               High
@@ -168,13 +168,13 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
 
         <div className="space-y-2">
           <p className="text-xs font-medium text-foreground/70">Status</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Toggle
               pressed={statuses.pending}
               onPressedChange={() => handleStatusChange("pending")}
               size="sm"
               aria-label="Filter by Pending status"
-              className="data-[state=on]:text-blue-600 data-[state=on]:*:[svg]:stroke-blue-600"
+              className="data-[state=on]:text-blue-600 data-[state=on]:*:[svg]:stroke-blue-600 justify-start"
             >
               <Clock className="h-4 w-4 mr-1" />
               Pending
@@ -185,7 +185,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handleStatusChange("in-progress")}
               size="sm"
               aria-label="Filter by In Progress status"
-              className="data-[state=on]:text-purple-600 data-[state=on]:*:[svg]:stroke-purple-600"
+              className="data-[state=on]:text-purple-600 data-[state=on]:*:[svg]:stroke-purple-600 justify-start"
             >
               <Play className="h-4 w-4 mr-1" />
               In Progress
@@ -196,7 +196,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handleStatusChange("completed")}
               size="sm"
               aria-label="Filter by Completed status"
-              className="data-[state=on]:text-emerald-600 data-[state=on]:*:[svg]:stroke-emerald-600"
+              className="data-[state=on]:text-emerald-600 data-[state=on]:*:[svg]:stroke-emerald-600 justify-start"
             >
               <CheckCircle className="h-4 w-4 mr-1" />
               Completed
@@ -207,7 +207,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handleStatusChange("cancelled")}
               size="sm"
               aria-label="Filter by Cancelled status"
-              className="data-[state=on]:text-gray-600 data-[state=on]:*:[svg]:stroke-gray-600"
+              className="data-[state=on]:text-gray-600 data-[state=on]:*:[svg]:stroke-gray-600 justify-start"
             >
               <XCircle className="h-4 w-4 mr-1" />
               Cancelled
@@ -217,13 +217,13 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
 
         <div className="space-y-2">
           <p className="text-xs font-medium text-foreground/70">Amount</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Toggle
               pressed={amounts.low}
               onPressedChange={() => handleAmountChange("low")}
               size="sm"
               aria-label="Filter by Low amount (0 - 10,000)"
-              className="data-[state=on]:text-cyan-600 data-[state=on]:*:[svg]:stroke-cyan-600"
+              className="data-[state=on]:text-cyan-600 data-[state=on]:*:[svg]:stroke-cyan-600 justify-start"
             >
               <DollarSign className="h-4 w-4 mr-1" />
               0-10K
@@ -234,7 +234,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handleAmountChange("medium")}
               size="sm"
               aria-label="Filter by Medium amount (10,001 - 100,000)"
-              className="data-[state=on]:text-orange-600 data-[state=on]:*:[svg]:stroke-orange-600"
+              className="data-[state=on]:text-orange-600 data-[state=on]:*:[svg]:stroke-orange-600 justify-start"
             >
               <DollarSign className="h-4 w-4 mr-1" />
               10K-100K
@@ -245,7 +245,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handleAmountChange("high")}
               size="sm"
               aria-label="Filter by High amount (above 100,000)"
-              className="data-[state=on]:text-rose-600 data-[state=on]:*:[svg]:stroke-rose-600"
+              className="data-[state=on]:text-rose-600 data-[state=on]:*:[svg]:stroke-rose-600 justify-start col-span-2"
             >
               <DollarSign className="h-4 w-4 mr-1" />
               100K+
@@ -255,13 +255,13 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
 
         <div className="space-y-2">
           <p className="text-xs font-medium text-foreground/70">Complexity</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Toggle
               pressed={complexities.simple}
               onPressedChange={() => handleComplexityChange("simple")}
               size="sm"
               aria-label="Filter by Simple complexity (Level 1)"
-              className="data-[state=on]:text-sky-600 data-[state=on]:*:[svg]:stroke-sky-600"
+              className="data-[state=on]:text-sky-600 data-[state=on]:*:[svg]:stroke-sky-600 justify-start"
             >
               <Wrench className="h-4 w-4 mr-1" />
               Simple
@@ -272,7 +272,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handleComplexityChange("moderate")}
               size="sm"
               aria-label="Filter by Moderate complexity (Level 2)"
-              className="data-[state=on]:text-amber-600 data-[state=on]:*:[svg]:stroke-amber-600"
+              className="data-[state=on]:text-amber-600 data-[state=on]:*:[svg]:stroke-amber-600 justify-start"
             >
               <Wrench className="h-4 w-4 mr-1" />
               Moderate
@@ -283,7 +283,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handleComplexityChange("complex")}
               size="sm"
               aria-label="Filter by Complex (Level 3)"
-              className="data-[state=on]:text-red-700 data-[state=on]:*:[svg]:stroke-red-700"
+              className="data-[state=on]:text-red-700 data-[state=on]:*:[svg]:stroke-red-700 justify-start col-span-2"
             >
               <Wrench className="h-4 w-4 mr-1" />
               Complex
@@ -293,13 +293,13 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
 
         <div className="space-y-2">
           <p className="text-xs font-medium text-foreground/70">Last Updated</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Toggle
               pressed={updatedAt.recent}
               onPressedChange={() => handleUpdatedAtChange("recent")}
               size="sm"
               aria-label="Filter by Recent updates (less than 1 week)"
-              className="data-[state=on]:text-green-600 data-[state=on]:*:[svg]:stroke-green-600"
+              className="data-[state=on]:text-green-600 data-[state=on]:*:[svg]:stroke-green-600 justify-start"
             >
               <Calendar className="h-4 w-4 mr-1" />
               &lt; 1 Week
@@ -310,7 +310,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handleUpdatedAtChange("moderate")}
               size="sm"
               aria-label="Filter by Moderate updates (1 week - 1 month)"
-              className="data-[state=on]:text-yellow-600 data-[state=on]:*:[svg]:stroke-yellow-600"
+              className="data-[state=on]:text-yellow-600 data-[state=on]:*:[svg]:stroke-yellow-600 justify-start"
             >
               <Calendar className="h-4 w-4 mr-1" />1 Week - 1 Month
             </Toggle>
@@ -320,7 +320,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               onPressedChange={() => handleUpdatedAtChange("old")}
               size="sm"
               aria-label="Filter by Old updates (more than 1 month)"
-              className="data-[state=on]:text-gray-600 data-[state=on]:*:[svg]:stroke-gray-600"
+              className="data-[state=on]:text-gray-600 data-[state=on]:*:[svg]:stroke-gray-600 justify-start col-span-2"
             >
               <Calendar className="h-4 w-4 mr-1" />
               &gt; 1 Month
