@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Toggle } from "@/components/ui/toggle";
+import { pl } from "@/lib/translations";
 import {
   ChevronDown,
   AlertCircle,
@@ -131,13 +132,15 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
             className="text-sm font-semibold text-foreground/70 tracking-wider whitespace-nowrap"
             style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
           >
-            FILTERS
+            {pl.filters.toUpperCase()}
           </h3>
         </div>
 
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           <div className="space-y-2">
-            <p className="text-xs font-medium text-foreground/70">Priority</p>
+            <p className="text-xs font-medium text-foreground/70">
+              {pl.priority}
+            </p>
             <div className="grid grid-cols-2 gap-2">
               <Toggle
                 pressed={priorities.low}
@@ -147,7 +150,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-green-50 data-[state=on]:text-green-700 data-[state=on]:border-green-300 data-[state=on]:*:[svg]:stroke-green-700 justify-start h-8 font-normal"
               >
                 <ChevronDown className="h-3.5 w-3.5 mr-1.5" />
-                Low
+                {pl.priorityLow}
               </Toggle>
 
               <Toggle
@@ -158,7 +161,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-yellow-50 data-[state=on]:text-yellow-700 data-[state=on]:border-yellow-300 data-[state=on]:*:[svg]:stroke-yellow-700 justify-start h-8 font-normal"
               >
                 <AlertCircle className="h-3.5 w-3.5 mr-1.5" />
-                Medium
+                {pl.priorityMedium}
               </Toggle>
 
               <Toggle
@@ -169,13 +172,15 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-red-50 data-[state=on]:text-red-700 data-[state=on]:border-red-300 data-[state=on]:*:[svg]:stroke-red-700 justify-start h-8 font-normal col-span-2"
               >
                 <Zap className="h-3.5 w-3.5 mr-1.5" />
-                High
+                {pl.priorityHigh}
               </Toggle>
             </div>
           </div>
 
           <div className="space-y-2">
-            <p className="text-xs font-medium text-foreground/70">Status</p>
+            <p className="text-xs font-medium text-foreground/70">
+              {pl.status}
+            </p>
             <div className="grid grid-cols-2 gap-2">
               <Toggle
                 pressed={statuses.pending}
@@ -185,7 +190,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-blue-50 data-[state=on]:text-blue-700 data-[state=on]:border-blue-300 data-[state=on]:*:[svg]:stroke-blue-700 justify-start h-8 font-normal"
               >
                 <Clock className="h-3.5 w-3.5 mr-1.5" />
-                Pending
+                {pl.statusPending}
               </Toggle>
 
               <Toggle
@@ -196,7 +201,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-purple-50 data-[state=on]:text-purple-700 data-[state=on]:border-purple-300 data-[state=on]:*:[svg]:stroke-purple-700 justify-start h-8 font-normal"
               >
                 <Play className="h-3.5 w-3.5 mr-1.5" />
-                In Progress
+                {pl.statusInProgress}
               </Toggle>
 
               <Toggle
@@ -207,7 +212,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-emerald-50 data-[state=on]:text-emerald-700 data-[state=on]:border-emerald-300 data-[state=on]:*:[svg]:stroke-emerald-700 justify-start h-8 font-normal"
               >
                 <CheckCircle className="h-3.5 w-3.5 mr-1.5" />
-                Completed
+                {pl.statusCompleted}
               </Toggle>
 
               <Toggle
@@ -218,13 +223,15 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-gray-50 data-[state=on]:text-gray-700 data-[state=on]:border-gray-300 data-[state=on]:*:[svg]:stroke-gray-700 justify-start h-8 font-normal"
               >
                 <XCircle className="h-3.5 w-3.5 mr-1.5" />
-                Cancelled
+                {pl.statusCancelled}
               </Toggle>
             </div>
           </div>
 
           <div className="space-y-2">
-            <p className="text-xs font-medium text-foreground/70">Amount</p>
+            <p className="text-xs font-medium text-foreground/70">
+              {pl.amount}
+            </p>
             <div className="grid grid-cols-2 gap-2">
               <Toggle
                 pressed={amounts.low}
@@ -262,7 +269,9 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
           </div>
 
           <div className="space-y-2">
-            <p className="text-xs font-medium text-foreground/70">Complexity</p>
+            <p className="text-xs font-medium text-foreground/70">
+              {pl.complexity}
+            </p>
             <div className="grid grid-cols-2 gap-2">
               <Toggle
                 pressed={complexities.simple}
@@ -272,7 +281,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-sky-50 data-[state=on]:text-sky-700 data-[state=on]:border-sky-300 data-[state=on]:*:[svg]:stroke-sky-700 justify-start h-8 font-normal"
               >
                 <Wrench className="h-3.5 w-3.5 mr-1.5" />
-                Simple
+                {pl.complexitySimple}
               </Toggle>
 
               <Toggle
@@ -283,7 +292,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-amber-50 data-[state=on]:text-amber-700 data-[state=on]:border-amber-300 data-[state=on]:*:[svg]:stroke-amber-700 justify-start h-8 font-normal"
               >
                 <Wrench className="h-3.5 w-3.5 mr-1.5" />
-                Moderate
+                {pl.complexityModerate}
               </Toggle>
 
               <Toggle
@@ -294,14 +303,14 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-red-50 data-[state=on]:text-red-700 data-[state=on]:border-red-300 data-[state=on]:*:[svg]:stroke-red-700 justify-start h-8 font-normal col-span-2"
               >
                 <Wrench className="h-3.5 w-3.5 mr-1.5" />
-                Complex
+                {pl.complexityComplex}
               </Toggle>
             </div>
           </div>
 
           <div className="space-y-2">
             <p className="text-xs font-medium text-foreground/70">
-              Last Updated
+              {pl.updatedAt}
             </p>
             <div className="grid grid-cols-2 gap-2">
               <Toggle
@@ -312,7 +321,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-green-50 data-[state=on]:text-green-700 data-[state=on]:border-green-300 data-[state=on]:*:[svg]:stroke-green-700 justify-start h-8 font-normal"
               >
                 <Calendar className="h-3.5 w-3.5 mr-1.5" />
-                &lt; 1 Week
+                {pl.updatedRecent}
               </Toggle>
 
               <Toggle
@@ -322,7 +331,8 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 aria-label="Filter by Moderate updates (1 week - 1 month)"
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-yellow-50 data-[state=on]:text-yellow-700 data-[state=on]:border-yellow-300 data-[state=on]:*:[svg]:stroke-yellow-700 justify-start h-8 font-normal"
               >
-                <Calendar className="h-3.5 w-3.5 mr-1.5" />1 Week - 1 Month
+                <Calendar className="h-3.5 w-3.5 mr-1.5" />
+                {pl.updatedModerate}
               </Toggle>
 
               <Toggle
@@ -333,7 +343,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-gray-50 data-[state=on]:text-gray-700 data-[state=on]:border-gray-300 data-[state=on]:*:[svg]:stroke-gray-700 justify-start h-8 font-normal col-span-2"
               >
                 <Calendar className="h-3.5 w-3.5 mr-1.5" />
-                &gt; 1 Month
+                {pl.updatedOld}
               </Toggle>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Minus } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { pl } from "@/lib/translations";
 import {
   Tooltip,
   TooltipTrigger,
@@ -85,7 +86,7 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
               <Button
                 size="icon"
                 className="shrink-0 h-6 w-6 p-1 bg-muted hover:bg-muted/90"
-                aria-label={`Info about order ${order.id}`}
+                aria-label={`${pl.ariaInfoAboutOrder} ${order.id}`}
               >
                 <svg
                   className="h-4 w-4"
@@ -134,7 +135,7 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
               onPointerDown={(e) => e.stopPropagation()}
               size="icon"
               className="shrink-0 h-6 w-6 p-1 bg-primary hover:bg-primary/90"
-              aria-label={`Remove order ${order.id}`}
+              aria-label={`${pl.ariaRemoveOrder} ${order.id}`}
             >
               <Minus className="h-3 w-3" />
             </Button>

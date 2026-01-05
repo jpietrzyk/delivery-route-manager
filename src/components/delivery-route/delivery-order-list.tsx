@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import type { Order } from "@/types/order";
 import { DeliveryOrderItem } from "@/components/delivery-route/delivery-order-item";
 import { DeliveryRouteSegment } from "@/components/delivery-route/delivery-route-segment";
+import { pl } from "@/lib/translations";
 import {
   getDistanceKm,
   getDriveMinutes,
@@ -38,7 +39,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
   highlightedOrderId,
   setHighlightedOrderId,
   onRemoveOrder,
-  title = "Zamówienia",
+  title = pl.orders,
   onReorder,
   routeManager,
 }) => {

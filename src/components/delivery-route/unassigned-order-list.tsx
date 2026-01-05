@@ -2,6 +2,7 @@ import React from "react";
 import type { Order } from "@/types/order";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { pl } from "@/lib/translations";
 import {
   DndContext,
   closestCenter,
@@ -33,7 +34,7 @@ interface UnassignedOrderListProps {
 export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
   unassignedOrders,
   onAddToDelivery,
-  title = "Available Unassigned Orders",
+  title = pl.availableUnassignedOrders,
   highlightedOrderId,
   setHighlightedOrderId,
 }) => {
@@ -52,7 +53,7 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
       <div>
         {unassignedOrders.length === 0 ? (
           <div className="text-xs text-muted-foreground">
-            No unassigned orders available
+            {pl.noUnassignedOrders}
           </div>
         ) : (
           <DndContext sensors={sensors} collisionDetection={closestCenter}>

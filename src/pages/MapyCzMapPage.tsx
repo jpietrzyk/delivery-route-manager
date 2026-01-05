@@ -2,6 +2,7 @@ import MapyMapView from "@/components/maps/abstraction/mapy-map-view";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
 import OrdersCountDisplay from "@/components/ui/orders-count-display";
+import { pl, getOrdersCountText } from "@/lib/translations";
 import {
   Drawer,
   DrawerTrigger,
@@ -207,7 +208,7 @@ export default function MapyCzMapPage() {
           <div className="absolute top-6 right-6 z-30 pointer-events-auto flex gap-2">
             <DrawerTrigger asChild>
               <Button variant="outline" size="sm">
-                Unassigned ({filteredUnassignedOrders.length})
+                {pl.unassigned} ({filteredUnassignedOrders.length})
               </Button>
             </DrawerTrigger>
             <SidebarTrigger className="bg-background border border-border shadow-lg hover:bg-accent" />
@@ -222,14 +223,13 @@ export default function MapyCzMapPage() {
             <div className="border-b border-border/50 bg-background/80 backdrop-blur-sm px-6 py-3">
               <div className="flex items-center gap-2 whitespace-nowrap">
                 <DrawerTitle className="text-lg font-bold tracking-tight text-foreground flex-shrink-0">
-                  Unassigned Orders
+                  {pl.unassignedOrders}
                 </DrawerTitle>
                 <span className="text-muted-foreground/60 flex-shrink-0">
                   ·
                 </span>
                 <span className="text-sm text-muted-foreground inline">
-                  {filteredUnassignedOrders.length} order
-                  {filteredUnassignedOrders.length !== 1 ? "s" : ""} waiting
+                  {getOrdersCountText(filteredUnassignedOrders.length)}
                 </span>
               </div>
             </div>
@@ -266,7 +266,7 @@ export default function MapyCzMapPage() {
               ) : (
                 <div className="flex items-center justify-center h-full">
                   <p className="text-sm text-muted-foreground text-center">
-                    All orders are assigned! 🎉
+                    {pl.allOrdersAssigned}
                   </p>
                 </div>
               )}
