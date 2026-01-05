@@ -15,6 +15,10 @@ import { UnassignedOrderList } from "@/components/delivery-route/unassigned-orde
 import {
   OrderFilters,
   type PriorityFilterState,
+  type StatusFilterState,
+  type AmountFilterState,
+  type ComplexityFilterState,
+  type UpdatedAtFilterState,
 } from "@/components/delivery-route/order-filters";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -48,9 +52,72 @@ export default function DeliveryMapPage() {
     high: true,
   });
 
-  // Filter unassigned orders based on priority filters
+  // Status filter state
+  const [statusFilters, setStatusFilters] = useState<StatusFilterState>({
+    pending: true,
+    "in-progress": true,
+    completed: true,
+    cancelled: true,
+  });
+
+  // Amount filter state
+  const [amountFilters, setAmountFilters] = useState<AmountFilterState>({
+    low: true,
+    medium: true,
+    high: true,
+  });
+
+  // Complexity filter state
+  const [complexityFilters, setComplexityFilters] =
+    useState<ComplexityFilterState>({
+      simple: true,
+      moderate: true,
+      complex: true,
+    });
+
+  // UpdatedAt filter state
+  const [updatedAtFilters, setUpdatedAtFilters] =
+    useState<UpdatedAtFilterState>({
+      recent: true,
+      moderate: true,
+      old: true,
+    });
+
+  // Helper function to determine amount tier
+  const getAmountTier = (amount: number): keyof AmountFilterState => {
+    if (amount <= 10000) return "low";
+    if (amount <= 100000) return "medium";
+    return "high";
+  };
+
+  // Helper function to determine complexity tier based on product complexity
+  const getComplexityTier = (
+    productComplexity: 1 | 2 | 3
+  ): keyof ComplexityFilterState => {
+    if (productComplexity === 1) return "simple";
+    if (productComplexity === 2) return "moderate";
+    return "complex";
+  };
+
+  // Helper function to determine updatedAt period
+  const getUpdatedAtPeriod = (updatedAt: Date): keyof UpdatedAtFilterState => {
+    const now = new Date();
+    const diffMs = now.getTime() - new Date(updatedAt).getTime();
+    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+    if (diffDays < 7) return "recent";
+    if (diffDays < 30) return "moderate";
+    return "old";
+  };
+
+  // Filter unassigned orders based on all filters
   const filteredUnassignedOrders = unassignedOrders.filter(
-    (order) => priorityFilters[order.priority]
+    (order) =>
+      priorityFilters[order.priority] &&
+      statusFilters[order.status] &&
+      amountFilters[getAmountTier(order.totalAmount)] &&
+      complexityFilters[getComplexityTier(order.product.complexity)] &&
+      updatedAtFilters[getUpdatedAtPeriod(order.updatedAt)]
   );
 
   const totalOrdersCount =
@@ -149,18 +216,33 @@ export default function DeliveryMapPage() {
         </main>
       </SidebarProvider>
 
-      <DrawerContent side="bottom">
+      <DrawerContent
+        side="bottom"
+        className="border-t border-border/50 bg-gradient-to-b from-background via-background to-muted/30"
+      >
         <div className="w-full flex flex-col max-h-[60vh] overflow-hidden">
-          <DrawerHeader>
-            <DrawerTitle>Unassigned Orders</DrawerTitle>
-            <DrawerDescription>
-              {filteredUnassignedOrders.length} order
-              {filteredUnassignedOrders.length !== 1 ? "s" : ""} waiting to be
-              assigned to a delivery route
-            </DrawerDescription>
-          </DrawerHeader>
-          <OrderFilters onPriorityChange={setPriorityFilters} />
-          <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6">
+          <div className="border-b border-border/50 bg-background/80 backdrop-blur-sm px-6 py-3">
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <DrawerTitle className="text-lg font-bold tracking-tight text-foreground flex-shrink-0">
+                Unassigned Orders
+              </DrawerTitle>
+              <span className="text-muted-foreground/60 flex-shrink-0">·</span>
+              <span className="text-sm text-muted-foreground inline">
+                {filteredUnassignedOrders.length} order
+                {filteredUnassignedOrders.length !== 1 ? "s" : ""} waiting
+              </span>
+            </div>
+          </div>
+          <div className="border-b border-border/50 bg-background/50 backdrop-blur-xs">
+            <OrderFilters
+              onPriorityChange={setPriorityFilters}
+              onStatusChange={setStatusFilters}
+              onAmountChange={setAmountFilters}
+              onComplexityChange={setComplexityFilters}
+              onUpdatedAtChange={setUpdatedAtFilters}
+            />
+          </div>
+          <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6 bg-background/40">
             {filteredUnassignedOrders.length > 0 ? (
               <UnassignedOrderList
                 unassignedOrders={filteredUnassignedOrders}
