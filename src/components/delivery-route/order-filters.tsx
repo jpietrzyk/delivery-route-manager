@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Toggle } from "@/components/ui/toggle";
+import { ChevronDown, AlertCircle, Zap } from "lucide-react";
 
 export type PriorityFilterState = {
   low: boolean;
@@ -40,7 +41,9 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               variant="outline"
               size="sm"
               aria-label="Filter by Low priority"
+              className="data-[state=on]:text-green-600 data-[state=on]:*:[svg]:stroke-green-600"
             >
+              <ChevronDown className="h-4 w-4 mr-1" />
               Low
             </Toggle>
 
@@ -50,7 +53,9 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               variant="outline"
               size="sm"
               aria-label="Filter by Medium priority"
+              className="data-[state=on]:text-yellow-600 data-[state=on]:*:[svg]:stroke-yellow-600"
             >
+              <AlertCircle className="h-4 w-4 mr-1" />
               Medium
             </Toggle>
 
@@ -60,7 +65,9 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               variant="outline"
               size="sm"
               aria-label="Filter by High priority"
+              className="data-[state=on]:text-red-600 data-[state=on]:*:[svg]:stroke-red-600"
             >
+              <Zap className="h-4 w-4 mr-1" />
               High
             </Toggle>
           </div>
