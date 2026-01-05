@@ -213,7 +213,7 @@ class DeliveryRoutesApiClass {
       for (const order of orders) {
         try {
           await DeliveryRouteWaypointsApi.addWaypoint(id, order.orderId, order.sequence);
-        } catch (e) {
+        } catch {
           // Ignore duplicates
         }
       }

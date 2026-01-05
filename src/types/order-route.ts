@@ -1,3 +1,1 @@
-export interface OrderRouteContextType {
-  // Placeholder for future route-specific state; currently unused.
-}
+export type OrderRouteContextType = Record<string, never>;

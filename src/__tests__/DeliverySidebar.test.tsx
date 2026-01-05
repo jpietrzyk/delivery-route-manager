@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";

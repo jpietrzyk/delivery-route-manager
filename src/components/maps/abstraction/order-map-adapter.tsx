@@ -206,15 +206,6 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
 
   const ORANGE_THRESHOLD = 13000;
 
-  // Map delivery order ids to their 1-based waypoint index
-  const waypointIndexMap = React.useMemo(() => {
-    const map = new Map<string, number>();
-    orders.forEach((order, index) => {
-      map.set(order.id, index + 1);
-    });
-    return map;
-  }, [orders]);
-
   // Transform orders to markers
   const markers: MapMarkerData[] = React.useMemo(() => {
     // Deduplicate on initialization: filter unassigned orders that are also in delivery orders
@@ -229,7 +220,6 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
       // This is because orders from waypoint system don't have deliveryId set on the Order object
       const isPool = !deliveryOrderIds.has(order.id);
       let type: MapMarkerData["type"] = "delivery";
-      const waypointIndex = waypointIndexMap.get(order.id);
 
       if (isPool) {
         type =

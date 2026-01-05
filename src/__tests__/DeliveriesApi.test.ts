@@ -6,6 +6,13 @@ import { DeliveryRouteWaypointsApi } from '@/services/deliveryRouteWaypointsApi'
 import type { DeliveryRoute, DeliveryRouteWaypoint } from '@/types/delivery-route';
 import type { Order } from '@/types/order';
 
+type DeliveryWithOrders = DeliveryRoute & {
+  orders?: Array<DeliveryRouteWaypoint & { order?: Order; deliveredAt?: Date; notes?: string }>;
+};
+
+const asDeliveryWithOrders = (
+  delivery: DeliveryRoute | DeliveryWithOrders | null
+): DeliveryWithOrders | null => (delivery as DeliveryWithOrders) ?? null;
 describe('DeliveryRoutesApi', () => {
   const mockOrdersData: Order[] = [
     {
@@ -116,9 +123,10 @@ describe('DeliveryRoutesApi', () => {
       const populated = await DeliveryRoutesApi.getDeliveryWithOrders(created.id, mockOrdersData);
 
       if (populated) {
-        expect((populated as any).orders).toHaveLength(2);
-        expect((populated as any).orders[0].order?.id).toBe('ORD-001');
-        expect((populated as any).orders[1].order?.id).toBe('ORD-002');
+        const populatedWithOrders = populated as DeliveryWithOrders;
+        expect(populatedWithOrders.orders).toHaveLength(2);
+        expect(populatedWithOrders.orders?.[0].order?.id).toBe('ORD-001');
+        expect(populatedWithOrders.orders?.[1].order?.id).toBe('ORD-002');
       }
     });
   });
@@ -281,10 +289,11 @@ describe('DeliveryRoutesApi', () => {
 
       const created = await DeliveryRoutesApi.createDelivery(newDelivery);
       const updated = await DeliveryRoutesApi.addOrderToDelivery(created.id, 'ORD-001');
+      const updatedWithOrders = asDeliveryWithOrders(updated);
 
-      expect((updated as any)?.orders).toHaveLength(1);
-      expect((updated as any)?.orders[0].orderId).toBe('ORD-001');
-      expect((updated as any)?.orders[0].sequence).toBe(0);
+      expect(updatedWithOrders?.orders).toHaveLength(1);
+      expect(updatedWithOrders?.orders?.[0].orderId).toBe('ORD-001');
+      expect(updatedWithOrders?.orders?.[0].sequence).toBe(0);
     });
 
     it('should add order at specified index', async () => {
@@ -299,12 +308,13 @@ describe('DeliveryRoutesApi', () => {
 
       const created = await DeliveryRoutesApi.createDelivery(newDelivery);
       const updated = await DeliveryRoutesApi.addOrderToDelivery(created.id, 'ORD-003', 1);
+      const updatedWithOrders = asDeliveryWithOrders(updated);
 
-      expect((updated as any)?.orders).toHaveLength(3);
-      expect((updated as any)?.orders[1].orderId).toBe('ORD-003');
-      expect((updated as any)?.orders[0].sequence).toBe(0);
-      expect((updated as any)?.orders[1].sequence).toBe(1);
-      expect((updated as any)?.orders[2].sequence).toBe(2);
+      expect(updatedWithOrders?.orders).toHaveLength(3);
+      expect(updatedWithOrders?.orders?.[1].orderId).toBe('ORD-003');
+      expect(updatedWithOrders?.orders?.[0].sequence).toBe(0);
+      expect(updatedWithOrders?.orders?.[1].sequence).toBe(1);
+      expect(updatedWithOrders?.orders?.[2].sequence).toBe(2);
     });
 
     it('should return null if delivery is not found', async () => {
@@ -327,10 +337,11 @@ describe('DeliveryRoutesApi', () => {
 
       const created = await DeliveryRoutesApi.createDelivery(newDelivery);
       const updated = await DeliveryRoutesApi.removeOrderFromDelivery(created.id, 'ORD-001');
+      const updatedWithOrders = asDeliveryWithOrders(updated);
 
-      expect((updated as any)?.orders).toHaveLength(1);
-      expect((updated as any)?.orders[0].orderId).toBe('ORD-002');
-      expect((updated as any)?.orders[0].sequence).toBe(0); // Resequenced
+      expect(updatedWithOrders?.orders).toHaveLength(1);
+      expect(updatedWithOrders?.orders?.[0].orderId).toBe('ORD-002');
+      expect(updatedWithOrders?.orders?.[0].sequence).toBe(0); // Resequenced
     });
 
     it('should resequence orders after removal', async () => {
@@ -346,8 +357,9 @@ describe('DeliveryRoutesApi', () => {
 
       const created = await DeliveryRoutesApi.createDelivery(newDelivery);
       const updated = await DeliveryRoutesApi.removeOrderFromDelivery(created.id, 'ORD-002');
+      const updatedWithOrders = asDeliveryWithOrders(updated);
 
-      expect((updated as any)?.orders[1].sequence).toBe(1); // ORD-003 now at index 1
+      expect(updatedWithOrders?.orders?.[1].sequence).toBe(1); // ORD-003 now at index 1
     });
 
     it('should return null if delivery is not found', async () => {
@@ -371,10 +383,11 @@ describe('DeliveryRoutesApi', () => {
 
       const created = await DeliveryRoutesApi.createDelivery(newDelivery);
       const updated = await DeliveryRoutesApi.reorderDeliveryOrders(created.id, 0, 2);
+      const updatedWithOrders = asDeliveryWithOrders(updated);
 
-      expect((updated as any)?.orders[0].orderId).toBe('ORD-002');
-      expect((updated as any)?.orders[1].orderId).toBe('ORD-003');
-      expect((updated as any)?.orders[2].orderId).toBe('ORD-001');
+      expect(updatedWithOrders?.orders?.[0].orderId).toBe('ORD-002');
+      expect(updatedWithOrders?.orders?.[1].orderId).toBe('ORD-003');
+      expect(updatedWithOrders?.orders?.[2].orderId).toBe('ORD-001');
     });
 
     it('should update sequence numbers after reordering', async () => {
@@ -390,10 +403,11 @@ describe('DeliveryRoutesApi', () => {
 
       const created = await DeliveryRoutesApi.createDelivery(newDelivery);
       const updated = await DeliveryRoutesApi.reorderDeliveryOrders(created.id, 2, 0);
+      const updatedWithOrders = asDeliveryWithOrders(updated);
 
-      expect((updated as any)?.orders[0].sequence).toBe(0);
-      expect((updated as any)?.orders[1].sequence).toBe(1);
-      expect((updated as any)?.orders[2].sequence).toBe(2);
+      expect(updatedWithOrders?.orders?.[0]?.sequence).toBe(0);
+      expect(updatedWithOrders?.orders?.[1]?.sequence).toBe(1);
+      expect(updatedWithOrders?.orders?.[2]?.sequence).toBe(2);
     });
 
     it('should return null if delivery is not found', async () => {
@@ -415,8 +429,9 @@ describe('DeliveryRoutesApi', () => {
 
       const created = await DeliveryRoutesApi.createDelivery(newDelivery);
       const updated = await DeliveryRoutesApi.updateDeliveryOrderStatus(created.id, 'ORD-001', 'in-transit');
+      const updatedWithOrders = asDeliveryWithOrders(updated);
 
-      expect((updated as any)?.orders[0].status).toBe('in-transit');
+      expect(updatedWithOrders?.orders?.[0].status).toBe('in-transit');
     });
 
     it('should set deliveredAt when status is delivered', async () => {
@@ -432,12 +447,13 @@ describe('DeliveryRoutesApi', () => {
       const beforeUpdate = new Date();
       const updated = await DeliveryRoutesApi.updateDeliveryOrderStatus(created.id, 'ORD-001', 'delivered');
       const afterUpdate = new Date();
+      const updatedWithOrders = asDeliveryWithOrders(updated);
 
-      expect((updated as any)?.orders[0].status).toBe('delivered');
-      expect((updated as any)?.orders[0].deliveredAt).toBeDefined();
-      if ((updated as any)?.orders[0].deliveredAt) {
-        expect((updated as any).orders[0].deliveredAt.getTime()).toBeGreaterThanOrEqual(beforeUpdate.getTime());
-        expect((updated as any).orders[0].deliveredAt.getTime()).toBeLessThanOrEqual(afterUpdate.getTime());
+      expect(updatedWithOrders?.orders?.[0].status).toBe('delivered');
+      expect(updatedWithOrders?.orders?.[0].deliveredAt).toBeDefined();
+      if (updatedWithOrders?.orders?.[0].deliveredAt) {
+        expect(updatedWithOrders.orders[0].deliveredAt!.getTime()).toBeGreaterThanOrEqual(beforeUpdate.getTime());
+        expect(updatedWithOrders.orders[0].deliveredAt!.getTime()).toBeLessThanOrEqual(afterUpdate.getTime());
       }
     });
 
@@ -453,8 +469,9 @@ describe('DeliveryRoutesApi', () => {
       const testDate = new Date('2026-01-01T10:00:00');
       const created = await DeliveryRoutesApi.createDelivery(newDelivery);
       const updated = await DeliveryRoutesApi.updateDeliveryOrderStatus(created.id, 'ORD-001', 'delivered', testDate);
+      const updatedWithOrders = asDeliveryWithOrders(updated);
 
-      expect((updated as any)?.orders[0].deliveredAt).toEqual(testDate);
+      expect(updatedWithOrders?.orders?.[0].deliveredAt).toEqual(testDate);
     });
 
     it('should add notes to order', async () => {
@@ -474,8 +491,9 @@ describe('DeliveryRoutesApi', () => {
         undefined,
         'Delivered to customer'
       );
+      const updatedWithOrders = asDeliveryWithOrders(updated);
 
-      expect((updated as any)?.orders[0].notes).toBe('Delivered to customer');
+      expect(updatedWithOrders?.orders?.[0].notes).toBe('Delivered to customer');
     });
 
     it('should return null if delivery is not found', async () => {

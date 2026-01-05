@@ -4,7 +4,7 @@ import { resequenceWaypoints } from '@/lib/delivery-route-waypoint-helpers';
 
 // Store for in-memory data that can be modified
 // Key: deliveryId, Value: array of waypoints for that delivery
-let waypointsData: Map<string, DeliveryRouteWaypoint[]> = new Map();
+const waypointsData: Map<string, DeliveryRouteWaypoint[]> = new Map();
 let waypointsLoaded = false;
 let loadingPromise: Promise<void> | null = null;
 
@@ -312,7 +312,9 @@ export class DeliveryRouteWaypointsApi {
     }
 
     // Remove orderId and deliveryId from updates if they were passed (prevent override attempts)
-    const { orderId: _, deliveryId: __, ...safeUpdates } = updates as any;
+    const safeUpdates = { ...(updates as any) };
+    delete (safeUpdates as any).orderId;
+    delete (safeUpdates as any).deliveryId;
 
     Object.assign(waypoint, safeUpdates);
     return { ...waypoint };
