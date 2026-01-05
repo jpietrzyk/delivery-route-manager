@@ -59,11 +59,11 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
             items={unassignedOrders}
             strategy={verticalListSortingStrategy}
           >
-            <ul className="space-y-1">
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
               {unassignedOrders.map((order) => (
                 <li
                   key={order.id}
-                  className={`group relative overflow-hidden rounded border border-border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer p-2 ${
+                  className={`group relative overflow-hidden rounded border border-border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer p-2 h-full ${
                     highlightedOrderId === order.id ? "ring-2 ring-ring" : ""
                   }`}
                   onClick={() => onAddToDelivery(order.id)}
