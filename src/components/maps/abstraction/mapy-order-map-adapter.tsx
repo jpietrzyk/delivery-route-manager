@@ -9,6 +9,7 @@ import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
+import { pl } from "@/lib/translations";
 import { MapyRoutingApi, type RouteSegment } from "@/services/mapyRoutingApi";
 
 // Popup content creator (reused from OrderMapAdapter)
@@ -79,7 +80,7 @@ const createOrderPopupContent = (
             letterSpacing: "0.5px",
           }}
         >
-          {order.status}
+          {order.status.toUpperCase()}
         </span>
       </div>
 
@@ -95,7 +96,7 @@ const createOrderPopupContent = (
             marginBottom: "4px",
           }}
         >
-          Customer
+          {pl.customer}
         </div>
         <div
           style={{
@@ -121,7 +122,7 @@ const createOrderPopupContent = (
               marginBottom: "4px",
             }}
           >
-            Product
+            {pl.productDetails}
           </div>
           <div
             style={{
@@ -148,7 +149,7 @@ const createOrderPopupContent = (
               marginBottom: "4px",
             }}
           >
-            Total Amount
+            {pl.totalAmountLabel}
           </div>
           <div
             style={{
@@ -157,7 +158,7 @@ const createOrderPopupContent = (
               color: "#059669",
             }}
           >
-            ${order.totalAmount.toFixed(2)}
+            €{order.totalAmount.toFixed(2)}
           </div>
         </div>
       )}
@@ -303,7 +304,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         }
       };
 
-      const toggleText = isPool ? "Add to Delivery" : "Remove from Delivery";
+      const toggleText = isPool ? pl.addToDelivery : pl.removeFromDelivery;
       const toggleColor = isPool ? "#10b981" : "#ef4444";
 
       return {

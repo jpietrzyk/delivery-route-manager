@@ -1,4 +1,5 @@
 import type { Order } from "@/types/order";
+import { pl } from "@/lib/translations";
 
 // Helper function to get status colors (consistent with marker popups)
 export const getStatusColor = (status: string) => {
@@ -23,7 +24,7 @@ export const createExpandedTooltipContent = (order: Order) => {
   return (
     <div className="p-4 max-w-[320px] bg-white border border-border rounded-sm shadow-sm">
       <div className="font-semibold text-sm mb-3 text-foreground truncate">
-        {order.product?.name || "Unknown Order"} (ID: {order.id})
+        {order.product?.name || pl.unknownOrder} (ID: {order.id})
       </div>
 
       <div className="space-y-3 text-sm">
@@ -31,7 +32,7 @@ export const createExpandedTooltipContent = (order: Order) => {
         <div className="flex items-start gap-2">
           <span className="text-muted-foreground mt-0.5">👤</span>
           <div>
-            <div className="font-medium text-foreground">Customer</div>
+            <div className="font-medium text-foreground">{pl.customer}</div>
             <div className="text-muted-foreground">{order.customer}</div>
           </div>
         </div>
@@ -40,7 +41,7 @@ export const createExpandedTooltipContent = (order: Order) => {
         <div className="flex items-start gap-2">
           <span className="text-muted-foreground mt-0.5">📋</span>
           <div>
-            <div className="font-medium text-foreground">Status</div>
+            <div className="font-medium text-foreground">{pl.status}</div>
             <div
               className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
               style={{
@@ -57,7 +58,9 @@ export const createExpandedTooltipContent = (order: Order) => {
         <div className="flex items-start gap-2">
           <span className="text-muted-foreground mt-0.5">⚡</span>
           <div>
-            <div className="font-medium text-foreground">Priority</div>
+            <div className="font-medium text-foreground">
+              {pl.priorityLabel}
+            </div>
             <div className="text-primary font-medium">{order.priority}</div>
           </div>
         </div>
@@ -66,7 +69,7 @@ export const createExpandedTooltipContent = (order: Order) => {
         <div className="flex items-start gap-2">
           <span className="text-muted-foreground mt-0.5">📍</span>
           <div>
-            <div className="font-medium text-foreground">Location</div>
+            <div className="font-medium text-foreground">{pl.location}</div>
             <div className="text-muted-foreground text-xs">
               Lat: {order.location.lat.toFixed(4)}, Lng:{" "}
               {order.location.lng.toFixed(4)}
@@ -79,10 +82,12 @@ export const createExpandedTooltipContent = (order: Order) => {
           <div className="flex items-start gap-2 pt-2 border-t border-border/50">
             <span className="text-muted-foreground mt-0.5">📦</span>
             <div>
-              <div className="font-medium text-foreground">Product Details</div>
+              <div className="font-medium text-foreground">
+                {pl.productDetails}
+              </div>
               <div className="text-muted-foreground text-xs line-clamp-2">
                 {order.product.name} - €{order.product.price.toLocaleString()} |
-                Complexity: {order.product.complexity} (≈
+                Złożoność: {order.product.complexity} (≈
                 {order.product.complexity * 30} min)
               </div>
             </div>
@@ -94,7 +99,7 @@ export const createExpandedTooltipContent = (order: Order) => {
           <div className="flex items-start gap-2 pt-2 border-t border-border/50">
             <span className="text-muted-foreground mt-0.5">💬</span>
             <div>
-              <div className="font-medium text-foreground">Notes</div>
+              <div className="font-medium text-foreground">{pl.notes}</div>
               <div className="text-muted-foreground text-xs italic line-clamp-2">
                 {order.comment}
               </div>
@@ -107,7 +112,9 @@ export const createExpandedTooltipContent = (order: Order) => {
           <div className="flex items-start gap-2 pt-2 border-t border-border/50">
             <span className="text-muted-foreground mt-0.5">💰</span>
             <div>
-              <div className="font-medium text-foreground">Total Amount</div>
+              <div className="font-medium text-foreground">
+                {pl.totalAmountLabel}
+              </div>
               <div className="text-green-600 font-medium">
                 €{order.totalAmount.toLocaleString()}
               </div>

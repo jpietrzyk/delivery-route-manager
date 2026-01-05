@@ -1,5 +1,6 @@
 import React from "react";
 import { Badge } from "./badge";
+import { pl } from "@/lib/translations";
 
 interface OrdersCountDisplayProps {
   count: number;
@@ -15,7 +16,9 @@ const OrdersCountDisplay: React.FC<OrdersCountDisplayProps> = ({
       variant="secondary"
       className={`text-sm font-medium gap-1 ${className}`}
     >
-      <span>📦 Total Orders: {count}</span>
+      <span>
+        {pl.totalOrders}: {count}
+      </span>
     </Badge>
   );
 };

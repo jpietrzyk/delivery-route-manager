@@ -3,6 +3,7 @@ import type { RouteSegment } from "@/types/map-provider";
 import type { RouteManager } from "@/services/RouteManager";
 import { RefreshCcw, Route, Clock, ArrowRight } from "lucide-react";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
+import { pl, formatDurationPL } from "@/lib/translations";
 
 interface DeliveryRouteSegmentProps {
   segment: RouteSegment;
@@ -51,19 +52,6 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
   // Determine if this segment should be highlighted (from polyline hover)
   const isSegmentHighlighted = highlightedSegmentId === segment.id;
 
-  // Format duration from seconds to hours and minutes
-  const formatDuration = (seconds: number): string => {
-    const totalMinutes = Math.round(seconds / 60);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    if (hours > 0) {
-      return `${hours} h ${minutes} m`;
-    } else {
-      return `${minutes} m`;
-    }
-  };
-
   // Format distance from meters to kilometers
   const formatDistance = (meters: number): string => {
     return (meters / 1000).toFixed(2) + " km";
@@ -93,7 +81,7 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
         <Clock className="h-3 w-3 text-muted-foreground" />
         <span className="font-medium text-xs text-foreground truncate">
           {segment.routeData?.duration
-            ? formatDuration(segment.routeData.duration)
+            ? formatDurationPL(segment.routeData.duration)
             : "N/A"}
         </span>
       </div>
@@ -101,7 +89,7 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
         onClick={handleRecalculate}
         disabled={isCalculating}
         className="p-1 hover:bg-primary/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-primary hover:text-primary"
-        aria-label={isCalculating ? "Recalculating..." : "Refresh route"}
+        aria-label={isCalculating ? pl.ariaRecalculating : pl.ariaRefreshRoute}
       >
         <RefreshCcw className="h-3 w-3" />
       </button>

@@ -10,6 +10,7 @@ import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { OrdersApi } from "@/services/ordersApi";
+import { pl } from "@/lib/translations";
 
 // Popup content creator (extracted from LeafletMap)
 const getStatusColor = (status: string) => {
@@ -56,7 +57,7 @@ const createOrderPopupContent = (
           color: "#111827",
         }}
       >
-        {order.product?.name || "Unknown Order"}
+        {order.product?.name || pl.unknownOrder}
       </div>
       <div
         style={{
@@ -76,17 +77,15 @@ const createOrderPopupContent = (
             letterSpacing: "0.5px",
           }}
         >
-          {isPool
-            ? "📦 Pool Order (Unassigned)"
-            : "🚛 Delivery Order (Assigned)"}
+          {isPool ? pl.poolOrder : pl.deliveryOrder}
         </div>
       </div>
       <div style={{ fontSize: "13px", color: "#4b5563", marginBottom: "8px" }}>
-        <strong style={{ color: "#374151" }}>👤 Customer:</strong>{" "}
+        <strong style={{ color: "#374151" }}>{pl.customer}:</strong>{" "}
         {order.customer}
       </div>
       <div style={{ fontSize: "13px", marginBottom: "8px" }}>
-        <strong style={{ color: "#374151" }}>📋 Status:</strong>
+        <strong style={{ color: "#374151" }}>{pl.status}:</strong>
         <span
           style={{
             padding: "4px 10px",
@@ -101,7 +100,7 @@ const createOrderPopupContent = (
         </span>
       </div>
       <div style={{ fontSize: "13px", marginBottom: "8px" }}>
-        <strong style={{ color: "#374151" }}>⚡ Priority:</strong>
+        <strong style={{ color: "#374151" }}>{pl.priorityLabel}:</strong>
         <span
           style={{
             textTransform: "uppercase",
@@ -113,7 +112,7 @@ const createOrderPopupContent = (
         </span>
       </div>
       <div style={{ fontSize: "13px", color: "#10b981", marginBottom: "10px" }}>
-        <strong>📍 Location:</strong> {order.location.lat.toFixed(4)},{" "}
+        <strong>{pl.location}:</strong> {order.location.lat.toFixed(4)},{" "}
         {order.location.lng.toFixed(4)}
       </div>
       {order.totalAmount && (
@@ -125,7 +124,7 @@ const createOrderPopupContent = (
             marginBottom: "12px",
           }}
         >
-          <strong style={{ color: "#374151" }}>💰 Total:</strong> €
+          <strong style={{ color: "#374151" }}>{pl.total}:</strong> €
           {order.totalAmount.toLocaleString()}
         </div>
       )}
@@ -278,7 +277,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
             );
           }
         },
-        isPool ? "➕ Add to Delivery" : "➖ Remove from Delivery",
+        isPool ? `➕ ${pl.addToDelivery}` : `➖ ${pl.removeFromDelivery}`,
         isPool ? "#3b82f6" : "#dc2626"
       );
 

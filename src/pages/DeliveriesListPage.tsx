@@ -11,6 +11,7 @@ import {
   DrawerDescription,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { pl } from "@/lib/translations";
 
 export default function DeliveriesListPage() {
   const [deliveries, setDeliveries] = useState<DeliveryRoute[]>([]);
@@ -31,7 +32,7 @@ export default function DeliveriesListPage() {
         setError(null);
       } catch (err) {
         console.error("Failed to fetch deliveries:", err);
-        setError("Failed to load deliveries. Please try again later.");
+        setError(pl.loadDeliveriesError);
       } finally {
         setLoading(false);
       }
@@ -45,10 +46,10 @@ export default function DeliveriesListPage() {
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-2xl font-bold text-gray-800 mb-6">
-            Planned Deliveries
+            {pl.plannedDeliveries}
           </h1>
           <div className="bg-white rounded-lg shadow-sm p-6">
-            <p className="text-gray-600">Loading deliveries...</p>
+            <p className="text-gray-600">{pl.loadingDeliveries}</p>
           </div>
         </div>
       </div>
@@ -60,7 +61,7 @@ export default function DeliveriesListPage() {
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-2xl font-bold text-gray-800 mb-6">
-            Planned Deliveries
+            {pl.plannedDeliveries}
           </h1>
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="bg-red-50 border-l-4 border-red-400 p-4">
@@ -96,13 +97,13 @@ export default function DeliveriesListPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-800">
-              Planned Deliveries
+              {pl.plannedDeliveries}
             </h1>
             <Link
               to="/delivery_routes"
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
             >
-              View All on Map
+              {pl.viewAllOnMap}
             </Link>
           </div>
 
@@ -123,10 +124,10 @@ export default function DeliveriesListPage() {
                 />
               </svg>
               <h3 className="mt-2 text-sm font-medium text-gray-900">
-                No deliveries found
+                {pl.noDeliveriesFound}
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                Get started by creating a new delivery.
+                {pl.createDeliveryPrompt}
               </p>
             </div>
           ) : (
@@ -139,7 +140,7 @@ export default function DeliveriesListPage() {
                   <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
                     <div className="flex justify-between items-center">
                       <h2 className="text-lg font-semibold text-gray-800">
-                        {delivery.name || `Delivery ${delivery.id}`}
+                        {delivery.name || `${pl.delivery} ${delivery.id}`}
                       </h2>
                       <div className="flex gap-2 flex-wrap justify-end">
                         <DrawerTrigger asChild>
@@ -148,14 +149,14 @@ export default function DeliveriesListPage() {
                             size="sm"
                             onClick={() => setSelectedDelivery(delivery)}
                           >
-                            Details
+                            {pl.details}
                           </Button>
                         </DrawerTrigger>
                         <Link
                           to={`/delivery_routes/${delivery.id}/leaflet`}
                           className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center px-3 py-1.5 border border-blue-200 rounded hover:bg-blue-50 transition-colors"
                         >
-                          View with Leaflet
+                          {pl.viewWithLeaflet}
                           <svg
                             className="ml-1 h-4 w-4"
                             xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +176,7 @@ export default function DeliveriesListPage() {
                           to={`/delivery_routes/${delivery.id}/mapy`}
                           className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center px-3 py-1.5 border border-blue-200 rounded hover:bg-blue-50 transition-colors"
                         >
-                          View with Mapy.cz
+                          {pl.viewWithMapy}
                           <svg
                             className="ml-1 h-4 w-4"
                             xmlns="http://www.w3.org/2000/svg"
@@ -203,31 +204,30 @@ export default function DeliveriesListPage() {
 
       <DrawerContent side="right">
         <DrawerHeader>
-          <DrawerTitle>Delivery Details</DrawerTitle>
-          <DrawerDescription>
-            Information about the selected delivery
-          </DrawerDescription>
+          <DrawerTitle>{pl.deliveryDetails}</DrawerTitle>
+          <DrawerDescription>{pl.deliveryInfo}</DrawerDescription>
         </DrawerHeader>
         {selectedDelivery && (
           <div className="p-6">
             <div className="space-y-3">
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase">
-                  Delivery ID
+                  {pl.deliveryIdLabel}
                 </p>
                 <p className="text-sm font-semibold">{selectedDelivery.id}</p>
               </div>
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase">
-                  Name
+                  {pl.nameLabel}
                 </p>
                 <p className="text-sm font-semibold">
-                  {selectedDelivery.name || `Delivery ${selectedDelivery.id}`}
+                  {selectedDelivery.name ||
+                    `${pl.delivery} ${selectedDelivery.id}`}
                 </p>
               </div>
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase">
-                  Status
+                  {pl.status}
                 </p>
                 <p className="text-sm font-semibold">
                   {selectedDelivery.status}
@@ -236,7 +236,7 @@ export default function DeliveriesListPage() {
               {selectedDelivery.notes && (
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase">
-                    Notes
+                    {pl.notes}
                   </p>
                   <p className="text-sm">{selectedDelivery.notes}</p>
                 </div>
