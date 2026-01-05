@@ -15,11 +15,8 @@ import type {
 import type { Order } from "@/types/order";
 import {
   addOptimisticDeliveryUpdate,
-  addOptimisticOrderUpdate,
   markDeliveryUpdateCompleted,
-  markOrderUpdateCompleted,
   markDeliveryUpdateFailed,
-  markOrderUpdateFailed,
   applyPendingOrderUpdates,
 } from "@/lib/local-storage-utils";
 import { RouteManager } from "@/services/RouteManager";
@@ -268,30 +265,21 @@ export default function DeliveryRouteManagerProvider({
           orderId,
           action: "add",
         });
-        addOptimisticOrderUpdate({
-          orderId,
-          deliveryId,
-        });
 
         // Optimistic UI update - update local state immediately
         applyOptimisticAdd(deliveryId, orderId, atIndex);
 
         // Perform API calls in background
         try {
-          // First, mark the order as assigned to this delivery
-          await OrdersApi.updateOrder(orderId, { deliveryId });
-
-          // Then add it to the delivery using waypoint API
+          // Add it to the delivery using waypoint API
           DeliveryRouteWaypointsApi.addWaypoint(deliveryId, orderId, atIndex);
 
           // Mark updates as completed
           markDeliveryUpdateCompleted(deliveryId, orderId);
-          markOrderUpdateCompleted(orderId);
         } catch (error) {
           console.error("Error adding order to delivery:", error);
           // Mark updates as failed
           markDeliveryUpdateFailed(deliveryId, orderId);
-          markOrderUpdateFailed(orderId);
 
           // Revert optimistic updates by refetching canonical data
           await refreshDeliveryOrders(deliveryId);
@@ -320,10 +308,6 @@ export default function DeliveryRouteManagerProvider({
           orderId,
           action: "remove",
         });
-        addOptimisticOrderUpdate({
-          orderId,
-          deliveryId: undefined,
-        });
 
         let restoredOrder = deliveryOrders.find(
           (order) => order.id === orderId
@@ -338,20 +322,15 @@ export default function DeliveryRouteManagerProvider({
 
         // Perform API calls in background
         try {
-          // First, remove delivery assignment from order (returns to unassigned)
-          await OrdersApi.updateOrder(orderId, { deliveryId: undefined });
-
-          // Then remove from delivery using waypoint API
+          // Remove from delivery using waypoint API
           DeliveryRouteWaypointsApi.removeWaypoint(deliveryId, orderId);
 
           // Mark updates as completed
           markDeliveryUpdateCompleted(deliveryId, orderId);
-          markOrderUpdateCompleted(orderId);
         } catch (error) {
           console.error("Error removing order from delivery:", error);
           // Mark updates as failed
           markDeliveryUpdateFailed(deliveryId, orderId);
-          markOrderUpdateFailed(orderId);
 
           // Revert optimistic updates by refetching canonical data
           await refreshDeliveryOrders(deliveryId);

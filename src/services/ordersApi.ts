@@ -25,7 +25,6 @@ async function loadOrders(): Promise<void> {
       status: order.status as Order['status'],
       priority: order.priority as Order['priority'],
       active: order.active,
-      deliveryId: order.deliveryId || undefined,
       createdAt: new Date(order.createdAt),
       updatedAt: new Date(order.updatedAt),
       customer: order.customer,

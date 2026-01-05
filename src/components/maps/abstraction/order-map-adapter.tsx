@@ -9,7 +9,6 @@ import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
-import { OrdersApi } from "@/services/ordersApi";
 import { pl } from "@/lib/translations";
 
 // Popup content creator (extracted from LeafletMap)
@@ -234,23 +233,21 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         async () => {
           try {
             if (isPool) {
-              if (currentDelivery) {
-                await addOrderToDelivery(currentDelivery.id, order.id);
-              } else {
-                await OrdersApi.updateOrder(order.id, {
-                  deliveryId: "DEL-001",
-                });
+              if (!currentDelivery) {
+                alert("Wybierz najpierw trasę dostawy");
+                return;
               }
+
+              await addOrderToDelivery(currentDelivery.id, order.id);
               onOrderAddedToDelivery?.(order.id);
               onRefreshRequested?.();
             } else {
-              if (currentDelivery) {
-                await removeOrderFromDelivery(currentDelivery.id, order.id);
-              } else {
-                await OrdersApi.updateOrder(order.id, {
-                  deliveryId: undefined,
-                });
+              if (!currentDelivery) {
+                alert("Wybierz najpierw trasę dostawy");
+                return;
               }
+
+              await removeOrderFromDelivery(currentDelivery.id, order.id);
               onRefreshRequested?.();
             }
           } catch (error) {

@@ -28,7 +28,8 @@ async function loadWaypoints(): Promise<void> {
   loadingPromise = (async () => {
     try {
       // Check if we're in a test environment (Jest)
-      const isTestEnv = typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
+      const nodeEnv = (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV;
+      const isTestEnv = nodeEnv === 'test';
 
       // Check if we're in a browser environment (fetch is available) and NOT in tests
       if (!isTestEnv && typeof fetch !== 'undefined' && typeof window !== 'undefined') {

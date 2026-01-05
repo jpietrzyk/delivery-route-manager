@@ -36,9 +36,9 @@ export const MapyTiledMap: React.FC<MapyTiledMapProps> = ({
   className,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const markerLayerRef = useRef<L.LayerGroup | null>(null);
-  const polylineLayerRef = useRef<L.LayerGroup | null>(null);
+  const mapRef = useRef<ReturnType<typeof L.map> | null>(null);
+  const markerLayerRef = useRef<ReturnType<typeof L.layerGroup> | null>(null);
+  const polylineLayerRef = useRef<ReturnType<typeof L.layerGroup> | null>(null);
 
   // Initialize map
   useEffect(() => {
