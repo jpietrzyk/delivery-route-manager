@@ -18,6 +18,7 @@ import {
   type StatusFilterState,
   type AmountFilterState,
   type ComplexityFilterState,
+  type UpdatedAtFilterState,
 } from "@/components/delivery-route/order-filters";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -72,6 +73,14 @@ export default function MapyCzMapPage() {
       complex: true,
     });
 
+  // UpdatedAt filter state
+  const [updatedAtFilters, setUpdatedAtFilters] =
+    useState<UpdatedAtFilterState>({
+      recent: true,
+      moderate: true,
+      old: true,
+    });
+
   // Helper function to determine amount tier
   const getAmountTier = (amount: number): keyof AmountFilterState => {
     if (amount <= 10000) return "low";
@@ -88,13 +97,25 @@ export default function MapyCzMapPage() {
     return "complex";
   };
 
-  // Filter unassigned orders based on priority, status, amount, and complexity filters
+  // Helper function to determine updatedAt period
+  const getUpdatedAtPeriod = (updatedAt: Date): keyof UpdatedAtFilterState => {
+    const now = new Date();
+    const diffMs = now.getTime() - new Date(updatedAt).getTime();
+    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+    if (diffDays < 7) return "recent";
+    if (diffDays < 30) return "moderate";
+    return "old";
+  };
+
+  // Filter unassigned orders based on all filters
   const filteredUnassignedOrders = unassignedOrders.filter(
     (order) =>
       priorityFilters[order.priority] &&
       statusFilters[order.status] &&
       amountFilters[getAmountTier(order.totalAmount)] &&
-      complexityFilters[getComplexityTier(order.product.complexity)]
+      complexityFilters[getComplexityTier(order.product.complexity)] &&
+      updatedAtFilters[getUpdatedAtPeriod(order.updatedAt)]
   );
 
   const totalOrdersCount =
@@ -208,6 +229,7 @@ export default function MapyCzMapPage() {
               onStatusChange={setStatusFilters}
               onAmountChange={setAmountFilters}
               onComplexityChange={setComplexityFilters}
+              onUpdatedAtChange={setUpdatedAtFilters}
             />
             <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6">
               {filteredUnassignedOrders.length > 0 ? (

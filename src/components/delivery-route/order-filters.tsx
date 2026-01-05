@@ -10,6 +10,7 @@ import {
   XCircle,
   DollarSign,
   Wrench,
+  Calendar,
 } from "lucide-react";
 
 export type PriorityFilterState = {
@@ -37,11 +38,18 @@ export type ComplexityFilterState = {
   complex: boolean;
 };
 
+export type UpdatedAtFilterState = {
+  recent: boolean; // Less than 1 week
+  moderate: boolean; // 1 week - 1 month
+  old: boolean; // More than 1 month
+};
+
 interface OrderFiltersProps {
   onPriorityChange: (filters: PriorityFilterState) => void;
   onStatusChange?: (filters: StatusFilterState) => void;
   onAmountChange?: (filters: AmountFilterState) => void;
   onComplexityChange?: (filters: ComplexityFilterState) => void;
+  onUpdatedAtChange?: (filters: UpdatedAtFilterState) => void;
 }
 
 export const OrderFilters: React.FC<OrderFiltersProps> = ({
@@ -49,6 +57,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
   onStatusChange,
   onAmountChange,
   onComplexityChange,
+  onUpdatedAtChange,
 }) => {
   const [priorities, setPriorities] = useState<PriorityFilterState>({
     low: true,
@@ -73,6 +82,12 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     simple: true,
     moderate: true,
     complex: true,
+  });
+
+  const [updatedAt, setUpdatedAt] = useState<UpdatedAtFilterState>({
+    recent: true,
+    moderate: true,
+    old: true,
   });
 
   const handlePriorityChange = (priority: keyof PriorityFilterState) => {
@@ -100,6 +115,12 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     };
     setComplexities(newFilters);
     onComplexityChange?.(newFilters);
+  };
+
+  const handleUpdatedAtChange = (period: keyof UpdatedAtFilterState) => {
+    const newFilters = { ...updatedAt, [period]: !updatedAt[period] };
+    setUpdatedAt(newFilters);
+    onUpdatedAtChange?.(newFilters);
   };
 
   return (
@@ -266,6 +287,43 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
             >
               <Wrench className="h-4 w-4 mr-1" />
               Complex
+            </Toggle>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-foreground/70">Last Updated</p>
+          <div className="flex flex-wrap gap-2">
+            <Toggle
+              pressed={updatedAt.recent}
+              onPressedChange={() => handleUpdatedAtChange("recent")}
+              size="sm"
+              aria-label="Filter by Recent updates (less than 1 week)"
+              className="data-[state=on]:text-green-600 data-[state=on]:*:[svg]:stroke-green-600"
+            >
+              <Calendar className="h-4 w-4 mr-1" />
+              &lt; 1 Week
+            </Toggle>
+
+            <Toggle
+              pressed={updatedAt.moderate}
+              onPressedChange={() => handleUpdatedAtChange("moderate")}
+              size="sm"
+              aria-label="Filter by Moderate updates (1 week - 1 month)"
+              className="data-[state=on]:text-yellow-600 data-[state=on]:*:[svg]:stroke-yellow-600"
+            >
+              <Calendar className="h-4 w-4 mr-1" />1 Week - 1 Month
+            </Toggle>
+
+            <Toggle
+              pressed={updatedAt.old}
+              onPressedChange={() => handleUpdatedAtChange("old")}
+              size="sm"
+              aria-label="Filter by Old updates (more than 1 month)"
+              className="data-[state=on]:text-gray-600 data-[state=on]:*:[svg]:stroke-gray-600"
+            >
+              <Calendar className="h-4 w-4 mr-1" />
+              &gt; 1 Month
             </Toggle>
           </div>
         </div>
