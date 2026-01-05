@@ -214,24 +214,35 @@ export default function MapyCzMapPage() {
           </div>
         </main>
 
-        <DrawerContent side="bottom">
+        <DrawerContent
+          side="bottom"
+          className="border-t border-border/50 bg-gradient-to-b from-background via-background to-muted/30"
+        >
           <div className="w-full flex flex-col max-h-[60vh] overflow-hidden">
-            <DrawerHeader className="py-3 pb-2">
-              <DrawerTitle className="text-base">Unassigned Orders</DrawerTitle>
-              <DrawerDescription className="text-xs">
-                {filteredUnassignedOrders.length} order
-                {filteredUnassignedOrders.length !== 1 ? "s" : ""} waiting to be
-                assigned to a delivery route
-              </DrawerDescription>
-            </DrawerHeader>
-            <OrderFilters
-              onPriorityChange={setPriorityFilters}
-              onStatusChange={setStatusFilters}
-              onAmountChange={setAmountFilters}
-              onComplexityChange={setComplexityFilters}
-              onUpdatedAtChange={setUpdatedAtFilters}
-            />
-            <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6">
+            <div className="border-b border-border/50 bg-background/80 backdrop-blur-sm px-6 py-3">
+              <div className="flex items-center gap-2 whitespace-nowrap">
+                <DrawerTitle className="text-lg font-bold tracking-tight text-foreground flex-shrink-0">
+                  Unassigned Orders
+                </DrawerTitle>
+                <span className="text-muted-foreground/60 flex-shrink-0">
+                  ·
+                </span>
+                <span className="text-sm text-muted-foreground inline">
+                  {filteredUnassignedOrders.length} order
+                  {filteredUnassignedOrders.length !== 1 ? "s" : ""} waiting
+                </span>
+              </div>
+            </div>
+            <div className="border-b border-border/50 bg-background/50 backdrop-blur-xs">
+              <OrderFilters
+                onPriorityChange={setPriorityFilters}
+                onStatusChange={setStatusFilters}
+                onAmountChange={setAmountFilters}
+                onComplexityChange={setComplexityFilters}
+                onUpdatedAtChange={setUpdatedAtFilters}
+              />
+            </div>
+            <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6 bg-background/40">
               {filteredUnassignedOrders.length > 0 ? (
                 <UnassignedOrderList
                   unassignedOrders={filteredUnassignedOrders}
