@@ -6,6 +6,15 @@ import type { Order } from "@/types/order";
 import type { DeliveryRoute } from "@/types/delivery-route";
 import { Link } from "react-router-dom";
 import { DeliveryOrderList } from "@/components/delivery-route/delivery-order-list";
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 
 interface DeliveryWithOrders extends DeliveryRoute {
   ordersInSequence: Order[];
@@ -15,6 +24,9 @@ export default function DeliveriesListPage() {
   const [deliveries, setDeliveries] = useState<DeliveryWithOrders[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedDelivery, setSelectedDelivery] =
+    useState<DeliveryWithOrders | null>(null);
 
   useEffect(() => {
     const fetchDeliveries = async () => {
@@ -112,88 +124,154 @@ export default function DeliveriesListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Planned Deliveries
-          </h1>
-          <Link
-            to="/deliveries"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-          >
-            View All on Map
-          </Link>
-        </div>
-
-        {deliveries.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm p-6 text-center py-12">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+      <div className="min-h-screen bg-gray-50 p-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">
+              Planned Deliveries
+            </h1>
+            <Link
+              to="/deliveries"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
-              No deliveries found
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Get started by creating a new delivery.
-            </p>
+              View All on Map
+            </Link>
           </div>
-        ) : (
-          <div className="space-y-6">
-            {deliveries.map((delivery) => (
-              <div
-                key={delivery.id}
-                className="bg-white rounded-lg shadow-sm overflow-hidden"
+
+          {deliveries.length === 0 ? (
+            <div className="bg-white rounded-lg shadow-sm p-6 text-center py-12">
+              <svg
+                className="mx-auto h-12 w-12 text-gray-400"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-lg font-semibold text-gray-800">
-                      {delivery.name || `Delivery ${delivery.id}`}
-                    </h2>
-                    <Link
-                      to={`/deliveries/${delivery.id}`}
-                      className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
-                    >
-                      View on Map
-                      <svg
-                        className="ml-1 h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </Link>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                No deliveries found
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Get started by creating a new delivery.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {deliveries.map((delivery) => (
+                <div
+                  key={delivery.id}
+                  className="bg-white rounded-lg shadow-sm overflow-hidden"
+                >
+                  <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                    <div className="flex justify-between items-center">
+                      <h2 className="text-lg font-semibold text-gray-800">
+                        {delivery.name || `Delivery ${delivery.id}`}
+                      </h2>
+                      <div className="flex gap-2">
+                        <DrawerTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setSelectedDelivery(delivery)}
+                          >
+                            Details
+                          </Button>
+                        </DrawerTrigger>
+                        <Link
+                          to={`/deliveries/${delivery.id}`}
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center px-3 py-1.5 border border-blue-200 rounded hover:bg-blue-50 transition-colors"
+                        >
+                          View on Map
+                          <svg
+                            className="ml-1 h-4 w-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <DeliveryOrderList
+                      orders={delivery.ordersInSequence}
+                      title={`Orders (${delivery.ordersInSequence.length})`}
+                    />
                   </div>
                 </div>
-                <div className="p-6">
-                  <DeliveryOrderList
-                    orders={delivery.ordersInSequence}
-                    title={`Orders (${delivery.ordersInSequence.length})`}
-                  />
-                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <DrawerContent side="right">
+        <DrawerHeader>
+          <DrawerTitle>Delivery Details</DrawerTitle>
+          <DrawerDescription>
+            Information about the selected delivery
+          </DrawerDescription>
+        </DrawerHeader>
+        {selectedDelivery && (
+          <div className="p-6">
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase">
+                  Delivery ID
+                </p>
+                <p className="text-sm font-semibold">{selectedDelivery.id}</p>
               </div>
-            ))}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase">
+                  Name
+                </p>
+                <p className="text-sm font-semibold">
+                  {selectedDelivery.name || `Delivery ${selectedDelivery.id}`}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase">
+                  Status
+                </p>
+                <p className="text-sm font-semibold">
+                  {selectedDelivery.status}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase">
+                  Total Orders
+                </p>
+                <p className="text-sm font-semibold">
+                  {selectedDelivery.ordersInSequence.length}
+                </p>
+              </div>
+              {selectedDelivery.notes && (
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase">
+                    Notes
+                  </p>
+                  <p className="text-sm">{selectedDelivery.notes}</p>
+                </div>
+              )}
+            </div>
           </div>
         )}
-      </div>
-    </div>
+      </DrawerContent>
+    </Drawer>
   );
 }

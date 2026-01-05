@@ -25,7 +25,6 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import type { Order } from "@/types/order";
 import { DeliveryOrderList } from "@/components/delivery-route/delivery-order-list";
-import { UnassignedOrderList } from "@/components/delivery-route/unassigned-order-list";
 import { resetLocalStorageAndFetchData } from "@/lib/local-storage-utils";
 import {
   calculateTotalEstimatedTime,
@@ -38,7 +37,6 @@ interface DeliverySidebarProps {
   onOrderRemoved?: () => void;
   onDeliveryOrdersUpdated?: (updatedOrders: Order[]) => void;
   deliveryOrders?: Order[];
-  unassignedOrders?: Order[];
   onAddOrderToDelivery?: (orderId: string) => void;
 }
 
@@ -46,7 +44,6 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   onOrderRemoved,
   onDeliveryOrdersUpdated,
   deliveryOrders: deliveryOrdersProp = [],
-  unassignedOrders = [],
   onAddOrderToDelivery,
 }) => {
   const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
@@ -110,7 +107,6 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   const [deliveryOrders, setDeliveryOrders] =
     useState<Order[]>(deliveryOrdersProp);
   const [isDeliveryExpanded, setIsDeliveryExpanded] = useState(true);
-  const [isUnassignedCollapsed, setIsUnassignedCollapsed] = useState(true); // collapsed by default
   const [totalEstimatedTime, setTotalEstimatedTime] = useState<number>(0);
   const [totalDistance, setTotalDistance] = useState<number>(0);
   const [isOperationInProgress, setIsOperationInProgress] = useState(false);
@@ -118,31 +114,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   // Handle delivery expand/collapse state change
   const handleDeliveryExpandChange = (expanded: boolean) => {
     setIsDeliveryExpanded(expanded);
-    // If delivery is being expanded, close unassigned
-    if (expanded) {
-      setIsUnassignedCollapsed(true);
-    } else {
-      // If delivery is being collapsed, open unassigned
-      setIsUnassignedCollapsed(false);
-    }
   };
-
-  // Handle unassigned collapsible state change
-  const handleUnassignedCollapseChange = (open: boolean) => {
-    setIsUnassignedCollapsed(!open);
-    // If unassigned is being opened, expand delivery
-    if (open) {
-      setIsDeliveryExpanded(true);
-    }
-  };
-
-  // Auto-expand unassigned list when data arrives (helps tests and UX)
-  useEffect(() => {
-    if (unassignedOrders.length > 0 && isUnassignedCollapsed) {
-      setIsUnassignedCollapsed(false);
-      setIsDeliveryExpanded(true);
-    }
-  }, [unassignedOrders.length, isUnassignedCollapsed]);
 
   console.log("DeliverySidebar: currentDelivery", currentDelivery);
 
@@ -194,41 +166,6 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     } catch (error) {
       console.error("Failed to remove order:", error);
       // TODO: Revert optimistic update on error (would need to refetch or cache previous state)
-    } finally {
-      setIsOperationInProgress(false);
-    }
-  };
-
-  const handleAddOrderToDelivery = async (orderId: string) => {
-    console.log("handleAddOrderToDelivery called with orderId:", orderId);
-    // Optimistic update
-    const orderToAdd = unassignedOrders.find((order) => order.id === orderId);
-    console.log("orderToAdd:", orderToAdd);
-    console.log("currentDelivery:", currentDelivery);
-
-    try {
-      setIsOperationInProgress(true);
-      if (orderToAdd && currentDelivery) {
-        // Add the order with the correct deliveryId set
-        const orderWithDeliveryId = {
-          ...orderToAdd,
-          deliveryId: currentDelivery.id,
-        };
-        console.log("Adding order optimistically:", orderWithDeliveryId);
-        setDeliveryOrders((prev) => {
-          const newOrders = [...prev, orderWithDeliveryId];
-          console.log("Updated delivery orders count:", newOrders.length);
-          return newOrders;
-        });
-      } else if (orderToAdd && !currentDelivery) {
-        console.log(
-          "currentDelivery not available yet, will rely on DeliveryRouteProvider update"
-        );
-      }
-
-      await onAddOrderToDelivery?.(orderId);
-    } catch (error) {
-      console.error("Failed to add order:", error);
     } finally {
       setIsOperationInProgress(false);
     }
@@ -326,16 +263,8 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
       {/* Content Area with Clear Separation */}
       <SidebarContent className="flex-1 overflow-hidden bg-background border-t border-border/30">
         <div className="h-full flex flex-col overflow-hidden">
-          {/* Delivery Orders Section - Always partially visible, can expand to full height */}
-          <div
-            className={`flex flex-col bg-background rounded-2sm shadow-sm border border-border/50 overflow-hidden m-4 max-w-full relative ${
-              isDeliveryExpanded
-                ? isUnassignedCollapsed
-                  ? "flex-1"
-                  : "h-[67%] min-h-75"
-                : "h-[67%] min-h-75"
-            }`}
-          >
+          {/* Delivery Orders Section - Takes full available space */}
+          <div className="flex flex-col bg-background rounded-2sm shadow-sm border border-border/50 overflow-hidden m-4 max-w-full relative flex-1">
             {/* Loading Overlay */}
             {isOperationInProgress && (
               <div className="absolute inset-0 bg-background/40 backdrop-blur-sm z-50 flex items-center justify-center rounded-2sm">
@@ -437,117 +366,6 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
               </div>
             </div>
           </div>
-
-          {/* Unassigned Orders Section - Always at bottom, full height when expanded */}
-          {isUnassignedCollapsed ? (
-            unassignedOrders.length > 0 && (
-              <button
-                onClick={() => handleUnassignedCollapseChange(true)}
-                className="max-w-full flex items-center justify-between px-4 py-3 rounded-2sm shadow-sm border border-border/50 bg-background hover:bg-accent/10 transition-colors mx-4 mb-4"
-                aria-expanded={false}
-                aria-controls="unassigned-orders-section"
-              >
-                <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                  <svg
-                    className="w-4 h-4 text-muted-foreground"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Unassigned ({unassignedOrders.length})
-                </span>
-                <span className="ml-2 text-muted-foreground">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 19V5"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 12l7-7 7 7"
-                    />
-                  </svg>
-                </span>
-              </button>
-            )
-          ) : (
-            <div className="flex flex-col bg-background rounded-2sm shadow-sm border border-border/50 overflow-hidden mx-4 mb-4 max-w-full h-[33%] min-h-50 relative">
-              {/* Loading Overlay */}
-              {isOperationInProgress && (
-                <div className="absolute inset-0 bg-background/40 backdrop-blur-sm z-50 flex items-center justify-center rounded-2sm">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="relative w-8 h-8">
-                      <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-primary border-r-primary animate-spin"></div>
-                    </div>
-                    <span className="text-xs font-medium text-muted-foreground">
-                      Calculating route...
-                    </span>
-                  </div>
-                </div>
-              )}
-              <button
-                onClick={() => handleUnassignedCollapseChange(false)}
-                className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-transparent text-left hover:bg-accent/10 transition-colors"
-                aria-label="Collapse unassigned orders"
-              >
-                <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                  <svg
-                    className="w-4 h-4 text-muted-foreground"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Unassigned ({unassignedOrders.length})
-                </span>
-                <span className="ml-2 text-muted-foreground">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 15l7-7 7 7"
-                    />
-                  </svg>
-                </span>
-              </button>
-              <div className="flex-1 p-2 overflow-y-auto overflow-x-hidden">
-                <div className="max-w-full">
-                  <div className="max-w-full overflow-hidden">
-                    <UnassignedOrderList
-                      unassignedOrders={unassignedOrders}
-                      onAddToDelivery={handleAddOrderToDelivery}
-                      title=""
-                      highlightedOrderId={highlightedOrderId}
-                      setHighlightedOrderId={setHighlightedOrderId}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </SidebarContent>
 

@@ -115,6 +115,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                     key={order.id}
                     id={order.id}
                     order={order}
+                    sequence={idx}
                     isHighlighted={highlightedOrderId === order.id}
                     onMouseEnter={() => {
                       setHighlightedOrderId?.(order.id);

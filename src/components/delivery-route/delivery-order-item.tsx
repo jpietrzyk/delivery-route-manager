@@ -21,6 +21,7 @@ interface DeliveryOrderItemProps {
   id: string;
   arrivalTime?: Date;
   departureTime?: Date;
+  sequence?: number;
 }
 
 export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
@@ -31,6 +32,7 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
     onMouseLeave,
     onRemove,
     id,
+    sequence,
   }) {
     const {
       attributes,
@@ -75,11 +77,14 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
         onMouseLeave={onMouseLeave}
       >
         <div className="flex items-center gap-2 p-2 select-none">
+          <div className="shrink-0 h-6 w-6 flex items-center justify-center bg-primary hover:bg-primary/90 rounded font-semibold text-xs text-primary-foreground">
+            {sequence !== undefined ? sequence + 1 : "•"}
+          </div>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 size="icon"
-                className="shrink-0 h-6 w-6 p-1 bg-primary hover:bg-primary/90"
+                className="shrink-0 h-6 w-6 p-1 bg-muted hover:bg-muted/90"
                 aria-label={`Info about order ${order.id}`}
               >
                 <svg

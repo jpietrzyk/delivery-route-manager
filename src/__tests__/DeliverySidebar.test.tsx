@@ -47,11 +47,9 @@ describe("DeliverySidebar - Assigned Count Update", () => {
 
   const Wrapper = ({
     initialDeliveryOrders,
-    unassignedOrders,
     onAddOrderToDelivery,
   }: {
     initialDeliveryOrders: Order[];
-    unassignedOrders: Order[];
     onAddOrderToDelivery?: (orderId: string) => Promise<void>;
   }) => {
     const [deliveryOrders, setDeliveryOrders] = useState<Order[]>(
@@ -64,7 +62,6 @@ describe("DeliverySidebar - Assigned Count Update", () => {
           <DeliveryRouteManagerProvider>
             <DeliverySidebar
               deliveryOrders={deliveryOrders}
-              unassignedOrders={unassignedOrders}
               onDeliveryOrdersUpdated={setDeliveryOrders}
               onAddOrderToDelivery={onAddOrderToDelivery}
             />
@@ -143,78 +140,23 @@ describe("DeliverySidebar - Assigned Count Update", () => {
     jest.clearAllMocks();
   });
 
-  it("should update assigned count when order is added to delivery", async () => {
-    // Mock the updateOrder method
-    (OrdersApi.updateOrder as jest.Mock).mockResolvedValue({
-      ...mockOrders[1],
-      deliveryId: "delivery-1",
-    });
-
-    render(
-      <Wrapper
-        initialDeliveryOrders={[mockOrders[0]]}
-        unassignedOrders={[mockOrders[1]]}
-        onAddOrderToDelivery={async (orderId: string) => {
-          await OrdersApi.updateOrder(orderId, {
-            deliveryId: "delivery-1",
-          });
-          // Force refresh of deliveries by calling getDeliveries again
-          await DeliveryRoutesApi.getDeliveries();
-          return;
-        }}
-      />
-    );
-
-    // Wait for the unassigned orders section to be visible
-    await waitFor(
-      () => {
-        const unassignedButton = screen.queryByRole("button", {
-          name: /unassigned/i,
-        });
-        expect(unassignedButton).toBeTruthy();
-      },
-      { timeout: 5000 }
-    );
-
-    // Expand the unassigned orders section first
-    const unassignedButton = screen.getByRole("button", {
-      name: /unassigned/i,
-    });
-    fireEvent.click(unassignedButton);
-
-    // Wait for the unassigned orders list to be visible
-    await waitFor(() => {
-      const addButton = screen.getByLabelText(
-        new RegExp(`Add order ${mockOrders[1].id} to delivery`, "i")
-      );
-      expect(addButton).toBeInTheDocument();
-    });
-
-    // Find the unassigned order and click the add button
-    const addButton = screen.getByLabelText(
-      new RegExp(`Add order ${mockOrders[1].id} to delivery`, "i")
-    );
-    fireEvent.click(addButton);
-
-    // Wait for the update to complete
-    await waitFor(() => {
-      // The assigned count should be updated to 2 (from 1)
-      // Look for the delivery orders count display
-      const countElement = screen.getByText("2");
-      expect(countElement).toBeInTheDocument();
-    });
-  });
-
   it("should show correct initial assigned count", async () => {
-    render(
-      <Wrapper
-        initialDeliveryOrders={[mockOrders[0]]}
-        unassignedOrders={[mockOrders[1]]}
-      />
-    );
+    render(<Wrapper initialDeliveryOrders={[mockOrders[0]]} />);
 
     // Look for the delivery orders count display
     const countElement = screen.getByText("1");
     expect(countElement).toBeInTheDocument();
+  });
+
+  it("should render delivery orders list", async () => {
+    const { container } = render(
+      <Wrapper initialDeliveryOrders={[mockOrders[0]]} />
+    );
+
+    // Check that the sidebar element is rendered
+    await waitFor(() => {
+      const sidebar = container.querySelector('[data-sidebar="sidebar"]');
+      expect(sidebar).toBeTruthy();
+    });
   });
 });
