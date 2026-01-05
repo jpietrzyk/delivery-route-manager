@@ -85,15 +85,12 @@ export class LeafletMapProvider implements MapProvider {
    * Get the appropriate icon for an order based on its properties
    */
   private getIconForOrder(order: Order): any {
-    const isPool = !order.deliveryId;
     const ORANGE_THRESHOLD = 13000;
+    const isHighValue = (order.totalAmount ?? 0) > ORANGE_THRESHOLD;
 
-    if (isPool) {
-      return (order.totalAmount ?? 0) > ORANGE_THRESHOLD
-        ? this.markerIcons.get("high-value")!
-        : this.markerIcons.get("pool")!;
-    }
-    return this.markerIcons.get("default")!;
+    return isHighValue
+      ? this.markerIcons.get("high-value")!
+      : this.markerIcons.get("default")!;
   }
 
   /**

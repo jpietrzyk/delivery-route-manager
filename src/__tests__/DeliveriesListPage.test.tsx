@@ -55,11 +55,17 @@ describe("DeliveriesListPage", () => {
       expect(DeliveryRoutesApi.getDeliveries).toHaveBeenCalledTimes(1);
     });
 
+    await waitFor(() => {
+      screen.getAllByRole("link", {
+        name: /zobacz w leaflet/i,
+      });
+    });
+
     const leafletLinks = screen.getAllByRole("link", {
-      name: /view with leaflet/i,
+      name: /zobacz w leaflet/i,
     });
     const mapyLinks = screen.getAllByRole("link", {
-      name: /view with mapy\.cz/i,
+      name: /zobacz w mapy\.cz/i,
     });
 
     expect(leafletLinks.map((link) => link.getAttribute("href"))).toEqual([
@@ -72,7 +78,7 @@ describe("DeliveriesListPage", () => {
     ]);
 
     expect(
-      screen.getByRole("link", { name: /view all on map/i })
+      screen.getByRole("link", { name: /zobacz wszystkie na mapie/i })
     ).toHaveAttribute("href", "/delivery_routes");
   });
 });

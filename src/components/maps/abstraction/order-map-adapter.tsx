@@ -9,7 +9,6 @@ import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
-import { OrdersApi } from "@/services/ordersApi";
 import { pl } from "@/lib/translations";
 
 // Popup content creator (extracted from LeafletMap)
@@ -206,15 +205,6 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
 
   const ORANGE_THRESHOLD = 13000;
 
-  // Map delivery order ids to their 1-based waypoint index
-  const waypointIndexMap = React.useMemo(() => {
-    const map = new Map<string, number>();
-    orders.forEach((order, index) => {
-      map.set(order.id, index + 1);
-    });
-    return map;
-  }, [orders]);
-
   // Transform orders to markers
   const markers: MapMarkerData[] = React.useMemo(() => {
     // Deduplicate on initialization: filter unassigned orders that are also in delivery orders
@@ -229,7 +219,6 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
       // This is because orders from waypoint system don't have deliveryId set on the Order object
       const isPool = !deliveryOrderIds.has(order.id);
       let type: MapMarkerData["type"] = "delivery";
-      const waypointIndex = waypointIndexMap.get(order.id);
 
       if (isPool) {
         type =
@@ -244,23 +233,21 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         async () => {
           try {
             if (isPool) {
-              if (currentDelivery) {
-                await addOrderToDelivery(currentDelivery.id, order.id);
-              } else {
-                await OrdersApi.updateOrder(order.id, {
-                  deliveryId: "DEL-001",
-                });
+              if (!currentDelivery) {
+                alert("Wybierz najpierw trasę dostawy");
+                return;
               }
+
+              await addOrderToDelivery(currentDelivery.id, order.id);
               onOrderAddedToDelivery?.(order.id);
               onRefreshRequested?.();
             } else {
-              if (currentDelivery) {
-                await removeOrderFromDelivery(currentDelivery.id, order.id);
-              } else {
-                await OrdersApi.updateOrder(order.id, {
-                  deliveryId: undefined,
-                });
+              if (!currentDelivery) {
+                alert("Wybierz najpierw trasę dostawy");
+                return;
               }
+
+              await removeOrderFromDelivery(currentDelivery.id, order.id);
               onRefreshRequested?.();
             }
           } catch (error) {

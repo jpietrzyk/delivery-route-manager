@@ -197,7 +197,7 @@ class DeliveryRoutesApiClass {
     const id = `DEL-${Date.now()}`;
 
     // Extract orders if provided (for backward compatibility)
-    const { orders, ...deliveryData } = delivery as any;
+    const { orders, ...deliveryData } = delivery;
 
     const newDelivery: DeliveryRoute = {
       ...deliveryData,
@@ -213,7 +213,7 @@ class DeliveryRoutesApiClass {
       for (const order of orders) {
         try {
           await DeliveryRouteWaypointsApi.addWaypoint(id, order.orderId, order.sequence);
-        } catch (e) {
+        } catch {
           // Ignore duplicates
         }
       }
@@ -264,7 +264,7 @@ class DeliveryRoutesApiClass {
     deliveryId: string,
     orderId: string,
     atIndex?: number
-  ): Promise<DeliveryRoute | null> {
+  ): Promise<DeliveryRoute & { orders: DeliveryRouteWaypoint[] } | null> {
     const delivery = await this.getDelivery(deliveryId);
     if (!delivery) return null;
 
@@ -279,8 +279,8 @@ class DeliveryRoutesApiClass {
     const waypoints = await DeliveryRouteWaypointsApi.getWaypointsByDelivery(deliveryId);
     return {
       ...delivery,
-      orders: waypoints
-    } as any;
+      orders: waypoints,
+    };
   }
 
   /**
@@ -288,7 +288,7 @@ class DeliveryRoutesApiClass {
    * This method remains for backward compatibility during migration
    * Returns delivery with populated orders for backward compatibility
    */
-  async removeOrderFromDelivery(deliveryId: string, orderId: string): Promise<DeliveryRoute | null> {
+  async removeOrderFromDelivery(deliveryId: string, orderId: string): Promise<DeliveryRoute & { orders: DeliveryRouteWaypoint[] } | null> {
     const delivery = await this.getDelivery(deliveryId);
     if (!delivery) return null;
 
@@ -303,8 +303,8 @@ class DeliveryRoutesApiClass {
     const waypoints = await DeliveryRouteWaypointsApi.getWaypointsByDelivery(deliveryId);
     return {
       ...delivery,
-      orders: waypoints
-    } as any;
+      orders: waypoints,
+    };
   }
 
   /**
@@ -316,7 +316,7 @@ class DeliveryRoutesApiClass {
     deliveryId: string,
     fromIndex: number,
     toIndex: number
-  ): Promise<DeliveryRoute | null> {
+  ): Promise<DeliveryRoute & { orders: DeliveryRouteWaypoint[] } | null> {
     const delivery = await this.getDelivery(deliveryId);
     if (!delivery) return null;
 
@@ -331,8 +331,8 @@ class DeliveryRoutesApiClass {
     const waypoints = await DeliveryRouteWaypointsApi.getWaypointsByDelivery(deliveryId);
     return {
       ...delivery,
-      orders: waypoints
-    } as any;
+      orders: waypoints,
+    };
   }
 
   /**
@@ -346,7 +346,7 @@ class DeliveryRoutesApiClass {
     status: DeliveryRouteWaypoint['status'],
     deliveredAt?: Date,
     notes?: string
-  ): Promise<DeliveryRoute | null> {
+  ): Promise<DeliveryRoute & { orders: DeliveryRouteWaypoint[] } | null> {
     const delivery = await this.getDelivery(deliveryId);
     if (!delivery) return null;
 
@@ -366,8 +366,8 @@ class DeliveryRoutesApiClass {
     const waypoints = await DeliveryRouteWaypointsApi.getWaypointsByDelivery(deliveryId);
     return {
       ...delivery,
-      orders: waypoints
-    } as any;
+      orders: waypoints,
+    };
   }
 
   // Update delivery status

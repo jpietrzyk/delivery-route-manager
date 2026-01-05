@@ -3,17 +3,17 @@ import { DeliveryRouteContext } from "./delivery-route-context";
 import { DeliveryRoutesApi } from "@/services/deliveryRoutesApi";
 import { DeliveryRouteWaypointsApi } from "@/services/deliveryRouteWaypointsApi";
 import { OrdersApi } from "@/services/ordersApi";
-import type { DeliveryRoute } from "@/types/delivery-route";
+import type {
+  DeliveryRoute,
+  DeliveryRouteWaypoint,
+} from "@/types/delivery-route";
 import type { Order } from "@/types/order";
 import { getOrdersInSequence } from "@/lib/delivery-route-waypoint-helpers";
 import { getUnassignedOrders } from "@/lib/utils";
 import {
   addOptimisticDeliveryUpdate,
-  addOptimisticOrderUpdate,
   markDeliveryUpdateCompleted,
-  markOrderUpdateCompleted,
   markDeliveryUpdateFailed,
-  markOrderUpdateFailed,
   applyPendingOrderUpdates,
 } from "@/lib/local-storage-utils";
 
@@ -37,7 +37,7 @@ export default function DeliveryRouteProvider({
       const ordersWithPendingUpdates = applyPendingOrderUpdates(orders);
 
       // Get all waypoints across all deliveries
-      const allWaypoints: Array<any> = [];
+      const allWaypoints: DeliveryRouteWaypoint[] = [];
       if (deliveries && deliveries.length > 0) {
         for (const delivery of deliveries) {
           const waypoints =
@@ -248,10 +248,6 @@ export default function DeliveryRouteProvider({
           orderId,
           action: "add",
         });
-        addOptimisticOrderUpdate({
-          orderId,
-          deliveryId,
-        });
 
         // Optimistic UI update - add to deliveryOrders if it's the current delivery
         if (currentDelivery?.id === deliveryId) {
@@ -281,12 +277,10 @@ export default function DeliveryRouteProvider({
 
           // Mark updates as completed
           markDeliveryUpdateCompleted(deliveryId, orderId);
-          markOrderUpdateCompleted(orderId);
         } catch (error) {
           console.error("Error adding order to delivery:", error);
           // Mark updates as failed
           markDeliveryUpdateFailed(deliveryId, orderId);
-          markOrderUpdateFailed(orderId);
 
           // TODO: Revert optimistic updates (would need to refetch data)
         }
@@ -307,10 +301,6 @@ export default function DeliveryRouteProvider({
           deliveryId,
           orderId,
           action: "remove",
-        });
-        addOptimisticOrderUpdate({
-          orderId,
-          deliveryId: undefined,
         });
 
         // Optimistic UI update - remove from deliveryOrders
@@ -333,12 +323,10 @@ export default function DeliveryRouteProvider({
 
           // Mark updates as completed
           markDeliveryUpdateCompleted(deliveryId, orderId);
-          markOrderUpdateCompleted(orderId);
         } catch (error) {
           console.error("Error removing order from delivery:", error);
           // Mark updates as failed
           markDeliveryUpdateFailed(deliveryId, orderId);
-          markOrderUpdateFailed(orderId);
 
           // TODO: Revert optimistic updates (would need to refetch data)
         }

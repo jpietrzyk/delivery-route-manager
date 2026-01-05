@@ -7,9 +7,7 @@ import {
   Drawer,
   DrawerTrigger,
   DrawerContent,
-  DrawerHeader,
   DrawerTitle,
-  DrawerDescription,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { UnassignedOrderList } from "@/components/delivery-route/unassigned-order-list";
@@ -217,17 +215,15 @@ export default function MapyCzMapPage() {
 
         <DrawerContent
           side="bottom"
-          className="border-t border-border/50 bg-gradient-to-b from-background via-background to-muted/30"
+          className="border-t border-border/50 bg-linear-to-b from-background via-background to-muted/30"
         >
           <div className="w-full flex flex-col max-h-[60vh] overflow-hidden">
             <div className="border-b border-border/50 bg-background/80 backdrop-blur-sm px-6 py-3">
               <div className="flex items-center gap-2 whitespace-nowrap">
-                <DrawerTitle className="text-lg font-bold tracking-tight text-foreground flex-shrink-0">
+                <DrawerTitle className="text-lg font-bold tracking-tight text-foreground shrink-0">
                   {pl.unassignedOrders}
                 </DrawerTitle>
-                <span className="text-muted-foreground/60 flex-shrink-0">
-                  ·
-                </span>
+                <span className="text-muted-foreground/60 shrink-0">·</span>
                 <span className="text-sm text-muted-foreground inline">
                   {getOrdersCountText(filteredUnassignedOrders.length)}
                 </span>

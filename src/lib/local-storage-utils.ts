@@ -1,5 +1,8 @@
 import type { Order } from '@/types/order';
 import type { DeliveryRoute } from '@/types/delivery-route';
+import { OrdersApi } from '@/services/ordersApi';
+import { DeliveryRoutesApi } from '@/services/deliveryRoutesApi';
+import { DeliveryRouteWaypointsApi } from '@/services/deliveryRouteWaypointsApi';
 
 // Local storage keys
 const LOCAL_STORAGE_KEYS = {
@@ -225,13 +228,6 @@ export async function resetLocalStorageAndFetchData(refreshCallback?: () => Prom
     localStorage.removeItem(LOCAL_STORAGE_KEYS.OPTIMISTIC_ORDER_UPDATES);
 
     // Clear the API caches (they will reload data from JSON files on next request)
-    // Import APIs dynamically to avoid circular dependencies
-    const [{ OrdersApi }, { DeliveryRoutesApi }, { DeliveryRouteWaypointsApi }] = await Promise.all([
-      import('@/services/ordersApi'),
-      import('@/services/deliveryRoutesApi'),
-      import('@/services/deliveryRouteWaypointsApi'),
-    ]);
-
     OrdersApi.resetCache();
     DeliveryRoutesApi.resetCache();
     DeliveryRouteWaypointsApi.resetCache();
@@ -257,20 +253,8 @@ export async function resetLocalStorageAndFetchData(refreshCallback?: () => Prom
  */
 export function applyPendingOrderUpdates(orders: Order[]): Order[] {
   try {
-    const pendingUpdates = getPendingOrderUpdates();
-
-    return orders.map((order) => {
-      const pendingUpdate = pendingUpdates.find((update) => update.orderId === order.id);
-
-      if (pendingUpdate) {
-        return {
-          ...order,
-          deliveryId: pendingUpdate.deliveryId ?? undefined,
-        };
-      }
-
-      return order;
-    });
+    // Order objects no longer track delivery membership; pending updates are managed via waypoints
+    return orders;
   } catch (error) {
     console.error('Error applying pending order updates:', error);
     return orders;

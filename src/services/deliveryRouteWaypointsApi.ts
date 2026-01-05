@@ -4,7 +4,7 @@ import { resequenceWaypoints } from '@/lib/delivery-route-waypoint-helpers';
 
 // Store for in-memory data that can be modified
 // Key: deliveryId, Value: array of waypoints for that delivery
-let waypointsData: Map<string, DeliveryRouteWaypoint[]> = new Map();
+const waypointsData: Map<string, DeliveryRouteWaypoint[]> = new Map();
 let waypointsLoaded = false;
 let loadingPromise: Promise<void> | null = null;
 
@@ -28,7 +28,8 @@ async function loadWaypoints(): Promise<void> {
   loadingPromise = (async () => {
     try {
       // Check if we're in a test environment (Jest)
-      const isTestEnv = typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
+      const nodeEnv = (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV;
+      const isTestEnv = nodeEnv === 'test';
 
       // Check if we're in a browser environment (fetch is available) and NOT in tests
       if (!isTestEnv && typeof fetch !== 'undefined' && typeof window !== 'undefined') {
@@ -37,16 +38,19 @@ async function loadWaypoints(): Promise<void> {
           const response = await fetch('/delivery-route-waypoints-DEL-001.json');
           console.log('Fetch response:', response.status, response.ok);
           if (response.ok) {
-            const data = await response.json();
+            const data = (await response.json()) as DeliveryRouteWaypoint[];
             console.log('JSON parsed, data:', data);
             if (data && Array.isArray(data)) {
               // Load data from JSON file
               waypointsData.clear();
               const deliveryId = 'DEL-001';
-              waypointsData.set(deliveryId, data.map((wp: any) => ({
-                ...wp,
+              waypointsData.set(
                 deliveryId,
-              })));
+                data.map((wp) => ({
+                  ...wp,
+                  deliveryId,
+                }))
+              );
               console.log(`✅ Loaded ${data.length} waypoints for delivery ${deliveryId} from JSON`);
               waypointsLoaded = true;
               return;
@@ -312,7 +316,9 @@ export class DeliveryRouteWaypointsApi {
     }
 
     // Remove orderId and deliveryId from updates if they were passed (prevent override attempts)
-    const { orderId: _, deliveryId: __, ...safeUpdates } = updates as any;
+    const safeUpdates: Partial<DeliveryRouteWaypoint> = { ...updates };
+    delete safeUpdates.orderId;
+    delete safeUpdates.deliveryId;
 
     Object.assign(waypoint, safeUpdates);
     return { ...waypoint };

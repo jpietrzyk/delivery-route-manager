@@ -28,9 +28,9 @@ describe("UnassignedOrderList", () => {
       <UnassignedOrderList unassignedOrders={[]} onAddToDelivery={jest.fn()} />
     );
 
-    // Should show "No unassigned orders available" message
+    // Should show "Brak nieprzypisanych zamówień" message
     expect(
-      screen.getByText("No unassigned orders available")
+      screen.getByText("Brak nieprzypisanych zamówień")
     ).toBeInTheDocument();
   });
 
@@ -43,8 +43,10 @@ describe("UnassignedOrderList", () => {
       />
     );
 
-    // Should show default title "Available Unassigned Orders"
-    expect(screen.getByText("Available Unassigned Orders")).toBeInTheDocument();
+    // Should show default title "Dostępne nieprzypisane zamówienia"
+    expect(
+      screen.getByText("Dostępne nieprzypisane zamówienia")
+    ).toBeInTheDocument();
   });
 
   it("should render custom title when provided", () => {

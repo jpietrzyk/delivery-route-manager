@@ -16,7 +16,6 @@ import { usePolylineHighlight } from "@/hooks/use-polyline-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import type { Order } from "@/types/order";
-import { OrdersApi } from "@/services/ordersApi";
 
 // DEPRECATED: Logic should be moved to provider abstraction layer.
 // Helper function to get status colors (consistent with pool markers)
@@ -200,13 +199,11 @@ function MapFitter({
   React.useEffect(() => {
     if (orders.length === 0 && unassignedOrders.length === 0) return;
 
-    // Filter to get only delivery orders for primary focus
-    const deliveryOrders = orders.filter((order) => order.deliveryId);
+    const deliveryOrders = orders;
 
     if (deliveryOrders.length === 1) {
       map.setView(deliveryOrders[0].location, 13);
     } else if (deliveryOrders.length > 1) {
-      // Focus on delivery orders, but include pool orders in bounds for context
       const allOrders = [...deliveryOrders, ...unassignedOrders];
       const bounds = L.latLngBounds(
         allOrders.map((o) => [o.location.lat, o.location.lng])
@@ -241,6 +238,10 @@ const LeafletMap = ({
     useSegmentHighlight();
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDeliveryRoute();
+  const deliveryOrderIds = React.useMemo(
+    () => new Set(orders.map((order) => order.id)),
+    [orders]
+  );
 
   // Debug logging for order highlighting
   console.log("LeafletMap: highlightedOrderId:", highlightedOrderId);
@@ -455,7 +456,7 @@ const LeafletMap = ({
           );
         })}
       {[...orders, ...unassignedOrders].map((order) => {
-        const isPool = !order.deliveryId;
+        const isPool = !deliveryOrderIds.has(order.id);
         const waypointNumber = waypointPositionMap.get(order.id);
         let iconUrl =
           "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png";
@@ -507,28 +508,24 @@ const LeafletMap = ({
                 async () => {
                   try {
                     if (isPool) {
-                      // Add to delivery using the proper delivery context
-                      if (currentDelivery) {
-                        await addOrderToDelivery(currentDelivery.id, order.id);
-                      } else {
-                        await OrdersApi.updateOrder(order.id, {
-                          deliveryId: "DEL-001",
-                        });
+                      if (!currentDelivery) {
+                        alert("Wybierz najpierw trasę dostawy");
+                        return;
                       }
+
+                      await addOrderToDelivery(currentDelivery.id, order.id);
                       onOrderAddedToDelivery?.(order.id);
                       onRefreshRequested?.();
                     } else {
-                      // Remove from delivery using the proper delivery context
-                      if (currentDelivery) {
-                        await removeOrderFromDelivery(
-                          currentDelivery.id,
-                          order.id
-                        );
-                      } else {
-                        await OrdersApi.updateOrder(order.id, {
-                          deliveryId: undefined,
-                        });
+                      if (!currentDelivery) {
+                        alert("Wybierz najpierw trasę dostawy");
+                        return;
                       }
+
+                      await removeOrderFromDelivery(
+                        currentDelivery.id,
+                        order.id
+                      );
                       onRefreshRequested?.();
                     }
                   } catch (error) {

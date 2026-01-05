@@ -44,7 +44,6 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   onOrderRemoved,
   onDeliveryOrdersUpdated,
   deliveryOrders: deliveryOrdersProp = [],
-  onAddOrderToDelivery,
 }) => {
   const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
   const { currentOrderId, setCurrentOrderId, setPreviousOrderId } =

@@ -67,7 +67,7 @@ describe("DeliveryRouteSegment", () => {
     expect(screen.getByTestId("connection-icon")).toBeInTheDocument();
 
     // Should render refresh button
-    const refreshButton = screen.getByLabelText("Refresh route");
+    const refreshButton = screen.getByLabelText("Odśwież trasę");
     expect(refreshButton).toBeInTheDocument();
   });
 
@@ -128,7 +128,7 @@ describe("DeliveryRouteSegment", () => {
       { wrapper: Wrapper }
     );
 
-    const refreshButton = screen.getByLabelText("Refresh route");
+    const refreshButton = screen.getByLabelText("Odśwież trasę");
     fireEvent.click(refreshButton);
 
     expect(mockRecalculate).toHaveBeenCalled();
@@ -141,7 +141,7 @@ describe("DeliveryRouteSegment", () => {
       wrapper: Wrapper,
     });
 
-    const refreshButton = screen.getByLabelText("Recalculating...");
+    const refreshButton = screen.getByLabelText("Przeliczanie...");
     expect(refreshButton).toBeDisabled();
   });
 

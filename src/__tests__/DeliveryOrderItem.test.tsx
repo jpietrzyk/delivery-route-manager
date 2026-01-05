@@ -128,7 +128,7 @@ describe("DeliveryOrderItem", () => {
     );
 
     // Find and click the remove button
-    const removeButton = screen.getByLabelText(`Remove order ${order.id}`);
+    const removeButton = screen.getByLabelText(`Usuń zamówienie ${order.id}`);
     fireEvent.click(removeButton);
 
     expect(mockRemove).toHaveBeenCalledWith(order.id);
@@ -143,7 +143,7 @@ describe("DeliveryOrderItem", () => {
 
     // Should not find remove button
     expect(
-      screen.queryByLabelText(`Remove order ${order.id}`)
+      screen.queryByLabelText(`Usuń zamówienie ${order.id}`)
     ).not.toBeInTheDocument();
   });
 

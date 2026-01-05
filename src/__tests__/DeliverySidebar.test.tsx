@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";
@@ -20,7 +20,6 @@ const mockOrders: Order[] = [
     status: "pending",
     priority: "medium",
     active: true,
-    deliveryId: "delivery-1",
     createdAt: new Date(),
     updatedAt: new Date(),
     customer: "Customer 1",
@@ -141,11 +140,16 @@ describe("DeliverySidebar - Assigned Count Update", () => {
   });
 
   it("should show correct initial assigned count", async () => {
-    render(<Wrapper initialDeliveryOrders={[mockOrders[0]]} />);
+    const { container } = render(
+      <Wrapper initialDeliveryOrders={[mockOrders[0]]} />
+    );
 
-    // Look for the delivery orders count display
-    const countElement = screen.getByText("1");
+    // Look for the delivery orders count display with the specific class
+    const countElement = container.querySelector(
+      ".text-sm.font-medium.text-foreground"
+    );
     expect(countElement).toBeInTheDocument();
+    expect(countElement).toHaveTextContent("1");
   });
 
   it("should render delivery orders list", async () => {

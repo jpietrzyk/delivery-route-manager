@@ -24,8 +24,10 @@ export const MapyMap: React.FC<MapyMapProps> = ({
   apiKey,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<any>(null);
-  const markerLayerRef = useRef<any>(null);
+  const mapRef = useRef<SMapInstance | null>(null);
+  const markerLayerRef = useRef<InstanceType<
+    SMapConstructor["Layer"]["Marker"]
+  > | null>(null);
   const [isReady, setReady] = useState(false);
 
   // Initialize map

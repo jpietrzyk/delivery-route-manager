@@ -1,14 +1,13 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { OrderFilters } from "@/components/delivery-route/order-filters";
-import type { PriorityFilterState } from "@/components/delivery-route/order-filters";
 
 describe("OrderFilters", () => {
   it("should render filters section with heading", () => {
     render(<OrderFilters onPriorityChange={jest.fn()} />);
 
-    expect(screen.getByText("FILTERS")).toBeInTheDocument();
-    expect(screen.getByText("Priority")).toBeInTheDocument();
+    expect(screen.getByText("FILTRY")).toBeInTheDocument();
+    expect(screen.getByText("Priorytet")).toBeInTheDocument();
   });
 
   it("should render all three priority filter toggles", () => {
@@ -174,9 +173,9 @@ describe("OrderFilters", () => {
   it("should display toggle labels correctly", () => {
     render(<OrderFilters onPriorityChange={jest.fn()} />);
 
-    expect(screen.getByText("Low")).toBeInTheDocument();
-    expect(screen.getByText("Medium")).toBeInTheDocument();
-    expect(screen.getByText("High")).toBeInTheDocument();
+    expect(screen.getByText("Niski")).toBeInTheDocument();
+    expect(screen.getByText("Średni")).toBeInTheDocument();
+    expect(screen.getByText("Wysoki")).toBeInTheDocument();
   });
 
   it("should maintain toggle states across multiple interactions", () => {
@@ -331,7 +330,7 @@ describe("OrderFilters - Amount Filter", () => {
       <OrderFilters onPriorityChange={jest.fn()} onAmountChange={jest.fn()} />
     );
 
-    expect(screen.getByText("Amount")).toBeInTheDocument();
+    expect(screen.getByText(/amount|kwota/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Filter by Low amount/)).toBeInTheDocument();
     expect(
       screen.getByLabelText(/Filter by Medium amount/)
@@ -387,7 +386,7 @@ describe("OrderFilters - Complexity Filter", () => {
       />
     );
 
-    expect(screen.getByText("Complexity")).toBeInTheDocument();
+    expect(screen.getByText("Złożoność")).toBeInTheDocument();
     expect(
       screen.getByLabelText(/Filter by Simple complexity/)
     ).toBeInTheDocument();
@@ -446,7 +445,7 @@ describe("OrderFilters - UpdatedAt Filter", () => {
       />
     );
 
-    expect(screen.getByText("Last Updated")).toBeInTheDocument();
+    expect(screen.getByText("Data aktualizacji")).toBeInTheDocument();
     expect(
       screen.getByLabelText(/Filter by Recent updates/)
     ).toBeInTheDocument();
@@ -532,7 +531,7 @@ describe("OrderFilters - All Filters Together", () => {
   });
 
   it("should render all 5 filter columns in the grid", () => {
-    const { container } = render(
+    render(
       <OrderFilters
         onPriorityChange={jest.fn()}
         onStatusChange={jest.fn()}
@@ -542,10 +541,10 @@ describe("OrderFilters - All Filters Together", () => {
       />
     );
 
-    expect(screen.getByText("Priority")).toBeInTheDocument();
+    expect(screen.getByText("Priorytet")).toBeInTheDocument();
     expect(screen.getByText("Status")).toBeInTheDocument();
-    expect(screen.getByText("Amount")).toBeInTheDocument();
-    expect(screen.getByText("Complexity")).toBeInTheDocument();
-    expect(screen.getByText("Last Updated")).toBeInTheDocument();
+    expect(screen.getByText("Kwota")).toBeInTheDocument();
+    expect(screen.getByText("Złożoność")).toBeInTheDocument();
+    expect(screen.getByText("Data aktualizacji")).toBeInTheDocument();
   });
 });

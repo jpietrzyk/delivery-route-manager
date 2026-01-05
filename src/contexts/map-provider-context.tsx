@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useMemo } from "react";
 import type { MapProvider } from "@/types/map-provider";
 import { LeafletMapProvider } from "@/providers/LeafletMapProvider";
