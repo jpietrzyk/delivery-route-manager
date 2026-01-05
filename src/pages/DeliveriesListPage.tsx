@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import { OrdersApi } from "@/services/ordersApi";
 import { DeliveryRoutesApi } from "@/services/deliveryRoutesApi";
-import { DeliveryRouteWaypointsApi } from "@/services/deliveryRouteWaypointsApi";
-import type { Order } from "@/types/order";
 import type { DeliveryRoute } from "@/types/delivery-route";
 import { Link } from "react-router-dom";
-import { DeliveryOrderList } from "@/components/delivery-route/delivery-order-list";
 import {
   Drawer,
   DrawerTrigger,
@@ -16,51 +12,22 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 
-interface DeliveryWithOrders extends DeliveryRoute {
-  ordersInSequence: Order[];
-}
-
 export default function DeliveriesListPage() {
-  const [deliveries, setDeliveries] = useState<DeliveryWithOrders[]>([]);
+  const [deliveries, setDeliveries] = useState<DeliveryRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedDelivery, setSelectedDelivery] =
-    useState<DeliveryWithOrders | null>(null);
+    useState<DeliveryRoute | null>(null);
 
   useEffect(() => {
     const fetchDeliveries = async () => {
       try {
         setLoading(true);
 
-        // Fetch deliveries and orders
-        const [allDeliveries, orders] = await Promise.all([
-          DeliveryRoutesApi.getDeliveries(),
-          OrdersApi.getOrders(),
-        ]);
+        const allDeliveries = await DeliveryRoutesApi.getDeliveries();
 
-        // Create orders map for O(1) lookup
-        const ordersMap = new Map(orders.map((order) => [order.id, order]));
-
-        // For each delivery, get waypoints and populate with order data
-        const deliveriesWithOrders: DeliveryWithOrders[] = await Promise.all(
-          allDeliveries.map(async (delivery) => {
-            const waypoints =
-              await DeliveryRouteWaypointsApi.getWaypointsByDelivery(
-                delivery.id
-              );
-            const ordersInSequence = waypoints
-              .map((waypoint) => ordersMap.get(waypoint.orderId))
-              .filter((order): order is Order => order !== undefined);
-
-            return {
-              ...delivery,
-              ordersInSequence,
-            };
-          })
-        );
-
-        setDeliveries(deliveriesWithOrders);
+        setDeliveries(allDeliveries);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch deliveries:", err);
@@ -132,7 +99,7 @@ export default function DeliveriesListPage() {
               Planned Deliveries
             </h1>
             <Link
-              to="/deliveries"
+              to="/delivery_routes"
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
             >
               View All on Map
@@ -174,7 +141,7 @@ export default function DeliveriesListPage() {
                       <h2 className="text-lg font-semibold text-gray-800">
                         {delivery.name || `Delivery ${delivery.id}`}
                       </h2>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap justify-end">
                         <DrawerTrigger asChild>
                           <Button
                             variant="outline"
@@ -185,10 +152,30 @@ export default function DeliveriesListPage() {
                           </Button>
                         </DrawerTrigger>
                         <Link
-                          to={`/deliveries/${delivery.id}`}
+                          to={`/delivery_routes/${delivery.id}/leaflet`}
                           className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center px-3 py-1.5 border border-blue-200 rounded hover:bg-blue-50 transition-colors"
                         >
-                          View on Map
+                          View with Leaflet
+                          <svg
+                            className="ml-1 h-4 w-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </Link>
+                        <Link
+                          to={`/delivery_routes/${delivery.id}/mapy`}
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center px-3 py-1.5 border border-blue-200 rounded hover:bg-blue-50 transition-colors"
+                        >
+                          View with Mapy.cz
                           <svg
                             className="ml-1 h-4 w-4"
                             xmlns="http://www.w3.org/2000/svg"
@@ -206,12 +193,6 @@ export default function DeliveriesListPage() {
                         </Link>
                       </div>
                     </div>
-                  </div>
-                  <div className="p-6">
-                    <DeliveryOrderList
-                      orders={delivery.ordersInSequence}
-                      title={`Orders (${delivery.ordersInSequence.length})`}
-                    />
                   </div>
                 </div>
               ))}
@@ -250,14 +231,6 @@ export default function DeliveriesListPage() {
                 </p>
                 <p className="text-sm font-semibold">
                   {selectedDelivery.status}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase">
-                  Total Orders
-                </p>
-                <p className="text-sm font-semibold">
-                  {selectedDelivery.ordersInSequence.length}
                 </p>
               </div>
               {selectedDelivery.notes && (
