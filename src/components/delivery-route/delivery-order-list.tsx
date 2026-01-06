@@ -106,7 +106,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
           )}
           {orders.length === 0 ? (
             <div className="text-xs text-muted-foreground/80 text-center py-4">
-              No orders assigned
+              {pl.noOrdersAssignedShort}
             </div>
           ) : (
             <ul className="space-y-2">

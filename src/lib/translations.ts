@@ -14,6 +14,7 @@ export const pl = {
   assignedOrders: "Przypisane zamówienia",
   noOrdersAssigned: "Brak przypisanych zamówień",
   noUnassignedOrders: "Brak nieprzypisanych zamówień",
+  noOrdersAssignedShort: "Brak przypisanych zamówień",
   availableUnassignedOrders: "Dostępne nieprzypisane zamówienia",
 
   // Order count

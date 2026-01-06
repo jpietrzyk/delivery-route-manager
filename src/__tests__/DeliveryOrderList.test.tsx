@@ -29,8 +29,8 @@ describe("DeliveryOrderList", () => {
   it("should render empty state when no orders are provided", () => {
     render(<DeliveryOrderList orders={[]} />, { wrapper: Wrapper });
 
-    // Should show "No orders assigned" message
-    expect(screen.getByText("No orders assigned")).toBeInTheDocument();
+    // Should show "Brak przypisanych zamówień" message
+    expect(screen.getByText("Brak przypisanych zamówień")).toBeInTheDocument();
   });
 
   it("should render default title when no title is provided", () => {
