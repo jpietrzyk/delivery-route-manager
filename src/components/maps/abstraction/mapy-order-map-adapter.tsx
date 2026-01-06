@@ -229,7 +229,9 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
   const [calculatedRoutes, setCalculatedRoutes] = useState<RouteSegment[]>([]);
 
   const ORANGE_THRESHOLD = 13000;
-  const mapyApiKey = import.meta.env.VITE_MAPY_COM_API_KEY as string | undefined;
+  const mapyApiKey = import.meta.env.VITE_MAPY_COM_API_KEY as
+    | string
+    | undefined;
 
   // Map delivery order ids to their 1-based waypoint index
   const waypointIndexMap = React.useMemo(() => {

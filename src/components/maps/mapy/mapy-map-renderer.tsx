@@ -204,7 +204,9 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
   }, [markers]);
 
   // Get Mapy.cz API key from environment
-  const mapyApiKey = import.meta.env.VITE_MAPY_COM_API_KEY as string | undefined;
+  const mapyApiKey = import.meta.env.VITE_MAPY_COM_API_KEY as
+    | string
+    | undefined;
 
   // Initialize map
   useEffect(() => {
