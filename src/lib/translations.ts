@@ -66,6 +66,7 @@ export const pl = {
   removeFromDelivery: "Usuń z dostawy",
   refreshRoute: "Odśwież trasę",
   recalculating: "Przeliczanie...",
+  reset: "Resetuj dane",
 
   // Route segment
   distance: "Odległość",

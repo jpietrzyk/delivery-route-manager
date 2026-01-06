@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
 import { MapControls } from "@/components/map-controls";
@@ -17,6 +17,7 @@ import {
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import type { Order } from "@/types/order";
+import { resetLocalStorageAndFetchData } from "@/lib/local-storage-utils";
 
 interface DeliveryRouteMapLayoutProps {
   renderMap: (
@@ -31,8 +32,46 @@ export default function DeliveryRouteMapLayout({
   renderMap,
 }: DeliveryRouteMapLayoutProps) {
   const { deliveryId } = useParams<{ deliveryId: string }>();
+  const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
+
+  // Detect current map provider from URL
+  const getCurrentMapProvider = () => {
+    const pathname = window.location.pathname;
+    if (pathname.includes("/mapy")) return "mapy";
+    return "leaflet"; // default
+  };
+
+  const [currentMapProvider, setCurrentMapProvider] = useState<
+    "leaflet" | "mapy"
+  >(getCurrentMapProvider());
+
+  const handleMapProviderChange = (provider: "leaflet" | "mapy") => {
+    const currentDeliveryId = deliveryId || "DEL-001"; // fallback
+    setCurrentMapProvider(provider);
+
+    if (provider === "mapy") {
+      navigate(`/delivery_routes/${currentDeliveryId}/mapy`);
+    } else {
+      navigate(`/delivery_routes/${currentDeliveryId}/leaflet`);
+    }
+  };
+
+  const handleResetData = async () => {
+    try {
+      await resetLocalStorageAndFetchData(async () => {
+        await Promise.all([
+          refreshUnassignedOrders(),
+          currentDelivery
+            ? refreshDeliveryOrders(currentDelivery.id)
+            : Promise.resolve([]),
+        ]);
+      });
+    } catch (error) {
+      console.error("Error during reset:", error);
+    }
+  };
   const {
     addOrderToDelivery,
     unassignedOrders,
@@ -210,6 +249,9 @@ export default function DeliveryRouteMapLayout({
             totalOrdersCount={totalOrdersCount}
             totalAvailableOrders={totalAvailableOrders}
             filteredUnassignedOrdersCount={filteredUnassignedOrders.length}
+            onResetData={handleResetData}
+            currentMapProvider={currentMapProvider}
+            onMapProviderChange={handleMapProviderChange}
             onResetFilters={() => {
               setPriorityFilters({
                 low: true,

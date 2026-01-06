@@ -71,21 +71,25 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
         style={style}
         {...attributes}
         {...listeners}
-        className={`group relative overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:shadow-md hover:cursor-grab ${
-          isHighlighted ? "ring-2 ring-ring" : ""
-        } ${isPreviousOrderInSegment ? "ring-2 ring-primary/50" : ""}`}
+        className={`group relative overflow-hidden rounded-lg border border-border/50 bg-background/50 shadow-sm transition-all hover:shadow-md hover:cursor-grab hover:bg-green-50 hover:border-green-300 ${
+          isHighlighted
+            ? "ring-2 ring-green-500 bg-green-50 border-green-300"
+            : ""
+        } ${
+          isPreviousOrderInSegment ? "ring-2 ring-primary/50 bg-purple-50" : ""
+        }`}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
         <div className="flex items-center gap-2 p-2 select-none">
-          <div className="shrink-0 h-6 w-6 flex items-center justify-center bg-primary hover:bg-primary/90 rounded font-semibold text-xs text-primary-foreground">
+          <div className="shrink-0 h-6 w-6 flex items-center justify-center bg-green-600 hover:bg-green-700 rounded font-semibold text-xs text-white border border-green-700">
             {sequence !== undefined ? sequence + 1 : "•"}
           </div>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 size="icon"
-                className="shrink-0 h-6 w-6 p-1 bg-muted hover:bg-muted/90"
+                className="shrink-0 h-6 w-6 p-1 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300"
                 aria-label={`${pl.ariaInfoAboutOrder} ${order.id}`}
               >
                 <svg
@@ -134,7 +138,7 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
               onMouseDown={(e) => e.stopPropagation()}
               onPointerDown={(e) => e.stopPropagation()}
               size="icon"
-              className="shrink-0 h-6 w-6 p-1 bg-primary hover:bg-primary/90"
+              className="shrink-0 h-6 w-6 p-1 bg-red-600 hover:bg-red-700 text-white border border-red-700"
               aria-label={`${pl.ariaRemoveOrder} ${order.id}`}
             >
               <Minus className="h-3 w-3" />

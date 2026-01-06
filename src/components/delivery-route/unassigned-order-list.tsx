@@ -65,8 +65,10 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                 {unassignedOrders.map((order) => (
                   <li
                     key={order.id}
-                    className={`group relative overflow-hidden rounded border border-border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer p-2 h-full ${
-                      highlightedOrderId === order.id ? "ring-2 ring-ring" : ""
+                    className={`group relative overflow-hidden rounded border border-border/50 bg-card shadow-sm transition-all hover:shadow-md hover:bg-blue-50 hover:border-blue-300 cursor-pointer p-2 h-full ${
+                      highlightedOrderId === order.id
+                        ? "ring-2 ring-blue-500 bg-blue-50 border-blue-300"
+                        : ""
                     }`}
                     onClick={() => onAddToDelivery(order.id)}
                     onMouseEnter={() => setHighlightedOrderId?.(order.id)}
@@ -75,7 +77,7 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         <div
-                          className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0"
+                          className="flex h-5 w-5 items-center justify-center rounded-md bg-blue-50 text-blue-700 border border-blue-200 shrink-0"
                           data-testid="product-icon"
                         >
                           <svg
@@ -110,7 +112,7 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                           onAddToDelivery(order.id);
                         }}
                         size="icon"
-                        className="shrink-0 h-6 w-6 p-1 bg-primary hover:bg-primary/90"
+                        className="shrink-0 h-6 w-6 p-1 bg-blue-600 hover:bg-blue-700 text-white border border-blue-700"
                         aria-label={`Add order ${order.id} to delivery`}
                       >
                         <Plus className="h-3 w-3" />

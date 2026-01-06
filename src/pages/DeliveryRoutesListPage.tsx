@@ -10,8 +10,8 @@ import {
   DrawerTitle,
   DrawerDescription,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
 import { pl } from "@/lib/translations";
+import { Info, MapPin, ExternalLink, Map } from "lucide-react";
 
 export default function DeliveryRoutesListPage() {
   const [deliveries, setDeliveries] = useState<DeliveryRoute[]>([]);
@@ -144,53 +144,29 @@ export default function DeliveryRoutesListPage() {
                       </h2>
                       <div className="flex gap-2 flex-wrap justify-end">
                         <DrawerTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
+                          <button
                             onClick={() => setSelectedDelivery(delivery)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-purple-200 bg-purple-50 hover:bg-purple-100 hover:border-purple-300 text-purple-700 rounded transition-colors"
                           >
+                            <Info className="h-3.5 w-3.5" />
                             {pl.details}
-                          </Button>
+                          </button>
                         </DrawerTrigger>
                         <Link
                           to={`/delivery_routes/${delivery.id}/leaflet`}
-                          className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center px-3 py-1.5 border border-blue-200 rounded hover:bg-blue-50 transition-colors"
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-green-200 bg-green-50 hover:bg-green-100 hover:border-green-300 text-green-700 rounded transition-colors"
                         >
+                          <MapPin className="h-3.5 w-3.5" />
                           {pl.viewWithLeaflet}
-                          <svg
-                            className="ml-1 h-4 w-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                            />
-                          </svg>
+                          <ExternalLink className="h-3 w-3" />
                         </Link>
                         <Link
                           to={`/delivery_routes/${delivery.id}/mapy`}
-                          className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center px-3 py-1.5 border border-blue-200 rounded hover:bg-blue-50 transition-colors"
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-300 text-blue-700 rounded transition-colors"
                         >
+                          <Map className="h-3.5 w-3.5" />
                           {pl.viewWithMapy}
-                          <svg
-                            className="ml-1 h-4 w-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                            />
-                          </svg>
+                          <ExternalLink className="h-3 w-3" />
                         </Link>
                       </div>
                     </div>
@@ -202,43 +178,58 @@ export default function DeliveryRoutesListPage() {
         </div>
       </div>
 
-      <DrawerContent side="right">
-        <DrawerHeader>
-          <DrawerTitle>{pl.deliveryDetails}</DrawerTitle>
-          <DrawerDescription>{pl.deliveryInfo}</DrawerDescription>
+      <DrawerContent side="right" className="bg-background/95 backdrop-blur-sm">
+        <DrawerHeader className="border-b border-border/50 bg-purple-50/30">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-purple-100 border border-purple-200">
+              <Info className="h-4 w-4 text-purple-700" />
+            </div>
+            <div>
+              <DrawerTitle className="text-purple-900">
+                {pl.deliveryDetails}
+              </DrawerTitle>
+              <DrawerDescription className="text-purple-700/70">
+                {pl.deliveryInfo}
+              </DrawerDescription>
+            </div>
+          </div>
         </DrawerHeader>
         {selectedDelivery && (
           <div className="p-6">
-            <div className="space-y-3">
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase">
+            <div className="space-y-4">
+              <div className="rounded-lg border border-border/50 bg-background/50 p-3">
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">
                   {pl.deliveryIdLabel}
                 </p>
-                <p className="text-sm font-semibold">{selectedDelivery.id}</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {selectedDelivery.id}
+                </p>
               </div>
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase">
+              <div className="rounded-lg border border-border/50 bg-background/50 p-3">
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">
                   {pl.nameLabel}
                 </p>
-                <p className="text-sm font-semibold">
+                <p className="text-sm font-semibold text-foreground">
                   {selectedDelivery.name ||
                     `${pl.delivery} ${selectedDelivery.id}`}
                 </p>
               </div>
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase">
+              <div className="rounded-lg border border-border/50 bg-background/50 p-3">
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">
                   {pl.status}
                 </p>
-                <p className="text-sm font-semibold">
+                <p className="text-sm font-semibold text-foreground">
                   {selectedDelivery.status}
                 </p>
               </div>
               {selectedDelivery.notes && (
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase">
+                <div className="rounded-lg border border-border/50 bg-background/50 p-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">
                     {pl.notes}
                   </p>
-                  <p className="text-sm">{selectedDelivery.notes}</p>
+                  <p className="text-sm text-foreground">
+                    {selectedDelivery.notes}
+                  </p>
                 </div>
               )}
             </div>

@@ -59,8 +59,10 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
 
   return (
     <div
-      className={`delivery-route-segment bg-card/30 border-l-2 border-border/50 rounded p-1 ml-4 mb-1 hover:bg-card/50 transition-colors duration-200 flex items-center gap-2 cursor-pointer ${
-        isSegmentHighlighted ? "bg-primary/10 border-primary/50" : ""
+      className={`delivery-route-segment bg-background/50 border-l-2 border-border/50 rounded p-1 ml-4 mb-1 hover:bg-purple-50 hover:border-purple-300 transition-colors duration-200 flex items-center gap-2 cursor-pointer ${
+        isSegmentHighlighted
+          ? "bg-purple-50 border-purple-500 ring-1 ring-purple-300"
+          : ""
       }`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -68,7 +70,9 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
     >
       <ArrowRight
         data-testid="connection-icon"
-        className="h-4 w-4 text-muted-foreground shrink-0"
+        className={`h-4 w-4 shrink-0 transition-colors ${
+          isSegmentHighlighted ? "text-purple-600" : "text-muted-foreground"
+        }`}
       />
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <Route className="h-3 w-3 text-muted-foreground" />
@@ -88,7 +92,7 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
       <button
         onClick={handleRecalculate}
         disabled={isCalculating}
-        className="p-1 hover:bg-primary/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-primary hover:text-primary"
+        className="p-1 hover:bg-purple-100 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-purple-600 hover:text-purple-700 border border-transparent hover:border-purple-300"
         aria-label={isCalculating ? pl.ariaRecalculating : pl.ariaRefreshRoute}
       >
         <RefreshCcw className="h-3 w-3" />
