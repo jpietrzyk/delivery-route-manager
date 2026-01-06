@@ -4,7 +4,9 @@ import OrdersCountDisplay from "@/components/ui/orders-count-display";
 describe("OrdersCountDisplay Component", () => {
   it("should render with the correct count", () => {
     const testCount = 42;
-    const { container } = render(<OrdersCountDisplay count={testCount} />);
+    const { container } = render(
+      <OrdersCountDisplay count={testCount} totalCount={100} />
+    );
 
     const badgeElement = container.querySelector("[data-slot='badge']");
     expect(badgeElement).toBeInTheDocument();
@@ -12,7 +14,9 @@ describe("OrdersCountDisplay Component", () => {
   });
 
   it("should render with count 0", () => {
-    const { container } = render(<OrdersCountDisplay count={0} />);
+    const { container } = render(
+      <OrdersCountDisplay count={0} totalCount={50} />
+    );
 
     const badgeElement = container.querySelector("[data-slot='badge']");
     expect(badgeElement).toBeInTheDocument();
@@ -21,7 +25,9 @@ describe("OrdersCountDisplay Component", () => {
 
   it("should render with large count", () => {
     const largeCount = 999;
-    const { container } = render(<OrdersCountDisplay count={largeCount} />);
+    const { container } = render(
+      <OrdersCountDisplay count={largeCount} totalCount={1000} />
+    );
 
     const badgeElement = container.querySelector("[data-slot='badge']");
     expect(badgeElement).toBeInTheDocument();
@@ -31,7 +37,7 @@ describe("OrdersCountDisplay Component", () => {
   it("should accept and apply custom className", () => {
     const customClass = "custom-test-class";
     const { container } = render(
-      <OrdersCountDisplay count={10} className={customClass} />
+      <OrdersCountDisplay count={10} totalCount={20} className={customClass} />
     );
 
     const badgeElement = container.querySelector(".custom-test-class");
@@ -39,7 +45,9 @@ describe("OrdersCountDisplay Component", () => {
   });
 
   it("should have the secondary variant by default", () => {
-    const { container } = render(<OrdersCountDisplay count={5} />);
+    const { container } = render(
+      <OrdersCountDisplay count={5} totalCount={10} />
+    );
 
     const badgeElement = container.querySelector("span");
     expect(badgeElement).toBeInTheDocument();
@@ -48,7 +56,9 @@ describe("OrdersCountDisplay Component", () => {
   });
 
   it("should display the package emoji", () => {
-    const { container } = render(<OrdersCountDisplay count={7} />);
+    const { container } = render(
+      <OrdersCountDisplay count={7} totalCount={15} />
+    );
 
     const badgeElement = container.querySelector("[data-slot='badge']");
     expect(badgeElement).toBeInTheDocument();
