@@ -235,7 +235,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
 
       // Check if this unassigned order is filtered out
       const isDisabled =
-        isPool && filteredOrderIds && !filteredOrderIds.has(order.id);
+        isPool && filteredOrderIds ? !filteredOrderIds.has(order.id) : false;
 
       let type: MapMarkerData["type"] = "delivery";
 

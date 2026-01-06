@@ -299,7 +299,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
 
       // Check if this unassigned order is filtered out
       const isDisabled =
-        isPool && filteredOrderIds && !filteredOrderIds.has(order.id);
+        isPool && filteredOrderIds ? !filteredOrderIds.has(order.id) : false;
 
       // Determine marker type
       let type: "delivery" | "pool" | "pool-high-value" = "delivery";
