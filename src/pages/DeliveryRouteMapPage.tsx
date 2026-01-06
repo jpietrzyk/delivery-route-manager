@@ -5,8 +5,8 @@ import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import type { Order } from "@/types/order";
 
 export default function DeliveryMapPage() {
-  const { deliveryId } = useParams<{ deliveryId: string }>();
-  const { refreshDeliveryOrders, refreshUnassignedOrders } = useDeliveryRoute();
+  useParams<{ deliveryId: string }>();
+  useDeliveryRoute();
 
   return (
     <DeliveryRouteMapLayout

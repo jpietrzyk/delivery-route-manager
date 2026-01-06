@@ -53,7 +53,21 @@ class DeliveryRoutesApiClass {
         const deliveriesData = await response.json();
 
         // Convert the JSON array to our DeliveryRoute interface (metadata only)
-        this.deliveries = deliveriesData.map((deliveryData: any) => ({
+        this.deliveries = deliveriesData.map((deliveryData: {
+          id: string;
+          name?: string;
+          status?: string;
+          driver?: { id: string; name: string };
+          vehicle?: { id: string; licensePlate: string };
+          scheduledDate?: string;
+          startedAt?: string;
+          completedAt?: string;
+          createdAt: string;
+          updatedAt: string;
+          notes?: string;
+          estimatedDistance?: number;
+          estimatedDuration?: number;
+        }) => ({
           id: deliveryData.id,
           name: deliveryData.name || `Delivery ${deliveryData.id}`,
           status: deliveryData.status || 'scheduled',

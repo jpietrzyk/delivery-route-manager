@@ -4,13 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
 import { MapControls } from "@/components/map-controls";
 import { pl, getOrdersCountText } from "@/lib/translations";
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerTitle,
-} from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { UnassignedOrderList } from "@/components/delivery-route/unassigned-order-list";
 import {
   OrderFilters,
