@@ -13,12 +13,14 @@ export default function DeliveryMapPage() {
       renderMap={(
         displayedOrders: Order[],
         filteredUnassignedOrders: Order[],
+        allUnassignedOrders: Order[],
         onOrderAddedToDelivery,
         onRefreshRequested
       ) => (
         <MapView
           orders={displayedOrders}
-          unassignedOrders={filteredUnassignedOrders}
+          unassignedOrders={allUnassignedOrders}
+          filteredUnassignedOrders={filteredUnassignedOrders}
           onOrderAddedToDelivery={onOrderAddedToDelivery}
           onRefreshRequested={onRefreshRequested}
         />

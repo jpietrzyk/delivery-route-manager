@@ -30,6 +30,7 @@ interface DeliveryRouteMapLayoutProps {
   renderMap: (
     displayedOrders: Order[],
     filteredUnassignedOrders: Order[],
+    allUnassignedOrders: Order[],
     onOrderAddedToDelivery: () => Promise<void>,
     onRefreshRequested: () => void
   ) => ReactNode;
@@ -216,6 +217,7 @@ export default function DeliveryRouteMapLayout({
             {renderMap(
               displayedOrders,
               filteredUnassignedOrders,
+              unassignedOrders,
               async () => {
                 await refreshDeliveryOrders(deliveryId);
                 handleDeliveryOrdersUpdated();

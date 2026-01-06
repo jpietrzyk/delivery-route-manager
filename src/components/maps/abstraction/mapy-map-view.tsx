@@ -6,6 +6,7 @@ import MapyOrderMapAdapter from "./mapy-order-map-adapter";
 interface MapyMapViewProps {
   orders: Order[];
   unassignedOrders?: Order[];
+  filteredUnassignedOrders?: Order[];
   onOrderAddedToDelivery?: (orderId: string) => void;
   onRefreshRequested?: () => void;
 }
@@ -18,6 +19,7 @@ interface MapyMapViewProps {
 const MapyMapView: React.FC<MapyMapViewProps> = ({
   orders,
   unassignedOrders = [],
+  filteredUnassignedOrders,
   onOrderAddedToDelivery,
   onRefreshRequested,
 }) => {
@@ -25,6 +27,7 @@ const MapyMapView: React.FC<MapyMapViewProps> = ({
     <MapyOrderMapAdapter
       orders={orders}
       unassignedOrders={unassignedOrders}
+      filteredUnassignedOrders={filteredUnassignedOrders}
       onOrderAddedToDelivery={onOrderAddedToDelivery}
       onRefreshRequested={onRefreshRequested}
     >

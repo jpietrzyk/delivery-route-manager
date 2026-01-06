@@ -118,6 +118,23 @@ const createNumberedIcon = (iconUrl: string, badgeNumber?: number) => {
 const getIconForMarker = (marker: MapMarkerData) => {
   const isDelivery = marker.type === "delivery";
 
+  // Disabled markers always use gray icon
+  if (marker.isDisabled) {
+    const grayIconUrl = poolIcon.options.iconUrl as string;
+    if (isDelivery && marker.waypointIndex !== undefined) {
+      return createNumberedIcon(grayIconUrl, marker.waypointIndex);
+    }
+    return L.icon({
+      iconUrl: grayIconUrl,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl:
+        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+      shadowSize: [41, 41],
+    });
+  }
+
   // Determine base icon URL with priority: highlight > current/previous > type
   let iconUrl = defaultIcon.options.iconUrl as string;
   // Priority: highlight > current/previous > type
@@ -251,12 +268,19 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
             position={[marker.location.lat, marker.location.lng]}
             // @ts-expect-error: icon is supported by react-leaflet Marker
             icon={icon}
-            eventHandlers={{
-              mouseover: () => onMarkerHover?.(marker.id, true),
-              mouseout: () => onMarkerHover?.(marker.id, false),
-            }}
+            opacity={marker.isDisabled ? 0.4 : 1.0}
+            eventHandlers={
+              marker.isDisabled
+                ? undefined
+                : {
+                    mouseover: () => onMarkerHover?.(marker.id, true),
+                    mouseout: () => onMarkerHover?.(marker.id, false),
+                  }
+            }
           >
-            {marker.popupContent && <Popup>{marker.popupContent}</Popup>}
+            {marker.popupContent && !marker.isDisabled && (
+              <Popup>{marker.popupContent}</Popup>
+            )}
           </Marker>
         );
       })}

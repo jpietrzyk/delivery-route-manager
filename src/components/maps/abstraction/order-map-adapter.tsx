@@ -175,6 +175,7 @@ const createOrderPopupContent = (
 interface OrderMapAdapterProps {
   orders: Order[];
   unassignedOrders: Order[];
+  filteredUnassignedOrders?: Order[];
   onOrderAddedToDelivery?: (orderId: string) => void;
   onRefreshRequested?: () => void;
   children: (props: {
@@ -193,6 +194,7 @@ interface OrderMapAdapterProps {
 const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   orders,
   unassignedOrders,
+  filteredUnassignedOrders,
   onOrderAddedToDelivery,
   onRefreshRequested,
   children,
@@ -221,10 +223,20 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     );
     const allOrders = [...orders, ...uniqueUnassignedOrders];
 
+    // Create set of filtered order IDs for fast lookup
+    const filteredOrderIds = filteredUnassignedOrders
+      ? new Set(filteredUnassignedOrders.map((o) => o.id))
+      : null;
+
     return allOrders.map((order) => {
       // Check if order is in delivery by checking if it's in the orders array (not by deliveryId field)
       // This is because orders from waypoint system don't have deliveryId set on the Order object
       const isPool = !deliveryOrderIds.has(order.id);
+
+      // Check if this unassigned order is filtered out
+      const isDisabled =
+        isPool && filteredOrderIds && !filteredOrderIds.has(order.id);
+
       let type: MapMarkerData["type"] = "delivery";
 
       if (isPool) {
@@ -282,12 +294,14 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         isHighlighted: highlightedOrderId === order.id,
         isCurrentOrder: currentOrderId === order.id,
         isPreviousOrder: previousOrderId === order.id,
+        isDisabled,
         popupContent,
       };
     });
   }, [
     orders,
     unassignedOrders,
+    filteredUnassignedOrders,
     highlightedOrderId,
     currentOrderId,
     previousOrderId,

@@ -13,12 +13,14 @@ export default function MapyCzMapPage() {
       renderMap={(
         displayedOrders: Order[],
         filteredUnassignedOrders: Order[],
+        allUnassignedOrders: Order[],
         onOrderAddedToDelivery,
         onRefreshRequested
       ) => (
         <MapyMapView
           orders={displayedOrders}
-          unassignedOrders={filteredUnassignedOrders}
+          unassignedOrders={allUnassignedOrders}
+          filteredUnassignedOrders={filteredUnassignedOrders}
           onOrderAddedToDelivery={onOrderAddedToDelivery}
           onRefreshRequested={onRefreshRequested}
         />

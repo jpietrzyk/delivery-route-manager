@@ -198,6 +198,7 @@ const createOrderPopupContent = (
 interface MapyOrderMapAdapterProps {
   orders: Order[];
   unassignedOrders: Order[];
+  filteredUnassignedOrders?: Order[];
   onOrderAddedToDelivery?: (orderId: string) => void;
   onRefreshRequested?: () => void;
   children: (props: {
@@ -212,6 +213,7 @@ interface MapyOrderMapAdapterProps {
 const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
   orders,
   unassignedOrders,
+  filteredUnassignedOrders,
   onOrderAddedToDelivery,
   onRefreshRequested,
   children,
@@ -285,10 +287,19 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
     );
     const allOrders = [...orders, ...uniqueUnassignedOrders];
 
+    // Create set of filtered order IDs for fast lookup
+    const filteredOrderIds = filteredUnassignedOrders
+      ? new Set(filteredUnassignedOrders.map((o) => o.id))
+      : null;
+
     return allOrders.map((order) => {
       // Check if order is in delivery by checking if it's in the orders array (not by deliveryId field)
       const isPool = !deliveryOrderIds.has(order.id);
       const isHighValue = order.totalAmount > ORANGE_THRESHOLD;
+
+      // Check if this unassigned order is filtered out
+      const isDisabled =
+        isPool && filteredOrderIds && !filteredOrderIds.has(order.id);
 
       // Determine marker type
       let type: "delivery" | "pool" | "pool-high-value" = "delivery";
@@ -328,6 +339,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         isHighlighted: highlightedOrderId === order.id,
         isCurrentOrder: currentOrderId === order.id,
         isPreviousOrder: previousOrderId === order.id,
+        isDisabled,
         popupContent: createOrderPopupContent(
           order,
           handleToggle,
@@ -339,6 +351,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
   }, [
     orders,
     unassignedOrders,
+    filteredUnassignedOrders,
     highlightedOrderId,
     currentOrderId,
     previousOrderId,

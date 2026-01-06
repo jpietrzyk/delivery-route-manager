@@ -111,6 +111,23 @@ const createNumberedIcon = (iconUrl: string, badgeNumber?: number) => {
 const getIconForMarker = (marker: MapMarkerData) => {
   const isDelivery = marker.type === "delivery";
 
+  // Disabled markers always use gray icon
+  if (marker.isDisabled) {
+    const grayIconUrl = poolIcon.options.iconUrl as string;
+    if (isDelivery && marker.waypointIndex !== undefined) {
+      return createNumberedIcon(grayIconUrl, marker.waypointIndex);
+    }
+    return L.icon({
+      iconUrl: grayIconUrl,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl:
+        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+      shadowSize: [41, 41],
+    });
+  }
+
   // Determine base icon URL with priority: highlight > current/previous > type
   let iconUrl = defaultIcon.options.iconUrl as string;
   // Priority: highlight > current/previous > type
@@ -302,9 +319,10 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         // Update existing marker
         existingMarker.setLatLng(position);
         existingMarker.setIcon(icon);
+        existingMarker.setOpacity(markerData.isDisabled ? 0.4 : 1.0);
 
         // Update popup if needed
-        if (markerData.popupContent) {
+        if (markerData.popupContent && !markerData.isDisabled) {
           let popupData = popupDataRef.current.get(markerData.id);
           if (!popupData) {
             // Create new container and root if they don't exist
@@ -320,13 +338,19 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
             closeOnClick: false,
             maxWidth: 300,
           });
+        } else if (markerData.isDisabled) {
+          // Remove popup for disabled markers
+          existingMarker.unbindPopup();
         }
       } else {
         // Create new marker
-        const newMarker = L.marker(position, { icon });
+        const newMarker = L.marker(position, {
+          icon,
+          opacity: markerData.isDisabled ? 0.4 : 1.0,
+        });
 
-        // Add popup if provided
-        if (markerData.popupContent) {
+        // Add popup if provided and not disabled
+        if (markerData.popupContent && !markerData.isDisabled) {
           const popupContainer = document.createElement("div");
           const root = createRoot(popupContainer);
           popupDataRef.current.set(markerData.id, {
@@ -341,13 +365,15 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
           });
         }
 
-        // Add hover events
-        newMarker.on("mouseover", () => {
-          onMarkerHover?.(markerData.id, true);
-        });
-        newMarker.on("mouseout", () => {
-          onMarkerHover?.(markerData.id, false);
-        });
+        // Add hover events only if not disabled
+        if (!markerData.isDisabled) {
+          newMarker.on("mouseover", () => {
+            onMarkerHover?.(markerData.id, true);
+          });
+          newMarker.on("mouseout", () => {
+            onMarkerHover?.(markerData.id, false);
+          });
+        }
 
         newMarker.addTo(markerLayer);
         markerInstances.set(markerData.id, newMarker);
