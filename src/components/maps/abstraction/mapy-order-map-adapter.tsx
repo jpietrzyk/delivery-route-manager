@@ -262,8 +262,8 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
           id: `${orders[index].id}-${orders[index + 1].id}`,
           fromOrderId: orders[index].id,
           toOrderId: orders[index + 1].id,
-          distance: seg.distance,
-          duration: seg.duration,
+          distance: seg.distance ?? 0,
+          duration: seg.duration ?? 0,
         }));
         setRouteSegments(segmentData);
       } catch (error) {
