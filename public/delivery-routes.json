@@ -1,0 +1,24 @@
+[
+  {
+    "id": "DEL-001",
+    "name": "Trasa jacka",
+    "description": "Przykładowa zapisana trasa z 5 punktami",
+    "status": "scheduled",
+    "createdAt": "2024-07-01T07:30:00Z",
+    "updatedAt": "2024-07-01T07:45:00Z",
+    "notes": "Dla przykładu - trasa która jest w trakcie tworzenia",
+    "estimatedDistance": 0,
+    "estimatedDuration": 0
+},
+  {
+    "id": "DEL-002",
+    "name": "Trasa 002",
+    "description": "Nowa trasa - DEL-002",
+    "status": "new",
+    "createdAt": "2024-07-01T07:30:00Z",
+    "updatedAt": "2024-07-01T07:45:00Z",
+    "notes": "Pusta trasa - żeby zobaczyć jak wygląda tworzzenie nowej",
+    "estimatedDistance": 0,
+    "estimatedDuration": 0
+  }
+]

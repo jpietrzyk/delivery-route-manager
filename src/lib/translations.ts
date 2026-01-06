@@ -14,6 +14,7 @@ export const pl = {
   assignedOrders: "Przypisane zamówienia",
   noOrdersAssigned: "Brak przypisanych zamówień",
   noUnassignedOrders: "Brak nieprzypisanych zamówień",
+  noOrdersAssignedShort: "Brak przypisanych zamówień",
   availableUnassignedOrders: "Dostępne nieprzypisane zamówienia",
 
   // Order count
@@ -41,8 +42,15 @@ export const pl = {
   delivery: "Dostawa",
   plannedDeliveries: "Planowane dostawy",
   viewAllOnMap: "Zobacz wszystkie na mapie",
+  backToDeliveries: "Powrót do dostaw",
   loadingDeliveries: "Ładowanie dostaw...",
   noDeliveriesFound: "Brak dostaw",
+
+  // Reset filters dialog
+  resetFilters: "Resetuj filtry",
+  resetFiltersTitle: "Resetować filtry?",
+  resetFiltersDescription: "Czy na pewno chcesz zresetować wszystkie filtry? Przywróci to domyślne ustawienia filtrów.",
+  cancel: "Anuluj",
   createDeliveryPrompt: "Rozpocznij, tworząc nową dostawę.",
   details: "Szczegóły",
   viewWithLeaflet: "Zobacz w Leaflet",

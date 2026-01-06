@@ -44,16 +44,30 @@ class DeliveryRoutesApiClass {
     try {
       // Check if we're in a browser environment (fetch is available)
       if (typeof fetch !== 'undefined') {
-        // Load delivery metadata from JSON file
-        const response = await fetch('/delivery-DEL-001.json');
+        // Load delivery metadata from mocked GET /deliveryRoutes endpoint
+        const response = await fetch('/delivery-routes.json');
         if (!response.ok) {
-          throw new Error('Failed to load delivery data');
+          throw new Error('Failed to load delivery routes');
         }
 
-        const deliveryData = await response.json();
+        const deliveriesData = await response.json();
 
-        // Convert the JSON structure to our DeliveryRoute interface (metadata only)
-        const delivery: DeliveryRoute = {
+        // Convert the JSON array to our DeliveryRoute interface (metadata only)
+        this.deliveries = deliveriesData.map((deliveryData: {
+          id: string;
+          name?: string;
+          status?: string;
+          driver?: { id: string; name: string };
+          vehicle?: { id: string; licensePlate: string };
+          scheduledDate?: string;
+          startedAt?: string;
+          completedAt?: string;
+          createdAt: string;
+          updatedAt: string;
+          notes?: string;
+          estimatedDistance?: number;
+          estimatedDuration?: number;
+        }) => ({
           id: deliveryData.id,
           name: deliveryData.name || `Delivery ${deliveryData.id}`,
           status: deliveryData.status || 'scheduled',
@@ -67,9 +81,7 @@ class DeliveryRoutesApiClass {
           notes: deliveryData.notes,
           estimatedDistance: deliveryData.estimatedDistance,
           estimatedDuration: deliveryData.estimatedDuration,
-        };
-
-        this.deliveries = [delivery];
+        }));
       } else {
         // In Node.js environment (tests), use sample data
         this.deliveries = [...sampleDeliveries];
@@ -77,7 +89,7 @@ class DeliveryRoutesApiClass {
 
       this.loaded = true;
     } catch (error) {
-      console.error('Error loading delivery data:', error);
+      console.error('Error loading delivery routes:', error);
       // Fallback to sample data if loading fails
       this.deliveries = [...sampleDeliveries];
       this.loaded = true;

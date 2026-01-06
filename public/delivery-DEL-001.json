@@ -1,11 +1,11 @@
 {
   "id": "DEL-001",
-  "name": "Delivery Route 001",
-  "description": "First delivery route",
+  "name": "Trasa jacka",
+  "description": "Przykładowa zapisana trasa z 5 punktami",
   "status": "scheduled",
   "createdAt": "2024-07-01T07:30:00Z",
   "updatedAt": "2024-07-01T07:45:00Z",
-  "notes": "Delivery route for Budapest area",
+  "notes": "Dla przykładu - trasa która jest w trakcie tworzenia",
   "estimatedDistance": 0,
   "estimatedDuration": 0
 }
