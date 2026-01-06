@@ -60,7 +60,9 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
   return (
     <div
       className={`delivery-route-segment bg-background/50 border-l-2 border-border/50 rounded p-1 ml-4 mb-1 hover:bg-purple-50 hover:border-purple-300 transition-colors duration-200 flex items-center gap-2 cursor-pointer ${
-        isSegmentHighlighted ? "bg-purple-50 border-purple-500 ring-1 ring-purple-300" : ""
+        isSegmentHighlighted
+          ? "bg-purple-50 border-purple-500 ring-1 ring-purple-300"
+          : ""
       }`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

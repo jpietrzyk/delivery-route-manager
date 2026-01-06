@@ -72,8 +72,12 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
         {...attributes}
         {...listeners}
         className={`group relative overflow-hidden rounded-lg border border-border/50 bg-background/50 shadow-sm transition-all hover:shadow-md hover:cursor-grab hover:bg-green-50 hover:border-green-300 ${
-          isHighlighted ? "ring-2 ring-green-500 bg-green-50 border-green-300" : ""
-        } ${isPreviousOrderInSegment ? "ring-2 ring-primary/50 bg-purple-50" : ""}`}
+          isHighlighted
+            ? "ring-2 ring-green-500 bg-green-50 border-green-300"
+            : ""
+        } ${
+          isPreviousOrderInSegment ? "ring-2 ring-primary/50 bg-purple-50" : ""
+        }`}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
