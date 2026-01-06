@@ -12,6 +12,8 @@ import {
   DollarSign,
   Wrench,
   Calendar,
+  Check,
+  Square,
 } from "lucide-react";
 
 export type PriorityFilterState = {
@@ -209,7 +211,12 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               aria-label="Select all filters"
               className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-blue-50 data-[state=on]:text-blue-700 data-[state=on]:border-blue-300 justify-start h-8 font-normal"
             >
-              {pl.selectAll ?? "Zaznacz wszystkie"}
+              {allSelected ? (
+                <Check className="h-3.5 w-3.5 mr-1.5" />
+              ) : (
+                <Square className="h-3.5 w-3.5 mr-1.5" />
+              )}
+              Wszystkie
             </Toggle>
           </div>
 
