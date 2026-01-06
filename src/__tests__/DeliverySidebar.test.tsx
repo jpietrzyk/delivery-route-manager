@@ -7,7 +7,6 @@ import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvid
 import { DeliveryRoutesApi } from "@/services/deliveryRoutesApi";
 import { OrdersApi } from "@/services/ordersApi";
 import type { Order } from "@/types/order";
-import RouteSegmentsProvider from "@/contexts/route-segments-provider";
 import { RouteSegmentsContext } from "@/contexts/route-segments-context";
 import type { RouteSegmentData } from "@/contexts/route-segments-context";
 
