@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { DeliveryRouteContext } from "@/contexts/delivery-route-context";
 import { RouteManagerContext } from "@/contexts/route-manager-context";
+import {
+  RouteSegmentsContext,
+  type RouteSegmentData,
+} from "@/contexts/route-segments-context";
 import { MarkerHighlightContext } from "@/contexts/marker-highlight-context";
 import { OrderHighlightContext } from "@/contexts/order-highlight-context";
 import { SegmentHighlightContext } from "@/contexts/segment-highlight-context";
@@ -37,6 +41,9 @@ export default function DeliveryRouteManagerProvider({
 
   // Route manager state
   const [routeManager, setRouteManager] = useState<RouteManager | null>(null);
+
+  // Route segments state (for actual routing API data)
+  const [routeSegments, setRouteSegments] = useState<RouteSegmentData[]>([]);
 
   // Highlight states
   const [highlightedOrderId, setHighlightedOrderId] = useState<string | null>(
@@ -394,6 +401,11 @@ export default function DeliveryRouteManagerProvider({
     setRouteManager,
   };
 
+  const routeSegmentsContextValue = {
+    routeSegments,
+    setRouteSegments,
+  };
+
   const markerHighlightContextValue = {
     highlightedOrderId,
     setHighlightedOrderId,
@@ -419,19 +431,21 @@ export default function DeliveryRouteManagerProvider({
   return (
     <DeliveryRouteContext.Provider value={deliveryContextValue}>
       <RouteManagerContext.Provider value={routeManagerContextValue}>
-        <MarkerHighlightContext.Provider value={markerHighlightContextValue}>
-          <OrderHighlightContext.Provider value={orderHighlightContextValue}>
-            <SegmentHighlightContext.Provider
-              value={segmentHighlightContextValue}
-            >
-              <PolylineHighlightContext.Provider
-                value={polylineHighlightContextValue}
+        <RouteSegmentsContext.Provider value={routeSegmentsContextValue}>
+          <MarkerHighlightContext.Provider value={markerHighlightContextValue}>
+            <OrderHighlightContext.Provider value={orderHighlightContextValue}>
+              <SegmentHighlightContext.Provider
+                value={segmentHighlightContextValue}
               >
-                {children}
-              </PolylineHighlightContext.Provider>
-            </SegmentHighlightContext.Provider>
-          </OrderHighlightContext.Provider>
-        </MarkerHighlightContext.Provider>
+                <PolylineHighlightContext.Provider
+                  value={polylineHighlightContextValue}
+                >
+                  {children}
+                </PolylineHighlightContext.Provider>
+              </SegmentHighlightContext.Provider>
+            </OrderHighlightContext.Provider>
+          </MarkerHighlightContext.Provider>
+        </RouteSegmentsContext.Provider>
       </RouteManagerContext.Provider>
     </DeliveryRouteContext.Provider>
   );

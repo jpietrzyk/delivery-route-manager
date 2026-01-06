@@ -3,6 +3,8 @@ import "@testing-library/jest-dom";
 import { DeliveryOrderList } from "@/components/delivery-route/delivery-order-list";
 import type { Order } from "@/types/order";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";
+import { RouteSegmentsContext } from "@/contexts/route-segments-context";
+import type { RouteSegmentData } from "@/contexts/route-segments-context";
 
 describe("DeliveryOrderList", () => {
   const createMockOrder = (
@@ -141,5 +143,81 @@ describe("DeliveryOrderList", () => {
     expect(screen.getByText(/high/)).toBeInTheDocument();
     expect(screen.getByText(/medium/)).toBeInTheDocument();
     expect(screen.getByText(/low/)).toBeInTheDocument();
+  });
+
+  it("should use route segments from context when available", () => {
+    const order1 = createMockOrder("order-1", "Customer 1");
+    const order2 = createMockOrder("order-2", "Customer 2");
+
+    const mockRouteSegments: RouteSegmentData[] = [
+      {
+        id: "order-1-order-2",
+        fromOrderId: "order-1",
+        toOrderId: "order-2",
+        distance: 8500, // 8.5 km in meters
+        duration: 720, // 12 minutes in seconds
+      },
+    ];
+
+    const WrapperWithRouteSegments = ({
+      children,
+    }: {
+      children: React.ReactNode;
+    }) => (
+      <DeliveryRouteManagerProvider>
+        <RouteSegmentsContext.Provider
+          value={{
+            routeSegments: mockRouteSegments,
+            setRouteSegments: () => {},
+          }}
+        >
+          {children}
+        </RouteSegmentsContext.Provider>
+      </DeliveryRouteManagerProvider>
+    );
+
+    render(<DeliveryOrderList orders={[order1, order2]} />, {
+      wrapper: WrapperWithRouteSegments,
+    });
+
+    // Should render route segment with actual data from context
+    const routeSegments = screen.getAllByTestId("connection-icon");
+    expect(routeSegments).toHaveLength(1);
+
+    // The segment should display the distance from context (8.5 km)
+    expect(screen.getByText(/8\.5/)).toBeInTheDocument();
+  });
+
+  it("should fall back to geometric calculations when route segments not available", () => {
+    const order1 = createMockOrder("order-1", "Customer 1");
+    const order2 = createMockOrder("order-2", "Customer 2");
+
+    // Empty route segments
+    const WrapperWithEmptySegments = ({
+      children,
+    }: {
+      children: React.ReactNode;
+    }) => (
+      <DeliveryRouteManagerProvider>
+        <RouteSegmentsContext.Provider
+          value={{
+            routeSegments: [],
+            setRouteSegments: () => {},
+          }}
+        >
+          {children}
+        </RouteSegmentsContext.Provider>
+      </DeliveryRouteManagerProvider>
+    );
+
+    render(<DeliveryOrderList orders={[order1, order2]} />, {
+      wrapper: WrapperWithEmptySegments,
+    });
+
+    // Should render route segment with geometric fallback calculation
+    const routeSegments = screen.getAllByTestId("connection-icon");
+    expect(routeSegments).toHaveLength(1);
+    // The segment should display some distance (geometric calculation)
+    // Just verify it renders without errors
   });
 });

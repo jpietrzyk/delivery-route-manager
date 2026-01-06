@@ -23,6 +23,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { RouteManager } from "@/services/RouteManager";
+import { useRouteSegments } from "@/hooks/use-route-segments";
 
 interface DeliveryOrderListProps {
   orders: Order[];
@@ -43,6 +44,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
   onReorder,
   routeManager,
 }) => {
+  const { routeSegments } = useRouteSegments();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -186,35 +188,51 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                       routeManager={routeManager}
                     />
                   ),
-                  idx < orders.length - 1 && !routeManager && (
-                    <DeliveryRouteSegment
-                      key={`${order.id}-${orders[idx + 1].id}-segment`}
-                      segment={{
-                        id: `${order.id}-${orders[idx + 1].id}`,
-                        fromOrder: order,
-                        toOrder: orders[idx + 1],
-                        routeData: {
-                          polyline: [],
-                          distance:
-                            getDistanceKm(
-                              order.location,
-                              orders[idx + 1].location
-                            ) * 1000,
-                          duration:
-                            getDriveMinutes(
-                              getDistanceKm(
-                                order.location,
-                                orders[idx + 1].location
-                              )
-                            ) * 60,
-                          status: "calculated",
-                        },
-                        status: "calculated",
-                        createdAt: new Date(),
-                        updatedAt: new Date(),
-                      }}
-                    />
-                  ),
+                  idx < orders.length - 1 &&
+                    !routeManager &&
+                    (() => {
+                      const segmentId = `${order.id}-${orders[idx + 1].id}`;
+                      const routeSegment = routeSegments.find(
+                        (seg) => seg.id === segmentId
+                      );
+
+                      return (
+                        <DeliveryRouteSegment
+                          key={segmentId}
+                          segment={{
+                            id: segmentId,
+                            fromOrder: order,
+                            toOrder: orders[idx + 1],
+                            routeData: routeSegment
+                              ? {
+                                  polyline: [],
+                                  distance: routeSegment.distance,
+                                  duration: routeSegment.duration,
+                                  status: "calculated",
+                                }
+                              : {
+                                  polyline: [],
+                                  distance:
+                                    getDistanceKm(
+                                      order.location,
+                                      orders[idx + 1].location
+                                    ) * 1000,
+                                  duration:
+                                    getDriveMinutes(
+                                      getDistanceKm(
+                                        order.location,
+                                        orders[idx + 1].location
+                                      )
+                                    ) * 60,
+                                  status: "calculated",
+                                },
+                            status: "calculated",
+                            createdAt: new Date(),
+                            updatedAt: new Date(),
+                          }}
+                        />
+                      );
+                    })(),
                 ])
                 .filter(Boolean)}
             </ul>

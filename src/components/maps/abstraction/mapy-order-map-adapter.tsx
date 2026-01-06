@@ -9,6 +9,7 @@ import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
+import { useRouteSegments } from "@/hooks/use-route-segments";
 import { pl } from "@/lib/translations";
 import { MapyRoutingApi, type RouteSegment } from "@/services/mapyRoutingApi";
 
@@ -221,6 +222,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
     useSegmentHighlight();
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDeliveryRoute();
+  const { setRouteSegments } = useRouteSegments();
 
   const [calculatedRoutes, setCalculatedRoutes] = useState<RouteSegment[]>([]);
 
@@ -254,14 +256,25 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
           }
         );
         setCalculatedRoutes(segments);
+
+        // Update context with route segment data for sidebar
+        const segmentData = segments.map((seg, index) => ({
+          id: `${orders[index].id}-${orders[index + 1].id}`,
+          fromOrderId: orders[index].id,
+          toOrderId: orders[index + 1].id,
+          distance: seg.distance,
+          duration: seg.duration,
+        }));
+        setRouteSegments(segmentData);
       } catch (error) {
         console.error("Failed to calculate routes:", error);
         setCalculatedRoutes([]);
+        setRouteSegments([]);
       }
     };
 
     calculateRoutes();
-  }, [orders, mapyApiKey]);
+  }, [orders, mapyApiKey, setRouteSegments]);
 
   // Transform orders to markers
   const markers: MapMarkerData[] = React.useMemo(() => {

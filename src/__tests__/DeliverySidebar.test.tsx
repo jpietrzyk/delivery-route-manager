@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { render, waitFor } from "@testing-library/react";
+import { render, waitFor, screen } from "@testing-library/react";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";
 import { DeliveryRoutesApi } from "@/services/deliveryRoutesApi";
 import { OrdersApi } from "@/services/ordersApi";
 import type { Order } from "@/types/order";
+import RouteSegmentsProvider from "@/contexts/route-segments-provider";
+import { RouteSegmentsContext } from "@/contexts/route-segments-context";
+import type { RouteSegmentData } from "@/contexts/route-segments-context";
 
 // Mock the OrdersApi
 jest.mock("@/services/ordersApi");
@@ -162,5 +165,118 @@ describe("DeliverySidebar - Assigned Count Update", () => {
       const sidebar = container.querySelector('[data-sidebar="sidebar"]');
       expect(sidebar).toBeTruthy();
     });
+  });
+
+  it("should calculate total distance and time using route segments when available", async () => {
+    const mockRouteSegments: RouteSegmentData[] = [
+      {
+        id: "order-1-order-2",
+        fromOrderId: "order-1",
+        toOrderId: "order-2",
+        distance: 5000, // 5 km in meters
+        duration: 600, // 10 minutes in seconds
+      },
+    ];
+
+    const WrapperWithRouteSegments = ({
+      children,
+      segments,
+    }: {
+      children: React.ReactNode;
+      segments: RouteSegmentData[];
+    }) => {
+      const [routeSegments, setRouteSegments] =
+        useState<RouteSegmentData[]>(segments);
+
+      return (
+        <MemoryRouter>
+          <SidebarProvider>
+            <DeliveryRouteManagerProvider>
+              <RouteSegmentsContext.Provider
+                value={{ routeSegments, setRouteSegments }}
+              >
+                {children}
+              </RouteSegmentsContext.Provider>
+            </DeliveryRouteManagerProvider>
+          </SidebarProvider>
+        </MemoryRouter>
+      );
+    };
+
+    render(
+      <WrapperWithRouteSegments segments={mockRouteSegments}>
+        <DeliverySidebar
+          deliveryOrders={mockOrders}
+          onDeliveryOrdersUpdated={() => {}}
+        />
+      </WrapperWithRouteSegments>
+    );
+
+    // Wait for calculations to complete
+    await waitFor(
+      () => {
+        // Should show 5.00 km
+        expect(screen.getByText(/5\.00\s?km/i)).toBeInTheDocument();
+        // Should show 10 minutes (rounded)
+        expect(screen.getByText(/10m/i)).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
+  });
+
+  it("should round minutes to integer values", async () => {
+    const mockRouteSegments: RouteSegmentData[] = [
+      {
+        id: "order-1-order-2",
+        fromOrderId: "order-1",
+        toOrderId: "order-2",
+        distance: 5000,
+        duration: 638, // 10.633333... minutes, should round to 11
+      },
+    ];
+
+    const WrapperWithRouteSegments = ({
+      children,
+      segments,
+    }: {
+      children: React.ReactNode;
+      segments: RouteSegmentData[];
+    }) => {
+      const [routeSegments, setRouteSegments] =
+        useState<RouteSegmentData[]>(segments);
+
+      return (
+        <MemoryRouter>
+          <SidebarProvider>
+            <DeliveryRouteManagerProvider>
+              <RouteSegmentsContext.Provider
+                value={{ routeSegments, setRouteSegments }}
+              >
+                {children}
+              </RouteSegmentsContext.Provider>
+            </DeliveryRouteManagerProvider>
+          </SidebarProvider>
+        </MemoryRouter>
+      );
+    };
+
+    render(
+      <WrapperWithRouteSegments segments={mockRouteSegments}>
+        <DeliverySidebar
+          deliveryOrders={mockOrders}
+          onDeliveryOrdersUpdated={() => {}}
+        />
+      </WrapperWithRouteSegments>
+    );
+
+    // Wait for calculations to complete
+    await waitFor(
+      () => {
+        // Should show rounded integer 11, not 10.633333...
+        const minuteElements = screen.queryAllByText(/11/);
+        expect(minuteElements.length).toBeGreaterThan(0);
+      },
+      { timeout: 3000 }
+    );
   });
 });

@@ -8,6 +8,7 @@ import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useRouteManager } from "@/hooks/use-route-manager";
+import { useRouteSegments } from "@/hooks/use-route-segments";
 import { useEffect, useState } from "react";
 import { Package, Clock, Route } from "lucide-react";
 import {
@@ -57,6 +58,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   } = useDeliveryRoute();
   const routeManagerContext = useRouteManager();
   const routeManager = routeManagerContext?.routeManager ?? null;
+  const { routeSegments } = useRouteSegments();
 
   // Get current route params and navigation
   const params = useParams<{ deliveryId?: string }>();
@@ -122,7 +124,7 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     setDeliveryOrders(deliveryOrdersProp);
   }, [deliveryOrdersProp]);
 
-  // Recalculate time and distance when delivery orders sequence changes
+  // Recalculate time and distance when delivery orders sequence changes or when route segments are updated
   useEffect(() => {
     console.log(
       "DeliverySidebar: Recalculating time and distance for reordered sequence"
@@ -133,14 +135,55 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
       return;
     }
 
-    const totalTime = calculateTotalEstimatedTime(deliveryOrders);
+    // Try to use actual route segment data from map adapters (Mapy.cz API)
+    if (
+      routeSegments.length > 0 &&
+      routeSegments.length === deliveryOrders.length - 1
+    ) {
+      let totalTime = 0;
+      let totalDistanceMeters = 0;
+
+      // Sum up actual route data from all segments
+      for (const segment of routeSegments) {
+        totalDistanceMeters += segment.distance;
+        totalTime += segment.duration;
+      }
+
+      // Use actual routing data
+      const distance = totalDistanceMeters / 1000; // Convert meters to km
+      const time = Math.round(totalTime / 60); // Convert seconds to minutes and round
+      setTotalEstimatedTime(time);
+      setTotalDistance(distance);
+      console.log(
+        "DeliverySidebar: Using actual route data - time:",
+        time,
+        "minutes"
+      );
+      console.log(
+        "DeliverySidebar: Using actual route data - distance:",
+        distance,
+        "km"
+      );
+      return;
+    }
+
+    // Fall back to geometric calculation if route segments not available
+    const totalTime = Math.round(calculateTotalEstimatedTime(deliveryOrders));
     const distance = calculateTotalDistance(deliveryOrders);
     setTotalEstimatedTime(totalTime);
     setTotalDistance(distance);
 
-    console.log("DeliverySidebar: Recalculated time:", totalTime, "minutes");
-    console.log("DeliverySidebar: Recalculated distance:", distance, "km");
-  }, [deliveryOrders]);
+    console.log(
+      "DeliverySidebar: Using geometric calculation - time:",
+      totalTime,
+      "minutes"
+    );
+    console.log(
+      "DeliverySidebar: Using geometric calculation - distance:",
+      distance,
+      "km"
+    );
+  }, [deliveryOrders, routeSegments]);
 
   const handleRemoveOrder = async (orderId: string) => {
     if (!currentDelivery) {

@@ -9,6 +9,7 @@ import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
+import { useRouteSegments } from "@/hooks/use-route-segments";
 import { pl } from "@/lib/translations";
 
 // Popup content creator (extracted from LeafletMap)
@@ -202,6 +203,12 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     useSegmentHighlight();
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDeliveryRoute();
+  const { setRouteSegments } = useRouteSegments();
+
+  // Clear route segments for Leaflet (uses geometric calculations)
+  React.useEffect(() => {
+    setRouteSegments([]);
+  }, [setRouteSegments]);
 
   const ORANGE_THRESHOLD = 13000;
 

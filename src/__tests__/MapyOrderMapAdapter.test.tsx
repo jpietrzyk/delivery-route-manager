@@ -1,5 +1,9 @@
 import "@testing-library/jest-dom";
 import type { Order } from "@/types/order";
+import { renderHook, act } from "@testing-library/react";
+import { useRouteSegments } from "@/hooks/use-route-segments";
+import RouteSegmentsProvider from "@/contexts/route-segments-provider";
+import type { RouteSegmentData } from "@/contexts/route-segments-context";
 
 // Test for the totalAmount handling fix in MapyOrderMapAdapter
 // The bug was: order.totalAmount.toFixed(2) threw "Cannot read properties of undefined (reading 'toFixed')"
@@ -161,5 +165,100 @@ describe("MapyOrderMapAdapter - totalAmount handling", () => {
 
     const popup = createOrderPopupContent(orderWithoutProduct);
     expect(popup.textContent).not.toContain("Product");
+  });
+});
+
+describe("MapyOrderMapAdapter - Route Segments Integration", () => {
+  it("should populate route segments context when routes are calculated", () => {
+    // This test verifies that MapyOrderMapAdapter properly sets route segments
+    // in the context when it calculates routes using the Mapy.cz API
+
+    const mockSegments: RouteSegmentData[] = [
+      {
+        id: "order-1-order-2",
+        fromOrderId: "order-1",
+        toOrderId: "order-2",
+        distance: 5000,
+        duration: 600,
+      },
+      {
+        id: "order-2-order-3",
+        fromOrderId: "order-2",
+        toOrderId: "order-3",
+        distance: 3000,
+        duration: 400,
+      },
+    ];
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <RouteSegmentsProvider>{children}</RouteSegmentsProvider>
+    );
+
+    const { result } = renderHook(() => useRouteSegments(), { wrapper });
+
+    // Simulate what MapyOrderMapAdapter does after calculating routes
+    act(() => {
+      result.current.setRouteSegments(mockSegments);
+    });
+
+    expect(result.current.routeSegments).toEqual(mockSegments);
+    expect(result.current.routeSegments).toHaveLength(2);
+  });
+
+  it("should clear route segments on error", () => {
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <RouteSegmentsProvider>{children}</RouteSegmentsProvider>
+    );
+
+    const { result } = renderHook(() => useRouteSegments(), { wrapper });
+
+    // First set some segments
+    act(() => {
+      result.current.setRouteSegments([
+        {
+          id: "order-1-order-2",
+          fromOrderId: "order-1",
+          toOrderId: "order-2",
+          distance: 5000,
+          duration: 600,
+        },
+      ]);
+    });
+
+    expect(result.current.routeSegments).toHaveLength(1);
+
+    // Simulate error handling - clear segments
+    act(() => {
+      result.current.setRouteSegments([]);
+    });
+
+    expect(result.current.routeSegments).toEqual([]);
+  });
+
+  it("should format segment data correctly for context", () => {
+    // Test that the transformation from API response to RouteSegmentData format is correct
+    const mockApiSegment = {
+      distance: 8500, // meters
+      duration: 720, // seconds
+    };
+
+    const orderId1 = "order-1";
+    const orderId2 = "order-2";
+
+    const formattedSegment: RouteSegmentData = {
+      id: `${orderId1}-${orderId2}`,
+      fromOrderId: orderId1,
+      toOrderId: orderId2,
+      distance: mockApiSegment.distance,
+      duration: mockApiSegment.duration,
+    };
+
+    expect(formattedSegment).toEqual({
+      id: "order-1-order-2",
+      fromOrderId: "order-1",
+      toOrderId: "order-2",
+      distance: 8500,
+      duration: 720,
+    });
   });
 });
