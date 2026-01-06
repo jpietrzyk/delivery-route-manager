@@ -184,10 +184,8 @@ export default function DeliveryMapPage() {
             </div>
           </div>
           {/* Total orders count display - positioned at top left, moved right to avoid zoom buttons */}
-          <div className="absolute top-4 left-16 z-10 pointer-events-none">
-            <div className="pointer-events-auto">
-              <OrdersCountDisplay count={totalOrdersCount} />
-            </div>
+          <div className="absolute top-4 left-16 z-20 pointer-events-auto">
+            <OrdersCountDisplay count={totalOrdersCount} />
           </div>
           <div className="pointer-events-auto">
             <DeliverySidebar

@@ -42,6 +42,7 @@ export const pl = {
   delivery: "Dostawa",
   plannedDeliveries: "Planowane dostawy",
   viewAllOnMap: "Zobacz wszystkie na mapie",
+  backToDeliveries: "Powrót do dostaw",
   loadingDeliveries: "Ładowanie dostaw...",
   noDeliveriesFound: "Brak dostaw",
   createDeliveryPrompt: "Rozpocznij, tworząc nową dostawę.",
