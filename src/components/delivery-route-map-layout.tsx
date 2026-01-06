@@ -4,7 +4,14 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
 import { MapControls } from "@/components/map-controls";
 import { pl, getOrdersCountText } from "@/lib/translations";
-import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 import { UnassignedOrderList } from "@/components/delivery-route/unassigned-order-list";
 import {
   OrderFilters,
@@ -244,11 +251,10 @@ export default function DeliveryRouteMapLayout({
             </div>
           </div>
 
-          {/* Back button, drawer trigger, and orders count display at top left */}
+          {/* Back button and orders count display at top left */}
           <MapControls
             totalOrdersCount={totalOrdersCount}
             totalAvailableOrders={totalAvailableOrders}
-            filteredUnassignedOrdersCount={filteredUnassignedOrders.length}
             onResetData={handleResetData}
             currentMapProvider={currentMapProvider}
             onMapProviderChange={handleMapProviderChange}
@@ -285,6 +291,19 @@ export default function DeliveryRouteMapLayout({
           {/* Sidebar trigger at top right */}
           <div className="absolute top-4 right-4 z-30 pointer-events-auto">
             <SidebarTrigger className="bg-background border border-border shadow-lg hover:bg-accent" />
+          </div>
+
+          {/* Drawer trigger at bottom center */}
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 pointer-events-auto">
+            <DrawerTrigger asChild>
+              <Button
+                className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-colors inline-flex items-center gap-3 h-12 border-0"
+                variant="ghost"
+              >
+                {pl.unassigned} ({filteredUnassignedOrders.length})
+                <ChevronDown className="h-5 w-5" />
+              </Button>
+            </DrawerTrigger>
           </div>
         </main>
 
