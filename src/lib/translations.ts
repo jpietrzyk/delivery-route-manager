@@ -111,6 +111,7 @@ export const pl = {
   updatedRecent: "Ostatni tydzień",
   updatedModerate: "1-4 tygodnie",
   updatedOld: "Starsze niż miesiąc",
+  selectAll: "Zaznacz wszystkie",
 
   // Aria labels
   ariaRemoveOrder: "Usuń zamówienie",
