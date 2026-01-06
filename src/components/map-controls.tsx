@@ -30,7 +30,7 @@ export function MapControls({
   onMapProviderChange,
 }: MapControlsProps) {
   return (
-    <NavigationMenu className="absolute top-4 left-16 z-20">
+    <NavigationMenu className="absolute top-4 left-16 z-20" viewport={false}>
       <NavigationMenuList className="gap-2">
         <NavigationMenuItem>
           <BackToDeliveriesLink />
@@ -82,13 +82,13 @@ export function MapControls({
               )}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <div className="w-48 p-2">
+              <div className="w-48 p-1.5 bg-background/95 backdrop-blur-sm border border-border/50 rounded shadow-sm">
                 <button
                   onClick={() => onMapProviderChange("leaflet")}
                   className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded transition-colors ${
                     currentMapProvider === "leaflet"
-                      ? "bg-green-50 text-green-700 border border-green-300"
-                      : "hover:bg-accent"
+                      ? "bg-green-50 text-green-700 border border-green-300 font-medium"
+                      : "border border-transparent hover:bg-accent hover:border-border/50"
                   }`}
                 >
                   <MapPin className="h-4 w-4" />
@@ -98,8 +98,8 @@ export function MapControls({
                   onClick={() => onMapProviderChange("mapy")}
                   className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded transition-colors ${
                     currentMapProvider === "mapy"
-                      ? "bg-blue-50 text-blue-700 border border-blue-300"
-                      : "hover:bg-accent"
+                      ? "bg-blue-50 text-blue-700 border border-blue-300 font-medium"
+                      : "border border-transparent hover:bg-accent hover:border-border/50"
                   }`}
                 >
                   <Map className="h-4 w-4" />
