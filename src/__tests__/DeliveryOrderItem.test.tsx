@@ -90,7 +90,9 @@ describe("DeliveryOrderItem", () => {
 
     // Should have ring class when highlighted
     const listItem = container.querySelector("li");
-    expect(listItem?.className).toContain("ring-2");
+    expect(listItem?.className).toContain("ring-1");
+    expect(listItem?.className).toContain("ring-green-400");
+    expect(listItem?.className).toContain("bg-green-50/50");
   });
 
   it("should call onMouseEnter and onMouseLeave callbacks", () => {
