@@ -119,7 +119,8 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   return (
     <Sidebar
       side="right"
-      className="bg-background/95 backdrop-blur-sm text-foreground shadow-2xl relative z-20 flex flex-col h-screen pointer-events-auto w-96 transition-all duration-300"
+      variant="floating"
+      className="bg-background text-foreground flex flex-col h-screen pointer-events-auto w-96 transition-all duration-300"
     >
       <SidebarHeader className="px-6 py-4 border-b-0 bg-card/30">
         <div className="flex items-center justify-between h-full">

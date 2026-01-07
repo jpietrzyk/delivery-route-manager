@@ -11,7 +11,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { Filter } from "lucide-react";
 import { UnassignedOrderList } from "@/components/delivery-route/unassigned-order-list";
 import {
   OrderFilters,
@@ -298,9 +298,8 @@ export default function DeliveryRouteMapLayout({
           {/* Drawer trigger at bottom center */}
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 pointer-events-auto">
             <DrawerTrigger asChild>
-              <Button className="border border-gray-200 bg-gray-50/90 hover:bg-gray-100 text-gray-700 font-medium px-6 py-3 rounded-lg shadow-lg transition-colors inline-flex items-center gap-3 h-12">
-                {pl.unassigned} ({filteredUnassignedOrders.length})
-                <ChevronDown className="h-5 w-5" />
+              <Button className="bg-background/50 hover:bg-accent/80 hover:text-accent-foreground text-foreground font-medium p-4 rounded-xl shadow-sm border border-border/30 transition-colors inline-flex items-center justify-center h-14 w-14 cursor-pointer">
+                <Filter className="h-6 w-6" />
               </Button>
             </DrawerTrigger>
           </div>
