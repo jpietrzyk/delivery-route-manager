@@ -5,12 +5,11 @@ import {
   SidebarContent,
 } from "@/components/ui/sidebar";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
-import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useRouteManager } from "@/hooks/use-route-manager";
 import { useRouteSegments } from "@/hooks/use-route-segments";
 import { useEffect, useState } from "react";
-import { Package, Clock, Route, ArrowRight, X } from "lucide-react";
+import { Package, Clock, Route } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -39,8 +38,6 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   deliveryOrders: deliveryOrdersProp = [],
 }) => {
   const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
-  const { currentOrderId, setCurrentOrderId, setPreviousOrderId } =
-    useOrderHighlight();
   const { currentDelivery, removeOrderFromDelivery } = useDeliveryRoute();
   const routeManagerContext = useRouteManager();
   const routeManager = routeManagerContext?.routeManager ?? null;
@@ -122,48 +119,60 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   return (
     <Sidebar
       side="right"
-      className="bg-background/95 backdrop-blur-sm text-foreground shadow-2xl relative z-20 flex flex-col h-screen pointer-events-auto w-96 transition-all duration-300"
+      variant="floating"
+      className="bg-background text-foreground flex flex-col h-screen pointer-events-auto w-96 transition-all duration-300"
     >
       <SidebarHeader className="px-6 py-4 border-b-0 bg-card/30">
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center gap-3">
             <Route className="w-6 h-6 text-primary" />
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                if (deliveryOrders.length > 0) {
-                  const currentIndex = deliveryOrders.findIndex(
-                    (order) => order.id === currentOrderId
-                  );
-                  if (
-                    currentIndex >= 0 &&
-                    currentIndex < deliveryOrders.length - 1
-                  ) {
-                    setPreviousOrderId(currentOrderId);
-                    setCurrentOrderId(deliveryOrders[currentIndex + 1].id);
-                  } else if (currentIndex === -1) {
-                    setCurrentOrderId(deliveryOrders[0].id);
-                  }
-                }
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-border/50 bg-background/50 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 rounded transition-colors"
-              title="Set Next Order as Current"
-            >
-              <ArrowRight className="h-3.5 w-3.5" />
-              Next
-            </button>
-            <button
-              onClick={() => {
-                setCurrentOrderId(null);
-                setPreviousOrderId(null);
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-border/50 bg-background/50 hover:bg-red-50 hover:text-red-700 hover:border-red-300 rounded transition-colors"
-              title="Clear Highlights"
-            >
-              <X className="h-3.5 w-3.5" />
-              Clear
-            </button>
+          <div className="flex items-center gap-4">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1.5">
+                  <Package className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">
+                    {deliveryOrders.length}
+                  </span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                {deliveryOrders.length}{" "}
+                {deliveryOrders.length === 1 ? "order" : "orders"} in this
+                delivery
+              </TooltipContent>
+            </Tooltip>
+            {totalEstimatedTime > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-primary" />
+                    <span className="text-sm text-foreground">
+                      {formatDuration(totalEstimatedTime)}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  Łączny czas: {formatDuration(totalEstimatedTime)}
+                </TooltipContent>
+              </Tooltip>
+            )}
+            {totalDistance > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1.5">
+                    <Route className="w-4 h-4 text-primary" />
+                    <span className="text-sm text-foreground">
+                      {formatDistance(totalDistance)}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  Łączny dystans trasy: {formatDistance(totalDistance)}
+                </TooltipContent>
+              </Tooltip>
+            )}
           </div>
         </div>
       </SidebarHeader>
@@ -183,56 +192,6 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
                 </div>
               </div>
             )}
-
-            <div className="max-w-full flex items-center justify-between px-4 py-3 border-b border-border/50 bg-primary/2">
-              <div className="flex items-center gap-3">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1">
-                      <Package className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium text-foreground">
-                        {deliveryOrders.length}
-                      </span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    {deliveryOrders.length}{" "}
-                    {deliveryOrders.length === 1 ? "order" : "orders"} in this
-                    delivery
-                  </TooltipContent>
-                </Tooltip>
-                {totalEstimatedTime > 0 && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4 text-primary" />
-                        <span className="text-xs text-foreground">
-                          {formatDuration(totalEstimatedTime)}
-                        </span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      Łączny czas: {formatDuration(totalEstimatedTime)}
-                    </TooltipContent>
-                  </Tooltip>
-                )}
-                {totalDistance > 0 && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1">
-                        <Route className="w-4 h-4 text-primary" />
-                        <span className="text-xs text-foreground">
-                          {formatDistance(totalDistance)}
-                        </span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      Łączny dystans trasy: {formatDistance(totalDistance)}
-                    </TooltipContent>
-                  </Tooltip>
-                )}
-              </div>
-            </div>
 
             <div className="flex-1 p-2 overflow-y-auto overflow-x-hidden">
               <div className="max-w-full">
