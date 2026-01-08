@@ -258,32 +258,63 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
         );
       })}
 
-      {/* Render markers */}
-      {markersWithIndex.map((marker) => {
-        const icon = getIconForMarker(marker);
+      {/* Render markers - first pool markers, then delivery markers so delivery markers appear on top */}
+      {/* Render pool markers */}
+      {markersWithIndex
+        .filter((marker) => marker.type !== "delivery")
+        .map((marker) => {
+          const icon = getIconForMarker(marker);
 
-        return (
-          <Marker
-            key={marker.id}
-            position={[marker.location.lat, marker.location.lng]}
-            // @ts-expect-error: icon is supported by react-leaflet Marker
-            icon={icon}
-            opacity={marker.isDisabled ? 0.4 : 1.0}
-            eventHandlers={
-              marker.isDisabled
-                ? undefined
-                : {
-                    mouseover: () => onMarkerHover?.(marker.id, true),
-                    mouseout: () => onMarkerHover?.(marker.id, false),
-                  }
-            }
-          >
-            {marker.popupContent && !marker.isDisabled && (
-              <Popup>{marker.popupContent}</Popup>
-            )}
-          </Marker>
-        );
-      })}
+          return (
+            <Marker
+              key={marker.id}
+              position={[marker.location.lat, marker.location.lng]}
+              // @ts-expect-error: icon is supported by react-leaflet Marker
+              icon={icon}
+              opacity={marker.isDisabled ? 0.4 : 1.0}
+              eventHandlers={
+                marker.isDisabled
+                  ? undefined
+                  : {
+                      mouseover: () => onMarkerHover?.(marker.id, true),
+                      mouseout: () => onMarkerHover?.(marker.id, false),
+                    }
+              }
+            >
+              {marker.popupContent && !marker.isDisabled && (
+                <Popup>{marker.popupContent}</Popup>
+              )}
+            </Marker>
+          );
+        })}
+      {/* Render delivery markers on top */}
+      {markersWithIndex
+        .filter((marker) => marker.type === "delivery")
+        .map((marker) => {
+          const icon = getIconForMarker(marker);
+
+          return (
+            <Marker
+              key={marker.id}
+              position={[marker.location.lat, marker.location.lng]}
+              // @ts-expect-error: icon is supported by react-leaflet Marker
+              icon={icon}
+              opacity={marker.isDisabled ? 0.4 : 1.0}
+              eventHandlers={
+                marker.isDisabled
+                  ? undefined
+                  : {
+                      mouseover: () => onMarkerHover?.(marker.id, true),
+                      mouseout: () => onMarkerHover?.(marker.id, false),
+                    }
+              }
+            >
+              {marker.popupContent && !marker.isDisabled && (
+                <Popup>{marker.popupContent}</Popup>
+              )}
+            </Marker>
+          );
+        })}
     </MapContainer>
   );
 };

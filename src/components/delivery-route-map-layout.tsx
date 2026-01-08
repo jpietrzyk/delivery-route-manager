@@ -298,7 +298,7 @@ export default function DeliveryRouteMapLayout({
           {/* Drawer trigger at bottom center */}
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 pointer-events-auto">
             <DrawerTrigger asChild>
-              <Button className="bg-background/50 hover:bg-accent/80 hover:text-accent-foreground text-foreground font-medium p-4 rounded-xl shadow-sm border border-border/30 transition-colors inline-flex items-center justify-center h-14 w-14 cursor-pointer">
+              <Button className="bg-background/50 hover:bg-accent/80 hover:text-accent-foreground text-foreground font-medium px-6 py-4 rounded-xl shadow-lg border border-border/30 transition-colors inline-flex items-center justify-center h-14 min-w-[140px] cursor-pointer">
                 <Filter className="h-6 w-6" />
               </Button>
             </DrawerTrigger>
