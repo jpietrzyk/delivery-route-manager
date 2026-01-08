@@ -67,14 +67,14 @@ export function MapControls({
                 </>
               )}
             </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <div className="w-48 p-1.5 bg-background/95 backdrop-blur-sm border border-border/50 rounded shadow-sm">
+            <NavigationMenuContent className="bg-transparent border-none shadow-none">
+              <div className="w-48 p-1.5 bg-background/80 rounded shadow-sm">
                 <button
                   onClick={() => onMapProviderChange("leaflet")}
                   className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded transition-colors ${
                     currentMapProvider === "leaflet"
-                      ? "bg-green-50 text-green-700 border border-green-300 font-medium"
-                      : "border border-transparent hover:bg-accent hover:border-border/50"
+                      ? "bg-accent/50 text-green-700 font-medium"
+                      : "hover:bg-accent/50"
                   }`}
                 >
                   <MapPin className="h-4 w-4" />
@@ -84,8 +84,8 @@ export function MapControls({
                   onClick={() => onMapProviderChange("mapy")}
                   className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded transition-colors ${
                     currentMapProvider === "mapy"
-                      ? "bg-blue-50 text-blue-700 border border-blue-300 font-medium"
-                      : "border border-transparent hover:bg-accent hover:border-border/50"
+                      ? "bg-accent/50 text-blue-700 font-medium"
+                      : "hover:bg-accent/50"
                   }`}
                 >
                   <Map className="h-4 w-4" />
