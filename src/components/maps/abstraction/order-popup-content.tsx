@@ -35,6 +35,7 @@ export const OrderPopupContent: React.FC<OrderPopupContentProps> = ({
   toggleText,
 }) => {
   const statusColors = getStatusColor(order.status);
+  const buttonColor = isPool ? "#10b981" : "#ef4444";
 
   return (
     <div
@@ -42,7 +43,7 @@ export const OrderPopupContent: React.FC<OrderPopupContentProps> = ({
         padding: "16px",
         maxWidth: "280px",
         fontFamily: "system-ui, sans-serif",
-        background: "white",
+        background: "rgba(255, 255, 255, 0.95)",
         borderRadius: "12px",
         boxShadow:
           "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)",
@@ -101,7 +102,9 @@ export const OrderPopupContent: React.FC<OrderPopupContentProps> = ({
       <div
         style={{
           padding: "8px 12px",
-          backgroundColor: isPool ? "#f3f4f6" : "#dbeafe",
+          backgroundColor: isPool
+            ? "rgba(243, 244, 246, 0.8)"
+            : "rgba(219, 234, 254, 0.6)",
           borderRadius: "8px",
           marginBottom: "12px",
           borderLeft: "3px solid " + (isPool ? "#9ca3af" : "#3b82f6"),
@@ -198,7 +201,7 @@ export const OrderPopupContent: React.FC<OrderPopupContentProps> = ({
         </div>
       )}
 
-      {/* Toggle Button */}
+      {/* Toggle Button - Outlined style */}
       <button
         onClick={(e) => {
           e.stopPropagation();
@@ -207,23 +210,20 @@ export const OrderPopupContent: React.FC<OrderPopupContentProps> = ({
         style={{
           width: "100%",
           padding: "10px 16px",
-          backgroundColor: isPool ? "#10b981" : "#ef4444",
-          color: "white",
-          border: "none",
+          backgroundColor: "transparent",
+          color: buttonColor,
+          border: `1.5px solid ${buttonColor}`,
           borderRadius: "8px",
           fontSize: "13px",
           fontWeight: "600",
           cursor: "pointer",
           transition: "all 0.2s",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
         }}
         onMouseOver={(e) => {
-          e.currentTarget.style.transform = "scale(1.02)";
-          e.currentTarget.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)";
+          e.currentTarget.style.backgroundColor = `${buttonColor}10`;
         }}
         onMouseOut={(e) => {
-          e.currentTarget.style.transform = "scale(1)";
-          e.currentTarget.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)";
+          e.currentTarget.style.backgroundColor = "transparent";
         }}
       >
         {toggleText}
