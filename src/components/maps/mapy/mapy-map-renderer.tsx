@@ -286,13 +286,27 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
 
   // Render markers
   useEffect(() => {
-    if (!markerLayerRef.current) return;
+    if (!markerLayerRef.current || !mapRef.current) return;
 
+    const map = mapRef.current;
     const markerLayer = markerLayerRef.current;
     const markerInstances = markerInstancesRef.current;
 
     // Get current marker IDs
     const currentMarkerIds = new Set(markersWithIndex.map((m) => m.id));
+
+    // Check if any markers are being removed
+    const markersBeingRemoved: string[] = [];
+    markerInstances.forEach((_, id) => {
+      if (!currentMarkerIds.has(id)) {
+        markersBeingRemoved.push(id);
+      }
+    });
+
+    // Close popups only if markers are being removed (e.g., after adding/removing order)
+    if (markersBeingRemoved.length > 0) {
+      map.closePopup();
+    }
 
     // Remove markers that no longer exist
     markerInstances.forEach((marker, id) => {
