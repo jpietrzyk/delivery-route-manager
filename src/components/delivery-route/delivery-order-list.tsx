@@ -31,7 +31,11 @@ interface DeliveryOrderListProps {
   setHighlightedOrderId?: (id: string | null) => void;
   onRemoveOrder?: (orderId: string) => void;
   title?: string;
-  onReorder?: (newOrders: Order[]) => void;
+  onReorder?: (
+    newOrders: Order[],
+    fromIndex?: number,
+    toIndex?: number
+  ) => void;
   routeManager?: RouteManager | null;
 }
 
@@ -63,7 +67,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
       );
       if (oldIndex !== -1 && newIndex !== -1) {
         const newOrders = arrayMove(orders, oldIndex, newIndex);
-        onReorder?.(newOrders);
+        onReorder?.(newOrders, oldIndex, newIndex);
       }
     }
   };

@@ -38,7 +38,8 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
   deliveryOrders: deliveryOrdersProp = [],
 }) => {
   const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
-  const { currentDelivery, removeOrderFromDelivery } = useDeliveryRoute();
+  const { currentDelivery, removeOrderFromDelivery, reorderDeliveryOrders } =
+    useDeliveryRoute();
   const routeManagerContext = useRouteManager();
   const routeManager = routeManagerContext?.routeManager ?? null;
   const { routeSegments } = useRouteSegments();
@@ -111,7 +112,22 @@ const DeliverySidebar: React.FC<DeliverySidebarProps> = ({
     }
   };
 
-  const handleReorder = (newOrders: Order[]) => {
+  const handleReorder = (
+    newOrders: Order[],
+    fromIndex?: number,
+    toIndex?: number
+  ) => {
+    // Persist the reordering to the API via the context
+    // The indices are provided directly from the drag handler for accuracy
+    if (
+      currentDelivery?.id &&
+      deliveryOrders.length > 0 &&
+      fromIndex !== undefined &&
+      toIndex !== undefined
+    ) {
+      void reorderDeliveryOrders(currentDelivery.id, fromIndex, toIndex);
+    }
+
     setDeliveryOrders(newOrders);
     onDeliveryOrdersUpdated?.(newOrders);
   };
