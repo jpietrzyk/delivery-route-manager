@@ -10,8 +10,8 @@ import {
   DrawerTitle,
   DrawerDescription,
 } from "@/components/ui/drawer";
-import { pl } from "@/lib/translations";
-import { Info, MapPin, ExternalLink, Map } from "lucide-react";
+import { pl, formatDurationPL } from "@/lib/translations";
+import { Info, MapPin, ExternalLink, Map, Route, Clock } from "lucide-react";
 
 export default function DeliveryRoutesListPage() {
   const [deliveries, setDeliveries] = useState<DeliveryRoute[]>([]);
@@ -137,44 +137,71 @@ export default function DeliveryRoutesListPage() {
               </p>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-6">
               {deliveries.map((delivery) => (
                 <div
                   key={delivery.id}
                   className="bg-white rounded-lg shadow-sm overflow-hidden"
                 >
                   <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center mb-4">
                       <h3 className="text-lg font-medium text-gray-900">
                         {delivery.name || `${pl.delivery} ${delivery.id}`}
                       </h3>
-                      <div className="flex gap-2 flex-wrap justify-end">
-                        <DrawerTrigger asChild>
-                          <button
-                            onClick={() => setSelectedDelivery(delivery)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-purple-200 bg-purple-50 hover:bg-purple-100 hover:border-purple-300 text-purple-700 rounded transition-colors"
-                          >
-                            <Info className="h-3.5 w-3.5" />
-                            {pl.details}
-                          </button>
-                        </DrawerTrigger>
-                        <Link
-                          to={`/delivery_routes/${delivery.id}/leaflet`}
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-green-200 bg-green-50 hover:bg-green-100 hover:border-green-300 text-green-700 rounded transition-colors"
+                      {(delivery.estimatedDistance !== undefined ||
+                        delivery.estimatedDuration !== undefined) && (
+                        <div className="flex gap-4 text-sm text-gray-600">
+                          {delivery.estimatedDistance !== undefined && (
+                            <div className="flex items-center gap-1">
+                              <Route className="h-4 w-4" />
+                              <span>
+                                {delivery.estimatedDistance === 0
+                                  ? "?"
+                                  : `${delivery.estimatedDistance} km`}
+                              </span>
+                            </div>
+                          )}
+                          {delivery.estimatedDuration !== undefined && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-4 w-4" />
+                              <span>
+                                {delivery.estimatedDuration === 0
+                                  ? "?"
+                                  : formatDurationPL(
+                                      delivery.estimatedDuration
+                                    )}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      <DrawerTrigger asChild>
+                        <button
+                          onClick={() => setSelectedDelivery(delivery)}
+                          className="flex items-center gap-1 px-2 py-1 text-xs font-medium border border-purple-200 bg-purple-50 hover:bg-purple-100 hover:border-purple-300 text-purple-700 rounded transition-colors"
                         >
-                          <MapPin className="h-3.5 w-3.5" />
-                          {pl.viewWithLeaflet}
-                          <ExternalLink className="h-3 w-3" />
-                        </Link>
-                        <Link
-                          to={`/delivery_routes/${delivery.id}/mapy`}
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-300 text-blue-700 rounded transition-colors"
-                        >
-                          <Map className="h-3.5 w-3.5" />
-                          {pl.viewWithMapy}
-                          <ExternalLink className="h-3 w-3" />
-                        </Link>
-                      </div>
+                          <Info className="h-3 w-3" />
+                          {pl.details}
+                        </button>
+                      </DrawerTrigger>
+                      <Link
+                        to={`/delivery_routes/${delivery.id}/leaflet`}
+                        className="flex items-center gap-1 px-2 py-1 text-xs font-medium border border-green-200 bg-green-50 hover:bg-green-100 hover:border-green-300 text-green-700 rounded transition-colors"
+                      >
+                        <MapPin className="h-3 w-3" />
+                        {pl.viewWithLeaflet}
+                        <ExternalLink className="h-3 w-3" />
+                      </Link>
+                      <Link
+                        to={`/delivery_routes/${delivery.id}/mapy`}
+                        className="flex items-center gap-1 px-2 py-1 text-xs font-medium border border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-300 text-blue-700 rounded transition-colors"
+                      >
+                        <Map className="h-3 w-3" />
+                        {pl.viewWithMapy}
+                        <ExternalLink className="h-3 w-3" />
+                      </Link>
                     </div>
                   </div>
                 </div>
