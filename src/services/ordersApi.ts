@@ -1,5 +1,5 @@
 import type { Order, Product } from "@/types/order";
-import { PFS_ORDERS_API_URL, PFS_API_KEY, ensureOrdersApiConfig } from "@/config/apiConfig";
+import { PFS_ORDERS_API_URL, PFS_API_KEY, ensureOrdersApiConfig, USE_LIVE_API } from "@/config/apiConfig";
 
 // Mock delay to simulate network request
 const mockDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -13,15 +13,17 @@ async function loadOrders(): Promise<void> {
   if (ordersLoaded) return;
 
   try {
-    // Ensure config is present (logs warnings in dev if missing)
-    ensureOrdersApiConfig();
+    // Ensure config is present (logs warnings in dev if missing) only when using live API
+    if (USE_LIVE_API) {
+      ensureOrdersApiConfig();
+    }
 
-    const url = PFS_ORDERS_API_URL ?? "/orders.json"; // fallback to local file for dev
+    const url = USE_LIVE_API && PFS_ORDERS_API_URL ? PFS_ORDERS_API_URL : "/orders.json"; // use local file for mock
     const headers: Record<string, string> = {
       "Accept": "application/json",
       "Content-Type": "application/json"
     };
-    if (PFS_API_KEY) {
+    if (USE_LIVE_API && PFS_API_KEY) {
       headers["x-make-apikey"] = PFS_API_KEY;
     }
 
@@ -47,7 +49,7 @@ async function loadOrders(): Promise<void> {
         createdAt: new Date(order.createdAt),
         updatedAt: new Date(order.updatedAt),
         customer: order.customer,
-        totalAmount: (orderRecord.totalAmount as number) ?? (orderRecord.totalAmmount as number) ?? 0, // Handle both spellings
+        totalAmount: orderRecord.totalAmmount as number ?? 0,
         items: order.items,
         location: {
           lat: typeof order.location.lat === 'string' ? parseFloat(order.location.lat) : order.location.lat,
