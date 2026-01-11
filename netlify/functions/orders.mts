@@ -1,9 +1,8 @@
-import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
+import type { Handler, HandlerEvent } from "@netlify/functions";
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+export const handler: Handler = async (event: HandlerEvent) => {
   try {
     const filePath = join(process.cwd(), 'public', 'orders.json');
     const data = await readFile(filePath, 'utf8');
