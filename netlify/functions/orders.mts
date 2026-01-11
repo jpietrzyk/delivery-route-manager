@@ -5,35 +5,42 @@ import { join } from 'path';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const handler: Handler = async (_event: HandlerEvent, _context: HandlerContext) => {
   try {
-    // Try multiple possible paths to handle both dev and production environments
+    let orders;
+    let loadedFrom = '';
+
+    // Try to load from file (development)
     const possiblePaths = [
-      // Production: Netlify deployment - orders.json copied to functions dir
-      join('/var/task/netlify/functions', 'orders.json'),
-      // Alternative production path
-      join('/var/task', 'netlify/functions', 'orders.json'),
       // Development: local development
       join(process.cwd(), 'public', 'orders.json'),
     ];
 
-    let data;
-    let lastError;
-
     for (const filePath of possiblePaths) {
       try {
-        data = await readFile(filePath, 'utf8');
-        console.log(`Successfully loaded orders from: ${filePath}`);
+        const data = await readFile(filePath, 'utf8');
+        orders = JSON.parse(data);
+        loadedFrom = filePath;
+        console.log(`Successfully loaded orders from file: ${filePath}`);
         break;
       } catch (err) {
-        lastError = err;
-        console.log(`Tried path ${filePath}, continuing...`);
+        console.log(`Could not load from ${filePath}, will try importing as module...`);
       }
     }
 
-    if (!data) {
-      throw lastError || new Error('Could not find orders.json in any expected location');
+    // Fallback: Try importing orders as a module (works in production)
+    if (!orders) {
+      try {
+        const ordersModule = await import('../../public/orders.json', { assert: { type: 'json' } });
+        orders = ordersModule.default;
+        loadedFrom = 'imported as module';
+        console.log('Successfully loaded orders as imported module');
+      } catch (err) {
+        console.log('Failed to import as module, trying dynamic import...');
+      }
     }
 
-    const orders = JSON.parse(data);
+    if (!orders) {
+      throw new Error('Could not load orders from any source');
+    }
 
     return {
       statusCode: 200,

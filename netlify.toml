@@ -1,5 +1,5 @@
 [build]
-command = "pnpm run build && cp public/orders.json netlify/functions/"
+command = "pnpm run build"
 functions = "netlify/functions"
 publish = "dist"
 
