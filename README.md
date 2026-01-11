@@ -28,3 +28,6 @@ PFS Maps is a delivery route management application built with React and TypeScr
 
 - Netlify functions arte in ... netlify/functions directory
 - As app needs orders data (even mocked) use netlify dev for development app server
+  - Netlify dev is run by default when `pnpm run dev` is launched
+
+- AppScript for prepare json
