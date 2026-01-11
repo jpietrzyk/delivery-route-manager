@@ -7,8 +7,10 @@ export const handler: Handler = async (_event: HandlerEvent, _context: HandlerCo
   try {
     // Try multiple possible paths to handle both dev and production environments
     const possiblePaths = [
-      // Production: Netlify deployment structure
-      join('/var/task', 'public', 'orders.json'),
+      // Production: Netlify deployment - orders.json copied to functions dir
+      join('/var/task/netlify/functions', 'orders.json'),
+      // Alternative production path
+      join('/var/task', 'netlify/functions', 'orders.json'),
       // Development: local development
       join(process.cwd(), 'public', 'orders.json'),
     ];
