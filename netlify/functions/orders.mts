@@ -32,7 +32,6 @@ export const handler: Handler = async (_event: HandlerEvent, _context: HandlerCo
     }
 
     const orders = JSON.parse(data);
-    const orders = JSON.parse(data);
 
     return {
       statusCode: 200,
