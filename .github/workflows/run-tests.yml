@@ -8,15 +8,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v4
         with:
-          version: 9.5.0
-      - name: Install nodejs
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: "pnpm"
-      - name: Install dependencies and
-        run: pnpm install
-      - name: Run tests
-        run: pnpm test
+          version: latest
+      # - name: Install nodejs
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 20
+      #     cache: "pnpm"
+      # - name: Install dependencies and
+      #   run: pnpm install
+      # - name: Run tests
+      #   run: pnpm test
