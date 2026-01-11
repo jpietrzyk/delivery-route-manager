@@ -18,7 +18,7 @@ async function loadOrders(): Promise<void> {
       ensureOrdersApiConfig();
     }
 
-    const url = USE_LIVE_API && PFS_ORDERS_API_URL ? PFS_ORDERS_API_URL : "/orders.json"; // use local file for mock
+    const url = USE_LIVE_API && PFS_ORDERS_API_URL ? PFS_ORDERS_API_URL : "/.netlify/functions/orders"; // use Netlify function for mock
     const headers: Record<string, string> = {
       "Accept": "application/json",
       "Content-Type": "application/json"
