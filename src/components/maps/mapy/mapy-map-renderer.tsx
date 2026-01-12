@@ -292,8 +292,13 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
     const markerLayer = markerLayerRef.current;
     const markerInstances = markerInstancesRef.current;
 
-    // Get current marker IDs
-    const currentMarkerIds = new Set(markersWithIndex.map((m) => m.id));
+    // Exclude disabled markers entirely from rendering
+    const activeMarkersWithIndex = markersWithIndex.filter(
+      (m) => !m.isDisabled
+    );
+
+    // Get current marker IDs (only active ones)
+    const currentMarkerIds = new Set(activeMarkersWithIndex.map((m) => m.id));
 
     // Check if any markers are being removed
     const markersBeingRemoved: string[] = [];
@@ -324,8 +329,10 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
 
     // Add or update markers - first pool markers, then delivery markers so delivery markers appear on top
     // Separate markers by type for proper z-ordering
-    const poolMarkers = markersWithIndex.filter((m) => m.type !== "delivery");
-    const deliveryMarkers = markersWithIndex.filter(
+    const poolMarkers = activeMarkersWithIndex.filter(
+      (m) => m.type !== "delivery"
+    );
+    const deliveryMarkers = activeMarkersWithIndex.filter(
       (m) => m.type === "delivery"
     );
 
@@ -342,7 +349,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         // Update existing marker
         existingMarker.setLatLng(position);
         existingMarker.setIcon(icon);
-        existingMarker.setOpacity(markerData.isDisabled ? 0.4 : 1.0);
+        existingMarker.setOpacity(1.0);
 
         // Update popup if needed
         if (markerData.popupContent && !markerData.isDisabled) {
@@ -361,15 +368,12 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
             closeOnClick: false,
             maxWidth: 300,
           });
-        } else if (markerData.isDisabled) {
-          // Remove popup for disabled markers
-          existingMarker.unbindPopup();
         }
       } else {
         // Create new marker
         const newMarker = L.marker(position, {
           icon,
-          opacity: markerData.isDisabled ? 0.4 : 1.0,
+          opacity: 1.0,
         });
 
         // Add popup if provided and not disabled
@@ -388,15 +392,13 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
           });
         }
 
-        // Add hover events only if not disabled
-        if (!markerData.isDisabled) {
-          newMarker.on("mouseover", () => {
-            onMarkerHover?.(markerData.id, true);
-          });
-          newMarker.on("mouseout", () => {
-            onMarkerHover?.(markerData.id, false);
-          });
-        }
+        // Add hover events
+        newMarker.on("mouseover", () => {
+          onMarkerHover?.(markerData.id, true);
+        });
+        newMarker.on("mouseout", () => {
+          onMarkerHover?.(markerData.id, false);
+        });
 
         newMarker.addTo(markerLayer);
         markerInstances.set(markerData.id, newMarker);
@@ -416,7 +418,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         // Update existing marker
         existingMarker.setLatLng(position);
         existingMarker.setIcon(icon);
-        existingMarker.setOpacity(markerData.isDisabled ? 0.4 : 1.0);
+        existingMarker.setOpacity(1.0);
 
         // Update popup if needed
         if (markerData.popupContent && !markerData.isDisabled) {
@@ -435,15 +437,12 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
             closeOnClick: false,
             maxWidth: 300,
           });
-        } else if (markerData.isDisabled) {
-          // Remove popup for disabled markers
-          existingMarker.unbindPopup();
         }
       } else {
         // Create new marker
         const newMarker = L.marker(position, {
           icon,
-          opacity: markerData.isDisabled ? 0.4 : 1.0,
+          opacity: 1.0,
         });
 
         // Add popup if provided and not disabled
@@ -462,15 +461,13 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
           });
         }
 
-        // Add hover events only if not disabled
-        if (!markerData.isDisabled) {
-          newMarker.on("mouseover", () => {
-            onMarkerHover?.(markerData.id, true);
-          });
-          newMarker.on("mouseout", () => {
-            onMarkerHover?.(markerData.id, false);
-          });
-        }
+        // Add hover events
+        newMarker.on("mouseover", () => {
+          onMarkerHover?.(markerData.id, true);
+        });
+        newMarker.on("mouseout", () => {
+          onMarkerHover?.(markerData.id, false);
+        });
 
         newMarker.addTo(markerLayer);
         markerInstances.set(markerData.id, newMarker);
