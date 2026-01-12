@@ -259,9 +259,10 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
       })}
 
       {/* Render markers - first pool markers, then delivery markers so delivery markers appear on top */}
-      {/* Render pool markers */}
+      {/* Render pool markers (exclude disabled) */}
       {markersWithIndex
         .filter((marker) => marker.type !== "delivery")
+        .filter((marker) => !marker.isDisabled)
         .map((marker) => {
           const icon = getIconForMarker(marker);
 
@@ -271,25 +272,20 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
               position={[marker.location.lat, marker.location.lng]}
               // @ts-expect-error: icon is supported by react-leaflet Marker
               icon={icon}
-              opacity={marker.isDisabled ? 0.4 : 1.0}
-              eventHandlers={
-                marker.isDisabled
-                  ? undefined
-                  : {
-                      mouseover: () => onMarkerHover?.(marker.id, true),
-                      mouseout: () => onMarkerHover?.(marker.id, false),
-                    }
-              }
+              opacity={1.0}
+              eventHandlers={{
+                mouseover: () => onMarkerHover?.(marker.id, true),
+                mouseout: () => onMarkerHover?.(marker.id, false),
+              }}
             >
-              {marker.popupContent && !marker.isDisabled && (
-                <Popup>{marker.popupContent}</Popup>
-              )}
+              {marker.popupContent && <Popup>{marker.popupContent}</Popup>}
             </Marker>
           );
         })}
-      {/* Render delivery markers on top */}
+      {/* Render delivery markers on top (exclude disabled) */}
       {markersWithIndex
         .filter((marker) => marker.type === "delivery")
+        .filter((marker) => !marker.isDisabled)
         .map((marker) => {
           const icon = getIconForMarker(marker);
 
@@ -299,19 +295,13 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
               position={[marker.location.lat, marker.location.lng]}
               // @ts-expect-error: icon is supported by react-leaflet Marker
               icon={icon}
-              opacity={marker.isDisabled ? 0.4 : 1.0}
-              eventHandlers={
-                marker.isDisabled
-                  ? undefined
-                  : {
-                      mouseover: () => onMarkerHover?.(marker.id, true),
-                      mouseout: () => onMarkerHover?.(marker.id, false),
-                    }
-              }
+              opacity={1.0}
+              eventHandlers={{
+                mouseover: () => onMarkerHover?.(marker.id, true),
+                mouseout: () => onMarkerHover?.(marker.id, false),
+              }}
             >
-              {marker.popupContent && !marker.isDisabled && (
-                <Popup>{marker.popupContent}</Popup>
-              )}
+              {marker.popupContent && <Popup>{marker.popupContent}</Popup>}
             </Marker>
           );
         })}
