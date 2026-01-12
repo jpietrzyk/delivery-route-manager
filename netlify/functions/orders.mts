@@ -8,21 +8,51 @@ export const handler: Handler = async (_event: HandlerEvent, _context: HandlerCo
     let orders;
     let loadedFrom = '';
 
-    // Try to load from file (development)
-    const possiblePaths = [
-      // Development: local development
-      join(process.cwd(), 'public', 'orders.json'),
-    ];
+    // Try to load from ApiDog service first
+    const apiUrl = process.env.VITE_PFS_API_ORDERS_URL;
+    const apiKey = process.env.VITE_PFS_API_KEY;
 
-    for (const filePath of possiblePaths) {
+    if (apiUrl) {
       try {
-        const data = await readFile(filePath, 'utf8');
-        orders = JSON.parse(data);
-        loadedFrom = filePath;
-        console.log(`Successfully loaded orders from file: ${filePath}`);
-        break;
+        const headers: Record<string, string> = {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        };
+        if (apiKey) {
+          headers["apidogToken"] = apiKey;
+        }
+
+        console.log("Fetching orders from ApiDog:", apiUrl);
+        const response = await fetch(apiUrl, { method: "GET", headers });
+        if (response.ok) {
+          orders = await response.json();
+          loadedFrom = 'ApiDog service';
+          console.log('Successfully loaded orders from ApiDog service');
+        } else {
+          console.log(`ApiDog service returned ${response.status}, falling back to local file`);
+        }
       } catch (err) {
-        console.log(`Could not load from ${filePath}, will try importing as module...`);
+        console.log('Failed to fetch from ApiDog service, falling back to local file:', err);
+      }
+    }
+
+    // Fallback: Try to load from file (development)
+    if (!orders) {
+      const possiblePaths = [
+        // Development: local development
+        join(process.cwd(), 'public', 'orders.json'),
+      ];
+
+      for (const filePath of possiblePaths) {
+        try {
+          const data = await readFile(filePath, 'utf8');
+          orders = JSON.parse(data);
+          loadedFrom = filePath;
+          console.log(`Successfully loaded orders from file: ${filePath}`);
+          break;
+        } catch (err) {
+          console.log(`Could not load from ${filePath}, will try importing as module...`);
+        }
       }
     }
 
