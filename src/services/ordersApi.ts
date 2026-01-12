@@ -1,5 +1,4 @@
 import type { Order, Product } from "@/types/order";
-import { PFS_ORDERS_API_URL, PFS_API_KEY, ensureOrdersApiConfig, USE_LIVE_API } from "@/config/apiConfig";
 
 // Mock delay to simulate network request
 const mockDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -13,23 +12,14 @@ async function loadOrders(): Promise<void> {
   if (ordersLoaded) return;
 
   try {
-    // Ensure config is present (logs warnings in dev if missing) only when using live API
-    if (USE_LIVE_API) {
-      ensureOrdersApiConfig();
-    }
-
-    const url = USE_LIVE_API && PFS_ORDERS_API_URL ? PFS_ORDERS_API_URL : "/.netlify/functions/orders"; // use Netlify function for mock
+    const url = "/.netlify/functions/orders"; // Netlify function handles ApiDog fallback to local mock
     const headers: Record<string, string> = {
       "Accept": "application/json",
       "Content-Type": "application/json"
     };
-    if (USE_LIVE_API && PFS_API_KEY) {
-      headers["x-make-apikey"] = PFS_API_KEY;
-    }
 
     // Debug: log the request details
     console.log("Fetching orders from:", url);
-    console.log("Headers:", JSON.stringify({ "x-make-apikey": PFS_API_KEY ? "***" : "not-set", "Accept": headers["Accept"], "Content-Type": headers["Content-Type"] }));
 
     const response = await fetch(url, { method: "GET", headers });
     if (!response.ok) {

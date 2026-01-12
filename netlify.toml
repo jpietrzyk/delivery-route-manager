@@ -3,6 +3,10 @@ command = "pnpm run build"
 functions = "netlify/functions"
 publish = "dist"
 
+[build.environment]
+VITE_PFS_API_ORDERS_URL = "https://mock.apidog.com/m1/1174576-1168527-default/m1/1174576-1168527-default/orders"
+VITE_PFS_API_KEY = "PBSZR9ATq96yVQezvQ1nX"
+
 [[redirects]]
 from = "/orders.json"
 to = "/.netlify/functions/orders"
