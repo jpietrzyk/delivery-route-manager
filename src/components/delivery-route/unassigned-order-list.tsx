@@ -1,6 +1,5 @@
 import React from "react";
 import type { Order } from "@/types/order";
-import { Plus } from "lucide-react";
 import { pl } from "@/lib/translations";
 import {
   DndContext,
@@ -60,7 +59,7 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
               items={unassignedOrders}
               strategy={verticalListSortingStrategy}
             >
-              <ul className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12 gap-3">
+              <ul className="grid grid-cols-8 sm:grid-cols-10 lg:grid-cols-12 xl:grid-cols-16 gap-2">
                 {unassignedOrders.map((order) => (
                   <li key={order.id} className="h-full">
                     <Tooltip>
@@ -77,21 +76,20 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                           onMouseLeave={() => setHighlightedOrderId?.(null)}
                           aria-label={`Add order ${order.id} to delivery`}
                         >
-                          <div
-                            className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-50 text-blue-700 border border-blue-200"
-                            data-testid="product-icon"
+                          {/* Marker icon (map pin) */}
+                          <svg
+                            className="h-5 w-5 text-blue-600 opacity-80"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
                           >
-                            <svg
-                              className="h-4.5 w-4.5"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-                            </svg>
-                          </div>
-                          <span className="absolute bottom-1 right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-white text-[10px] font-semibold shadow-sm">
-                            <Plus className="h-3 w-3" />
-                          </span>
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 21c-4.418 0-8-5.373-8-10a8 8 0 1116 0c0 4.627-3.582 10-8 10zm0-7a3 3 0 100-6 3 3 0 000 6z"
+                            />
+                          </svg>
                         </button>
                       </TooltipTrigger>
                       <TooltipContent
