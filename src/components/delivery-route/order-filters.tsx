@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Toggle } from "@/components/ui/toggle";
 import { pl } from "@/lib/translations";
 import {
@@ -48,6 +48,11 @@ export type UpdatedAtFilterState = {
 };
 
 interface OrderFiltersProps {
+  priorityFilters?: PriorityFilterState;
+  statusFilters?: StatusFilterState;
+  amountFilters?: AmountFilterState;
+  complexityFilters?: ComplexityFilterState;
+  updatedAtFilters?: UpdatedAtFilterState;
   onPriorityChange: (filters: PriorityFilterState) => void;
   onStatusChange?: (filters: StatusFilterState) => void;
   onAmountChange?: (filters: AmountFilterState) => void;
@@ -55,43 +60,110 @@ interface OrderFiltersProps {
   onUpdatedAtChange?: (filters: UpdatedAtFilterState) => void;
 }
 
+const PRIORITY_DEFAULT: PriorityFilterState = {
+  low: true,
+  medium: true,
+  high: true,
+};
+
+const STATUS_DEFAULT: StatusFilterState = {
+  pending: true,
+  "in-progress": true,
+  completed: true,
+  cancelled: true,
+};
+
+const AMOUNT_DEFAULT: AmountFilterState = {
+  low: true,
+  medium: true,
+  high: true,
+};
+
+const COMPLEXITY_DEFAULT: ComplexityFilterState = {
+  simple: true,
+  moderate: true,
+  complex: true,
+};
+
+const UPDATED_AT_DEFAULT: UpdatedAtFilterState = {
+  recent: true,
+  moderate: true,
+  old: true,
+};
+
+const clonePriorityDefaults = (): PriorityFilterState => ({
+  ...PRIORITY_DEFAULT,
+});
+const cloneStatusDefaults = (): StatusFilterState => ({ ...STATUS_DEFAULT });
+const cloneAmountDefaults = (): AmountFilterState => ({ ...AMOUNT_DEFAULT });
+const cloneComplexityDefaults = (): ComplexityFilterState => ({
+  ...COMPLEXITY_DEFAULT,
+});
+const cloneUpdatedAtDefaults = (): UpdatedAtFilterState => ({
+  ...UPDATED_AT_DEFAULT,
+});
+
 export const OrderFilters: React.FC<OrderFiltersProps> = ({
+  priorityFilters,
+  statusFilters,
+  amountFilters,
+  complexityFilters,
+  updatedAtFilters,
   onPriorityChange,
   onStatusChange,
   onAmountChange,
   onComplexityChange,
   onUpdatedAtChange,
 }) => {
-  const [priorities, setPriorities] = useState<PriorityFilterState>({
-    low: true,
-    medium: true,
-    high: true,
-  });
+  const [priorities, setPriorities] = useState<PriorityFilterState>(
+    priorityFilters ?? clonePriorityDefaults()
+  );
 
-  const [statuses, setStatuses] = useState<StatusFilterState>({
-    pending: true,
-    "in-progress": true,
-    completed: true,
-    cancelled: true,
-  });
+  const [statuses, setStatuses] = useState<StatusFilterState>(
+    statusFilters ?? cloneStatusDefaults()
+  );
 
-  const [amounts, setAmounts] = useState<AmountFilterState>({
-    low: true,
-    medium: true,
-    high: true,
-  });
+  const [amounts, setAmounts] = useState<AmountFilterState>(
+    amountFilters ?? cloneAmountDefaults()
+  );
 
-  const [complexities, setComplexities] = useState<ComplexityFilterState>({
-    simple: true,
-    moderate: true,
-    complex: true,
-  });
+  const [complexities, setComplexities] = useState<ComplexityFilterState>(
+    complexityFilters ?? cloneComplexityDefaults()
+  );
 
-  const [updatedAt, setUpdatedAt] = useState<UpdatedAtFilterState>({
-    recent: true,
-    moderate: true,
-    old: true,
-  });
+  const [updatedAt, setUpdatedAt] = useState<UpdatedAtFilterState>(
+    updatedAtFilters ?? cloneUpdatedAtDefaults()
+  );
+
+  useEffect(() => {
+    if (priorityFilters) {
+      setPriorities(priorityFilters);
+    }
+  }, [priorityFilters]);
+
+  useEffect(() => {
+    if (statusFilters) {
+      setStatuses(statusFilters);
+    }
+  }, [statusFilters]);
+
+  useEffect(() => {
+    if (amountFilters) {
+      setAmounts(amountFilters);
+    }
+  }, [amountFilters]);
+
+  useEffect(() => {
+    if (complexityFilters) {
+      setComplexities(complexityFilters);
+    }
+  }, [complexityFilters]);
+
+  useEffect(() => {
+    if (updatedAtFilters) {
+      setUpdatedAt(updatedAtFilters);
+    }
+  }, [updatedAtFilters]);
 
   // Compute if all filters across categories are selected
   const allSelected = useMemo(() => {

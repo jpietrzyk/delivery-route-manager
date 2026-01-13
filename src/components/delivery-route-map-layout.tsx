@@ -323,6 +323,11 @@ export default function DeliveryRouteMapLayout({
             </div>
             <div className="border-b border-border/50 bg-background/50 backdrop-blur-xs">
               <OrderFilters
+                priorityFilters={priorityFilters}
+                statusFilters={statusFilters}
+                amountFilters={amountFilters}
+                complexityFilters={complexityFilters}
+                updatedAtFilters={updatedAtFilters}
                 onPriorityChange={setPriorityFilters}
                 onStatusChange={setStatusFilters}
                 onAmountChange={setAmountFilters}
