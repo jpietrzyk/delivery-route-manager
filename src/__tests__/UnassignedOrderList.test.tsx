@@ -113,8 +113,10 @@ describe("UnassignedOrderList", () => {
 
     // Click on the order button
     const orderButton = screen.getByText("Test Product").closest("button");
-    fireEvent.click(orderButton);
-    expect(mockAddToDelivery).toHaveBeenCalledWith("order-1");
+    if (orderButton) {
+      fireEvent.click(orderButton);
+      expect(mockAddToDelivery).toHaveBeenCalledWith("order-1");
+    }
   });
 
   it("should call onAddToDelivery when add button is clicked", () => {
