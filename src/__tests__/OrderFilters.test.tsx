@@ -202,6 +202,36 @@ describe("OrderFilters", () => {
     });
   });
 
+  it("should reflect externally provided priority state", () => {
+    const { rerender } = render(
+      <OrderFilters
+        priorityFilters={{ low: false, medium: true, high: true }}
+        onPriorityChange={jest.fn()}
+      />
+    );
+
+    expect(screen.getByLabelText("Filter by Low priority")).toHaveAttribute(
+      "data-state",
+      "off"
+    );
+
+    rerender(
+      <OrderFilters
+        priorityFilters={{ low: true, medium: false, high: true }}
+        onPriorityChange={jest.fn()}
+      />
+    );
+
+    expect(screen.getByLabelText("Filter by Low priority")).toHaveAttribute(
+      "data-state",
+      "on"
+    );
+    expect(screen.getByLabelText("Filter by Medium priority")).toHaveAttribute(
+      "data-state",
+      "off"
+    );
+  });
+
   it("should call onPriorityChange on every toggle interaction", () => {
     const mockOnPriorityChange = jest.fn();
     render(<OrderFilters onPriorityChange={mockOnPriorityChange} />);
