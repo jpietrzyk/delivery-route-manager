@@ -266,32 +266,28 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
   return (
     <div className="w-full px-6 py-4 border-b border-border bg-muted/50">
       <div className="flex gap-4">
-        <div className="flex items-center">
+        <div className="flex flex-col items-center gap-2">
           <h3
             className="text-sm font-semibold text-foreground/70 tracking-wider whitespace-nowrap"
             style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
           >
             {pl.filters.toUpperCase()}
           </h3>
+          <Toggle
+            pressed={allSelected}
+            onPressedChange={handleSelectAllToggle}
+            size="sm"
+            aria-label="Select all filters"
+            className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-blue-50 data-[state=on]:text-blue-700 data-[state=on]:border-blue-300 h-8 w-8 p-0"
+          >
+            {allSelected ? (
+              <Check className="h-3.5 w-3.5" />
+            ) : (
+              <Square className="h-3.5 w-3.5" />
+            )}
+          </Toggle>
         </div>
         <div className="flex-1">
-          <div className="mb-2 flex items-center gap-2">
-            <Toggle
-              pressed={allSelected}
-              onPressedChange={handleSelectAllToggle}
-              size="sm"
-              aria-label="Select all filters"
-              className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-blue-50 data-[state=on]:text-blue-700 data-[state=on]:border-blue-300 justify-start h-8 font-normal"
-            >
-              {allSelected ? (
-                <Check className="h-3.5 w-3.5 mr-1.5" />
-              ) : (
-                <Square className="h-3.5 w-3.5 mr-1.5" />
-              )}
-              Wszystkie
-            </Toggle>
-          </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             <div className="space-y-2">
               <p className="text-xs font-medium text-foreground/70">

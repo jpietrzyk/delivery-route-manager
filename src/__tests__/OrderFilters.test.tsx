@@ -583,7 +583,6 @@ describe("OrderFilters - Select All Toggle", () => {
   it("should render Select All toggle above filter categories", () => {
     render(<OrderFilters onPriorityChange={jest.fn()} />);
 
-    expect(screen.getByText("Wszystkie")).toBeInTheDocument();
     expect(screen.getByLabelText("Select all filters")).toBeInTheDocument();
   });
 
@@ -669,8 +668,8 @@ describe("OrderFilters - Select All Toggle", () => {
     render(<OrderFilters onPriorityChange={jest.fn()} />);
 
     const selectAllToggle = screen.getByLabelText("Select all filters");
-    // Check that the toggle contains the "Wszystkie" text
-    expect(selectAllToggle).toHaveTextContent("Wszystkie");
+    // Check that the toggle contains the checkbox icon (rendered as SVG)
+    expect(selectAllToggle.querySelector("svg")).toBeInTheDocument();
   });
 
   it("should update Select All state when individual filters change", () => {
