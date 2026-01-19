@@ -1,5 +1,4 @@
 import React from "react";
-import { useHereMapsApi } from "./here/use-here-maps-api";
 import type {
   MapMarkerData,
   MapRouteSegmentData,
@@ -14,13 +13,8 @@ interface HereMapRendererProps {
   onRouteSegmentHover?: (segmentId: string, isHovering: boolean) => void;
 }
 
-const HereMapRenderer: React.FC<HereMapRendererProps> = ({
-  markers,
-  routes,
-  bounds,
-  onMarkerHover,
-  onRouteSegmentHover,
-}) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const HereMapRenderer: React.FC<HereMapRendererProps> = (_props) => {
   // ...existing code from previous implementation...
   return null; // placeholder for now
 };

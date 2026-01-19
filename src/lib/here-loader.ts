@@ -6,7 +6,7 @@ function injectScript(src: string): Promise<void> {
     if (existing) {
       existing.addEventListener("load", () => resolve(), { once: true });
       existing.addEventListener("error", () => reject(new Error(`Failed to load ${src}`)), { once: true });
-      if ((existing as any).dataset.loaded === "true") {
+      if (existing.dataset.loaded === "true") {
         resolve();
       }
       return;
@@ -15,9 +15,9 @@ function injectScript(src: string): Promise<void> {
     const script = document.createElement("script");
     script.src = src;
     script.async = true;
-    (script as any).dataset.loaded = "false";
+    script.dataset.loaded = "false";
     script.onload = () => {
-      (script as any).dataset.loaded = "true";
+      script.dataset.loaded = "true";
       resolve();
     };
     script.onerror = () => reject(new Error(`Failed to load ${src}`));
@@ -52,17 +52,17 @@ export async function loadHere(apiKey: string): Promise<typeof H | null> {
     for (const s of scripts) {
       await injectScript(s);
     }
-    if (typeof (window as any).H === "undefined") {
+    if (typeof window.H === "undefined") {
       throw new Error("HERE global H is missing after script load");
     }
     // Validate API key existence by creating a dummy platform
     try {
-      const platform = new (window as any).H.service.Platform({ apikey: apiKey });
+      const platform = new window.H.service.Platform({ apikey: apiKey });
       void platform; // no-op
     } catch (e) {
       console.warn("HERE Platform init failed; will attempt during map init", e);
     }
-    return (window as any).H as typeof H;
+    return window.H;
   })();
 
   return loadPromise;

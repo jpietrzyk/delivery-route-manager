@@ -10,7 +10,12 @@ interface HereMapRendererProps {
   onMarkerHover?: (orderId: string, isHovering: boolean) => void;
 }
 
-export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders, unassignedOrders = [], highlightedOrderId, onMarkerHover }) => {
+export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
+  orders,
+  unassignedOrders = [],
+  highlightedOrderId,
+  onMarkerHover,
+}) => {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = React.useRef<any>(null);
   const markersRef = React.useRef<any[]>([]);
@@ -68,9 +73,15 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders, unassi
             <circle cx="15" cy="17" r="7" fill="#ffffff"/>
           </g>
         </svg>`;
-      defaultIconRef.current = new H.map.Icon(`data:image/svg+xml;charset=UTF-8,${encodeURIComponent(defaultSvg)}`);
-      poolIconRef.current = new H.map.Icon(`data:image/svg+xml;charset=UTF-8,${encodeURIComponent(poolSvg)}`);
-      highlightIconRef.current = new H.map.Icon(`data:image/svg+xml;charset=UTF-8,${encodeURIComponent(highlightSvg)}`);
+      defaultIconRef.current = new H.map.Icon(
+        `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(defaultSvg)}`
+      );
+      poolIconRef.current = new H.map.Icon(
+        `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(poolSvg)}`
+      );
+      highlightIconRef.current = new H.map.Icon(
+        `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(highlightSvg)}`
+      );
 
       const handleResize = () => map.getViewPort().resize();
       window.addEventListener("resize", handleResize);
@@ -106,8 +117,10 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders, unassi
 
     const group = new H.map.Group();
     const addOrderMarker = (order: Order, type: "delivery" | "pool") => {
-      const isHighlighted = highlightedOrderId && order.id === highlightedOrderId;
-      const baseIcon = type === "pool" ? poolIconRef.current : defaultIconRef.current;
+      const isHighlighted =
+        highlightedOrderId && order.id === highlightedOrderId;
+      const baseIcon =
+        type === "pool" ? poolIconRef.current : defaultIconRef.current;
       const iconToUse = isHighlighted ? highlightIconRef.current : baseIcon;
       const marker = new H.map.Marker(
         { lat: order.location.lat, lng: order.location.lng },
@@ -115,8 +128,12 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders, unassi
       );
       (marker as any).data = { id: order.id };
       if (onMarkerHover) {
-        marker.addEventListener("pointerenter", () => onMarkerHover(order.id, true));
-        marker.addEventListener("pointerleave", () => onMarkerHover(order.id, false));
+        marker.addEventListener("pointerenter", () =>
+          onMarkerHover(order.id, true)
+        );
+        marker.addEventListener("pointerleave", () =>
+          onMarkerHover(order.id, false)
+        );
       }
       group.addObject(marker);
       markersRef.current.push(marker);
@@ -143,13 +160,23 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders, unassi
     }
     if (orders.length >= 2) {
       const lineString = new H.geo.LineString();
-      lineString.pushLatLngAlt(orders[0].location.lat, orders[0].location.lng, 0);
-      lineString.pushLatLngAlt(orders[1].location.lat, orders[1].location.lng, 0);
-      const polyline = new H.map.Polyline(lineString, { style: { lineWidth: 4, strokeColor: "#2563eb" } });
+      lineString.pushLatLngAlt(
+        orders[0].location.lat,
+        orders[0].location.lng,
+        0
+      );
+      lineString.pushLatLngAlt(
+        orders[1].location.lat,
+        orders[1].location.lng,
+        0
+      );
+      const polyline = new H.map.Polyline(lineString, {
+        style: { lineWidth: 4, strokeColor: "#2563eb" },
+      });
       polylineRef.current = polyline;
       map.addObject(polyline);
     }
-  }, [orders, unassignedOrders]);
+  }, [orders, unassignedOrders, highlightedOrderId, onMarkerHover]);
 
   // Update icons on highlight change
   React.useEffect(() => {
@@ -158,9 +185,12 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders, unassi
     if (!H || !map) return;
 
     markerIndexRef.current.forEach((marker, orderId) => {
-      const isHighlighted = highlightedOrderId && orderId === highlightedOrderId;
+      const isHighlighted =
+        highlightedOrderId && orderId === highlightedOrderId;
       // We cannot know if it's pool or delivery here; keep highlight on match; otherwise use default delivery icon.
-      const icon = isHighlighted ? highlightIconRef.current : defaultIconRef.current;
+      const icon = isHighlighted
+        ? highlightIconRef.current
+        : defaultIconRef.current;
       if (icon) {
         marker.setIcon(icon);
       }

@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 
+type HereApi = typeof H;
+
 export function useHereMapsApi() {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<null | string>(null);
-  const [H, setH] = useState<any>(null);
+  const [H, setH] = useState<HereApi | null>(null);
 
   useEffect(() => {
     let tries = 0;
     const maxTries = 30; // 3 seconds
     const interval = setInterval(() => {
-      // @ts-ignore
       if (window.H) {
-        // @ts-ignore
         setH(window.H);
         setLoaded(true);
         clearInterval(interval);

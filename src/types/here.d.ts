@@ -4,12 +4,12 @@ declare namespace H {
   namespace service {
     class Platform {
       constructor(options: { apikey: string });
-      createDefaultLayers(): any;
+      createDefaultLayers(): unknown;
     }
   }
   namespace mapevents {
     class MapEvents {
-      constructor(map: any);
+      constructor(map: unknown);
     }
     class Behavior {
       constructor(events: MapEvents);
@@ -17,19 +17,19 @@ declare namespace H {
   }
   namespace ui {
     namespace UI {
-      function createDefault(map: any, defaultLayers: any): any;
+      function createDefault(map: unknown, defaultLayers: unknown): unknown;
     }
   }
   namespace map {
     class Group {
-      addObject(obj: any): void;
-      getBoundingBox(): any;
+      addObject(obj: unknown): void;
+      getBoundingBox(): unknown;
     }
     class Marker {
       constructor(coords: { lat: number; lng: number });
     }
     class Polyline {
-      constructor(geom: any, options?: any);
+      constructor(geom: unknown, options?: unknown);
     }
   }
   namespace geo {
@@ -39,4 +39,10 @@ declare namespace H {
   }
 }
 
-declare var H: typeof H;
+declare global {
+  interface Window {
+    H: typeof H;
+  }
+}
+
+declare const H: typeof H;
