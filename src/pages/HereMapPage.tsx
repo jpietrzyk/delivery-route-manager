@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import type { Order } from "@/types/order";
 
+import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
+
 export default function HereMapPage() {
   useParams<{ deliveryId: string }>();
   useDeliveryRoute();

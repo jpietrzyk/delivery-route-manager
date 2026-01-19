@@ -5,12 +5,19 @@ import type { Order } from "@/types/order";
 
 interface HereMapRendererProps {
   orders: Order[];
+  unassignedOrders?: Order[];
+  highlightedOrderId?: string | null;
+  onMarkerHover?: (orderId: string, isHovering: boolean) => void;
 }
 
-export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders }) => {
+export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders, unassignedOrders = [], highlightedOrderId, onMarkerHover }) => {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = React.useRef<any>(null);
   const markersRef = React.useRef<any[]>([]);
+  const markerIndexRef = React.useRef<Map<string, any>>(new Map());
+  const defaultIconRef = React.useRef<any | null>(null);
+  const poolIconRef = React.useRef<any | null>(null);
+  const highlightIconRef = React.useRef<any | null>(null);
   const polylineRef = React.useRef<any | null>(null);
 
   React.useEffect(() => {
@@ -39,6 +46,32 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders }) => {
       const ui = H.ui.UI.createDefault(map, defaultLayers);
       void ui;
 
+      // Prepare simple SVG-based icons
+      const defaultSvg = `<?xml version="1.0" encoding="UTF-8"?>
+        <svg width="26" height="40" viewBox="0 0 26 40" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" fill-rule="evenodd">
+            <path d="M13 40c0 0 13-18.207 13-26C26 6.268 20.18 0 13 0 5.82 0 0 6.268 0 14c0 7.793 13 26 13 26z" fill="#3b82f6"/>
+            <circle cx="13" cy="14" r="6" fill="#ffffff"/>
+          </g>
+        </svg>`;
+      const poolSvg = `<?xml version="1.0" encoding="UTF-8"?>
+        <svg width="26" height="40" viewBox="0 0 26 40" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" fill-rule="evenodd">
+            <path d="M13 40c0 0 13-18.207 13-26C26 6.268 20.18 0 13 0 5.82 0 0 6.268 0 14c0 7.793 13 26 13 26z" fill="#6b7280"/>
+            <circle cx="13" cy="14" r="6" fill="#ffffff"/>
+          </g>
+        </svg>`;
+      const highlightSvg = `<?xml version="1.0" encoding="UTF-8"?>
+        <svg width="30" height="46" viewBox="0 0 30 46" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" fill-rule="evenodd">
+            <path d="M15 46c0 0 15-20.958 15-29C30 7.82 23.284 0 15 0 6.716 0 0 7.82 0 17c0 8.042 15 29 15 29z" fill="#ef4444"/>
+            <circle cx="15" cy="17" r="7" fill="#ffffff"/>
+          </g>
+        </svg>`;
+      defaultIconRef.current = new H.map.Icon(`data:image/svg+xml;charset=UTF-8,${encodeURIComponent(defaultSvg)}`);
+      poolIconRef.current = new H.map.Icon(`data:image/svg+xml;charset=UTF-8,${encodeURIComponent(poolSvg)}`);
+      highlightIconRef.current = new H.map.Icon(`data:image/svg+xml;charset=UTF-8,${encodeURIComponent(highlightSvg)}`);
+
       const handleResize = () => map.getViewPort().resize();
       window.addEventListener("resize", handleResize);
 
@@ -65,23 +98,38 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders }) => {
       map.removeObject(m);
     }
     markersRef.current = [];
+    markerIndexRef.current.clear();
 
     // Add markers for orders
     const H = (window as any).H;
     if (!H) return;
 
     const group = new H.map.Group();
-    orders.forEach((order) => {
-      const marker = new H.map.Marker({ lat: order.location.lat, lng: order.location.lng });
+    const addOrderMarker = (order: Order, type: "delivery" | "pool") => {
+      const isHighlighted = highlightedOrderId && order.id === highlightedOrderId;
+      const baseIcon = type === "pool" ? poolIconRef.current : defaultIconRef.current;
+      const iconToUse = isHighlighted ? highlightIconRef.current : baseIcon;
+      const marker = new H.map.Marker(
+        { lat: order.location.lat, lng: order.location.lng },
+        iconToUse ? { icon: iconToUse } : undefined
+      );
       (marker as any).data = { id: order.id };
+      if (onMarkerHover) {
+        marker.addEventListener("pointerenter", () => onMarkerHover(order.id, true));
+        marker.addEventListener("pointerleave", () => onMarkerHover(order.id, false));
+      }
       group.addObject(marker);
       markersRef.current.push(marker);
-    });
+      markerIndexRef.current.set(order.id, marker);
+    };
+
+    orders.forEach((o) => addOrderMarker(o, "delivery"));
+    unassignedOrders.forEach((o) => addOrderMarker(o, "pool"));
 
     map.addObject(group);
 
     // Fit bounds if we have orders
-    if (orders.length > 0) {
+    if (orders.length > 0 || unassignedOrders.length > 0) {
       const rect = group.getBoundingBox();
       if (rect) {
         map.getViewModel().setLookAtData({ bounds: rect }, true);
@@ -101,7 +149,23 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({ orders }) => {
       polylineRef.current = polyline;
       map.addObject(polyline);
     }
-  }, [orders]);
+  }, [orders, unassignedOrders]);
+
+  // Update icons on highlight change
+  React.useEffect(() => {
+    const H = (window as any).H;
+    const map = mapInstanceRef.current;
+    if (!H || !map) return;
+
+    markerIndexRef.current.forEach((marker, orderId) => {
+      const isHighlighted = highlightedOrderId && orderId === highlightedOrderId;
+      // We cannot know if it's pool or delivery here; keep highlight on match; otherwise use default delivery icon.
+      const icon = isHighlighted ? highlightIconRef.current : defaultIconRef.current;
+      if (icon) {
+        marker.setIcon(icon);
+      }
+    });
+  }, [highlightedOrderId]);
 
   return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
 };
