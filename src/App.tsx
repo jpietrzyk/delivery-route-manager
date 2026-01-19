@@ -3,6 +3,7 @@ import DeliveryRoutesListPage from "@/pages/DeliveryRoutesListPage";
 import DeliveryMapPage from "@/pages/DeliveryRouteMapPage";
 import MapyCzMapPage from "@/pages/MapyCzMapPage";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";
+import HereMapPage from "@/pages/HereMapPage";
 
 function App() {
   return (
@@ -23,6 +24,10 @@ function App() {
           <Route
             path="/delivery_routes/:deliveryId/mapy"
             element={<MapyCzMapPage />}
+          />
+          <Route
+            path="/delivery_routes/:deliveryId/here"
+            element={<HereMapPage />}
           />
           {/* Default route */}
           <Route path="/" element={<DeliveryRoutesListPage />} />
