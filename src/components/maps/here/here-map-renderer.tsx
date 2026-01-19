@@ -19,7 +19,9 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   const mapRef = React.useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = React.useRef<any>(null);
   const markersRef = React.useRef<any[]>([]);
-  const markerIndexRef = React.useRef<Map<string, any>>(new Map());
+  const markerIndexRef = React.useRef<
+    Map<string, { marker: any; type: "delivery" | "pool" }>
+  >(new Map());
   const defaultIconRef = React.useRef<any | null>(null);
   const poolIconRef = React.useRef<any | null>(null);
   const highlightIconRef = React.useRef<any | null>(null);
@@ -137,7 +139,7 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       }
       group.addObject(marker);
       markersRef.current.push(marker);
-      markerIndexRef.current.set(order.id, marker);
+      markerIndexRef.current.set(order.id, { marker, type });
     };
 
     orders.forEach((o) => addOrderMarker(o, "delivery"));
@@ -184,13 +186,12 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     const map = mapInstanceRef.current;
     if (!H || !map) return;
 
-    markerIndexRef.current.forEach((marker, orderId) => {
+    markerIndexRef.current.forEach(({ marker, type }, orderId) => {
       const isHighlighted =
         highlightedOrderId && orderId === highlightedOrderId;
-      // We cannot know if it's pool or delivery here; keep highlight on match; otherwise use default delivery icon.
-      const icon = isHighlighted
-        ? highlightIconRef.current
-        : defaultIconRef.current;
+      const baseIcon =
+        type === "pool" ? poolIconRef.current : defaultIconRef.current;
+      const icon = isHighlighted ? highlightIconRef.current : baseIcon;
       if (icon) {
         marker.setIcon(icon);
       }
