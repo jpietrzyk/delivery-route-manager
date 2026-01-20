@@ -18,7 +18,7 @@ interface MapyOrderMapAdapterProps {
   orders: Order[];
   unassignedOrders: Order[];
   filteredUnassignedOrders?: Order[];
-  onOrderAddedToDelivery?: (orderId: string) => void;
+  onOrderAddedToDelivery?: (orderId?: string) => void | Promise<void>;
   onRefreshRequested?: () => void;
   children: (props: {
     markers: MapMarkerData[];
@@ -76,7 +76,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
           mapyApiKey,
           {
             routeType: "car_fast",
-          }
+          },
         );
         setCalculatedRoutes(segments);
 
@@ -104,7 +104,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
     // Deduplicate on initialization: filter unassigned orders that are also in delivery orders
     const deliveryOrderIds = new Set(orders.map((o) => o.id));
     const uniqueUnassignedOrders = unassignedOrders.filter(
-      (order) => !deliveryOrderIds.has(order.id)
+      (order) => !deliveryOrderIds.has(order.id),
     );
     const allOrders = [...orders, ...uniqueUnassignedOrders];
 
@@ -119,8 +119,9 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
       const isHighValue = order.product.price > ORANGE_THRESHOLD;
 
       // Check if this unassigned order is filtered out
-      const isDisabled =
-        isPool && filteredOrderIds ? !filteredOrderIds.has(order.id) : false;
+      const matchesFilters =
+        isPool && filteredOrderIds ? filteredOrderIds.has(order.id) : true;
+      const isDisabled = !matchesFilters;
 
       // Determine marker type
       let type: "delivery" | "pool" | "pool-high-value" = "delivery";
@@ -160,6 +161,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         isCurrentOrder: currentOrderId === order.id,
         isPreviousOrder: previousOrderId === order.id,
         isDisabled,
+        matchesFilters,
         popupContent: (
           <OrderPopupContent
             order={order}
@@ -230,7 +232,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         id: s.id,
         positionsCount: s.positions?.length || 0,
         distance: s.distance,
-      }))
+      })),
     );
 
     return segments;
@@ -241,7 +243,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
     // Deduplicate: filter unassigned orders that are also in delivery orders
     const deliveryOrderIds = new Set(orders.map((o) => o.id));
     const uniqueUnassignedOrders = unassignedOrders.filter(
-      (order) => !deliveryOrderIds.has(order.id)
+      (order) => !deliveryOrderIds.has(order.id),
     );
     const allOrders = [...orders, ...uniqueUnassignedOrders];
 
@@ -261,7 +263,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         setHighlightedOrderId(null);
       }
     },
-    [setHighlightedOrderId]
+    [setHighlightedOrderId],
   );
 
   const handleRouteSegmentHover = React.useCallback(
@@ -272,7 +274,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         setHighlightedSegmentId(null);
       }
     },
-    [setHighlightedSegmentId]
+    [setHighlightedSegmentId],
   );
 
   return (

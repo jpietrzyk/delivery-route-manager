@@ -9,7 +9,6 @@ import {
   Play,
   CheckCircle,
   XCircle,
-  DollarSign,
   Wrench,
   Calendar,
   Check,
@@ -20,6 +19,7 @@ export type PriorityFilterState = {
   low: boolean;
   medium: boolean;
   high: boolean;
+  [key: string]: boolean;
 };
 
 export type StatusFilterState = {
@@ -27,24 +27,28 @@ export type StatusFilterState = {
   "in-progress": boolean;
   completed: boolean;
   cancelled: boolean;
-};
-
-export type AmountFilterState = {
-  low: boolean;
-  medium: boolean;
-  high: boolean;
+  [key: string]: boolean;
 };
 
 export type ComplexityFilterState = {
   simple: boolean;
   moderate: boolean;
   complex: boolean;
+  [key: string]: boolean;
+};
+
+export type AmountFilterState = {
+  low: boolean;
+  medium: boolean;
+  high: boolean;
+  [key: string]: boolean;
 };
 
 export type UpdatedAtFilterState = {
   recent: boolean; // Less than 1 week
   moderate: boolean; // 1 week - 1 month
   old: boolean; // More than 1 month
+  [key: string]: boolean;
 };
 
 interface OrderFiltersProps {
@@ -73,16 +77,16 @@ const STATUS_DEFAULT: StatusFilterState = {
   cancelled: true,
 };
 
-const AMOUNT_DEFAULT: AmountFilterState = {
-  low: true,
-  medium: true,
-  high: true,
-};
-
 const COMPLEXITY_DEFAULT: ComplexityFilterState = {
   simple: true,
   moderate: true,
   complex: true,
+};
+
+const AMOUNT_DEFAULT: AmountFilterState = {
+  low: true,
+  medium: true,
+  high: true,
 };
 
 const UPDATED_AT_DEFAULT: UpdatedAtFilterState = {
@@ -95,7 +99,6 @@ const clonePriorityDefaults = (): PriorityFilterState => ({
   ...PRIORITY_DEFAULT,
 });
 const cloneStatusDefaults = (): StatusFilterState => ({ ...STATUS_DEFAULT });
-const cloneAmountDefaults = (): AmountFilterState => ({ ...AMOUNT_DEFAULT });
 const cloneComplexityDefaults = (): ComplexityFilterState => ({
   ...COMPLEXITY_DEFAULT,
 });
@@ -116,23 +119,23 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
   onUpdatedAtChange,
 }) => {
   const [priorities, setPriorities] = useState<PriorityFilterState>(
-    priorityFilters ?? clonePriorityDefaults()
+    priorityFilters ?? clonePriorityDefaults(),
   );
 
   const [statuses, setStatuses] = useState<StatusFilterState>(
-    statusFilters ?? cloneStatusDefaults()
-  );
-
-  const [amounts, setAmounts] = useState<AmountFilterState>(
-    amountFilters ?? cloneAmountDefaults()
+    statusFilters ?? cloneStatusDefaults(),
   );
 
   const [complexities, setComplexities] = useState<ComplexityFilterState>(
-    complexityFilters ?? cloneComplexityDefaults()
+    complexityFilters ?? cloneComplexityDefaults(),
+  );
+
+  const [amounts, setAmounts] = useState<AmountFilterState>(
+    amountFilters ?? AMOUNT_DEFAULT,
   );
 
   const [updatedAt, setUpdatedAt] = useState<UpdatedAtFilterState>(
-    updatedAtFilters ?? cloneUpdatedAtDefaults()
+    updatedAtFilters ?? cloneUpdatedAtDefaults(),
   );
 
   useEffect(() => {
@@ -178,13 +181,13 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     return Object.values(statuses).every(Boolean);
   }, [statuses]);
 
-  const allAmountsSelected = useMemo(() => {
-    return Object.values(amounts).every(Boolean);
-  }, [amounts]);
-
   const allComplexitiesSelected = useMemo(() => {
     return Object.values(complexities).every(Boolean);
   }, [complexities]);
+
+  const allAmountsSelected = useMemo(() => {
+    return Object.values(amounts).every(Boolean);
+  }, [amounts]);
 
   const allUpdatedAtSelected = useMemo(() => {
     return Object.values(updatedAt).every(Boolean);
@@ -202,12 +205,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     onStatusChange?.(newFilters);
   };
 
-  const handleAmountChange = (amount: keyof AmountFilterState) => {
-    const newFilters = { ...amounts, [amount]: !amounts[amount] };
-    setAmounts(newFilters);
-    onAmountChange?.(newFilters);
-  };
-
   const handleComplexityChange = (complexity: keyof ComplexityFilterState) => {
     const newFilters = {
       ...complexities,
@@ -215,6 +212,12 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     };
     setComplexities(newFilters);
     onComplexityChange?.(newFilters);
+  };
+
+  const handleAmountChange = (amount: keyof AmountFilterState) => {
+    const newFilters = { ...amounts, [amount]: !amounts[amount] };
+    setAmounts(newFilters);
+    onAmountChange?.(newFilters);
   };
 
   const handleUpdatedAtChange = (period: keyof UpdatedAtFilterState) => {
@@ -246,17 +249,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     onStatusChange?.(newFilters);
   };
 
-  const handleSelectAllAmounts = () => {
-    const nextState = !allAmountsSelected;
-    const newFilters: AmountFilterState = {
-      low: nextState,
-      medium: nextState,
-      high: nextState,
-    };
-    setAmounts(newFilters);
-    onAmountChange?.(newFilters);
-  };
-
   const handleSelectAllComplexities = () => {
     const nextState = !allComplexitiesSelected;
     const newFilters: ComplexityFilterState = {
@@ -266,6 +258,17 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     };
     setComplexities(newFilters);
     onComplexityChange?.(newFilters);
+  };
+
+  const handleSelectAllAmounts = () => {
+    const nextState = !allAmountsSelected;
+    const newFilters: AmountFilterState = {
+      low: nextState,
+      medium: nextState,
+      high: nextState,
+    };
+    setAmounts(newFilters);
+    onAmountChange?.(newFilters);
   };
 
   const handleSelectAllUpdatedAt = () => {
@@ -291,7 +294,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
           </h3>
         </div>
         <div className="flex-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {/* PRIORITY GROUP */}
             <div className="space-y-1">
               <div className="flex items-center gap-1 mb-1">
@@ -421,7 +424,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                   onPressedChange={handleSelectAllAmounts}
                   size="sm"
                   aria-label="Select all amounts"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-cyan-50 data-[state=on]:text-cyan-700 data-[state=on]:border-cyan-300 h-6 w-6 p-0"
+                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-indigo-50 data-[state=on]:text-indigo-700 data-[state=on]:border-indigo-300 h-6 w-6 p-0"
                 >
                   {allAmountsSelected ? (
                     <Check className="h-3 w-3" />
@@ -438,36 +441,33 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                   pressed={amounts.low}
                   onPressedChange={() => handleAmountChange("low")}
                   size="sm"
-                  aria-label="Filter by Low amount (0 - 300,000)"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-cyan-50 data-[state=on]:text-cyan-700 data-[state=on]:border-cyan-300 h-7 w-full flex-1 p-0 flex items-center justify-center"
+                  aria-label="Filter by Low amount"
+                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-indigo-50 data-[state=on]:text-indigo-700 data-[state=on]:border-indigo-300 h-7 w-full flex-1 p-0 flex items-center justify-center"
                   title={pl.amountLow}
                 >
-                  <DollarSign className="h-4 w-4 mr-1" />
-                  <span className="text-xs">0-300K</span>
+                  <ChevronDown className="h-4 w-4" />
                 </Toggle>
 
                 <Toggle
                   pressed={amounts.medium}
                   onPressedChange={() => handleAmountChange("medium")}
                   size="sm"
-                  aria-label="Filter by Medium amount (300,001 - 1,000,000)"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-orange-50 data-[state=on]:text-orange-700 data-[state=on]:border-orange-300 h-7 w-full flex-1 p-0 flex items-center justify-center"
+                  aria-label="Filter by Medium amount"
+                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-purple-50 data-[state=on]:text-purple-700 data-[state=on]:border-purple-300 h-7 w-full flex-1 p-0 flex items-center justify-center"
                   title={pl.amountMedium}
                 >
-                  <DollarSign className="h-4 w-4 mr-1" />
-                  <span className="text-xs">300K-1M</span>
+                  <AlertCircle className="h-4 w-4" />
                 </Toggle>
 
                 <Toggle
                   pressed={amounts.high}
                   onPressedChange={() => handleAmountChange("high")}
                   size="sm"
-                  aria-label="Filter by High amount (above 1,000,000)"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-rose-50 data-[state=on]:text-rose-700 data-[state=on]:border-rose-300 h-7 w-full flex-1 p-0 flex items-center justify-center"
+                  aria-label="Filter by High amount"
+                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-pink-50 data-[state=on]:text-pink-700 data-[state=on]:border-pink-300 h-7 w-full flex-1 p-0 flex items-center justify-center"
                   title={pl.amountHigh}
                 >
-                  <DollarSign className="h-4 w-4 mr-1" />
-                  <span className="text-xs">1M+</span>
+                  <Zap className="h-4 w-4" />
                 </Toggle>
               </div>
             </div>

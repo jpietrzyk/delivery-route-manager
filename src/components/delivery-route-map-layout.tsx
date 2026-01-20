@@ -1,4 +1,5 @@
-import { type ReactNode, useEffect, useState } from "react";
+import React, { type ReactNode, useEffect, useState } from "react";
+import { useMapFilters } from "@/hooks/useMapFilters";
 import { useParams, useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
@@ -13,13 +14,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 import { UnassignedOrderList } from "@/components/delivery-route/unassigned-order-list";
-import {
-  OrderFilters,
-  type PriorityFilterState,
-  type StatusFilterState,
-  type AmountFilterState,
-  type ComplexityFilterState,
-  type UpdatedAtFilterState,
+import { OrderFilters } from "@/components/delivery-route/order-filters";
+import type {
+  AmountFilterState,
+  ComplexityFilterState,
+  UpdatedAtFilterState,
 } from "@/components/delivery-route/order-filters";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
@@ -29,10 +28,10 @@ import { resetLocalStorageAndFetchData } from "@/lib/local-storage-utils";
 interface DeliveryRouteMapLayoutProps {
   renderMap: (
     displayedOrders: Order[],
-    filteredUnassignedOrders: Order[],
     allUnassignedOrders: Order[],
-    onOrderAddedToDelivery: () => Promise<void>,
-    onRefreshRequested: () => void
+    unassignedOrderFilterStatus: Map<string, boolean>,
+    onOrderAddedToDelivery: (orderId?: string) => Promise<void>,
+    onRefreshRequested: () => void,
   ) => ReactNode;
 }
 
@@ -95,43 +94,46 @@ export default function DeliveryRouteMapLayout({
   const [displayedOrders, setDisplayedOrders] =
     useState<Order[]>(deliveryOrders);
 
-  // Priority filter state
-  const [priorityFilters, setPriorityFilters] = useState<PriorityFilterState>({
-    low: true,
-    medium: true,
-    high: true,
-  });
+  // Use shared filter state from context
+  const { filters, setFilters } = useMapFilters();
+  const priorityFilters = React.useMemo(
+    () => filters.priorityFilters ?? { low: true, medium: true, high: true },
+    [filters.priorityFilters],
+  );
+  const statusFilters = React.useMemo(
+    () =>
+      filters.statusFilters ?? {
+        pending: true,
+        "in-progress": true,
+        completed: true,
+        cancelled: true,
+      },
+    [filters.statusFilters],
+  );
+  const amountFilters = React.useMemo(
+    () => filters.amountFilters ?? { low: true, medium: true, high: true },
+    [filters.amountFilters],
+  );
+  const complexityFilters = React.useMemo(
+    () =>
+      filters.complexityFilters ?? {
+        simple: true,
+        moderate: true,
+        complex: true,
+      },
+    [filters.complexityFilters],
+  );
+  const updatedAtFilters = React.useMemo(
+    () =>
+      filters.updatedAtFilters ?? {
+        recent: true,
+        moderate: true,
+        old: true,
+      },
+    [filters.updatedAtFilters],
+  );
 
-  // Status filter state
-  const [statusFilters, setStatusFilters] = useState<StatusFilterState>({
-    pending: true,
-    "in-progress": true,
-    completed: true,
-    cancelled: true,
-  });
-
-  // Amount filter state
-  const [amountFilters, setAmountFilters] = useState<AmountFilterState>({
-    low: true,
-    medium: true,
-    high: true,
-  });
-
-  // Complexity filter state
-  const [complexityFilters, setComplexityFilters] =
-    useState<ComplexityFilterState>({
-      simple: true,
-      moderate: true,
-      complex: true,
-    });
-
-  // UpdatedAt filter state
-  const [updatedAtFilters, setUpdatedAtFilters] =
-    useState<UpdatedAtFilterState>({
-      recent: true,
-      moderate: true,
-      old: true,
-    });
+  // Remove localStorage filter logic (now handled by context)
 
   // Helper function to determine amount tier
   const getAmountTier = (amount: number): keyof AmountFilterState => {
@@ -142,7 +144,7 @@ export default function DeliveryRouteMapLayout({
 
   // Helper function to determine complexity tier based on product complexity
   const getComplexityTier = (
-    productComplexity: 1 | 2 | 3
+    productComplexity: 1 | 2 | 3,
   ): keyof ComplexityFilterState => {
     if (productComplexity === 1) return "simple";
     if (productComplexity === 2) return "moderate";
@@ -160,15 +162,37 @@ export default function DeliveryRouteMapLayout({
     return "old";
   };
 
-  // Filter unassigned orders based on all filters
+  // Filter unassigned orders based on all filters (for UI display)
   const filteredUnassignedOrders = unassignedOrders.filter(
     (order) =>
       priorityFilters[order.priority] &&
       statusFilters[order.status] &&
       amountFilters[getAmountTier(order.totalAmount ?? 0)] &&
       complexityFilters[getComplexityTier(order.product.complexity)] &&
-      updatedAtFilters[getUpdatedAtPeriod(order.updatedAt)]
+      updatedAtFilters[getUpdatedAtPeriod(order.updatedAt)],
   );
+
+  // Create filter match status for all unassigned orders
+  const unassignedOrderFilterStatus = React.useMemo(() => {
+    const statusMap = new Map<string, boolean>();
+    unassignedOrders.forEach((order) => {
+      const matchesFilters =
+        priorityFilters[order.priority] &&
+        statusFilters[order.status] &&
+        amountFilters[getAmountTier(order.totalAmount ?? 0)] &&
+        complexityFilters[getComplexityTier(order.product.complexity)] &&
+        updatedAtFilters[getUpdatedAtPeriod(order.updatedAt)];
+      statusMap.set(order.id, matchesFilters);
+    });
+    return statusMap;
+  }, [
+    unassignedOrders,
+    priorityFilters,
+    statusFilters,
+    amountFilters,
+    complexityFilters,
+    updatedAtFilters,
+  ]);
 
   const totalAvailableOrders = displayedOrders.length + unassignedOrders.length;
   const totalOrdersCount =
@@ -216,13 +240,14 @@ export default function DeliveryRouteMapLayout({
           <div className="absolute inset-0 z-0">
             {renderMap(
               displayedOrders,
-              filteredUnassignedOrders,
               unassignedOrders,
-              async () => {
+              unassignedOrderFilterStatus,
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              async (_orderId?: string) => {
                 await refreshDeliveryOrders(deliveryId);
                 handleDeliveryOrdersUpdated();
               },
-              handleOrderRemoved
+              handleOrderRemoved,
             )}
           </div>
 
@@ -261,31 +286,21 @@ export default function DeliveryRouteMapLayout({
             currentMapProvider={currentMapProvider}
             onMapProviderChange={handleMapProviderChange}
             onResetFilters={() => {
-              setPriorityFilters({
-                low: true,
-                medium: true,
-                high: true,
-              });
-              setStatusFilters({
-                pending: true,
-                "in-progress": true,
-                completed: true,
-                cancelled: true,
-              });
-              setAmountFilters({
-                low: true,
-                medium: true,
-                high: true,
-              });
-              setComplexityFilters({
-                simple: true,
-                moderate: true,
-                complex: true,
-              });
-              setUpdatedAtFilters({
-                recent: true,
-                moderate: true,
-                old: true,
+              setFilters({
+                priorityFilters: { low: true, medium: true, high: true },
+                statusFilters: {
+                  pending: true,
+                  "in-progress": true,
+                  completed: true,
+                  cancelled: true,
+                },
+                amountFilters: { low: true, medium: true, high: true },
+                complexityFilters: {
+                  simple: true,
+                  moderate: true,
+                  complex: true,
+                },
+                updatedAtFilters: { recent: true, moderate: true, old: true },
               });
             }}
           />
@@ -328,11 +343,24 @@ export default function DeliveryRouteMapLayout({
                 amountFilters={amountFilters}
                 complexityFilters={complexityFilters}
                 updatedAtFilters={updatedAtFilters}
-                onPriorityChange={setPriorityFilters}
-                onStatusChange={setStatusFilters}
-                onAmountChange={setAmountFilters}
-                onComplexityChange={setComplexityFilters}
-                onUpdatedAtChange={setUpdatedAtFilters}
+                onPriorityChange={(filters) =>
+                  setFilters((prev) => ({ ...prev, priorityFilters: filters }))
+                }
+                onStatusChange={(filters) =>
+                  setFilters((prev) => ({ ...prev, statusFilters: filters }))
+                }
+                onAmountChange={(filters) =>
+                  setFilters((prev) => ({ ...prev, amountFilters: filters }))
+                }
+                onComplexityChange={(filters) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    complexityFilters: filters,
+                  }))
+                }
+                onUpdatedAtChange={(filters) =>
+                  setFilters((prev) => ({ ...prev, updatedAtFilters: filters }))
+                }
               />
             </div>
             <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6 bg-background/40">

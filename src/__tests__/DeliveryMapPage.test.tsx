@@ -3,6 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import DeliveryMapPage from "@/pages/DeliveryRouteMapPage";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";
+import { MapFiltersProvider } from "@/contexts/MapFiltersContext";
 import { OrdersApi } from "@/services/ordersApi";
 import { DeliveryRouteWaypointsApi } from "@/services/deliveryRouteWaypointsApi";
 import type { Order } from "@/types/order";
@@ -48,7 +49,7 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
           return { ...order, ...updates };
         }
         return null;
-      }
+      },
     );
   });
 
@@ -62,12 +63,17 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
   it("should increment refreshTrigger when order is added to delivery", async () => {
     render(
       <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
-        <DeliveryRouteManagerProvider>
-          <Routes>
-            <Route path="/delivery/:deliveryId" element={<DeliveryMapPage />} />
-          </Routes>
-        </DeliveryRouteManagerProvider>
-      </MemoryRouter>
+        <MapFiltersProvider>
+          <DeliveryRouteManagerProvider>
+            <Routes>
+              <Route
+                path="/delivery/:deliveryId"
+                element={<DeliveryMapPage />}
+              />
+            </Routes>
+          </DeliveryRouteManagerProvider>
+        </MapFiltersProvider>
+      </MemoryRouter>,
     );
 
     // Wait for initial loading
@@ -84,12 +90,17 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
   it("should update both delivery and unassigned orders when adding order", async () => {
     render(
       <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
-        <DeliveryRouteManagerProvider>
-          <Routes>
-            <Route path="/delivery/:deliveryId" element={<DeliveryMapPage />} />
-          </Routes>
-        </DeliveryRouteManagerProvider>
-      </MemoryRouter>
+        <MapFiltersProvider>
+          <DeliveryRouteManagerProvider>
+            <Routes>
+              <Route
+                path="/delivery/:deliveryId"
+                element={<DeliveryMapPage />}
+              />
+            </Routes>
+          </DeliveryRouteManagerProvider>
+        </MapFiltersProvider>
+      </MemoryRouter>,
     );
 
     // Wait for initial loading

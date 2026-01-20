@@ -7,7 +7,7 @@ interface MapyMapViewProps {
   orders: Order[];
   unassignedOrders?: Order[];
   filteredUnassignedOrders?: Order[];
-  onOrderAddedToDelivery?: (orderId: string) => void;
+  onOrderAddedToDelivery?: (orderId?: string) => void | Promise<void>;
   onRefreshRequested?: () => void;
 }
 

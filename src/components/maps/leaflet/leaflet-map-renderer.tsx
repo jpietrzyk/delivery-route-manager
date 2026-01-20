@@ -50,17 +50,6 @@ const poolIcon = L.icon({
   shadowSize: [41, 41],
 });
 
-const poolHighValueIcon = L.icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  shadowSize: [41, 41],
-});
-
 const highlightIcon = L.icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
@@ -147,10 +136,8 @@ const getIconForMarker = (marker: MapMarkerData) => {
   } else {
     switch (marker.type) {
       case "pool":
-        iconUrl = poolIcon.options.iconUrl as string;
-        break;
       case "pool-high-value":
-        iconUrl = poolHighValueIcon.options.iconUrl as string;
+        iconUrl = poolIcon.options.iconUrl as string;
         break;
       case "delivery":
       default:
@@ -259,12 +246,12 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
       })}
 
       {/* Render markers - first pool markers, then delivery markers so delivery markers appear on top */}
-      {/* Render pool markers (exclude disabled) */}
+      {/* Render pool markers (all, with opacity based on filter match) */}
       {markersWithIndex
         .filter((marker) => marker.type !== "delivery")
-        .filter((marker) => !marker.isDisabled)
         .map((marker) => {
           const icon = getIconForMarker(marker);
+          const opacity = marker.matchesFilters === false ? 0.4 : 1.0;
 
           return (
             <Marker
@@ -272,7 +259,7 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
               position={[marker.location.lat, marker.location.lng]}
               // @ts-expect-error: icon is supported by react-leaflet Marker
               icon={icon}
-              opacity={1.0}
+              opacity={opacity}
               eventHandlers={{
                 mouseover: () => onMarkerHover?.(marker.id, true),
                 mouseout: () => onMarkerHover?.(marker.id, false),
@@ -282,10 +269,9 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
             </Marker>
           );
         })}
-      {/* Render delivery markers on top (exclude disabled) */}
+      {/* Render delivery markers on top (always fully opaque) */}
       {markersWithIndex
         .filter((marker) => marker.type === "delivery")
-        .filter((marker) => !marker.isDisabled)
         .map((marker) => {
           const icon = getIconForMarker(marker);
 

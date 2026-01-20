@@ -43,17 +43,6 @@ const poolIcon = L.icon({
   shadowSize: [41, 41],
 });
 
-const poolHighValueIcon = L.icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  shadowSize: [41, 41],
-});
-
 const highlightIcon = L.icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
@@ -111,28 +100,13 @@ const createNumberedIcon = (iconUrl: string, badgeNumber?: number) => {
 const getIconForMarker = (marker: MapMarkerData) => {
   const isDelivery = marker.type === "delivery";
 
-  // Disabled markers always use gray icon
-  if (marker.isDisabled) {
-    const grayIconUrl = poolIcon.options.iconUrl as string;
-    if (isDelivery && marker.waypointIndex !== undefined) {
-      return createNumberedIcon(grayIconUrl, marker.waypointIndex);
-    }
-    return L.icon({
-      iconUrl: grayIconUrl,
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowUrl:
-        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-      shadowSize: [41, 41],
-    });
-  }
-
   // Determine base icon URL with priority: highlight > current/previous > type
   let iconUrl = defaultIcon.options.iconUrl as string;
   // Priority: highlight > current/previous > type
   if (marker.isHighlighted) {
     iconUrl = highlightIcon.options.iconUrl as string;
+  } else if (marker.isDisabled) {
+    iconUrl = poolIcon.options.iconUrl as string;
   } else if (marker.isCurrentOrder) {
     iconUrl = currentOrderIcon.options.iconUrl as string;
   } else if (marker.isPreviousOrder) {
@@ -140,10 +114,8 @@ const getIconForMarker = (marker: MapMarkerData) => {
   } else {
     switch (marker.type) {
       case "pool":
-        iconUrl = poolIcon.options.iconUrl as string;
-        break;
       case "pool-high-value":
-        iconUrl = poolHighValueIcon.options.iconUrl as string;
+        iconUrl = poolIcon.options.iconUrl as string;
         break;
       case "delivery":
       default:
@@ -179,10 +151,10 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
   const markerLayerRef = useRef<ReturnType<typeof L.layerGroup> | null>(null);
   const routeLayerRef = useRef<ReturnType<typeof L.layerGroup> | null>(null);
   const markerInstancesRef = useRef<Map<string, ReturnType<typeof L.marker>>>(
-    new Map()
+    new Map(),
   );
   const routeInstancesRef = useRef<Map<string, ReturnType<typeof L.polyline>>>(
-    new Map()
+    new Map(),
   );
   const popupDataRef = useRef<
     Map<string, { container: HTMLElement; root: ReturnType<typeof createRoot> }>
@@ -278,7 +250,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
       map.setView([deliveryPoints[0].lat, deliveryPoints[0].lng], 13);
     } else if (deliveryPoints.length > 1) {
       const leafletBounds = L.latLngBounds(
-        deliveryPoints.map((p) => [p.lat, p.lng])
+        deliveryPoints.map((p) => [p.lat, p.lng]),
       );
       map.fitBounds(leafletBounds, { padding: [40, 40] });
     }
@@ -292,12 +264,10 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
     const markerLayer = markerLayerRef.current;
     const markerInstances = markerInstancesRef.current;
 
-    // Exclude disabled markers entirely from rendering
-    const activeMarkersWithIndex = markersWithIndex.filter(
-      (m) => !m.isDisabled
-    );
+    // Include all markers for rendering (disabled ones will be grayed/faded)
+    const activeMarkersWithIndex = markersWithIndex;
 
-    // Get current marker IDs (only active ones)
+    // Get current marker IDs (all markers)
     const currentMarkerIds = new Set(activeMarkersWithIndex.map((m) => m.id));
 
     // Check if any markers are being removed
@@ -330,10 +300,10 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
     // Add or update markers - first pool markers, then delivery markers so delivery markers appear on top
     // Separate markers by type for proper z-ordering
     const poolMarkers = activeMarkersWithIndex.filter(
-      (m) => m.type !== "delivery"
+      (m) => m.type !== "delivery",
     );
     const deliveryMarkers = activeMarkersWithIndex.filter(
-      (m) => m.type === "delivery"
+      (m) => m.type === "delivery",
     );
 
     // Process pool markers first (rendered below)
@@ -344,15 +314,16 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         markerData.location.lat,
         markerData.location.lng,
       ];
+      const opacity = markerData.matchesFilters === false ? 0.4 : 1.0;
 
       if (existingMarker) {
         // Update existing marker
         existingMarker.setLatLng(position);
         existingMarker.setIcon(icon);
-        existingMarker.setOpacity(1.0);
+        existingMarker.setOpacity(opacity);
 
-        // Update popup if needed
-        if (markerData.popupContent && !markerData.isDisabled) {
+        // Update popup if needed (allow faded/disabled markers to show popup)
+        if (markerData.popupContent) {
           let popupData = popupDataRef.current.get(markerData.id);
           if (!popupData) {
             // Create new container and root if they don't exist
@@ -373,11 +344,11 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         // Create new marker
         const newMarker = L.marker(position, {
           icon,
-          opacity: 1.0,
+          opacity,
         });
 
-        // Add popup if provided and not disabled
-        if (markerData.popupContent && !markerData.isDisabled) {
+        // Add popup if provided (allow faded/disabled markers to show popup)
+        if (markerData.popupContent) {
           const popupContainer = document.createElement("div");
           const root = createRoot(popupContainer);
           popupDataRef.current.set(markerData.id, {

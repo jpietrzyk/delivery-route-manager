@@ -12,19 +12,24 @@ export default function MapyCzMapPage() {
     <DeliveryRouteMapLayout
       renderMap={(
         displayedOrders: Order[],
-        filteredUnassignedOrders: Order[],
         allUnassignedOrders: Order[],
+        unassignedOrderFilterStatus: Map<string, boolean>,
         onOrderAddedToDelivery,
-        onRefreshRequested
-      ) => (
-        <MapyMapView
-          orders={displayedOrders}
-          unassignedOrders={allUnassignedOrders}
-          filteredUnassignedOrders={filteredUnassignedOrders}
-          onOrderAddedToDelivery={onOrderAddedToDelivery}
-          onRefreshRequested={onRefreshRequested}
-        />
-      )}
+        onRefreshRequested,
+      ) => {
+        const filteredUnassignedOrders = allUnassignedOrders.filter(
+          (order) => unassignedOrderFilterStatus.get(order.id) ?? false,
+        );
+        return (
+          <MapyMapView
+            orders={displayedOrders}
+            unassignedOrders={allUnassignedOrders}
+            filteredUnassignedOrders={filteredUnassignedOrders}
+            onOrderAddedToDelivery={onOrderAddedToDelivery}
+            onRefreshRequested={onRefreshRequested}
+          />
+        );
+      }}
     />
   );
 }

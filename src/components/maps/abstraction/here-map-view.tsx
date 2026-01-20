@@ -6,7 +6,7 @@ interface HereMapViewProps {
   orders: Order[];
   unassignedOrders?: Order[];
   filteredUnassignedOrders?: Order[];
-  onOrderAddedToDelivery?: (orderId: string) => void;
+  onOrderAddedToDelivery?: (orderId?: string) => void | Promise<void>;
   onRefreshRequested?: () => void;
 }
 
@@ -20,8 +20,7 @@ const HereMapView: React.FC<HereMapViewProps> = ({
   return (
     <OrderMapAdapter
       orders={orders}
-      unassignedOrders={unassignedOrders}
-      filteredUnassignedOrders={filteredUnassignedOrders}
+      unassignedOrders={filteredUnassignedOrders || unassignedOrders}
       onOrderAddedToDelivery={onOrderAddedToDelivery}
       onRefreshRequested={onRefreshRequested}
     >

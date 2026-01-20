@@ -60,7 +60,7 @@ const createOrderPopupContent = (
   isPool: boolean,
   onToggle: () => void,
   toggleText: string,
-  toggleColor: string
+  toggleColor: string,
 ) => {
   const statusColors = getStatusColor(order.status);
   return (
@@ -200,7 +200,7 @@ const createOrderPopupContent = (
 interface LeafletMapProps {
   orders?: Order[];
   unassignedOrders?: Order[];
-  onOrderAddedToDelivery?: (orderId: string) => void;
+  onOrderAddedToDelivery?: (orderId?: string) => void | Promise<void>;
   onRefreshRequested?: () => void;
 }
 
@@ -222,13 +222,13 @@ function MapFitter({
     } else if (deliveryOrders.length > 1) {
       const allOrders = [...deliveryOrders, ...unassignedOrders];
       const bounds = L.latLngBounds(
-        allOrders.map((o) => [o.location.lat, o.location.lng])
+        allOrders.map((o) => [o.location.lat, o.location.lng]),
       );
       map.fitBounds(bounds, { padding: [40, 40] });
     } else {
       // If no delivery orders, show all orders (pool orders)
       const bounds = L.latLngBounds(
-        unassignedOrders.map((o) => [o.location.lat, o.location.lng])
+        unassignedOrders.map((o) => [o.location.lat, o.location.lng]),
       );
       map.fitBounds(bounds, { padding: [40, 40] });
     }
@@ -245,7 +245,7 @@ const LeafletMap = ({
   console.log("LeafletMap: Rendering with delivery orders:", orders.length);
   console.log(
     "LeafletMap: Rendering with unassigned orders:",
-    unassignedOrders.length
+    unassignedOrders.length,
   );
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
   const { currentOrderId, previousOrderId } = useOrderHighlight();
@@ -256,14 +256,14 @@ const LeafletMap = ({
     useDeliveryRoute();
   const deliveryOrderIds = React.useMemo(
     () => new Set(orders.map((order) => order.id)),
-    [orders]
+    [orders],
   );
 
   // Debug logging for order highlighting
   console.log("LeafletMap: highlightedOrderId:", highlightedOrderId);
   console.log(
     "LeafletMap: highlightedPolylineOrderId:",
-    highlightedPolylineOrderId
+    highlightedPolylineOrderId,
   );
   console.log("LeafletMap: currentOrderId:", currentOrderId);
   console.log("LeafletMap: previousOrderId:", previousOrderId);
@@ -281,7 +281,7 @@ const LeafletMap = ({
           "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         shadowSize: [41, 41],
       }),
-    []
+    [],
   );
   // Pool/unassigned marker icons
   const poolIcon = React.useMemo(
@@ -296,21 +296,7 @@ const LeafletMap = ({
           "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         shadowSize: [41, 41],
       }),
-    []
-  );
-  const poolHighPriceIcon = React.useMemo(
-    () =>
-      L.icon({
-        iconUrl:
-          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowUrl:
-          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-        shadowSize: [41, 41],
-      }),
-    []
+    [],
   );
   const highlightIcon = React.useMemo(
     () =>
@@ -324,7 +310,7 @@ const LeafletMap = ({
           "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         shadowSize: [41, 41],
       }),
-    []
+    [],
   );
 
   // Current order icon (blue)
@@ -340,7 +326,7 @@ const LeafletMap = ({
           "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         shadowSize: [41, 41],
       }),
-    []
+    [],
   );
 
   // Previous order icon (yellow)
@@ -356,7 +342,7 @@ const LeafletMap = ({
           "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         shadowSize: [41, 41],
       }),
-    []
+    [],
   );
 
   // Map of assigned delivery order ids to their 1-based waypoint position
@@ -388,11 +374,8 @@ const LeafletMap = ({
         popupAnchor: [1, -34],
       });
     },
-    []
+    [],
   );
-
-  // Use fixed threshold for orange marker
-  const ORANGE_THRESHOLD = 500000;
 
   // State for tracking which polyline is currently hovered
   const [hoveredPolylineIndex, setHoveredPolylineIndex] = React.useState<
@@ -443,7 +426,7 @@ const LeafletMap = ({
           }
 
           console.log(
-            `LeafletMap: Polyline ${segmentId} - fromOrderId: ${fromOrderId}, toOrderId: ${toOrderId}, highlightedOrderId: ${highlightedOrderId}, highlightedPolylineOrderId: ${highlightedPolylineOrderId}, hoveredPolylineIndex: ${hoveredPolylineIndex}, isHighlighted: ${isHighlighted}`
+            `LeafletMap: Polyline ${segmentId} - fromOrderId: ${fromOrderId}, toOrderId: ${toOrderId}, highlightedOrderId: ${highlightedOrderId}, highlightedPolylineOrderId: ${highlightedPolylineOrderId}, hoveredPolylineIndex: ${hoveredPolylineIndex}, isHighlighted: ${isHighlighted}`,
           );
 
           return (
@@ -479,15 +462,9 @@ const LeafletMap = ({
           "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png";
         let icon = defaultIcon;
         if (isPool) {
-          if (order.product.price > ORANGE_THRESHOLD) {
-            iconUrl =
-              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png";
-            icon = poolHighPriceIcon;
-          } else {
-            iconUrl =
-              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png";
-            icon = poolIcon;
-          }
+          iconUrl =
+            "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png";
+          icon = poolIcon;
         }
         if (highlightedOrderId === order.id) {
           iconUrl =
@@ -541,7 +518,7 @@ const LeafletMap = ({
 
                       await removeOrderFromDelivery(
                         currentDelivery.id,
-                        order.id
+                        order.id,
                       );
                       onRefreshRequested?.();
                     }
@@ -550,17 +527,17 @@ const LeafletMap = ({
                       isPool
                         ? "Failed to add order to delivery:"
                         : "Failed to remove order from delivery:",
-                      error
+                      error,
                     );
                     alert(
                       isPool
                         ? "Failed to add order to delivery"
-                        : "Failed to remove order from delivery"
+                        : "Failed to remove order from delivery",
                     );
                   }
                 },
                 isPool ? pl.addToDelivery : pl.removeFromDelivery,
-                isPool ? "#3b82f6" : "#dc2626"
+                isPool ? "#3b82f6" : "#dc2626",
               )}
             </Popup>
           </Marker>

@@ -113,7 +113,7 @@ export const OrderPopupContent: React.FC<OrderPopupContentProps> = ({
           e.stopPropagation();
           onToggle();
         }}
-        className="w-full py-2.5 px-4 bg-transparent border-2 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-200 hover:bg-opacity-10"
+        className="w-full py-2 px-3 bg-transparent border rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 hover:bg-opacity-10"
         style={{
           color: buttonColor,
           borderColor: buttonColor,

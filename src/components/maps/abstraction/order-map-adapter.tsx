@@ -16,8 +16,8 @@ import { OrderPopupContent } from "./order-popup-content";
 interface OrderMapAdapterProps {
   orders: Order[];
   unassignedOrders: Order[];
-  filteredUnassignedOrders?: Order[];
-  onOrderAddedToDelivery?: (orderId: string) => void;
+  unassignedOrderFilterStatus?: Map<string, boolean>;
+  onOrderAddedToDelivery?: (orderId?: string) => void | Promise<void>;
   onRefreshRequested?: () => void;
   children: (props: {
     markers: MapMarkerData[];
@@ -35,7 +35,7 @@ interface OrderMapAdapterProps {
 const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   orders,
   unassignedOrders,
-  filteredUnassignedOrders,
+  unassignedOrderFilterStatus,
   onOrderAddedToDelivery,
   onRefreshRequested,
   children,
@@ -60,23 +60,19 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     // Deduplicate on initialization: filter unassigned orders that are also in delivery orders
     const deliveryOrderIds = new Set(orders.map((o) => o.id));
     const uniqueUnassignedOrders = unassignedOrders.filter(
-      (order) => !deliveryOrderIds.has(order.id)
+      (order) => !deliveryOrderIds.has(order.id),
     );
     const allOrders = [...orders, ...uniqueUnassignedOrders];
-
-    // Create set of filtered order IDs for fast lookup
-    const filteredOrderIds = filteredUnassignedOrders
-      ? new Set(filteredUnassignedOrders.map((o) => o.id))
-      : null;
 
     return allOrders.map((order) => {
       // Check if order is in delivery by checking if it's in the orders array (not by deliveryId field)
       // This is because orders from waypoint system don't have deliveryId set on the Order object
       const isPool = !deliveryOrderIds.has(order.id);
 
-      // Check if this unassigned order is filtered out
-      const isDisabled =
-        isPool && filteredOrderIds ? !filteredOrderIds.has(order.id) : false;
+      // Check if this unassigned order matches current filters
+      const matchesFilters = isPool
+        ? (unassignedOrderFilterStatus?.get(order.id) ?? true)
+        : true; // Delivery orders always match (no filtering applied to them)
 
       let type: MapMarkerData["type"] = "delivery";
 
@@ -89,7 +85,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         <OrderPopupContent
           order={order}
           isPool={isPool}
-          toggleText={isPool ? pl.addToDelivery : `➖ ${pl.removeFromDelivery}`}
+          toggleText={isPool ? pl.addToDelivery : pl.removeFromDelivery}
           onToggle={async () => {
             try {
               if (isPool) {
@@ -115,12 +111,12 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
                 isPool
                   ? "Failed to add order to delivery:"
                   : "Failed to remove order from delivery:",
-                error
+                error,
               );
               alert(
                 isPool
                   ? "Failed to add order to delivery"
-                  : "Failed to remove order from delivery"
+                  : "Failed to remove order from delivery",
               );
             }
           }}
@@ -134,14 +130,15 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         isHighlighted: highlightedOrderId === order.id,
         isCurrentOrder: currentOrderId === order.id,
         isPreviousOrder: previousOrderId === order.id,
-        isDisabled,
+        isDisabled: false, // No longer disabling markers, using opacity instead
+        matchesFilters,
         popupContent,
       };
     });
   }, [
     orders,
     unassignedOrders,
-    filteredUnassignedOrders,
+    unassignedOrderFilterStatus,
     highlightedOrderId,
     currentOrderId,
     previousOrderId,
@@ -193,7 +190,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     // Deduplicate: filter unassigned orders that are also in delivery orders
     const deliveryOrderIds = new Set(orders.map((o) => o.id));
     const uniqueUnassignedOrders = unassignedOrders.filter(
-      (order) => !deliveryOrderIds.has(order.id)
+      (order) => !deliveryOrderIds.has(order.id),
     );
     const allOrders = [...orders, ...uniqueUnassignedOrders];
 
@@ -207,14 +204,14 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     (markerId: string, isHovering: boolean) => {
       setHighlightedOrderId(isHovering ? markerId : null);
     },
-    [setHighlightedOrderId]
+    [setHighlightedOrderId],
   );
 
   const handleRouteSegmentHover = React.useCallback(
     (segmentId: string, isHovering: boolean) => {
       setHighlightedSegmentId(isHovering ? segmentId : null);
     },
-    [setHighlightedSegmentId]
+    [setHighlightedSegmentId],
   );
 
   return (

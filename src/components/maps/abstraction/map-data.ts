@@ -16,6 +16,7 @@ export interface MapMarkerData {
   isCurrentOrder?: boolean;
   isPreviousOrder?: boolean;
   isDisabled?: boolean; // True for filtered-out markers (shown but grayed and non-clickable)
+  matchesFilters?: boolean; // True if the marker matches current filter criteria
   popupContent?: React.ReactNode;
 }
 
