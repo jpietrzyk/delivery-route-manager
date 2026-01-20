@@ -1,4 +1,5 @@
 import React, { type ReactNode, useEffect, useState } from "react";
+import { useMapFilters } from "@/contexts/MapFiltersContext";
 import { useParams, useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
@@ -95,79 +96,36 @@ export default function DeliveryRouteMapLayout({
   const [displayedOrders, setDisplayedOrders] =
     useState<Order[]>(deliveryOrders);
 
-  // Priority filter state
-  const [priorityFilters, setPriorityFilters] = useState<PriorityFilterState>({
+  // Use shared filter state from context
+  const { filters, setFilters } = useMapFilters();
+  const priorityFilters = filters.priorityFilters ?? {
     low: true,
     medium: true,
     high: true,
-  });
-
-  // Status filter state
-  const [statusFilters, setStatusFilters] = useState<StatusFilterState>({
+  };
+  const statusFilters = filters.statusFilters ?? {
     pending: true,
     "in-progress": true,
     completed: true,
     cancelled: true,
-  });
-
-  // Amount filter state
-  const [amountFilters, setAmountFilters] = useState<AmountFilterState>({
+  };
+  const amountFilters = filters.amountFilters ?? {
     low: true,
     medium: true,
     high: true,
-  });
+  };
+  const complexityFilters = filters.complexityFilters ?? {
+    simple: true,
+    moderate: true,
+    complex: true,
+  };
+  const updatedAtFilters = filters.updatedAtFilters ?? {
+    recent: true,
+    moderate: true,
+    old: true,
+  };
 
-  // Complexity filter state
-  const [complexityFilters, setComplexityFilters] =
-    useState<ComplexityFilterState>({
-      simple: true,
-      moderate: true,
-      complex: true,
-    });
-
-  // UpdatedAt filter state
-  const [updatedAtFilters, setUpdatedAtFilters] =
-    useState<UpdatedAtFilterState>({
-      recent: true,
-      moderate: true,
-      old: true,
-    });
-
-  // Load filter states from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem(`orderFilters_${deliveryId}`);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setPriorityFilters((prev) => parsed.priorityFilters || prev);
-        setStatusFilters((prev) => parsed.statusFilters || prev);
-        setAmountFilters((prev) => parsed.amountFilters || prev);
-        setComplexityFilters((prev) => parsed.complexityFilters || prev);
-        setUpdatedAtFilters((prev) => parsed.updatedAtFilters || prev);
-      } catch (error) {
-        console.warn("Failed to parse saved filters:", error);
-      }
-    }
-  }, [deliveryId]);
-
-  // Save filter states to localStorage when they change
-  useEffect(() => {
-    const filters = {
-      priorityFilters,
-      statusFilters,
-      amountFilters,
-      complexityFilters,
-      updatedAtFilters,
-    };
-    localStorage.setItem(`orderFilters_${deliveryId}`, JSON.stringify(filters));
-  }, [
-    deliveryId,
-    priorityFilters,
-    statusFilters,
-    amountFilters,
-    complexityFilters,
-    updatedAtFilters,
-  ]);
+  // Remove localStorage filter logic (now handled by context)
 
   // Helper function to determine amount tier
   const getAmountTier = (amount: number): keyof AmountFilterState => {
@@ -320,31 +278,21 @@ export default function DeliveryRouteMapLayout({
             currentMapProvider={currentMapProvider}
             onMapProviderChange={handleMapProviderChange}
             onResetFilters={() => {
-              setPriorityFilters({
-                low: true,
-                medium: true,
-                high: true,
-              });
-              setStatusFilters({
-                pending: true,
-                "in-progress": true,
-                completed: true,
-                cancelled: true,
-              });
-              setAmountFilters({
-                low: true,
-                medium: true,
-                high: true,
-              });
-              setComplexityFilters({
-                simple: true,
-                moderate: true,
-                complex: true,
-              });
-              setUpdatedAtFilters({
-                recent: true,
-                moderate: true,
-                old: true,
+              setFilters({
+                priorityFilters: { low: true, medium: true, high: true },
+                statusFilters: {
+                  pending: true,
+                  "in-progress": true,
+                  completed: true,
+                  cancelled: true,
+                },
+                amountFilters: { low: true, medium: true, high: true },
+                complexityFilters: {
+                  simple: true,
+                  moderate: true,
+                  complex: true,
+                },
+                updatedAtFilters: { recent: true, moderate: true, old: true },
               });
             }}
           />
@@ -387,11 +335,24 @@ export default function DeliveryRouteMapLayout({
                 amountFilters={amountFilters}
                 complexityFilters={complexityFilters}
                 updatedAtFilters={updatedAtFilters}
-                onPriorityChange={setPriorityFilters}
-                onStatusChange={setStatusFilters}
-                onAmountChange={setAmountFilters}
-                onComplexityChange={setComplexityFilters}
-                onUpdatedAtChange={setUpdatedAtFilters}
+                onPriorityChange={(filters) =>
+                  setFilters((prev) => ({ ...prev, priorityFilters: filters }))
+                }
+                onStatusChange={(filters) =>
+                  setFilters((prev) => ({ ...prev, statusFilters: filters }))
+                }
+                onAmountChange={(filters) =>
+                  setFilters((prev) => ({ ...prev, amountFilters: filters }))
+                }
+                onComplexityChange={(filters) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    complexityFilters: filters,
+                  }))
+                }
+                onUpdatedAtChange={(filters) =>
+                  setFilters((prev) => ({ ...prev, updatedAtFilters: filters }))
+                }
               />
             </div>
             <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6 bg-background/40">
