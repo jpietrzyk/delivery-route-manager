@@ -337,8 +337,8 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         existingMarker.setIcon(icon);
         existingMarker.setOpacity(opacity);
 
-        // Update popup if needed
-        if (markerData.popupContent && !markerData.isDisabled) {
+        // Update popup if needed (allow faded/disabled markers to show popup)
+        if (markerData.popupContent) {
           let popupData = popupDataRef.current.get(markerData.id);
           if (!popupData) {
             // Create new container and root if they don't exist
@@ -362,8 +362,8 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
           opacity,
         });
 
-        // Add popup if provided and not disabled
-        if (markerData.popupContent && !markerData.isDisabled) {
+        // Add popup if provided (allow faded/disabled markers to show popup)
+        if (markerData.popupContent) {
           const popupContainer = document.createElement("div");
           const root = createRoot(popupContainer);
           popupDataRef.current.set(markerData.id, {
