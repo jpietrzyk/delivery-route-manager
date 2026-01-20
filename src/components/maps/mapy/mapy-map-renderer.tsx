@@ -20,62 +20,6 @@ interface MapyMapRendererProps {
   onRouteSegmentHover?: (segmentId: string, isHovering: boolean) => void;
 }
 
-// Marker icons (matching LeafletMapRenderer for consistency)
-const defaultIcon = L.icon({
-  iconUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  shadowSize: [41, 41],
-});
-
-const poolIcon = L.icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  shadowSize: [41, 41],
-});
-
-const highlightIcon = L.icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  shadowSize: [41, 41],
-});
-
-const currentOrderIcon = L.icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  shadowSize: [41, 41],
-});
-
-const previousOrderIcon = L.icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  shadowSize: [41, 41],
-});
-
 import { getMarkerStyle } from "../abstraction/marker-style";
 
 const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
@@ -327,7 +271,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         // Update existing marker
         existingMarker.setLatLng(position);
         existingMarker.setIcon(icon);
-        existingMarker.setOpacity(1.0);
+        existingMarker.setOpacity(opacity);
 
         // Update popup if needed
         if (markerData.popupContent && !markerData.isDisabled) {
@@ -351,7 +295,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         // Create new marker
         const newMarker = L.marker(position, {
           icon,
-          opacity: 1.0,
+          opacity,
         });
 
         // Add popup if provided and not disabled
