@@ -246,12 +246,12 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
       })}
 
       {/* Render markers - first pool markers, then delivery markers so delivery markers appear on top */}
-      {/* Render pool markers (exclude disabled) */}
+      {/* Render pool markers (all, with opacity based on filter match) */}
       {markersWithIndex
         .filter((marker) => marker.type !== "delivery")
-        .filter((marker) => !marker.isDisabled)
         .map((marker) => {
           const icon = getIconForMarker(marker);
+          const opacity = marker.matchesFilters === false ? 0.4 : 1.0;
 
           return (
             <Marker
@@ -259,7 +259,7 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
               position={[marker.location.lat, marker.location.lng]}
               // @ts-expect-error: icon is supported by react-leaflet Marker
               icon={icon}
-              opacity={1.0}
+              opacity={opacity}
               eventHandlers={{
                 mouseover: () => onMarkerHover?.(marker.id, true),
                 mouseout: () => onMarkerHover?.(marker.id, false),
@@ -269,10 +269,9 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
             </Marker>
           );
         })}
-      {/* Render delivery markers on top (exclude disabled) */}
+      {/* Render delivery markers on top (always fully opaque) */}
       {markersWithIndex
         .filter((marker) => marker.type === "delivery")
-        .filter((marker) => !marker.isDisabled)
         .map((marker) => {
           const icon = getIconForMarker(marker);
 

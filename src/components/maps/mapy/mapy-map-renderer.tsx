@@ -331,12 +331,13 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         markerData.location.lat,
         markerData.location.lng,
       ];
+      const opacity = markerData.matchesFilters === false ? 0.4 : 1.0;
 
       if (existingMarker) {
         // Update existing marker
         existingMarker.setLatLng(position);
         existingMarker.setIcon(icon);
-        existingMarker.setOpacity(1.0);
+        existingMarker.setOpacity(opacity);
 
         // Update popup if needed
         if (markerData.popupContent && !markerData.isDisabled) {
@@ -360,7 +361,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         // Create new marker
         const newMarker = L.marker(position, {
           icon,
-          opacity: 1.0,
+          opacity,
         });
 
         // Add popup if provided and not disabled

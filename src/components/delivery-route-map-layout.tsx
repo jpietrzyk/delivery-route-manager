@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from "react";
+import React, { type ReactNode, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
@@ -29,10 +29,10 @@ import { resetLocalStorageAndFetchData } from "@/lib/local-storage-utils";
 interface DeliveryRouteMapLayoutProps {
   renderMap: (
     displayedOrders: Order[],
-    filteredUnassignedOrders: Order[],
     allUnassignedOrders: Order[],
-    onOrderAddedToDelivery: () => Promise<void>,
-    onRefreshRequested: () => void
+    unassignedOrderFilterStatus: Map<string, boolean>,
+    onOrderAddedToDelivery: (orderId?: string) => Promise<void>,
+    onRefreshRequested: () => void,
   ) => ReactNode;
 }
 
@@ -142,7 +142,7 @@ export default function DeliveryRouteMapLayout({
 
   // Helper function to determine complexity tier based on product complexity
   const getComplexityTier = (
-    productComplexity: 1 | 2 | 3
+    productComplexity: 1 | 2 | 3,
   ): keyof ComplexityFilterState => {
     if (productComplexity === 1) return "simple";
     if (productComplexity === 2) return "moderate";
@@ -160,15 +160,37 @@ export default function DeliveryRouteMapLayout({
     return "old";
   };
 
-  // Filter unassigned orders based on all filters
+  // Filter unassigned orders based on all filters (for UI display)
   const filteredUnassignedOrders = unassignedOrders.filter(
     (order) =>
       priorityFilters[order.priority] &&
       statusFilters[order.status] &&
       amountFilters[getAmountTier(order.totalAmount ?? 0)] &&
       complexityFilters[getComplexityTier(order.product.complexity)] &&
-      updatedAtFilters[getUpdatedAtPeriod(order.updatedAt)]
+      updatedAtFilters[getUpdatedAtPeriod(order.updatedAt)],
   );
+
+  // Create filter match status for all unassigned orders
+  const unassignedOrderFilterStatus = React.useMemo(() => {
+    const statusMap = new Map<string, boolean>();
+    unassignedOrders.forEach((order) => {
+      const matchesFilters =
+        priorityFilters[order.priority] &&
+        statusFilters[order.status] &&
+        amountFilters[getAmountTier(order.totalAmount ?? 0)] &&
+        complexityFilters[getComplexityTier(order.product.complexity)] &&
+        updatedAtFilters[getUpdatedAtPeriod(order.updatedAt)];
+      statusMap.set(order.id, matchesFilters);
+    });
+    return statusMap;
+  }, [
+    unassignedOrders,
+    priorityFilters,
+    statusFilters,
+    amountFilters,
+    complexityFilters,
+    updatedAtFilters,
+  ]);
 
   const totalAvailableOrders = displayedOrders.length + unassignedOrders.length;
   const totalOrdersCount =
@@ -216,13 +238,14 @@ export default function DeliveryRouteMapLayout({
           <div className="absolute inset-0 z-0">
             {renderMap(
               displayedOrders,
-              filteredUnassignedOrders,
               unassignedOrders,
-              async () => {
+              unassignedOrderFilterStatus,
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              async (_orderId?: string) => {
                 await refreshDeliveryOrders(deliveryId);
                 handleDeliveryOrdersUpdated();
               },
-              handleOrderRemoved
+              handleOrderRemoved,
             )}
           </div>
 

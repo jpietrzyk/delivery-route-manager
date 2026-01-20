@@ -12,19 +12,24 @@ export default function HereMapPage() {
     <DeliveryRouteMapLayout
       renderMap={(
         displayedOrders: Order[],
-        filteredUnassignedOrders: Order[],
         allUnassignedOrders: Order[],
+        unassignedOrderFilterStatus: Map<string, boolean>,
         onOrderAddedToDelivery,
-        onRefreshRequested
-      ) => (
-        <HereMapView
-          orders={displayedOrders}
-          unassignedOrders={allUnassignedOrders}
-          filteredUnassignedOrders={filteredUnassignedOrders}
-          onOrderAddedToDelivery={onOrderAddedToDelivery}
-          onRefreshRequested={onRefreshRequested}
-        />
-      )}
+        onRefreshRequested,
+      ) => {
+        const filteredUnassignedOrders = allUnassignedOrders.filter(
+          (order) => unassignedOrderFilterStatus.get(order.id) ?? false,
+        );
+        return (
+          <HereMapView
+            orders={displayedOrders}
+            unassignedOrders={allUnassignedOrders}
+            filteredUnassignedOrders={filteredUnassignedOrders}
+            onOrderAddedToDelivery={onOrderAddedToDelivery}
+            onRefreshRequested={onRefreshRequested}
+          />
+        );
+      }}
     />
   );
 }
