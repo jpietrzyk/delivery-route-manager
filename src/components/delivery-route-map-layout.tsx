@@ -162,8 +162,29 @@ export default function DeliveryRouteMapLayout({
     return "old";
   };
 
+  // Check if any filter groups are active
+  const hasActiveFilters = React.useMemo(() => {
+    return (
+      Object.values(priorityFilters).some(Boolean) ||
+      Object.values(statusFilters).some(Boolean) ||
+      Object.values(amountFilters).some(Boolean) ||
+      Object.values(complexityFilters).some(Boolean) ||
+      Object.values(updatedAtFilters).some(Boolean)
+    );
+  }, [
+    priorityFilters,
+    statusFilters,
+    amountFilters,
+    complexityFilters,
+    updatedAtFilters,
+  ]);
+
   // Filter unassigned orders based on active filters (for UI display)
   const filteredUnassignedOrders = unassignedOrders.filter((order) => {
+    if (!hasActiveFilters) {
+      return false; // No filters active, so no orders match
+    }
+
     const priorityMatch = priorityFilters[order.priority] ?? false;
     const statusMatch = statusFilters[order.status] ?? false;
     const amountMatch =
@@ -203,6 +224,11 @@ export default function DeliveryRouteMapLayout({
   const unassignedOrderFilterStatus = React.useMemo(() => {
     const statusMap = new Map<string, boolean>();
     unassignedOrders.forEach((order) => {
+      if (!hasActiveFilters) {
+        statusMap.set(order.id, false); // No filters active, so no orders match
+        return;
+      }
+
       const priorityMatch = priorityFilters[order.priority] ?? false;
       const statusMatch = statusFilters[order.status] ?? false;
       const amountMatch =
@@ -242,6 +268,7 @@ export default function DeliveryRouteMapLayout({
     return statusMap;
   }, [
     unassignedOrders,
+    hasActiveFilters,
     priorityFilters,
     statusFilters,
     amountFilters,
