@@ -135,7 +135,7 @@ export default function DeliveryRouteMapLayout({
 
   // Load filter states from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem("orderFilters");
+    const saved = localStorage.getItem(`orderFilters_${deliveryId}`);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -148,7 +148,7 @@ export default function DeliveryRouteMapLayout({
         console.warn("Failed to parse saved filters:", error);
       }
     }
-  }, []);
+  }, [deliveryId]);
 
   // Save filter states to localStorage when they change
   useEffect(() => {
@@ -159,8 +159,9 @@ export default function DeliveryRouteMapLayout({
       complexityFilters,
       updatedAtFilters,
     };
-    localStorage.setItem("orderFilters", JSON.stringify(filters));
+    localStorage.setItem(`orderFilters_${deliveryId}`, JSON.stringify(filters));
   }, [
+    deliveryId,
     priorityFilters,
     statusFilters,
     amountFilters,
