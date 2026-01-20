@@ -1,5 +1,5 @@
 import React, { type ReactNode, useEffect, useState } from "react";
-import { useMapFilters } from "@/contexts/MapFiltersContext";
+import { useMapFilters } from "@/hooks/useMapFilters";
 import { useParams, useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
