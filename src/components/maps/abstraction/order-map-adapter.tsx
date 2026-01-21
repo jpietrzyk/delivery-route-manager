@@ -145,7 +145,8 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
 
       // Get custom icon URL based on filters
       const { icon } = getMarkerStyle(markerData, filters);
-      const customIconUrl = (icon as any).options?.iconUrl;
+      const customIconUrl = (icon as { options: { iconUrl?: string } }).options
+        ?.iconUrl;
 
       return {
         ...markerData,

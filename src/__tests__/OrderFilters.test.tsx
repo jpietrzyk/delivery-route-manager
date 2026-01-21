@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { OrderFilters } from "@/components/delivery-route/order-filters";
 
@@ -15,10 +15,10 @@ describe("OrderFilters", () => {
 
     expect(screen.getByLabelText("Filter by Low priority")).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Filter by Medium priority")
+      screen.getByLabelText("Filter by Medium priority"),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Filter by High priority")
+      screen.getByLabelText("Filter by High priority"),
     ).toBeInTheDocument();
   });
 
@@ -207,28 +207,28 @@ describe("OrderFilters", () => {
       <OrderFilters
         priorityFilters={{ low: false, medium: true, high: true }}
         onPriorityChange={jest.fn()}
-      />
+      />,
     );
 
     expect(screen.getByLabelText("Filter by Low priority")).toHaveAttribute(
       "data-state",
-      "off"
+      "off",
     );
 
     rerender(
       <OrderFilters
         priorityFilters={{ low: true, medium: false, high: true }}
         onPriorityChange={jest.fn()}
-      />
+      />,
     );
 
     expect(screen.getByLabelText("Filter by Low priority")).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(screen.getByLabelText("Filter by Medium priority")).toHaveAttribute(
       "data-state",
-      "off"
+      "off",
     );
   });
 
@@ -293,43 +293,43 @@ describe("OrderFilters", () => {
 describe("OrderFilters - Status Filter", () => {
   it("should render all status filter toggles", () => {
     render(
-      <OrderFilters onPriorityChange={jest.fn()} onStatusChange={jest.fn()} />
+      <OrderFilters onPriorityChange={jest.fn()} onStatusChange={jest.fn()} />,
     );
 
     expect(screen.getByText("Status")).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Filter by Pending status")
+      screen.getByLabelText("Filter by Pending status"),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Filter by In Progress status")
+      screen.getByLabelText("Filter by In Progress status"),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Filter by Completed status")
+      screen.getByLabelText("Filter by Completed status"),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Filter by Cancelled status")
+      screen.getByLabelText("Filter by Cancelled status"),
     ).toBeInTheDocument();
   });
 
   it("should have all status filters enabled by default", () => {
     render(
-      <OrderFilters onPriorityChange={jest.fn()} onStatusChange={jest.fn()} />
+      <OrderFilters onPriorityChange={jest.fn()} onStatusChange={jest.fn()} />,
     );
 
     expect(screen.getByLabelText("Filter by Pending status")).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(
-      screen.getByLabelText("Filter by In Progress status")
+      screen.getByLabelText("Filter by In Progress status"),
     ).toHaveAttribute("data-state", "on");
     expect(screen.getByLabelText("Filter by Completed status")).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(screen.getByLabelText("Filter by Cancelled status")).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
   });
 
@@ -339,7 +339,7 @@ describe("OrderFilters - Status Filter", () => {
       <OrderFilters
         onPriorityChange={jest.fn()}
         onStatusChange={mockOnStatusChange}
-      />
+      />,
     );
 
     const pendingToggle = screen.getByLabelText("Filter by Pending status");
@@ -357,33 +357,33 @@ describe("OrderFilters - Status Filter", () => {
 describe("OrderFilters - Amount Filter", () => {
   it("should render all amount filter toggles", () => {
     render(
-      <OrderFilters onPriorityChange={jest.fn()} onAmountChange={jest.fn()} />
+      <OrderFilters onPriorityChange={jest.fn()} onAmountChange={jest.fn()} />,
     );
 
     expect(screen.getByText(/amount|kwota/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Filter by Low amount/)).toBeInTheDocument();
     expect(
-      screen.getByLabelText(/Filter by Medium amount/)
+      screen.getByLabelText(/Filter by Medium amount/),
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/Filter by High amount/)).toBeInTheDocument();
   });
 
   it("should have all amount filters enabled by default", () => {
     render(
-      <OrderFilters onPriorityChange={jest.fn()} onAmountChange={jest.fn()} />
+      <OrderFilters onPriorityChange={jest.fn()} onAmountChange={jest.fn()} />,
     );
 
     expect(screen.getByLabelText(/Filter by Low amount/)).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(screen.getByLabelText(/Filter by Medium amount/)).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(screen.getByLabelText(/Filter by High amount/)).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
   });
 
@@ -393,7 +393,7 @@ describe("OrderFilters - Amount Filter", () => {
       <OrderFilters
         onPriorityChange={jest.fn()}
         onAmountChange={mockOnAmountChange}
-      />
+      />,
     );
 
     const lowToggle = screen.getByLabelText(/Filter by Low amount/);
@@ -413,15 +413,15 @@ describe("OrderFilters - Complexity Filter", () => {
       <OrderFilters
         onPriorityChange={jest.fn()}
         onComplexityChange={jest.fn()}
-      />
+      />,
     );
 
     expect(screen.getByText("Złożoność")).toBeInTheDocument();
     expect(
-      screen.getByLabelText(/Filter by Simple complexity/)
+      screen.getByLabelText(/Filter by Simple complexity/),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(/Filter by Moderate complexity/)
+      screen.getByLabelText(/Filter by Moderate complexity/),
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/Filter by Complex/)).toBeInTheDocument();
   });
@@ -431,18 +431,18 @@ describe("OrderFilters - Complexity Filter", () => {
       <OrderFilters
         onPriorityChange={jest.fn()}
         onComplexityChange={jest.fn()}
-      />
+      />,
     );
 
     expect(
-      screen.getByLabelText(/Filter by Simple complexity/)
+      screen.getByLabelText(/Filter by Simple complexity/),
     ).toHaveAttribute("data-state", "on");
     expect(
-      screen.getByLabelText(/Filter by Moderate complexity/)
+      screen.getByLabelText(/Filter by Moderate complexity/),
     ).toHaveAttribute("data-state", "on");
     expect(screen.getByLabelText(/Filter by Complex/)).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
   });
 
@@ -452,7 +452,7 @@ describe("OrderFilters - Complexity Filter", () => {
       <OrderFilters
         onPriorityChange={jest.fn()}
         onComplexityChange={mockOnComplexityChange}
-      />
+      />,
     );
 
     const simpleToggle = screen.getByLabelText(/Filter by Simple complexity/);
@@ -472,15 +472,15 @@ describe("OrderFilters - UpdatedAt Filter", () => {
       <OrderFilters
         onPriorityChange={jest.fn()}
         onUpdatedAtChange={jest.fn()}
-      />
+      />,
     );
 
     expect(screen.getByText("Data aktualizacji")).toBeInTheDocument();
     expect(
-      screen.getByLabelText(/Filter by Recent updates/)
+      screen.getByLabelText(/Filter by Recent updates/),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(/Filter by Moderate updates/)
+      screen.getByLabelText(/Filter by Moderate updates/),
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/Filter by Old updates/)).toBeInTheDocument();
   });
@@ -490,20 +490,20 @@ describe("OrderFilters - UpdatedAt Filter", () => {
       <OrderFilters
         onPriorityChange={jest.fn()}
         onUpdatedAtChange={jest.fn()}
-      />
+      />,
     );
 
     expect(screen.getByLabelText(/Filter by Recent updates/)).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(screen.getByLabelText(/Filter by Moderate updates/)).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(screen.getByLabelText(/Filter by Old updates/)).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
   });
 
@@ -513,7 +513,7 @@ describe("OrderFilters - UpdatedAt Filter", () => {
       <OrderFilters
         onPriorityChange={jest.fn()}
         onUpdatedAtChange={mockOnUpdatedAtChange}
-      />
+      />,
     );
 
     const recentToggle = screen.getByLabelText(/Filter by Recent updates/);
@@ -542,7 +542,7 @@ describe("OrderFilters - All Filters Together", () => {
         onAmountChange={mockOnAmountChange}
         onComplexityChange={mockOnComplexityChange}
         onUpdatedAtChange={mockOnUpdatedAtChange}
-      />
+      />,
     );
 
     // Click one filter from each category
@@ -568,7 +568,7 @@ describe("OrderFilters - All Filters Together", () => {
         onAmountChange={jest.fn()}
         onComplexityChange={jest.fn()}
         onUpdatedAtChange={jest.fn()}
-      />
+      />,
     );
 
     expect(screen.getByText("Priorytet")).toBeInTheDocument();
@@ -587,10 +587,10 @@ describe("OrderFilters - Select All Toggle", () => {
     expect(screen.getByLabelText("Select all statuses")).toBeInTheDocument();
     expect(screen.getByLabelText("Select all amounts")).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Select all complexities")
+      screen.getByLabelText("Select all complexities"),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Select all updated periods")
+      screen.getByLabelText("Select all updated periods"),
     ).toBeInTheDocument();
   });
 
@@ -599,23 +599,23 @@ describe("OrderFilters - Select All Toggle", () => {
 
     expect(screen.getByLabelText("Select all priorities")).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(screen.getByLabelText("Select all statuses")).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(screen.getByLabelText("Select all amounts")).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(screen.getByLabelText("Select all complexities")).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
     expect(screen.getByLabelText("Select all updated periods")).toHaveAttribute(
       "data-state",
-      "on"
+      "on",
     );
   });
 
@@ -709,21 +709,25 @@ describe("OrderFilters - Select All Toggle", () => {
       <OrderFilters
         onPriorityChange={mockOnPriorityChange}
         onStatusChange={mockOnStatusChange}
-      />
+      />,
     );
 
     // Disable a priority and a status
-    fireEvent.click(screen.getByLabelText("Filter by Low priority"));
-    fireEvent.click(screen.getByLabelText("Filter by Pending status"));
+    act(() => {
+      fireEvent.click(screen.getByLabelText("Filter by Low priority"));
+    });
+    act(() => {
+      fireEvent.click(screen.getByLabelText("Filter by Pending status"));
+    });
 
     // Priority Select All should be unchecked, Status Select All should be unchecked
     expect(screen.getByLabelText("Select all priorities")).toHaveAttribute(
       "data-state",
-      "off"
+      "off",
     );
     expect(screen.getByLabelText("Select all statuses")).toHaveAttribute(
       "data-state",
-      "off"
+      "off",
     );
 
     // Clear mocks
@@ -731,7 +735,9 @@ describe("OrderFilters - Select All Toggle", () => {
     mockOnStatusChange.mockClear();
 
     // Click Select All for priorities only
-    fireEvent.click(screen.getByLabelText("Select all priorities"));
+    act(() => {
+      fireEvent.click(screen.getByLabelText("Select all priorities"));
+    });
 
     // Only priority callback should be called
     expect(mockOnPriorityChange).toHaveBeenCalledWith({

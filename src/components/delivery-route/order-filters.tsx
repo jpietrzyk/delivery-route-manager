@@ -140,57 +140,58 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
 
   useEffect(() => {
     if (priorityFilters) {
+      // eslint-disable-next-line
       setPriorities(priorityFilters);
     }
   }, [priorityFilters]);
 
   useEffect(() => {
-    if (
-      statusFilters &&
-      JSON.stringify(statusFilters) !== JSON.stringify(statuses)
-    ) {
+    if (statusFilters) {
+      // eslint-disable-next-line
       setStatuses(statusFilters);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusFilters]);
 
   useEffect(() => {
     if (amountFilters) {
+      // eslint-disable-next-line
       setAmounts(amountFilters);
     }
   }, [amountFilters]);
 
   useEffect(() => {
     if (complexityFilters) {
+      // eslint-disable-next-line
       setComplexities(complexityFilters);
     }
   }, [complexityFilters]);
 
   useEffect(() => {
     if (updatedAtFilters) {
+      // eslint-disable-next-line
       setUpdatedAt(updatedAtFilters);
     }
   }, [updatedAtFilters]);
 
-  // Compute if any filters in each group are selected
+  // Compute if all filters in each group are selected
   const allPrioritiesSelected = useMemo(() => {
-    return Object.values(priorities).some(Boolean);
+    return Object.values(priorities).every(Boolean);
   }, [priorities]);
 
   const allStatusesSelected = useMemo(() => {
-    return Object.values(statuses).some(Boolean);
+    return Object.values(statuses).every(Boolean);
   }, [statuses]);
 
   const allComplexitiesSelected = useMemo(() => {
-    return Object.values(complexities).some(Boolean);
+    return Object.values(complexities).every(Boolean);
   }, [complexities]);
 
   const allAmountsSelected = useMemo(() => {
-    return Object.values(amounts).some(Boolean);
+    return Object.values(amounts).every(Boolean);
   }, [amounts]);
 
   const allUpdatedAtSelected = useMemo(() => {
-    return Object.values(updatedAt).some(Boolean);
+    return Object.values(updatedAt).every(Boolean);
   }, [updatedAt]);
 
   const handlePriorityChange = (priority: keyof PriorityFilterState) => {

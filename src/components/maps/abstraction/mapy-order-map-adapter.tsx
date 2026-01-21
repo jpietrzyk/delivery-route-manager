@@ -3,6 +3,7 @@
  * Extends OrderMapAdapter functionality with Mapy.cz routing API integration
  */
 import React, { useEffect, useState } from "react";
+import L from "leaflet";
 import type { Order } from "@/types/order";
 import type { MapMarkerData, MapRouteSegmentData, MapBounds } from "./map-data";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
@@ -182,7 +183,8 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
 
       // Get custom icon URL based on filters
       const { icon } = getMarkerStyle(markerData, filters);
-      const customIconUrl = (icon as any).options?.iconUrl;
+      const customIconUrl =
+        icon instanceof L.Icon ? icon.options.iconUrl : undefined;
 
       return {
         ...markerData,
