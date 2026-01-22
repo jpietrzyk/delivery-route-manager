@@ -3,7 +3,6 @@ import type {
   StatusFilterState,
   AmountFilterState,
   ComplexityFilterState,
-  UpdatedAtFilterState,
 } from "@/components/delivery-route/order-filters";
 
 import React, { createContext } from "react";
@@ -13,7 +12,6 @@ export type MapFiltersState = {
   statusFilters: StatusFilterState;
   amountFilters: AmountFilterState;
   complexityFilters: ComplexityFilterState;
-  updatedAtFilters: UpdatedAtFilterState;
 };
 
 export const defaultFilters: MapFiltersState = {
@@ -26,7 +24,6 @@ export const defaultFilters: MapFiltersState = {
   },
   amountFilters: { low: false, medium: false, high: false },
   complexityFilters: { simple: false, moderate: false, complex: false },
-  updatedAtFilters: { recent: false, moderate: false, old: false },
 };
 
 export interface MapFiltersContextType {

@@ -36,42 +36,56 @@ export function createNumberedIcon(iconUrl: string, badgeNumber?: number) {
 
 export function getMarkerStyle(marker: MapMarkerData, filters?: MapFiltersState) {
   // Determine icon URL
-  let iconUrl = ICONS.default;
+  let iconUrl = ICONS.pool;
+
+  // Color mapping for filter values (should match filter toggle button colors)
+  const PRIORITY_COLORS = {
+    low: ICONS.green, // green-50
+    medium: ICONS.orange, // orange/yellow-50
+    high: ICONS.highlight, // red-50
+  };
+  const STATUS_COLORS = {
+    pending: ICONS.current, // blue-50
+    "in-progress": ICONS.violet, // purple-50
+    completed: ICONS.green, // emerald-50
+    cancelled: ICONS.pool, // gray-50
+  };
+  const AMOUNT_COLORS = {
+    low: ICONS.current, // indigo-50
+    medium: ICONS.violet, // purple-50
+    high: ICONS.highlight, // pink-50 (use red for now)
+  };
+  const COMPLEXITY_COLORS = {
+    simple: ICONS.green, // sky-50
+    moderate: ICONS.previous, // amber-50 (yellow)
+    complex: ICONS.highlight, // red-50
+  };
 
   // Special case: outfiltered markers always gray
   if (marker.type === "outfiltered") {
     iconUrl = ICONS.pool;
   } else if (marker.type === "pool" || marker.type === "pool-high-value") {
     if (filters) {
-      // Priority filters (highest priority)
+      // Priority filters
       if (filters.priorityFilters[marker.priority as keyof typeof filters.priorityFilters]) {
-        if (marker.priority === "low") iconUrl = ICONS.green;
-        else if (marker.priority === "medium") iconUrl = ICONS.orange;
-        else if (marker.priority === "high") iconUrl = ICONS.highlight; // red
+        iconUrl = PRIORITY_COLORS[marker.priority as keyof typeof PRIORITY_COLORS] || ICONS.default;
       }
       // Status filters
       else if (filters.statusFilters[marker.status as keyof typeof filters.statusFilters]) {
-        if (marker.status === "pending") iconUrl = ICONS.current; // blue
-        else if (marker.status === "in-progress") iconUrl = ICONS.violet;
-        else if (marker.status === "completed") iconUrl = ICONS.green;
-        else if (marker.status === "cancelled") iconUrl = ICONS.pool; // grey
+        iconUrl = STATUS_COLORS[marker.status as keyof typeof STATUS_COLORS] || ICONS.default;
       }
       // Amount filters
       else if (marker.totalAmount !== undefined) {
         const amountTier = marker.totalAmount <= 300000 ? "low" : marker.totalAmount <= 1000000 ? "medium" : "high";
         if (filters.amountFilters[amountTier as keyof typeof filters.amountFilters]) {
-          if (amountTier === "low") iconUrl = ICONS.current; // blue
-          else if (amountTier === "medium") iconUrl = ICONS.orange;
-          else if (amountTier === "high") iconUrl = ICONS.highlight; // red
+          iconUrl = AMOUNT_COLORS[amountTier as keyof typeof AMOUNT_COLORS] || ICONS.default;
         }
       }
       // Complexity filters
       else if (marker.product?.complexity !== undefined) {
         const complexityTier = marker.product.complexity === 1 ? "simple" : marker.product.complexity === 2 ? "moderate" : "complex";
         if (filters.complexityFilters[complexityTier as keyof typeof filters.complexityFilters]) {
-          if (complexityTier === "simple") iconUrl = ICONS.green;
-          else if (complexityTier === "moderate") iconUrl = ICONS.previous; // yellow
-          else if (complexityTier === "complex") iconUrl = ICONS.highlight; // red
+          iconUrl = COMPLEXITY_COLORS[complexityTier as keyof typeof COMPLEXITY_COLORS] || ICONS.default;
         }
       }
       // If no specific filter match, use default pool

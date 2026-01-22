@@ -44,26 +44,6 @@ export type AmountFilterState = {
   [key: string]: boolean;
 };
 
-export type UpdatedAtFilterState = {
-  recent: boolean; // Less than 1 week
-  moderate: boolean; // 1 week - 1 month
-  old: boolean; // More than 1 month
-  [key: string]: boolean;
-};
-
-interface OrderFiltersProps {
-  priorityFilters?: PriorityFilterState;
-  statusFilters?: StatusFilterState;
-  amountFilters?: AmountFilterState;
-  complexityFilters?: ComplexityFilterState;
-  updatedAtFilters?: UpdatedAtFilterState;
-  onPriorityChange: (filters: PriorityFilterState) => void;
-  onStatusChange?: (filters: StatusFilterState) => void;
-  onAmountChange?: (filters: AmountFilterState) => void;
-  onComplexityChange?: (filters: ComplexityFilterState) => void;
-  onUpdatedAtChange?: (filters: UpdatedAtFilterState) => void;
-}
-
 const PRIORITY_DEFAULT: PriorityFilterState = {
   low: true,
   medium: true,
@@ -112,7 +92,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
   amountFilters,
   complexityFilters,
   updatedAtFilters,
-  onPriorityChange,
   onStatusChange,
   onAmountChange,
   onComplexityChange,
@@ -132,10 +111,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
 
   const [amounts, setAmounts] = useState<AmountFilterState>(
     amountFilters ?? AMOUNT_DEFAULT,
-  );
-
-  const [updatedAt, setUpdatedAt] = useState<UpdatedAtFilterState>(
-    updatedAtFilters ?? cloneUpdatedAtDefaults(),
   );
 
   useEffect(() => {
@@ -166,13 +141,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     }
   }, [complexityFilters]);
 
-  useEffect(() => {
-    if (updatedAtFilters) {
-      // eslint-disable-next-line
-      setUpdatedAt(updatedAtFilters);
-    }
-  }, [updatedAtFilters]);
-
   // Compute if all filters in each group are selected
   const allPrioritiesSelected = useMemo(() => {
     return Object.values(priorities).every(Boolean);
@@ -189,10 +157,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
   const allAmountsSelected = useMemo(() => {
     return Object.values(amounts).every(Boolean);
   }, [amounts]);
-
-  const allUpdatedAtSelected = useMemo(() => {
-    return Object.values(updatedAt).every(Boolean);
-  }, [updatedAt]);
 
   const handlePriorityChange = (priority: keyof PriorityFilterState) => {
     const newFilters = { ...priorities, [priority]: !priorities[priority] };
@@ -219,12 +183,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     const newFilters = { ...amounts, [amount]: !amounts[amount] };
     setAmounts(newFilters);
     onAmountChange?.(newFilters);
-  };
-
-  const handleUpdatedAtChange = (period: keyof UpdatedAtFilterState) => {
-    const newFilters = { ...updatedAt, [period]: !updatedAt[period] };
-    setUpdatedAt(newFilters);
-    onUpdatedAtChange?.(newFilters);
   };
 
   const handleSelectAllPriorities = () => {
@@ -270,17 +228,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     };
     setAmounts(newFilters);
     onAmountChange?.(newFilters);
-  };
-
-  const handleSelectAllUpdatedAt = () => {
-    const nextState = !allUpdatedAtSelected;
-    const newFilters: UpdatedAtFilterState = {
-      recent: nextState,
-      moderate: nextState,
-      old: nextState,
-    };
-    setUpdatedAt(newFilters);
-    onUpdatedAtChange?.(newFilters);
   };
 
   return (
@@ -524,61 +471,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                   title={pl.complexityComplex}
                 >
                   <Wrench className="h-4 w-4" />
-                </Toggle>
-              </div>
-            </div>
-            {/* UPDATED AT GROUP */}
-            <div className="space-y-1">
-              <div className="flex items-center gap-1 mb-1">
-                <Toggle
-                  pressed={allUpdatedAtSelected}
-                  onPressedChange={handleSelectAllUpdatedAt}
-                  size="sm"
-                  aria-label="Select all updated periods"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-green-50 data-[state=on]:text-green-700 data-[state=on]:border-green-300 h-6 w-6 p-0"
-                >
-                  {allUpdatedAtSelected ? (
-                    <Check className="h-3 w-3" />
-                  ) : (
-                    <Square className="h-3 w-3" />
-                  )}
-                </Toggle>
-                <span className="text-xs font-medium text-foreground/70">
-                  {pl.updatedAt}
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <Toggle
-                  pressed={updatedAt.recent}
-                  onPressedChange={() => handleUpdatedAtChange("recent")}
-                  size="sm"
-                  aria-label="Filter by Recent updates (less than 1 week)"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-green-50 data-[state=on]:text-green-700 data-[state=on]:border-green-300 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title={pl.updatedRecent}
-                >
-                  <Calendar className="h-4 w-4" />
-                </Toggle>
-
-                <Toggle
-                  pressed={updatedAt.moderate}
-                  onPressedChange={() => handleUpdatedAtChange("moderate")}
-                  size="sm"
-                  aria-label="Filter by Moderate updates (1 week - 1 month)"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-yellow-50 data-[state=on]:text-yellow-700 data-[state=on]:border-yellow-300 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title={pl.updatedModerate}
-                >
-                  <Calendar className="h-4 w-4" />
-                </Toggle>
-
-                <Toggle
-                  pressed={updatedAt.old}
-                  onPressedChange={() => handleUpdatedAtChange("old")}
-                  size="sm"
-                  aria-label="Filter by Old updates (more than 1 month)"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-gray-50 data-[state=on]:text-gray-700 data-[state=on]:border-gray-300 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title={pl.updatedOld}
-                >
-                  <Calendar className="h-4 w-4" />
                 </Toggle>
               </div>
             </div>
