@@ -116,19 +116,9 @@ export function getMarkerStyle(marker: MapMarkerData, filters?: MapFiltersState)
     } else {
       iconUrl = ICONS.pool;
     }
-  } else if (marker.type === "waypoint") {
-    iconUrl = ICONS.waypoint;
   } else {
     // For delivery markers, use color mapping based on marker properties
-    if (marker.isHighlighted) {
-      iconUrl = ICONS.highlight;
-    } else if (marker.isDisabled) {
-      iconUrl = ICONS.pool;
-    } else if (marker.isCurrentOrder) {
-      iconUrl = ICONS.current;
-    } else if (marker.isPreviousOrder) {
-      iconUrl = ICONS.previous;
-    } else if (marker.product?.complexity !== undefined) {
+    if (marker.product?.complexity !== undefined) {
       // Use complexity color if available
       const complexityTier = marker.product.complexity === 1 ? "simple" : marker.product.complexity === 2 ? "moderate" : "complex";
       iconUrl = COMPLEXITY_COLORS[complexityTier as keyof typeof COMPLEXITY_COLORS] || ICONS.default;
