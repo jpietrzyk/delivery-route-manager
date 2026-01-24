@@ -59,7 +59,7 @@ export const handler: Handler = async (_event: HandlerEvent, _context: HandlerCo
     // Fallback: Try importing orders as a module (works in production)
     if (!orders) {
       try {
-        const ordersModule = await import('../../public/orders.json', { assert: { type: 'json' } });
+        const ordersModule = await import('../../public/orders.json', { with: { type: 'json' } });
         orders = ordersModule.default;
         loadedFrom = 'imported as module';
         console.log('Successfully loaded orders as imported module');
