@@ -7,4 +7,4 @@ const updated = orders.map((order, index) => ({
 fs.writeFileSync('src/assets/orders.json', JSON.stringify(updated, null, 2));
 console.log('Updated', updated.length, 'orders');
 console.log('Assigned to delivery:', updated.filter(o => o.deliveryId).length);
-console.log('In pool (active, no delivery):', updated.filter(o => !o.deliveryId && o.active).length);
+console.log('Unassigned (active, no delivery):', updated.filter(o => !o.deliveryId && o.active).length);

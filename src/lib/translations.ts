@@ -24,8 +24,10 @@ export const pl = {
   waiting: "oczekuje",
 
   // Map popup
-  poolOrder: "📦 Zamówienie z puli (nieprzypisane)",
-  deliveryOrder: "🚛 Zamówienie dostawy (przypisane)",
+  poolOrder: "📦 Zamówienie z puli (nieprzypisane)", // legacy
+  deliveryOrder: "🚛 Zamówienie dostawy (przypisane)", // legacy
+  unassignedOrder: "📦 Zamówienie nieprzypisane",
+  assignedOrder: "🚛 Zamówienie przypisane",
   customer: "Klient",
   status: "Status",
   priorityLabel: "Priorytet",

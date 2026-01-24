@@ -8,7 +8,7 @@ import { pl } from "@/lib/translations";
 
 interface OrderPopupContentProps {
   order: Order;
-  isPool: boolean;
+  isUnassigned: boolean;
   onToggle: () => void;
   toggleText: string;
 }
@@ -30,12 +30,12 @@ const getStatusColor = (status: string) => {
 
 export const OrderPopupContent: React.FC<OrderPopupContentProps> = ({
   order,
-  isPool,
+  isUnassigned,
   onToggle,
   toggleText,
 }) => {
   const statusColors = getStatusColor(order.status);
-  const buttonColor = isPool ? "#10b981" : "#ef4444";
+  const buttonColor = isUnassigned ? "#10b981" : "#ef4444";
 
   return (
     <div className="p-4 max-w-70 font-sans bg-white/90 rounded-lg shadow-lg border border-gray-200">
@@ -58,18 +58,18 @@ export const OrderPopupContent: React.FC<OrderPopupContentProps> = ({
         {order.product?.name || pl.unknownOrder}
       </div>
 
-      {/* Pool/Delivery Badge */}
+      {/* Unassigned/Assigned Badge */}
       <div
         className="p-2 rounded-lg mb-3 border-l-4"
         style={{
-          backgroundColor: isPool
+          backgroundColor: isUnassigned
             ? "rgba(243, 244, 246, 0.8)"
             : "rgba(219, 234, 254, 0.6)",
-          borderLeftColor: isPool ? "#9ca3af" : "#3b82f6",
+          borderLeftColor: isUnassigned ? "#9ca3af" : "#3b82f6",
         }}
       >
         <div className="text-xs text-gray-500 uppercase font-semibold tracking-wide">
-          {isPool ? pl.poolOrder : pl.deliveryOrder}
+          {isUnassigned ? pl.unassignedOrder : pl.assignedOrder}
         </div>
       </div>
 

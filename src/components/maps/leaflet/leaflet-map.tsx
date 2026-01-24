@@ -38,7 +38,7 @@ import { pl } from "@/lib/translations";
 import type { Order } from "@/types/order";
 
 // DEPRECATED: Logic should be moved to provider abstraction layer.
-// Helper function to get status colors (consistent with pool markers)
+// Helper function to get status colors (consistent with unassigned markers)
 const getStatusColor = (status: string) => {
   switch (status) {
     case "pending":
@@ -54,10 +54,10 @@ const getStatusColor = (status: string) => {
   }
 };
 
-// Create consistent popup content for both pool and delivery orders
+// Create consistent popup content for both unassigned and delivery orders
 const createOrderPopupContent = (
   order: Order,
-  isPool: boolean,
+  isUnassigned: boolean,
   onToggle: () => void,
   toggleText: string,
   toggleColor: string,
@@ -89,10 +89,10 @@ const createOrderPopupContent = (
       <div
         style={{
           padding: "8px 12px",
-          backgroundColor: isPool ? "#f3f4f6" : "#dbeafe",
+          backgroundColor: isUnassigned ? "#f3f4f6" : "#dbeafe",
           borderRadius: "8px",
           marginBottom: "12px",
-          borderLeft: "3px solid " + (isPool ? "#9ca3af" : "#3b82f6"),
+          borderLeft: "3px solid " + (isUnassigned ? "#9ca3af" : "#3b82f6"),
         }}
       >
         <div
@@ -104,9 +104,9 @@ const createOrderPopupContent = (
             letterSpacing: "0.5px",
           }}
         >
-          {isPool
-            ? "📦 Pool Order (Unassigned)"
-            : "🚛 Delivery Order (Assigned)"}
+          {isUnassigned
+            ? "📦 Unassigned Order"
+            : "🚛 Assigned Order"}
         </div>
       </div>
       <div style={{ fontSize: "13px", color: "#4b5563", marginBottom: "8px" }}>
@@ -456,12 +456,12 @@ const LeafletMap = ({
           );
         })}
       {[...orders, ...unassignedOrders].map((order) => {
-        const isPool = !deliveryOrderIds.has(order.id);
+        const isUnassigned = !deliveryOrderIds.has(order.id);
         const waypointNumber = waypointPositionMap.get(order.id);
         let iconUrl =
           "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png";
         let icon = defaultIcon;
-        if (isPool) {
+        if (isUnassigned) {
           iconUrl =
             "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png";
           icon = poolIcon;
@@ -498,10 +498,10 @@ const LeafletMap = ({
             <Popup>
               {createOrderPopupContent(
                 order,
-                isPool,
+                isUnassigned,
                 async () => {
                   try {
-                    if (isPool) {
+                    if (isUnassigned) {
                       if (!currentDelivery) {
                         alert("Wybierz najpierw trasę dostawy");
                         return;
@@ -524,20 +524,20 @@ const LeafletMap = ({
                     }
                   } catch (error) {
                     console.error(
-                      isPool
+                      isUnassigned
                         ? "Failed to add order to delivery:"
                         : "Failed to remove order from delivery:",
                       error,
                     );
                     alert(
-                      isPool
+                      isUnassigned
                         ? "Failed to add order to delivery"
                         : "Failed to remove order from delivery",
                     );
                   }
                 },
-                isPool ? pl.addToDelivery : pl.removeFromDelivery,
-                isPool ? "#3b82f6" : "#dc2626",
+                isUnassigned ? pl.addToDelivery : pl.removeFromDelivery,
+                isUnassigned ? "#3b82f6" : "#dc2626",
               )}
             </Popup>
           </Marker>
