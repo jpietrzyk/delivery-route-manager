@@ -113,8 +113,8 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
         );
       })}
 
-      {/* Render markers - first pool markers, then delivery markers so delivery markers appear on top */}
-      {/* Render pool markers (all, with opacity based on filter match) */}
+      {/* Render unassigned markers - first markers, then delivery markers so delivery markers appear on top */}
+      {/* Render unassigned markers (all, with opacity based on filter match) */}
       {markersWithIndex
         .filter((marker) => marker.type !== "delivery")
         .map((marker) => {
