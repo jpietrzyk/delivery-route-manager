@@ -20,10 +20,10 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   const mapInstanceRef = React.useRef<any>(null);
   const markersRef = React.useRef<any[]>([]);
   const markerIndexRef = React.useRef<
-    Map<string, { marker: any; type: "delivery" | "pool" }>
+    Map<string, { marker: any; type: "delivery" | "unassigned" }>
   >(new Map());
   const defaultIconRef = React.useRef<any | null>(null);
-  const poolIconRef = React.useRef<any | null>(null);
+  const unassignedIconRef = React.useRef<any | null>(null);
   const highlightIconRef = React.useRef<any | null>(null);
   const polylineRef = React.useRef<any | null>(null);
 
@@ -61,7 +61,7 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
             <circle cx="13" cy="14" r="6" fill="#ffffff"/>
           </g>
         </svg>`;
-      const poolSvg = `<?xml version="1.0" encoding="UTF-8"?>
+      const unassignedSvg = `<?xml version="1.0" encoding="UTF-8"?>
         <svg width="26" height="40" viewBox="0 0 26 40" xmlns="http://www.w3.org/2000/svg">
           <g fill="none" fill-rule="evenodd">
             <path d="M13 40c0 0 13-18.207 13-26C26 6.268 20.18 0 13 0 5.82 0 0 6.268 0 14c0 7.793 13 26 13 26z" fill="#6b7280"/>
@@ -76,13 +76,13 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
           </g>
         </svg>`;
       defaultIconRef.current = new H.map.Icon(
-        `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(defaultSvg)}`
+        `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(defaultSvg)}`,
       );
-      poolIconRef.current = new H.map.Icon(
-        `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(poolSvg)}`
+      unassignedIconRef.current = new H.map.Icon(
+        `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(unassignedSvg)}`,
       );
       highlightIconRef.current = new H.map.Icon(
-        `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(highlightSvg)}`
+        `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(highlightSvg)}`,
       );
 
       const handleResize = () => map.getViewPort().resize();
@@ -118,23 +118,25 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     if (!H) return;
 
     const group = new H.map.Group();
-    const addOrderMarker = (order: Order, type: "delivery" | "pool") => {
+    const addOrderMarker = (order: Order, type: "delivery" | "unassigned") => {
       const isHighlighted =
         highlightedOrderId && order.id === highlightedOrderId;
       const baseIcon =
-        type === "pool" ? poolIconRef.current : defaultIconRef.current;
+        type === "unassigned"
+          ? unassignedIconRef.current
+          : defaultIconRef.current;
       const iconToUse = isHighlighted ? highlightIconRef.current : baseIcon;
       const marker = new H.map.Marker(
         { lat: order.location.lat, lng: order.location.lng },
-        iconToUse ? { icon: iconToUse } : undefined
+        iconToUse ? { icon: iconToUse } : undefined,
       );
       (marker as any).data = { id: order.id };
       if (onMarkerHover) {
         marker.addEventListener("pointerenter", () =>
-          onMarkerHover(order.id, true)
+          onMarkerHover(order.id, true),
         );
         marker.addEventListener("pointerleave", () =>
-          onMarkerHover(order.id, false)
+          onMarkerHover(order.id, false),
         );
       }
       group.addObject(marker);
@@ -143,7 +145,7 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     };
 
     orders.forEach((o) => addOrderMarker(o, "delivery"));
-    unassignedOrders.forEach((o) => addOrderMarker(o, "pool"));
+    unassignedOrders.forEach((o) => addOrderMarker(o, "unassigned"));
 
     map.addObject(group);
 
@@ -165,12 +167,12 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       lineString.pushLatLngAlt(
         orders[0].location.lat,
         orders[0].location.lng,
-        0
+        0,
       );
       lineString.pushLatLngAlt(
         orders[1].location.lat,
         orders[1].location.lng,
-        0
+        0,
       );
       const polyline = new H.map.Polyline(lineString, {
         style: { lineWidth: 4, strokeColor: "#2563eb" },
@@ -190,7 +192,9 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       const isHighlighted =
         highlightedOrderId && orderId === highlightedOrderId;
       const baseIcon =
-        type === "pool" ? poolIconRef.current : defaultIconRef.current;
+        type === "unassigned"
+          ? unassignedIconRef.current
+          : defaultIconRef.current;
       const icon = isHighlighted ? highlightIconRef.current : baseIcon;
       if (icon) {
         marker.setIcon(icon);

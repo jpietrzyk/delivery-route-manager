@@ -56,7 +56,6 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     setRouteSegments([]);
   }, [setRouteSegments]);
 
-  
   // Transform orders to markers
   const markers: MapMarkerData[] = React.useMemo(() => {
     // Deduplicate on initialization: filter unassigned orders that are also in delivery orders
@@ -79,7 +78,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
       let type: MapMarkerData["type"] = "delivery";
 
       if (isUnassigned) {
-        type = "pool";
+        type = "unassigned";
       }
 
       const popupContent = (

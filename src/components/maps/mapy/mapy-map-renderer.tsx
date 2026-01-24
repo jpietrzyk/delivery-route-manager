@@ -181,17 +181,17 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
       }
     });
 
-    // Add or update markers - first pool markers, then delivery markers so delivery markers appear on top
+    // Add or update markers - first unassigned markers, then delivery markers so delivery markers appear on top
     // Separate markers by type for proper z-ordering
-    const poolMarkers = activeMarkersWithIndex.filter(
-      (m) => m.type !== "delivery",
+    const unassignedMarkers = activeMarkersWithIndex.filter(
+      (m) => m.type === "unassigned",
     );
     const deliveryMarkers = activeMarkersWithIndex.filter(
       (m) => m.type === "delivery",
     );
 
-    // Process pool markers first (rendered below)
-    poolMarkers.forEach((markerData) => {
+    // Process unassigned markers first (rendered below)
+    unassignedMarkers.forEach((markerData) => {
       const existingMarker = markerInstances.get(markerData.id);
       let icon, opacity;
       if (markerData.customIconUrl) {

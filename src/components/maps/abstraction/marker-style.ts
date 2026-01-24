@@ -6,8 +6,8 @@ import type { MapFiltersState } from "../../../contexts/MapFiltersContextTypes";
 // Marker icon URLs (should match across providers)
 const ICONS = {
     waypoint: "/markers/marker-waypoint.svg",
-  default: "/markers/pool-marker.svg",
-  pool: "/markers/pool-marker.svg",
+  default: "/markers/unassigned-marker.svg",
+  unassigned: "/markers/unassigned-marker.svg",
   shadow: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
   // Priority
   priorityLow: "/markers/marker-priority-low.svg",
@@ -48,7 +48,7 @@ export function createNumberedIcon(iconUrl: string, badgeNumber?: number) {
 
 export function getMarkerStyle(marker: MapMarkerData, filters?: MapFiltersState) {
   // Determine icon URL
-  let iconUrl = ICONS.pool;
+  let iconUrl = ICONS.unassigned;
 
   // Color mapping for filter values (should match filter toggle button colors)
   const PRIORITY_COLORS = {
@@ -75,8 +75,8 @@ export function getMarkerStyle(marker: MapMarkerData, filters?: MapFiltersState)
 
   // Special case: outfiltered markers always gray
   if (marker.type === "outfiltered") {
-    iconUrl = ICONS.pool;
-  } else if (marker.type === "pool") {
+    iconUrl = ICONS.unassigned;
+  } else if (marker.type === "unassigned") {
     if (filters) {
       // Complexity filters take precedence
       if (marker.product?.complexity !== undefined) {
@@ -94,10 +94,10 @@ export function getMarkerStyle(marker: MapMarkerData, filters?: MapFiltersState)
           if (filters.amountFilters[amountTier as keyof typeof filters.amountFilters]) {
             iconUrl = AMOUNT_COLORS[amountTier as keyof typeof AMOUNT_COLORS] || ICONS.default;
           } else {
-            iconUrl = ICONS.pool;
+            iconUrl = ICONS.unassigned;
           }
         } else {
-          iconUrl = ICONS.pool;
+          iconUrl = ICONS.unassigned;
         }
       } else if (filters.priorityFilters[marker.priority as keyof typeof filters.priorityFilters]) {
         iconUrl = PRIORITY_COLORS[marker.priority as keyof typeof PRIORITY_COLORS] || ICONS.default;
@@ -108,13 +108,13 @@ export function getMarkerStyle(marker: MapMarkerData, filters?: MapFiltersState)
         if (filters.amountFilters[amountTier as keyof typeof filters.amountFilters]) {
           iconUrl = AMOUNT_COLORS[amountTier as keyof typeof AMOUNT_COLORS] || ICONS.default;
         } else {
-          iconUrl = ICONS.pool;
+          iconUrl = ICONS.unassigned;
         }
       } else {
-        iconUrl = ICONS.pool;
+        iconUrl = ICONS.unassigned;
       }
     } else {
-      iconUrl = ICONS.pool;
+      iconUrl = ICONS.unassigned;
     }
   } else {
     // For delivery markers, use color mapping based on marker properties

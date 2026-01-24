@@ -51,7 +51,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
 
   const [calculatedRoutes, setCalculatedRoutes] = useState<RouteSegment[]>([]);
 
-    const mapyApiKey = import.meta.env.VITE_MAPY_COM_API_KEY as
+  const mapyApiKey = import.meta.env.VITE_MAPY_COM_API_KEY as
     | string
     | undefined;
 
@@ -122,13 +122,15 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
 
       // Check if this unassigned order is filtered out
       const matchesFilters =
-        isUnassigned && filteredOrderIds ? filteredOrderIds.has(order.id) : true;
+        isUnassigned && filteredOrderIds
+          ? filteredOrderIds.has(order.id)
+          : true;
       const isDisabled = !matchesFilters;
 
       // Determine marker type
-      let type: "delivery" | "pool" = "delivery";
+      let type: "delivery" | "unassigned" = "delivery";
       if (isUnassigned) {
-        type = "pool";
+        type = "unassigned";
       }
 
       const waypointIndex = waypointIndexMap.get(order.id);
@@ -152,7 +154,9 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         }
       };
 
-      const toggleText = isUnassigned ? pl.addToDelivery : pl.removeFromDelivery;
+      const toggleText = isUnassigned
+        ? pl.addToDelivery
+        : pl.removeFromDelivery;
 
       // Create marker data for styling
       const markerData: MapMarkerData = {
