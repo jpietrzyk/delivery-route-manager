@@ -124,7 +124,7 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                     <TableCell>
                       <Badge
                         className={`${getPriorityColor(
-                          order.priority
+                          order.priority,
                         )} border-0`}
                       >
                         {order.priority}
@@ -153,7 +153,7 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                         variant="outline"
                         className="bg-primary/10 hover:bg-primary/20 border-primary/30 text-primary hover:text-primary"
                         onClick={() => onAddToDelivery(order.id)}
-                        aria-label={`Add order ${order.id} to delivery`}
+                        aria-label={`Dodaj zamówienie ${order.id} do dostawy`}
                       >
                         <Plus className="h-4 w-4 mr-1" />
                         Add

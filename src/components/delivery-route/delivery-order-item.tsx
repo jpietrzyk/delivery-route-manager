@@ -92,7 +92,7 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
               <Button
                 size="icon"
                 className="shrink-0 h-6 w-6 p-1 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300"
-                aria-label={`${pl.ariaInfoAboutOrder} ${order.id}`}
+                aria-label={`Informacje o zamówieniu ${order.id}`}
               >
                 <svg
                   className="h-4 w-4"
@@ -141,7 +141,7 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
               onPointerDown={(e) => e.stopPropagation()}
               size="icon"
               className="shrink-0 h-6 w-6 p-1 border border-red-200 bg-red-50 hover:bg-red-100 hover:border-red-300 text-red-700 rounded transition-colors"
-              aria-label={`${pl.ariaRemoveOrder} ${order.id}`}
+              aria-label={`Usuń zamówienie ${order.id}`}
             >
               <Minus className="h-3 w-3" />
             </Button>
@@ -149,5 +149,5 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
         </div>
       </li>
     );
-  }
+  },
 );

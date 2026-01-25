@@ -37,7 +37,7 @@ export const UnassignedOrdersFilterGroup = ({
       <div className="flex items-center gap-1 mb-1">
         <button
           onClick={handleSelectAll}
-          aria-label={`Select all ${groupTitle}`}
+          aria-label={`Zaznacz wszystkie ${groupTitle}`}
           className={`border border-border/50 bg-background/50 hover:bg-accent/50 h-6 w-6 p-0 flex items-center justify-center ${allSelected ? "bg-green-50 text-green-700 border-green-300" : ""}`}
         >
           {allSelected ? "✓" : "□"}

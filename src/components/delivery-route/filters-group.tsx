@@ -60,7 +60,7 @@ export const FiltersGroup = ({
           pressed={allSelected}
           onPressedChange={handleSelectAll}
           size="sm"
-          aria-label={`Select all ${name}`}
+          aria-label={`Zaznacz wszystkie ${name}`}
           className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-green-50 data-[state=on]:text-green-700 data-[state=on]:border-green-300 h-6 w-6 p-0"
         >
           {allSelected ? (
@@ -83,7 +83,7 @@ export const FiltersGroup = ({
             pressed={currentFilters[option.key] ?? false}
             onPressedChange={() => handleFilterChange(option.key)}
             size="sm"
-            aria-label={`Filter by ${option.label}`}
+            aria-label={`Filtruj po ${option.label}`}
             className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
             title={option.label}
           >
