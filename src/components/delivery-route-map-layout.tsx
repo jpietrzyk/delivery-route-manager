@@ -12,12 +12,25 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { Filter } from "lucide-react";
+import {
+  Filter,
+  ChevronDown,
+  AlertCircle,
+  Zap,
+  Clock,
+  Play,
+  CheckCircle,
+  XCircle,
+  Wrench,
+} from "lucide-react";
 import { UnassignedOrderList } from "@/components/delivery-route/unassigned-order-list";
-import { OrderFilters } from "@/components/delivery-route/order-filters";
+
+import { FiltersGroup } from "@/components/delivery-route/filters-group";
 import type {
   AmountFilterState,
   ComplexityFilterState,
+  PriorityFilterState,
+  StatusFilterState,
 } from "@/components/delivery-route/order-filters";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
@@ -377,27 +390,152 @@ export default function DeliveryRouteMapLayout({
               </div>
             </div>
             <div className="border-b border-border/50 bg-background/50 backdrop-blur-xs">
-              <OrderFilters
-                priorityFilters={priorityFilters}
-                statusFilters={statusFilters}
-                amountFilters={amountFilters}
-                complexityFilters={complexityFilters}
-                onPriorityChange={(filters) =>
-                  setFilters((prev) => ({ ...prev, priorityFilters: filters }))
-                }
-                onStatusChange={(filters) =>
-                  setFilters((prev) => ({ ...prev, statusFilters: filters }))
-                }
-                onAmountChange={(filters) =>
-                  setFilters((prev) => ({ ...prev, amountFilters: filters }))
-                }
-                onComplexityChange={(filters) =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    complexityFilters: filters,
-                  }))
-                }
-              />
+              <div className="w-full px-4 py-3">
+                <div className="flex gap-3">
+                  <div className="flex items-center">
+                    <h3
+                      className="text-sm font-semibold text-foreground/70 tracking-wider whitespace-nowrap"
+                      style={{
+                        writingMode: "vertical-rl",
+                        textOrientation: "mixed",
+                      }}
+                    >
+                      FILTRY
+                    </h3>
+                  </div>
+                  <div className="flex-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
+                      <FiltersGroup
+                        name="Priorytet"
+                        filters={priorityFilters}
+                        options={[
+                          {
+                            key: "low",
+                            label: "Niski priorytet",
+                            icon: <ChevronDown />,
+                            color: "text-[#fd5c63]",
+                          },
+                          {
+                            key: "medium",
+                            label: "Średni priorytet",
+                            icon: <AlertCircle />,
+                            color: "text-[#BD3039]",
+                          },
+                          {
+                            key: "high",
+                            label: "Wysoki priorytet",
+                            icon: <Zap />,
+                            color: "text-[#C6011F]",
+                          },
+                        ]}
+                        onChange={(filters) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            priorityFilters: filters as PriorityFilterState,
+                          }))
+                        }
+                      />
+                      <FiltersGroup
+                        name="Status"
+                        filters={statusFilters}
+                        options={[
+                          {
+                            key: "pending",
+                            label: "Oczekujący",
+                            icon: <Play />,
+                            color: "text-[#F0E68C]",
+                          },
+                          {
+                            key: "in-progress",
+                            label: "W trakcie",
+                            icon: <Clock />,
+                            color: "text-[#FFA500]",
+                          },
+                          {
+                            key: "completed",
+                            label: "Zakończony",
+                            icon: <CheckCircle />,
+                            color: "text-[#4CAF50]",
+                          },
+                          {
+                            key: "cancelled",
+                            label: "Anulowany",
+                            icon: <XCircle />,
+                            color: "text-[#444C38]",
+                          },
+                        ]}
+                        gridCols={4}
+                        onChange={(filters) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            statusFilters: filters as StatusFilterState,
+                          }))
+                        }
+                      />
+                      <FiltersGroup
+                        name="Kwota"
+                        filters={amountFilters}
+                        options={[
+                          {
+                            key: "low",
+                            label: "Niski",
+                            icon: <ChevronDown />,
+                            color: "text-[#eec0c8]",
+                          },
+                          {
+                            key: "medium",
+                            label: "Średnia kwota",
+                            icon: <AlertCircle />,
+                            color: "text-[#F9629F]",
+                          },
+                          {
+                            key: "high",
+                            label: "Wysoka kwota",
+                            icon: <Zap />,
+                            color: "text-[#FF00FF]",
+                          },
+                        ]}
+                        onChange={(filters) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            amountFilters: filters as AmountFilterState,
+                          }))
+                        }
+                      />
+                      <FiltersGroup
+                        name="Złożoność"
+                        filters={complexityFilters}
+                        options={[
+                          {
+                            key: "simple",
+                            label: "Prosty",
+                            icon: <Wrench />,
+                            color: "text-[#F0E68C]",
+                          },
+                          {
+                            key: "moderate",
+                            label: "Średnia złożoność",
+                            icon: <Wrench />,
+                            color: "text-[#FFA500]",
+                          },
+                          {
+                            key: "complex",
+                            label: "Złożony",
+                            icon: <Wrench />,
+                            color: "text-[#4CAF50]",
+                          },
+                        ]}
+                        onChange={(filters) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            complexityFilters: filters as ComplexityFilterState,
+                          }))
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6 bg-background/40">
               {filteredUnassignedOrders.length > 0 ? (

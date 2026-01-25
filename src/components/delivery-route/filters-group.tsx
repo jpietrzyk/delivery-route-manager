@@ -1,0 +1,97 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { Toggle } from "@/components/ui/toggle";
+import { Check, Square } from "lucide-react";
+
+export interface FilterOption {
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+  color?: string;
+}
+
+export interface FiltersGroupProps {
+  name: string;
+  filters: Record<string, boolean>;
+  options: FilterOption[];
+  onChange?: (filters: Record<string, boolean>) => void;
+  gridCols?: number;
+}
+
+export const FiltersGroup = ({
+  name,
+  filters,
+  options,
+  onChange,
+  gridCols = 3,
+}: FiltersGroupProps) => {
+  const [currentFilters, setCurrentFilters] =
+    useState<Record<string, boolean>>(filters);
+
+  useEffect(() => {
+    if (filters) {
+      setCurrentFilters(filters);
+    }
+  }, [filters]);
+
+  const allSelected = useMemo(() => {
+    return Object.values(currentFilters).every(Boolean);
+  }, [currentFilters]);
+
+  const handleFilterChange = (key: string) => {
+    const newFilters = { ...currentFilters, [key]: !currentFilters[key] };
+    setCurrentFilters(newFilters);
+    onChange?.(newFilters);
+  };
+
+  const handleSelectAll = () => {
+    const nextState = !allSelected;
+    const newFilters: Record<string, boolean> = {};
+    options.forEach((option) => {
+      newFilters[option.key] = nextState;
+    });
+    setCurrentFilters(newFilters);
+    onChange?.(newFilters);
+  };
+
+  return (
+    <div className="space-y-1 max-w-35">
+      <div className="flex items-center gap-1 mb-1">
+        <Toggle
+          pressed={allSelected}
+          onPressedChange={handleSelectAll}
+          size="sm"
+          aria-label={`Select all ${name}`}
+          className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-green-50 data-[state=on]:text-green-700 data-[state=on]:border-green-300 h-6 w-6 p-0"
+        >
+          {allSelected ? (
+            <Check className="h-3 w-3" />
+          ) : (
+            <Square className="h-3 w-3" />
+          )}
+        </Toggle>
+        <span className="text-xs font-medium text-foreground/70">{name}</span>
+      </div>
+      <div className={`grid grid-cols-${gridCols} gap-2`}>
+        {options.map((option) => (
+          <Toggle
+            key={option.key}
+            pressed={currentFilters[option.key] ?? false}
+            onPressedChange={() => handleFilterChange(option.key)}
+            size="sm"
+            aria-label={`Filter by ${option.label}`}
+            className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
+            title={option.label}
+          >
+            {React.isValidElement(option.icon)
+              ? React.cloneElement(option.icon, {
+                  className: currentFilters[option.key]
+                    ? `h-4 w-4 ${option.color || ""}`
+                    : "h-4 w-4",
+                })
+              : option.icon}
+          </Toggle>
+        ))}
+      </div>
+    </div>
+  );
+};
