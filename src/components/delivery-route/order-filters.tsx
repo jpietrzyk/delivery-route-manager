@@ -111,7 +111,7 @@ export const OrderFilters = ({
               options={[
                 {
                   key: "pending",
-                  label: "Oczekujący",
+                  label: "Oczekujące",
                   icon: <Play />,
                   color: "text-[#F0E68C]",
                 },
@@ -123,13 +123,13 @@ export const OrderFilters = ({
                 },
                 {
                   key: "completed",
-                  label: "Zakończony",
+                  label: "Zakończone",
                   icon: <CheckCircle />,
                   color: "text-[#4CAF50]",
                 },
                 {
                   key: "cancelled",
-                  label: "Anulowany",
+                  label: "Anulowane",
                   icon: <XCircle />,
                   color: "text-[#444C38]",
                 },
@@ -151,7 +151,7 @@ export const OrderFilters = ({
               options={[
                 {
                   key: "low",
-                  label: "Niski",
+                  label: "Niska kwota",
                   icon: <ChevronDown />,
                   color: "text-[#eec0c8]",
                 },
@@ -184,7 +184,7 @@ export const OrderFilters = ({
               options={[
                 {
                   key: "simple",
-                  label: "Prosty",
+                  label: "Prosta złożoność",
                   icon: <Wrench />,
                   color: "text-[#F0E68C]",
                 },
@@ -196,7 +196,7 @@ export const OrderFilters = ({
                 },
                 {
                   key: "complex",
-                  label: "Złożony",
+                  label: "Złożona złożoność",
                   icon: <Wrench />,
                   color: "text-[#4CAF50]",
                 },

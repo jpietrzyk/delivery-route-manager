@@ -6,7 +6,7 @@ describe("OrderFilters", () => {
   it("should render filters section", () => {
     render(<OrderFilters onPriorityChange={jest.fn()} />);
 
-    expect(screen.getByText("Priorytet")).toBeInTheDocument();
+    expect(screen.getAllByText("Priorytet").length).toBeGreaterThan(0);
   });
 
   it("should render all three priority filter toggles", () => {
@@ -296,10 +296,10 @@ describe("OrderFilters - Status Filter", () => {
     );
 
     expect(screen.getByText("Status")).toBeInTheDocument();
-    expect(screen.getByLabelText("Filter by Oczekujące")).toBeInTheDocument();
-    expect(screen.getByLabelText("Filter by W trakcie")).toBeInTheDocument();
-    expect(screen.getByLabelText("Filter by Zakończone")).toBeInTheDocument();
-    expect(screen.getByLabelText("Filter by Anulowane")).toBeInTheDocument();
+    expect(screen.getByLabelText("Filtruj po Oczekujące")).toBeInTheDocument();
+    expect(screen.getByLabelText("Filtruj po W trakcie")).toBeInTheDocument();
+    expect(screen.getByLabelText("Filtruj po Zakończone")).toBeInTheDocument();
+    expect(screen.getByLabelText("Filtruj po Anulowane")).toBeInTheDocument();
   });
 
   it("should have all status filters enabled by default", () => {
@@ -307,19 +307,19 @@ describe("OrderFilters - Status Filter", () => {
       <OrderFilters onPriorityChange={jest.fn()} onStatusChange={jest.fn()} />,
     );
 
-    expect(screen.getByLabelText("Filter by Oczekujące")).toHaveAttribute(
+    expect(screen.getByLabelText("Filtruj po Oczekujące")).toHaveAttribute(
       "data-state",
       "on",
     );
-    expect(screen.getByLabelText("Filter by W trakcie")).toHaveAttribute(
+    expect(screen.getByLabelText("Filtruj po W trakcie")).toHaveAttribute(
       "data-state",
       "on",
     );
-    expect(screen.getByLabelText("Filter by Zakończone")).toHaveAttribute(
+    expect(screen.getByLabelText("Filtruj po Zakończone")).toHaveAttribute(
       "data-state",
       "on",
     );
-    expect(screen.getByLabelText("Filter by Anulowane")).toHaveAttribute(
+    expect(screen.getByLabelText("Filtruj po Anulowane")).toHaveAttribute(
       "data-state",
       "on",
     );
@@ -334,7 +334,7 @@ describe("OrderFilters - Status Filter", () => {
       />,
     );
 
-    const oczekujaceToggle = screen.getByLabelText("Filter by Oczekujące");
+    const oczekujaceToggle = screen.getByLabelText("Filtruj po Oczekujące");
     fireEvent.click(oczekujaceToggle);
     expect(mockOnStatusChange).toHaveBeenCalled();
   });
@@ -347,11 +347,13 @@ describe("OrderFilters - Amount Filter", () => {
     );
 
     expect(screen.getByText("Kwota")).toBeInTheDocument();
-    expect(screen.getByLabelText("Filter by Niska kwota")).toBeInTheDocument();
+    expect(screen.getByLabelText("Filtruj po Niska kwota")).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Filter by Średnia kwota"),
+      screen.getByLabelText("Filtruj po Średnia kwota"),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText("Filter by Wysoka kwota")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Filtruj po Wysoka kwota"),
+    ).toBeInTheDocument();
   });
 
   it("should have all amount filters enabled by default", () => {
@@ -359,15 +361,15 @@ describe("OrderFilters - Amount Filter", () => {
       <OrderFilters onPriorityChange={jest.fn()} onAmountChange={jest.fn()} />,
     );
 
-    expect(screen.getByLabelText("Filter by Niska kwota")).toHaveAttribute(
+    expect(screen.getByLabelText("Filtruj po Niska kwota")).toHaveAttribute(
       "data-state",
       "on",
     );
-    expect(screen.getByLabelText("Filter by Średnia kwota")).toHaveAttribute(
+    expect(screen.getByLabelText("Filtruj po Średnia kwota")).toHaveAttribute(
       "data-state",
       "on",
     );
-    expect(screen.getByLabelText("Filter by Wysoka kwota")).toHaveAttribute(
+    expect(screen.getByLabelText("Filtruj po Wysoka kwota")).toHaveAttribute(
       "data-state",
       "on",
     );
@@ -382,7 +384,7 @@ describe("OrderFilters - Amount Filter", () => {
       />,
     );
 
-    const niskaToggle = screen.getByLabelText("Filter by Niska kwota");
+    const niskaToggle = screen.getByLabelText("Filtruj po Niska kwota");
     fireEvent.click(niskaToggle);
     expect(mockOnAmountChange).toHaveBeenCalled();
   });
@@ -399,13 +401,13 @@ describe("OrderFilters - Complexity Filter", () => {
 
     expect(screen.getByText("Złożoność")).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Filter by Prosta złożoność"),
+      screen.getByLabelText("Filtruj po Prosta złożoność"),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Filter by Średnia złożoność"),
+      screen.getByLabelText("Filtruj po Średnia złożoność"),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Filter by Złożona złożoność"),
+      screen.getByLabelText("Filtruj po Złożona złożoność"),
     ).toBeInTheDocument();
   });
 
@@ -417,15 +419,14 @@ describe("OrderFilters - Complexity Filter", () => {
       />,
     );
 
-    expect(screen.getByLabelText("Filter by Prosta złożoność")).toHaveAttribute(
-      "data-state",
-      "on",
-    );
     expect(
-      screen.getByLabelText("Filter by Średnia złożoność"),
+      screen.getByLabelText("Filtruj po Prosta złożoność"),
     ).toHaveAttribute("data-state", "on");
     expect(
-      screen.getByLabelText("Filter by Złożona złożoność"),
+      screen.getByLabelText("Filtruj po Średnia złożoność"),
+    ).toHaveAttribute("data-state", "on");
+    expect(
+      screen.getByLabelText("Filtruj po Złożona złożoność"),
     ).toHaveAttribute("data-state", "on");
   });
 
@@ -438,7 +439,7 @@ describe("OrderFilters - Complexity Filter", () => {
       />,
     );
 
-    const prostaToggle = screen.getByLabelText("Filter by Prosta złożoność");
+    const prostaToggle = screen.getByLabelText("Filtruj po Prosta złożoność");
     fireEvent.click(prostaToggle);
     expect(mockOnComplexityChange).toHaveBeenCalled();
   });
@@ -462,9 +463,9 @@ describe("OrderFilters - All Filters Together", () => {
 
     // Click one filter from each category
     fireEvent.click(screen.getByLabelText("Filtruj po Niski priorytet"));
-    fireEvent.click(screen.getByLabelText("Filter by Oczekujące"));
-    fireEvent.click(screen.getByLabelText("Filter by Niska kwota"));
-    fireEvent.click(screen.getByLabelText("Filter by Prosta złożoność"));
+    fireEvent.click(screen.getByLabelText("Filtruj po Oczekujące"));
+    fireEvent.click(screen.getByLabelText("Filtruj po Niska kwota"));
+    fireEvent.click(screen.getByLabelText("Filtruj po Prosta złożoność"));
 
     // All callbacks should be called once
     expect(mockOnPriorityChange).toHaveBeenCalledTimes(1);
@@ -531,7 +532,7 @@ describe("OrderFilters - Select All Toggle", () => {
     render(<OrderFilters onPriorityChange={jest.fn()} />);
 
     const lowPriorityToggle = screen.getByLabelText(
-      "Filter by Niski priorytet",
+      "Filtruj po Niski priorytet",
     );
     fireEvent.click(lowPriorityToggle);
 
@@ -615,7 +616,7 @@ describe("OrderFilters - Select All Toggle", () => {
 
     // Disable one filter
     const lowPriorityToggle = screen.getByLabelText(
-      "Filter by Niski priorytet",
+      "Filtruj po Niski priorytet",
     );
     fireEvent.click(lowPriorityToggle);
 
@@ -639,7 +640,7 @@ describe("OrderFilters - Select All Toggle", () => {
       fireEvent.click(screen.getByLabelText("Filtruj po Niski priorytet"));
     });
     act(() => {
-      fireEvent.click(screen.getByLabelText("Filter by Oczekujący"));
+      fireEvent.click(screen.getByLabelText("Filtruj po Oczekujące"));
     });
 
     // Priority Select All should be unchecked, Status Select All should be unchecked

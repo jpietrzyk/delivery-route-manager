@@ -61,20 +61,22 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
   });
 
   it("should increment refreshTrigger when order is added to delivery", async () => {
-    render(
-      <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
-        <MapFiltersProvider>
-          <DeliveryRouteManagerProvider>
-            <Routes>
-              <Route
-                path="/delivery/:deliveryId"
-                element={<DeliveryMapPage />}
-              />
-            </Routes>
-          </DeliveryRouteManagerProvider>
-        </MapFiltersProvider>
-      </MemoryRouter>,
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
+          <MapFiltersProvider>
+            <DeliveryRouteManagerProvider>
+              <Routes>
+                <Route
+                  path="/delivery/:deliveryId"
+                  element={<DeliveryMapPage />}
+                />
+              </Routes>
+            </DeliveryRouteManagerProvider>
+          </MapFiltersProvider>
+        </MemoryRouter>,
+      );
+    });
 
     // Wait for initial loading
     await waitFor(() => {
@@ -88,20 +90,22 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
   });
 
   it("should update both delivery and unassigned orders when adding order", async () => {
-    render(
-      <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
-        <MapFiltersProvider>
-          <DeliveryRouteManagerProvider>
-            <Routes>
-              <Route
-                path="/delivery/:deliveryId"
-                element={<DeliveryMapPage />}
-              />
-            </Routes>
-          </DeliveryRouteManagerProvider>
-        </MapFiltersProvider>
-      </MemoryRouter>,
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
+          <MapFiltersProvider>
+            <DeliveryRouteManagerProvider>
+              <Routes>
+                <Route
+                  path="/delivery/:deliveryId"
+                  element={<DeliveryMapPage />}
+                />
+              </Routes>
+            </DeliveryRouteManagerProvider>
+          </MapFiltersProvider>
+        </MemoryRouter>,
+      );
+    });
 
     // Wait for initial loading
     await waitFor(() => {
