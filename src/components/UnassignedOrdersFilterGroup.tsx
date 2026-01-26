@@ -1,5 +1,3 @@
-import React from "react";
-
 interface FilterOption {
   label: string;
   value: string;

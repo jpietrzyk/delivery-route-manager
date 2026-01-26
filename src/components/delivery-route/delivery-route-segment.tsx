@@ -1,9 +1,8 @@
-import React from "react";
 import type { RouteSegment } from "@/types/map-provider";
 import type { RouteManager } from "@/services/RouteManager";
 import { RefreshCcw, Route, Clock, ArrowRight } from "lucide-react";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
-import { pl, formatDurationPL } from "@/lib/translations";
+import { formatDurationPL } from "@/lib/translations";
 
 interface DeliveryRouteSegmentProps {
   segment: RouteSegment;

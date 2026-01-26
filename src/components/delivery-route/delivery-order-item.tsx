@@ -1,10 +1,9 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import type { Order } from "@/types/order";
 import { Button } from "@/components/ui/button";
 import { Minus } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { pl } from "@/lib/translations";
 import {
   Tooltip,
   TooltipTrigger,

@@ -1,10 +1,7 @@
-import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { UnassignedOrdersFilterGroup } from "../components/UnassignedOrdersFilterGroup";
-import {
-  UnassignedOrdersFilters,
-  FilterGroupConfig,
-} from "../components/UnassignedOrdersFilters";
+import { UnassignedOrdersFilters } from "../components/UnassignedOrdersFilters";
+import type { FilterGroupConfig } from "../components/UnassignedOrdersFilters";
 
 describe("UnassignedOrdersFilterGroup", () => {
   it("renders group title and filter options", () => {
@@ -43,7 +40,7 @@ describe("UnassignedOrdersFilters", () => {
   it("renders filter groups and options", () => {
     const groups: FilterGroupConfig[] = [
       {
-        key: "priorityFilters" as any,
+        key: "priorityFilters",
         title: "Priorytet",
         labels: { high: "Wysoki", medium: "Średni" },
         colors: { high: "#C6011F", medium: "#BD3039" },

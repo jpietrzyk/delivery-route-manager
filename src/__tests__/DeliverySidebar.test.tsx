@@ -143,7 +143,7 @@ describe("DeliverySidebar - Assigned Count Update", () => {
   });
 
   it("should show correct initial assigned count", async () => {
-    let container;
+    let container: HTMLElement | undefined;
     await act(async () => {
       const result = render(
         <Wrapper initialDeliveryOrders={[mockOrders[0]]} />,
@@ -151,7 +151,7 @@ describe("DeliverySidebar - Assigned Count Update", () => {
       container = result.container;
     });
     // Look for the delivery orders count display with the specific class
-    const countElement = container.querySelector(
+    const countElement = container?.querySelector(
       ".text-sm.font-medium.text-foreground",
     );
     expect(countElement).toBeInTheDocument();
@@ -159,7 +159,7 @@ describe("DeliverySidebar - Assigned Count Update", () => {
   });
 
   it("should render delivery orders list", async () => {
-    let container;
+    let container: HTMLElement | undefined;
     await act(async () => {
       const result = render(
         <Wrapper initialDeliveryOrders={[mockOrders[0]]} />,
@@ -168,7 +168,7 @@ describe("DeliverySidebar - Assigned Count Update", () => {
     });
     // Check that the sidebar element is rendered
     await waitFor(() => {
-      const sidebar = container.querySelector('[data-sidebar="sidebar"]');
+      const sidebar = container?.querySelector('[data-sidebar="sidebar"]');
       expect(sidebar).toBeTruthy();
     });
   });

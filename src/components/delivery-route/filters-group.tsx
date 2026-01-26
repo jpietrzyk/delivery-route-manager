@@ -1,4 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  isValidElement,
+  cloneElement,
+} from "react";
 import { Toggle } from "@/components/ui/toggle";
 import { Check, Square } from "lucide-react";
 
@@ -27,8 +34,11 @@ export const FiltersGroup = ({
   const [currentFilters, setCurrentFilters] =
     useState<Record<string, boolean>>(filters);
 
+  const prevFiltersRef = useRef<Record<string, boolean>>(filters);
+
   useEffect(() => {
-    if (filters) {
+    if (filters && prevFiltersRef.current !== filters) {
+      prevFiltersRef.current = filters;
       setCurrentFilters(filters);
     }
   }, [filters]);
@@ -87,12 +97,12 @@ export const FiltersGroup = ({
             className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
             title={option.label}
           >
-            {React.isValidElement(option.icon)
-              ? React.cloneElement(option.icon, {
+            {isValidElement(option.icon)
+              ? cloneElement(option.icon, {
                   className: currentFilters[option.key]
                     ? `h-4 w-4 ${option.color || ""}`
                     : "h-4 w-4",
-                })
+                } as React.HTMLAttributes<HTMLElement>)
               : option.icon}
           </Toggle>
         ))}

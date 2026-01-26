@@ -1,4 +1,3 @@
-import React from "react";
 import { UnassignedOrdersFilterGroup } from "./UnassignedOrdersFilterGroup";
 
 export interface FilterGroupConfig {
