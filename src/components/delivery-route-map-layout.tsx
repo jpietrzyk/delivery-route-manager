@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 import { UnassignedOrderList } from "@/components/delivery-route/unassigned-order-list";
+
 import { OrderFilters } from "@/components/delivery-route/order-filters";
 import type {
   AmountFilterState,
@@ -377,27 +378,53 @@ export default function DeliveryRouteMapLayout({
               </div>
             </div>
             <div className="border-b border-border/50 bg-background/50 backdrop-blur-xs">
-              <OrderFilters
-                priorityFilters={priorityFilters}
-                statusFilters={statusFilters}
-                amountFilters={amountFilters}
-                complexityFilters={complexityFilters}
-                onPriorityChange={(filters) =>
-                  setFilters((prev) => ({ ...prev, priorityFilters: filters }))
-                }
-                onStatusChange={(filters) =>
-                  setFilters((prev) => ({ ...prev, statusFilters: filters }))
-                }
-                onAmountChange={(filters) =>
-                  setFilters((prev) => ({ ...prev, amountFilters: filters }))
-                }
-                onComplexityChange={(filters) =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    complexityFilters: filters,
-                  }))
-                }
-              />
+              <div className="w-full px-4 py-3">
+                <div className="flex gap-3">
+                  <div className="flex items-center">
+                    <h3
+                      className="text-sm font-semibold text-foreground/70 tracking-wider whitespace-nowrap"
+                      style={{
+                        writingMode: "vertical-rl",
+                        textOrientation: "mixed",
+                      }}
+                    >
+                      FILTRY
+                    </h3>
+                  </div>
+                  <div className="flex-1">
+                    <OrderFilters
+                      priorityFilters={priorityFilters}
+                      statusFilters={statusFilters}
+                      amountFilters={amountFilters}
+                      complexityFilters={complexityFilters}
+                      onPriorityChange={(filters) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          priorityFilters: filters,
+                        }))
+                      }
+                      onStatusChange={(filters) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          statusFilters: filters,
+                        }))
+                      }
+                      onAmountChange={(filters) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          amountFilters: filters,
+                        }))
+                      }
+                      onComplexityChange={(filters) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          complexityFilters: filters,
+                        }))
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6 bg-background/40">
               {filteredUnassignedOrders.length > 0 ? (

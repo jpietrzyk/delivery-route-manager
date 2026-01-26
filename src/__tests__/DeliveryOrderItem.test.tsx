@@ -3,13 +3,19 @@ import "@testing-library/jest-dom";
 import { DeliveryOrderItem } from "@/components/delivery-route/delivery-order-item";
 import type { Order } from "@/types/order";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";
+import {
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 
 describe("DeliveryOrderItem", () => {
   const createMockOrder = (
     id: string = "order-1",
     complexity: 1 | 2 | 3 = 1,
     customer: string = "Test Customer",
-    productName: string = "Test Product"
+    productName: string = "Test Product",
   ): Order => ({
     id,
     product: { name: productName, price: 100, complexity },
@@ -24,9 +30,16 @@ describe("DeliveryOrderItem", () => {
   });
 
   // Wrapper component to provide required contexts
-  const Wrapper = ({ children }: { children: React.ReactNode }) => (
-    <DeliveryRouteManagerProvider>{children}</DeliveryRouteManagerProvider>
-  );
+  const Wrapper = ({ children }: { children: React.ReactNode }) => {
+    const sensors = useSensors(
+      useSensor(PointerSensor, { activationConstraint: { distance: 10 } }),
+    );
+    return (
+      <DeliveryRouteManagerProvider>
+        <DndContext sensors={sensors}>{children}</DndContext>
+      </DeliveryRouteManagerProvider>
+    );
+  };
 
   it("should render basic order information", () => {
     const order = createMockOrder();
@@ -51,7 +64,7 @@ describe("DeliveryOrderItem", () => {
 
     const { rerender } = render(
       <DeliveryOrderItem id={order1.id} order={order1} />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
     // Assembly time is no longer shown in compact view
@@ -85,11 +98,12 @@ describe("DeliveryOrderItem", () => {
 
     const { container } = render(
       <DeliveryOrderItem id={order.id} order={order} isHighlighted={true} />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
     // Should have ring class when highlighted
     const listItem = container.querySelector("li");
+    expect(listItem).toBeTruthy();
     expect(listItem?.className).toContain("ring-1");
     expect(listItem?.className).toContain("ring-green-400");
     expect(listItem?.className).toContain("bg-green-50/50");
@@ -107,7 +121,7 @@ describe("DeliveryOrderItem", () => {
         onMouseEnter={mockMouseEnter}
         onMouseLeave={mockMouseLeave}
       />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
     const listItem = container.querySelector("li");
@@ -126,7 +140,7 @@ describe("DeliveryOrderItem", () => {
 
     render(
       <DeliveryOrderItem id={order.id} order={order} onRemove={mockRemove} />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
     // Find and click the remove button
@@ -145,7 +159,7 @@ describe("DeliveryOrderItem", () => {
 
     // Should not find remove button
     expect(
-      screen.queryByLabelText(`Usuń zamówienie ${order.id}`)
+      screen.queryByLabelText(`Usuń zamówienie ${order.id}`),
     ).not.toBeInTheDocument();
   });
 
@@ -174,7 +188,7 @@ describe("DeliveryOrderItem", () => {
         id={orderWithoutProductName.id}
         order={orderWithoutProductName}
       />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
     // Should still render without crashing (customer is in tooltip, order ID is in main UI)
@@ -198,7 +212,7 @@ describe("DeliveryOrderItem", () => {
 
     const { rerender } = render(
       <DeliveryOrderItem id={order.id} order={order} />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
     // Status is no longer shown in compact view
@@ -207,14 +221,14 @@ describe("DeliveryOrderItem", () => {
     // Test in-progress status
     const orderInProgress = { ...order, status: "in-progress" as const };
     rerender(
-      <DeliveryOrderItem id={orderInProgress.id} order={orderInProgress} />
+      <DeliveryOrderItem id={orderInProgress.id} order={orderInProgress} />,
     );
     expect(screen.queryByText("in-progress")).not.toBeInTheDocument();
 
     // Test completed status
     const orderCompleted = { ...order, status: "completed" as const };
     rerender(
-      <DeliveryOrderItem id={orderCompleted.id} order={orderCompleted} />
+      <DeliveryOrderItem id={orderCompleted.id} order={orderCompleted} />,
     );
     expect(screen.queryByText("completed")).not.toBeInTheDocument();
   });

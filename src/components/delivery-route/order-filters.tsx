@@ -8,8 +8,6 @@ export interface OrderFiltersProps {
   onAmountChange?: (filters: AmountFilterState) => void;
   onComplexityChange?: (filters: ComplexityFilterState) => void;
 }
-import { useEffect, useMemo, useState } from "react";
-import { Toggle } from "@/components/ui/toggle";
 import {
   ChevronDown,
   AlertCircle,
@@ -19,9 +17,9 @@ import {
   CheckCircle,
   XCircle,
   Wrench,
-  Check,
-  Square,
 } from "lucide-react";
+
+import { FiltersGroup } from "./filters-group";
 
 export type PriorityFilterState = {
   low: boolean;
@@ -52,39 +50,6 @@ export type AmountFilterState = {
   [key: string]: boolean;
 };
 
-const PRIORITY_DEFAULT: PriorityFilterState = {
-  low: true,
-  medium: true,
-  high: true,
-};
-
-const STATUS_DEFAULT: StatusFilterState = {
-  pending: true,
-  "in-progress": true,
-  completed: true,
-  cancelled: true,
-};
-
-const COMPLEXITY_DEFAULT: ComplexityFilterState = {
-  simple: true,
-  moderate: true,
-  complex: true,
-};
-
-const AMOUNT_DEFAULT: AmountFilterState = {
-  low: true,
-  medium: true,
-  high: true,
-};
-
-const clonePriorityDefaults = (): PriorityFilterState => ({
-  ...PRIORITY_DEFAULT,
-});
-const cloneStatusDefaults = (): StatusFilterState => ({ ...STATUS_DEFAULT });
-const cloneComplexityDefaults = (): ComplexityFilterState => ({
-  ...COMPLEXITY_DEFAULT,
-});
-
 export const OrderFilters = ({
   priorityFilters,
   statusFilters,
@@ -95,440 +60,154 @@ export const OrderFilters = ({
   onAmountChange,
   onComplexityChange,
 }: OrderFiltersProps) => {
-  const [priorities, setPriorities] = useState<PriorityFilterState>(
-    priorityFilters ?? clonePriorityDefaults(),
-  );
-
-  const [statuses, setStatuses] = useState<StatusFilterState>(
-    statusFilters ?? cloneStatusDefaults(),
-  );
-
-  const [complexities, setComplexities] = useState<ComplexityFilterState>(
-    complexityFilters ?? cloneComplexityDefaults(),
-  );
-
-  const [amounts, setAmounts] = useState<AmountFilterState>(
-    amountFilters ?? AMOUNT_DEFAULT,
-  );
-
-  useEffect(() => {
-    if (priorityFilters) {
-      // eslint-disable-next-line
-      setPriorities(priorityFilters);
-    }
-  }, [priorityFilters]);
-
-  useEffect(() => {
-    if (statusFilters) {
-      // eslint-disable-next-line
-      setStatuses(statusFilters);
-    }
-  }, [statusFilters]);
-
-  useEffect(() => {
-    if (amountFilters) {
-      // eslint-disable-next-line
-      setAmounts(amountFilters);
-    }
-  }, [amountFilters]);
-
-  useEffect(() => {
-    if (complexityFilters) {
-      // eslint-disable-next-line
-      setComplexities(complexityFilters);
-    }
-  }, [complexityFilters]);
-
-  // Compute if all filters in each group are selected
-  const allPrioritiesSelected = useMemo(() => {
-    return Object.values(priorities).every(Boolean);
-  }, [priorities]);
-
-  const allStatusesSelected = useMemo(() => {
-    return Object.values(statuses).every(Boolean);
-  }, [statuses]);
-
-  const allComplexitiesSelected = useMemo(() => {
-    return Object.values(complexities).every(Boolean);
-  }, [complexities]);
-
-  const allAmountsSelected = useMemo(() => {
-    return Object.values(amounts).every(Boolean);
-  }, [amounts]);
-
-  const handlePriorityChange = (priority: keyof PriorityFilterState) => {
-    const newFilters = { ...priorities, [priority]: !priorities[priority] };
-    setPriorities(newFilters);
-    onPriorityChange?.(newFilters);
-  };
-
-  const handleStatusChange = (status: keyof StatusFilterState) => {
-    const newFilters = { ...statuses, [status]: !statuses[status] };
-    setStatuses(newFilters);
-    onStatusChange?.(newFilters);
-  };
-
-  const handleComplexityChange = (complexity: keyof ComplexityFilterState) => {
-    const newFilters = {
-      ...complexities,
-      [complexity]: !complexities[complexity],
-    };
-    setComplexities(newFilters);
-    onComplexityChange?.(newFilters);
-  };
-
-  const handleAmountChange = (amount: keyof AmountFilterState) => {
-    const newFilters = { ...amounts, [amount]: !amounts[amount] };
-    setAmounts(newFilters);
-    onAmountChange?.(newFilters);
-  };
-
-  const handleSelectAllPriorities = () => {
-    const nextState = !allPrioritiesSelected;
-    const newFilters: PriorityFilterState = {
-      low: nextState,
-      medium: nextState,
-      high: nextState,
-    };
-    setPriorities(newFilters);
-    onPriorityChange?.(newFilters);
-  };
-
-  const handleSelectAllStatuses = () => {
-    const nextState = !allStatusesSelected;
-    const newFilters: StatusFilterState = {
-      pending: nextState,
-      "in-progress": nextState,
-      completed: nextState,
-      cancelled: nextState,
-    };
-    setStatuses(newFilters);
-    onStatusChange?.(newFilters);
-  };
-
-  const handleSelectAllComplexities = () => {
-    const nextState = !allComplexitiesSelected;
-    const newFilters: ComplexityFilterState = {
-      simple: nextState,
-      moderate: nextState,
-      complex: nextState,
-    };
-    setComplexities(newFilters);
-    onComplexityChange?.(newFilters);
-  };
-
-  const handleSelectAllAmounts = () => {
-    const nextState = !allAmountsSelected;
-    const newFilters: AmountFilterState = {
-      low: nextState,
-      medium: nextState,
-      high: nextState,
-    };
-    setAmounts(newFilters);
-    onAmountChange?.(newFilters);
-  };
-
   return (
     <div className="w-full px-4 py-3 border-b border-border bg-muted/50">
       <div className="flex gap-3">
-        <div className="flex items-center">
-          <h3
-            className="text-sm font-semibold text-foreground/70 tracking-wider whitespace-nowrap"
-            style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
-          >
-            FILTRY
-          </h3>
-        </div>
         <div className="flex-1">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
-            {/* PRIORITY GROUP */}
-            <div className="space-y-1 max-w-35">
-              <div className="flex items-center gap-1 mb-1">
-                <Toggle
-                  pressed={allPrioritiesSelected}
-                  onPressedChange={handleSelectAllPriorities}
-                  size="sm"
-                  aria-label="Select all priorities"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-green-50 data-[state=on]:text-green-700 data-[state=on]:border-green-300 h-6 w-6 p-0"
-                >
-                  {allPrioritiesSelected ? (
-                    <Check className="h-3 w-3" />
-                  ) : (
-                    <Square className="h-3 w-3" />
-                  )}
-                </Toggle>
-                <span className="text-xs font-medium text-foreground/70">
-                  Priorytet
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <Toggle
-                  pressed={priorities.low}
-                  onPressedChange={() => handlePriorityChange("low")}
-                  size="sm"
-                  aria-label="Filter by Low priority"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Niski priorytet"
-                >
-                  <ChevronDown
-                    className={
-                      priorities.low ? "h-4 w-4 text-[#fd5c63]" : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-
-                <Toggle
-                  pressed={priorities.medium}
-                  onPressedChange={() => handlePriorityChange("medium")}
-                  size="sm"
-                  aria-label="Filter by Medium priority"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Średni priorytet"
-                >
-                  <AlertCircle
-                    className={
-                      priorities.medium ? "h-4 w-4 text-[#BD3039]" : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-
-                <Toggle
-                  pressed={priorities.high}
-                  onPressedChange={() => handlePriorityChange("high")}
-                  size="sm"
-                  aria-label="Filter by High priority"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Wysoki priorytet"
-                >
-                  <Zap
-                    className={
-                      priorities.high ? "h-4 w-4 text-[#C6011F]" : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-              </div>
-            </div>
-            {/* STATUS GROUP */}
-            <div className="space-y-1 max-w-35">
-              <div className="flex items-center gap-1 mb-1">
-                <Toggle
-                  pressed={allStatusesSelected}
-                  onPressedChange={handleSelectAllStatuses}
-                  size="sm"
-                  aria-label="Select all statuses"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-blue-50 data-[state=on]:text-blue-700 data-[state=on]:border-blue-300 h-6 w-6 p-0"
-                >
-                  {allStatusesSelected ? (
-                    <Check className="h-3 w-3" />
-                  ) : (
-                    <Square className="h-3 w-3" />
-                  )}
-                </Toggle>
-                <span className="text-xs font-medium text-foreground/70">
-                  Status
-                </span>
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                <Toggle
-                  pressed={statuses.pending}
-                  onPressedChange={() => handleStatusChange("pending")}
-                  size="sm"
-                  aria-label="Filter by Pending status"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Oczekujący"
-                >
-                  <Play
-                    className={
-                      statuses.pending ? "h-4 w-4 text-[#F0E68C]" : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-                <Toggle
-                  pressed={statuses["in-progress"]}
-                  onPressedChange={() => handleStatusChange("in-progress")}
-                  size="sm"
-                  aria-label="Filter by In Progress status"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="W trakcie"
-                >
-                  <Clock
-                    className={
-                      statuses["in-progress"]
-                        ? "h-4 w-4 text-[#FFA500]"
-                        : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-                <Toggle
-                  pressed={statuses.completed}
-                  onPressedChange={() => handleStatusChange("completed")}
-                  size="sm"
-                  aria-label="Filter by Completed status"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Zakończony"
-                >
-                  <CheckCircle
-                    className={
-                      statuses.completed ? "h-4 w-4 text-[#4CAF50]" : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-                <Toggle
-                  pressed={statuses.cancelled}
-                  onPressedChange={() => handleStatusChange("cancelled")}
-                  size="sm"
-                  aria-label="Filter by Cancelled status"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Anulowany"
-                >
-                  <XCircle
-                    className={
-                      statuses.cancelled ? "h-4 w-4 text-[#444C38]" : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-              </div>
-            </div>
-            {/* AMOUNT GROUP */}
-            <div className="space-y-1 max-w-35">
-              <div className="flex items-center gap-1 mb-1">
-                <Toggle
-                  pressed={allAmountsSelected}
-                  onPressedChange={handleSelectAllAmounts}
-                  size="sm"
-                  aria-label="Select all amounts"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-indigo-50 data-[state=on]:text-indigo-700 data-[state=on]:border-indigo-300 h-6 w-6 p-0"
-                >
-                  {allAmountsSelected ? (
-                    <Check className="h-3 w-3" />
-                  ) : (
-                    <Square className="h-3 w-3" />
-                  )}
-                </Toggle>
-                <span className="text-xs font-medium text-foreground/70">
-                  Kwota
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <Toggle
-                  pressed={amounts.low}
-                  onPressedChange={() => handleAmountChange("low")}
-                  size="sm"
-                  aria-label="Filter by Low amount"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Niski"
-                >
-                  <ChevronDown
-                    className={
-                      amounts.low ? "h-4 w-4 text-[#eec0c8]" : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-                <Toggle
-                  pressed={amounts.medium}
-                  onPressedChange={() => handleAmountChange("medium")}
-                  size="sm"
-                  aria-label="Filter by Medium amount"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Średnia kwota"
-                >
-                  <AlertCircle
-                    className={
-                      amounts.medium ? "h-4 w-4 text-[#F9629F]" : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-                <Toggle
-                  pressed={amounts.high}
-                  onPressedChange={() => handleAmountChange("high")}
-                  size="sm"
-                  aria-label="Filter by High amount"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Wysoka kwota"
-                >
-                  <Zap
-                    className={
-                      amounts.high ? "h-4 w-4 text-[#FF00FF]" : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-              </div>
-            </div>
-            {/* COMPLEXITY GROUP */}
-            <div className="space-y-1 max-w-35">
-              <div className="flex items-center gap-1 mb-1">
-                <Toggle
-                  pressed={allComplexitiesSelected}
-                  onPressedChange={handleSelectAllComplexities}
-                  size="sm"
-                  aria-label="Select all complexities"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-sky-50 data-[state=on]:text-sky-700 data-[state=on]:border-sky-300 h-6 w-6 p-0"
-                >
-                  {allComplexitiesSelected ? (
-                    <Check className="h-3 w-3" />
-                  ) : (
-                    <Square className="h-3 w-3" />
-                  )}
-                </Toggle>
-                <span className="text-xs font-medium text-foreground/70">
-                  Złożoność
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <Toggle
-                  pressed={complexities.simple}
-                  onPressedChange={() => handleComplexityChange("simple")}
-                  size="sm"
-                  aria-label="Filter by Simple complexity (Level 1)"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Prosty"
-                >
-                  <Wrench
-                    className={
-                      complexities.simple ? "h-4 w-4 text-[#F0E68C]" : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-                <Toggle
-                  pressed={complexities.moderate}
-                  onPressedChange={() => handleComplexityChange("moderate")}
-                  size="sm"
-                  aria-label="Filter by Moderate complexity (Level 2)"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Średnia złożoność"
-                >
-                  <Wrench
-                    className={
-                      complexities.moderate
-                        ? "h-4 w-4 text-[#FFFF00]"
-                        : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-                <Toggle
-                  pressed={complexities.complex}
-                  onPressedChange={() => handleComplexityChange("complex")}
-                  size="sm"
-                  aria-label="Filter by Complex (Level 3)"
-                  className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-                  title="Złożony"
-                >
-                  <Wrench
-                    className={
-                      complexities.complex
-                        ? "h-4 w-4 text-[#FEBE10]"
-                        : "h-4 w-4"
-                    }
-                  />
-                </Toggle>
-              </div>
-            </div>
-          </div>{" "}
-          {/* end grid */}
-        </div>{" "}
-        {/* end flex-1 */}
-      </div>{" "}
-      {/* end flex gap-3 */}
+            <FiltersGroup
+              name="Priorytet"
+              filters={
+                priorityFilters ?? {
+                  low: true,
+                  medium: true,
+                  high: true,
+                }
+              }
+              options={[
+                {
+                  key: "low",
+                  label: "Niski priorytet",
+                  icon: <ChevronDown />,
+                  color: "text-[#fd5c63]",
+                },
+                {
+                  key: "medium",
+                  label: "Średni priorytet",
+                  icon: <AlertCircle />,
+                  color: "text-[#BD3039]",
+                },
+                {
+                  key: "high",
+                  label: "Wysoki priorytet",
+                  icon: <Zap />,
+                  color: "text-[#C6011F]",
+                },
+              ]}
+              onChange={
+                onPriorityChange as (filters: Record<string, boolean>) => void
+              }
+            />
+            <FiltersGroup
+              name="Status"
+              filters={
+                statusFilters ?? {
+                  pending: true,
+                  "in-progress": true,
+                  completed: true,
+                  cancelled: true,
+                }
+              }
+              options={[
+                {
+                  key: "pending",
+                  label: "Oczekujące",
+                  icon: <Play />,
+                  color: "text-[#F0E68C]",
+                },
+                {
+                  key: "in-progress",
+                  label: "W trakcie",
+                  icon: <Clock />,
+                  color: "text-[#FFA500]",
+                },
+                {
+                  key: "completed",
+                  label: "Zakończone",
+                  icon: <CheckCircle />,
+                  color: "text-[#4CAF50]",
+                },
+                {
+                  key: "cancelled",
+                  label: "Anulowane",
+                  icon: <XCircle />,
+                  color: "text-[#444C38]",
+                },
+              ]}
+              gridCols={4}
+              onChange={
+                onStatusChange as (filters: Record<string, boolean>) => void
+              }
+            />
+            <FiltersGroup
+              name="Kwota"
+              filters={
+                amountFilters ?? {
+                  low: true,
+                  medium: true,
+                  high: true,
+                }
+              }
+              options={[
+                {
+                  key: "low",
+                  label: "Niska kwota",
+                  icon: <ChevronDown />,
+                  color: "text-[#eec0c8]",
+                },
+                {
+                  key: "medium",
+                  label: "Średnia kwota",
+                  icon: <AlertCircle />,
+                  color: "text-[#F9629F]",
+                },
+                {
+                  key: "high",
+                  label: "Wysoka kwota",
+                  icon: <Zap />,
+                  color: "text-[#FF00FF]",
+                },
+              ]}
+              onChange={
+                onAmountChange as (filters: Record<string, boolean>) => void
+              }
+            />
+            <FiltersGroup
+              name="Złożoność"
+              filters={
+                complexityFilters ?? {
+                  simple: true,
+                  moderate: true,
+                  complex: true,
+                }
+              }
+              options={[
+                {
+                  key: "simple",
+                  label: "Prosta złożoność",
+                  icon: <Wrench />,
+                  color: "text-[#F0E68C]",
+                },
+                {
+                  key: "moderate",
+                  label: "Średnia złożoność",
+                  icon: <Wrench />,
+                  color: "text-[#FFA500]",
+                },
+                {
+                  key: "complex",
+                  label: "Złożona złożoność",
+                  icon: <Wrench />,
+                  color: "text-[#4CAF50]",
+                },
+              ]}
+              onChange={
+                onComplexityChange as (filters: Record<string, boolean>) => void
+              }
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -45,7 +45,7 @@ export function MapControls({
             <button
               onClick={onResetData}
               className="border border-border/50 bg-background/50 hover:bg-accent/50 text-sm font-medium px-3 py-2 rounded shadow-sm transition-colors inline-flex items-center gap-2 h-9"
-              aria-label="Reset data"
+              aria-label="Resetuj dane"
             >
               <RefreshCcw className="h-4 w-4" />
               {pl.reset}

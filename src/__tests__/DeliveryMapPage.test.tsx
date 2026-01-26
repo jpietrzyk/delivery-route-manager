@@ -1,5 +1,6 @@
 // import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
+import { act } from "react-dom/test-utils";
 import DeliveryMapPage from "@/pages/DeliveryRouteMapPage";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";
@@ -61,20 +62,22 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
   });
 
   it("should increment refreshTrigger when order is added to delivery", async () => {
-    render(
-      <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
-        <MapFiltersProvider>
-          <DeliveryRouteManagerProvider>
-            <Routes>
-              <Route
-                path="/delivery/:deliveryId"
-                element={<DeliveryMapPage />}
-              />
-            </Routes>
-          </DeliveryRouteManagerProvider>
-        </MapFiltersProvider>
-      </MemoryRouter>,
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
+          <MapFiltersProvider>
+            <DeliveryRouteManagerProvider>
+              <Routes>
+                <Route
+                  path="/delivery/:deliveryId"
+                  element={<DeliveryMapPage />}
+                />
+              </Routes>
+            </DeliveryRouteManagerProvider>
+          </MapFiltersProvider>
+        </MemoryRouter>,
+      );
+    });
 
     // Wait for initial loading
     await waitFor(() => {
@@ -88,20 +91,22 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
   });
 
   it("should update both delivery and unassigned orders when adding order", async () => {
-    render(
-      <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
-        <MapFiltersProvider>
-          <DeliveryRouteManagerProvider>
-            <Routes>
-              <Route
-                path="/delivery/:deliveryId"
-                element={<DeliveryMapPage />}
-              />
-            </Routes>
-          </DeliveryRouteManagerProvider>
-        </MapFiltersProvider>
-      </MemoryRouter>,
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/delivery/delivery-1"]}>
+          <MapFiltersProvider>
+            <DeliveryRouteManagerProvider>
+              <Routes>
+                <Route
+                  path="/delivery/:deliveryId"
+                  element={<DeliveryMapPage />}
+                />
+              </Routes>
+            </DeliveryRouteManagerProvider>
+          </MapFiltersProvider>
+        </MemoryRouter>,
+      );
+    });
 
     // Wait for initial loading
     await waitFor(() => {

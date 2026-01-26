@@ -1,9 +1,8 @@
-import React from "react";
 import type { RouteSegment } from "@/types/map-provider";
 import type { RouteManager } from "@/services/RouteManager";
 import { RefreshCcw, Route, Clock, ArrowRight } from "lucide-react";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
-import { pl, formatDurationPL } from "@/lib/translations";
+import { formatDurationPL } from "@/lib/translations";
 
 interface DeliveryRouteSegmentProps {
   segment: RouteSegment;
@@ -93,7 +92,7 @@ export const DeliveryRouteSegment: React.FC<DeliveryRouteSegmentProps> = ({
         onClick={handleRecalculate}
         disabled={isCalculating}
         className="p-1 hover:bg-purple-100 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-purple-600 hover:text-purple-700 border border-transparent hover:border-purple-300"
-        aria-label={isCalculating ? pl.ariaRecalculating : pl.ariaRefreshRoute}
+        aria-label={isCalculating ? "Przeliczanie trasy" : "Odśwież trasę"}
       >
         <RefreshCcw className="h-3 w-3" />
       </button>

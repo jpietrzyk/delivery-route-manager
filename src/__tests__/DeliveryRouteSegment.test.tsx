@@ -22,7 +22,7 @@ describe("DeliveryRouteSegment", () => {
   const createMockRouteSegment = (
     fromOrderId: string = "order-1",
     toOrderId: string = "order-2",
-    routeData?: RouteData
+    routeData?: RouteData,
   ): RouteSegment => ({
     id: `${fromOrderId}-${toOrderId}`,
     fromOrder: createMockOrder(fromOrderId),
@@ -35,7 +35,7 @@ describe("DeliveryRouteSegment", () => {
 
   const createMockRouteData = (
     distance: number = 5000,
-    duration: number = 900
+    duration: number = 900,
   ): RouteData => ({
     polyline: "encoded_polyline_string",
     distance,
@@ -125,7 +125,7 @@ describe("DeliveryRouteSegment", () => {
         segment={segment}
         onRecalculate={mockRecalculate}
       />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
     const refreshButton = screen.getByLabelText("Odśwież trasę");
@@ -141,7 +141,7 @@ describe("DeliveryRouteSegment", () => {
       wrapper: Wrapper,
     });
 
-    const refreshButton = screen.getByLabelText("Przeliczanie...");
+    const refreshButton = screen.getByLabelText("Przeliczanie trasy");
     expect(refreshButton).toBeDisabled();
   });
 
@@ -151,7 +151,7 @@ describe("DeliveryRouteSegment", () => {
 
     const { container } = render(
       <DeliveryRouteSegment segment={segment} onHover={mockHover} />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
     const segmentElement = container.querySelector(".delivery-route-segment");
