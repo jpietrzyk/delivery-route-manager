@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { render, waitFor, screen } from "@testing-library/react";
+import { act } from "react-dom/test-utils";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";
@@ -54,7 +55,7 @@ describe("DeliverySidebar - Assigned Count Update", () => {
     onAddOrderToDelivery?: (orderId: string) => Promise<void>;
   }) => {
     const [deliveryOrders, setDeliveryOrders] = useState<Order[]>(
-      initialDeliveryOrders
+      initialDeliveryOrders,
     );
 
     return (
@@ -133,7 +134,7 @@ describe("DeliverySidebar - Assigned Count Update", () => {
             { orderId, sequence: 1, status: "pending" },
           ],
         };
-      }
+      },
     );
   });
 
@@ -142,23 +143,29 @@ describe("DeliverySidebar - Assigned Count Update", () => {
   });
 
   it("should show correct initial assigned count", async () => {
-    const { container } = render(
-      <Wrapper initialDeliveryOrders={[mockOrders[0]]} />
-    );
-
+    let container;
+    await act(async () => {
+      const result = render(
+        <Wrapper initialDeliveryOrders={[mockOrders[0]]} />,
+      );
+      container = result.container;
+    });
     // Look for the delivery orders count display with the specific class
     const countElement = container.querySelector(
-      ".text-sm.font-medium.text-foreground"
+      ".text-sm.font-medium.text-foreground",
     );
     expect(countElement).toBeInTheDocument();
     expect(countElement).toHaveTextContent("1");
   });
 
   it("should render delivery orders list", async () => {
-    const { container } = render(
-      <Wrapper initialDeliveryOrders={[mockOrders[0]]} />
-    );
-
+    let container;
+    await act(async () => {
+      const result = render(
+        <Wrapper initialDeliveryOrders={[mockOrders[0]]} />,
+      );
+      container = result.container;
+    });
     // Check that the sidebar element is rendered
     await waitFor(() => {
       const sidebar = container.querySelector('[data-sidebar="sidebar"]');
@@ -202,15 +209,16 @@ describe("DeliverySidebar - Assigned Count Update", () => {
       );
     };
 
-    render(
-      <WrapperWithRouteSegments segments={mockRouteSegments}>
-        <DeliverySidebar
-          deliveryOrders={mockOrders}
-          onDeliveryOrdersUpdated={() => {}}
-        />
-      </WrapperWithRouteSegments>
-    );
-
+    await act(async () => {
+      render(
+        <WrapperWithRouteSegments segments={mockRouteSegments}>
+          <DeliverySidebar
+            deliveryOrders={mockOrders}
+            onDeliveryOrdersUpdated={() => {}}
+          />
+        </WrapperWithRouteSegments>,
+      );
+    });
     // Wait for calculations to complete
     await waitFor(
       () => {
@@ -219,7 +227,7 @@ describe("DeliverySidebar - Assigned Count Update", () => {
         // Should show 10 minutes (rounded)
         expect(screen.getByText(/10m/i)).toBeInTheDocument();
       },
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
   });
 
@@ -259,15 +267,16 @@ describe("DeliverySidebar - Assigned Count Update", () => {
       );
     };
 
-    render(
-      <WrapperWithRouteSegments segments={mockRouteSegments}>
-        <DeliverySidebar
-          deliveryOrders={mockOrders}
-          onDeliveryOrdersUpdated={() => {}}
-        />
-      </WrapperWithRouteSegments>
-    );
-
+    await act(async () => {
+      render(
+        <WrapperWithRouteSegments segments={mockRouteSegments}>
+          <DeliverySidebar
+            deliveryOrders={mockOrders}
+            onDeliveryOrdersUpdated={() => {}}
+          />
+        </WrapperWithRouteSegments>,
+      );
+    });
     // Wait for calculations to complete
     await waitFor(
       () => {
@@ -275,7 +284,7 @@ describe("DeliverySidebar - Assigned Count Update", () => {
         const minuteElements = screen.queryAllByText(/11/);
         expect(minuteElements.length).toBeGreaterThan(0);
       },
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
   });
 });
