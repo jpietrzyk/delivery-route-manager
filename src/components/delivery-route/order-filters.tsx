@@ -89,10 +89,10 @@ export const OrderFilters = ({
       color: mapConfig.markerColors.status.pending,
     },
     {
-      key: "inprogress",
+      key: "in-progress",
       label: "W trakcie",
       icon: <Clock />,
-      color: mapConfig.markerColors.status.inprogress,
+      color: mapConfig.markerColors.status["in-progress"],
     },
     {
       key: "completed",
@@ -174,7 +174,7 @@ export const OrderFilters = ({
               filters={
                 statusFilters ?? {
                   pending: true,
-                  inprogress: true,
+                  "in-progress": true,
                   completed: true,
                   cancelled: true,
                 }

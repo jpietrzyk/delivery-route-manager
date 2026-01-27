@@ -15,7 +15,7 @@ const ICONS = {
   priorityHigh: "/markers/marker-priority-high.svg",
   // Status
   statusPending: "/markers/marker-status-pending.svg",
-  statusInProgress: "/markers/marker-status-inprogress.svg",
+  statusInProgress: "/markers/marker-status-in-progress.svg",
   statusCompleted: "/markers/marker-status-completed.svg",
   statusCancelled: "/markers/marker-status-cancelled.svg",
   // Amount

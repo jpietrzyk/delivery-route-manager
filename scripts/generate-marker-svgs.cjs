@@ -15,7 +15,7 @@ const markers = [
   { name: 'priority-high', color: filterColors.priority.high },
   // Status
   { name: 'status-pending', color: filterColors.status.pending },
-  { name: 'status-inprogress', color: filterColors.status.inprogress },
+  { name: 'status-in-progress', color: filterColors.status["in-progress"] },
   { name: 'status-completed', color: filterColors.status.completed },
   { name: 'status-cancelled', color: filterColors.status.cancelled },
   // Amount

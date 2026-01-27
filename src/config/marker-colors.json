@@ -6,7 +6,7 @@
   },
   "status": {
     "pending": "#90EE90",
-    "inprogress": "#3CB371",
+    "in-progress": "#3CB371",
     "completed": "#2E8B57",
     "cancelled": "#444C38"
   },

@@ -10,7 +10,7 @@ const markers = [
   { name: 'priority-high', color: '#C6011F' },
   // Status
   { name: 'status-pending', color: '#90EE90' },
-  { name: 'status-inprogress', color: '#3CB371' },
+  { name: 'status-in-progress', color: '#3CB371' },
   { name: 'status-completed', color: '#2E8B57' },
   { name: 'status-cancelled', color: '#444C38' },
   // Amount
