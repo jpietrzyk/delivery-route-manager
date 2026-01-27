@@ -1,0 +1,23 @@
+{
+  "priority": {
+    "low": "#fd5c63",
+    "medium": "#BD3039",
+    "high": "#C6011F"
+  },
+  "status": {
+    "pending": "#90EE90",
+    "inprogress": "#3CB371",
+    "completed": "#2E8B57",
+    "cancelled": "#444C38"
+  },
+  "amount": {
+    "low": "#1E90FF",
+    "medium": "#104E8B",
+    "high": "#08306B"
+  },
+  "complexity": {
+    "low": "#FFD700",
+    "medium": "#FFA500",
+    "high": "#FF8C00"
+  }
+}

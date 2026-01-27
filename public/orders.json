@@ -13,7 +13,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************né",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.097999,
@@ -35,7 +35,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********ul",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.342652,
@@ -57,7 +57,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********id",
-    "totalAmmount": 194000,
+    "totalamount": 194000,
     "items": [],
     "location": {
       "lat": 47.702565,
@@ -79,7 +79,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********ko",
-    "totalAmmount": 298000,
+    "totalamount": 298000,
     "items": [],
     "location": {
       "lat": 47.347772,
@@ -101,7 +101,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********ám",
-    "totalAmmount": 565000,
+    "totalamount": 565000,
     "items": [],
     "location": {
       "lat": 47.021006,
@@ -123,7 +123,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********la",
-    "totalAmmount": 205000,
+    "totalamount": 205000,
     "items": [],
     "location": {
       "lat": 47.242874,
@@ -145,7 +145,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "************la",
-    "totalAmmount": 650000,
+    "totalamount": 650000,
     "items": [],
     "location": {
       "lat": 46.957207,
@@ -167,7 +167,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": 299000,
+    "totalamount": 299000,
     "items": [],
     "location": {
       "lat": 46.197248,
@@ -189,7 +189,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": "1,57900",
+    "totalamount": "1,57900",
     "items": [],
     "location": {
       "lat": 47.650062,
@@ -211,7 +211,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "************on",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.720417,
@@ -233,7 +233,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********án",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 47.991272,
@@ -255,7 +255,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********rt",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.2173,
@@ -277,7 +277,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************ló",
-    "totalAmmount": 194000,
+    "totalamount": 194000,
     "items": [],
     "location": {
       "lat": 47.607439,
@@ -299,7 +299,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********er",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 48.040709,
@@ -321,7 +321,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************án",
-    "totalAmmount": 550000,
+    "totalamount": 550000,
     "items": [],
     "location": {
       "lat": 47.74311,
@@ -343,7 +343,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********nc",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 46.628914,
@@ -365,7 +365,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********or",
-    "totalAmmount": 270000,
+    "totalamount": 270000,
     "items": [],
     "location": {
       "lat": 47.383039,
@@ -387,7 +387,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********ia",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.625734,
@@ -409,7 +409,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.437512,
@@ -431,7 +431,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********************ty",
-    "totalAmmount": 330000,
+    "totalamount": 330000,
     "items": [],
     "location": {
       "lat": 47.085491,
@@ -453,7 +453,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********or",
-    "totalAmmount": 980000,
+    "totalamount": 980000,
     "items": [],
     "location": {
       "lat": 47.488736,
@@ -475,7 +475,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********ef",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 47.631537,
@@ -497,7 +497,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********************né",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 48.016462,
@@ -519,7 +519,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*******************ia",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.711716,
@@ -541,7 +541,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "************rt",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.359086,
@@ -563,7 +563,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********ta",
-    "totalAmmount": "2,19800",
+    "totalamount": "2,19800",
     "items": [],
     "location": {
       "lat": 46.693361,
@@ -585,7 +585,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "************it",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.925757,
@@ -607,7 +607,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********er",
-    "totalAmmount": 194000,
+    "totalamount": 194000,
     "items": [],
     "location": {
       "lat": 47.241942,
@@ -629,7 +629,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": 298000,
+    "totalamount": 298000,
     "items": [],
     "location": {
       "lat": 46.857393,
@@ -651,7 +651,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************it",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.01878,
@@ -673,7 +673,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********os",
-    "totalAmmount": 730000,
+    "totalamount": 730000,
     "items": [],
     "location": {
       "lat": 47.176537,
@@ -695,7 +695,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********an",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.735904,
@@ -717,7 +717,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********nt",
-    "totalAmmount": 400000,
+    "totalamount": 400000,
     "items": [],
     "location": {
       "lat": 47.141507,
@@ -739,7 +739,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********or",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 47.140972,
@@ -761,7 +761,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********sa",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 47.048898,
@@ -783,7 +783,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.851964,
@@ -805,7 +805,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********************ke",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.537014,
@@ -827,7 +827,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*****************né",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.633598,
@@ -849,7 +849,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********lt",
-    "totalAmmount": 742000,
+    "totalamount": 742000,
     "items": [],
     "location": {
       "lat": 47.420275,
@@ -871,7 +871,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***************ás",
-    "totalAmmount": 410000,
+    "totalamount": 410000,
     "items": [],
     "location": {
       "lat": 46.201314,
@@ -893,7 +893,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***************ef",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 48.244074,
@@ -915,7 +915,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********la",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.608216,
@@ -937,7 +937,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**************or",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 48.153578,
@@ -959,7 +959,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********ly",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.65366,
@@ -981,7 +981,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********ás",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.378076,
@@ -1003,7 +1003,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********or",
-    "totalAmmount": 179000,
+    "totalamount": 179000,
     "items": [],
     "location": {
       "lat": 48.154671,
@@ -1025,7 +1025,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": 179000,
+    "totalamount": 179000,
     "items": [],
     "location": {
       "lat": 46.616987,
@@ -1047,7 +1047,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*****************ta",
-    "totalAmmount": 224000,
+    "totalamount": 224000,
     "items": [],
     "location": {
       "lat": 46.703162,
@@ -1069,7 +1069,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********án",
-    "totalAmmount": 550000,
+    "totalamount": 550000,
     "items": [],
     "location": {
       "lat": 47.523982,
@@ -1091,7 +1091,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********ba",
-    "totalAmmount": 194000,
+    "totalamount": 194000,
     "items": [],
     "location": {
       "lat": 47.770071,
@@ -1113,7 +1113,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "******************it",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.622535,
@@ -1135,7 +1135,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*******************in",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.591868,
@@ -1157,7 +1157,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************er",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.061909,
@@ -1179,7 +1179,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "******************gy",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.631195,
@@ -1201,7 +1201,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********or",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 47.099866,
@@ -1223,7 +1223,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********or",
-    "totalAmmount": 179000,
+    "totalamount": 179000,
     "items": [],
     "location": {
       "lat": 48.16205,
@@ -1245,7 +1245,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********an",
-    "totalAmmount": 410000,
+    "totalamount": 410000,
     "items": [],
     "location": {
       "lat": 47.036028,
@@ -1267,7 +1267,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********re",
-    "totalAmmount": 179000,
+    "totalamount": 179000,
     "items": [],
     "location": {
       "lat": 47.088201,
@@ -1289,7 +1289,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "****************ta",
-    "totalAmmount": 557530,
+    "totalamount": 557530,
     "items": [],
     "location": {
       "lat": 46.976389,
@@ -1311,7 +1311,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********os",
-    "totalAmmount": 205000,
+    "totalamount": 205000,
     "items": [],
     "location": {
       "lat": 46.432014,
@@ -1333,7 +1333,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********ás",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 47.483441,
@@ -1355,7 +1355,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********rt",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 47.855506,
@@ -1377,7 +1377,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********************na",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.045886,
@@ -1399,7 +1399,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********al",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.967922,
@@ -1421,7 +1421,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********in",
-    "totalAmmount": 179000,
+    "totalamount": 179000,
     "items": [],
     "location": {
       "lat": 47.685057,
@@ -1443,7 +1443,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********re",
-    "totalAmmount": 179000,
+    "totalamount": 179000,
     "items": [],
     "location": {
       "lat": 47.088201,
@@ -1465,7 +1465,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********án",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.736896,
@@ -1487,7 +1487,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********ce",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.480857,
@@ -1509,7 +1509,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********ló",
-    "totalAmmount": 270000,
+    "totalamount": 270000,
     "items": [],
     "location": {
       "lat": 47.499445,
@@ -1531,7 +1531,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "******************kó",
-    "totalAmmount": 270000,
+    "totalamount": 270000,
     "items": [],
     "location": {
       "lat": 47.558491,
@@ -1553,7 +1553,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*******16",
-    "totalAmmount": 209000,
+    "totalamount": 209000,
     "items": [],
     "location": {
       "lat": 47.431431,
@@ -1575,7 +1575,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********la",
-    "totalAmmount": 690000,
+    "totalamount": 690000,
     "items": [],
     "location": {
       "lat": 46.384977,
@@ -1597,7 +1597,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************né",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.805832,
@@ -1619,7 +1619,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********ef",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.112642,
@@ -1641,7 +1641,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********án",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.291863,
@@ -1663,7 +1663,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********ós",
-    "totalAmmount": 610000,
+    "totalamount": 610000,
     "items": [],
     "location": {
       "lat": 46.468039,
@@ -1685,7 +1685,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********er",
-    "totalAmmount": 378000,
+    "totalamount": 378000,
     "items": [],
     "location": {
       "lat": 47.618221,
@@ -1707,7 +1707,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********ló",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.753948,
@@ -1729,7 +1729,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********ba",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.353021,
@@ -1751,7 +1751,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********or",
-    "totalAmmount": "1,09900",
+    "totalamount": "1,09900",
     "items": [],
     "location": {
       "lat": 46.690796,
@@ -1773,7 +1773,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********ef",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 46.337912,
@@ -1795,7 +1795,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**************né",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.211205,
@@ -1817,7 +1817,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**************la",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 46.325113,
@@ -1839,7 +1839,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "************né",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.552106,
@@ -1861,7 +1861,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********lt",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.447954,
@@ -1883,7 +1883,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********on",
-    "totalAmmount": 398000,
+    "totalamount": 398000,
     "items": [],
     "location": {
       "lat": 47.681142,
@@ -1905,7 +1905,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************la",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 48.181186,
@@ -1927,7 +1927,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "****************ly",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.226616,
@@ -1949,7 +1949,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************né",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.266047,
@@ -1971,7 +1971,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************rk",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.082913,
@@ -1993,7 +1993,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********né",
-    "totalAmmount": 270000,
+    "totalamount": 270000,
     "items": [],
     "location": {
       "lat": 47.463847,
@@ -2015,7 +2015,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********la",
-    "totalAmmount": 796000,
+    "totalamount": 796000,
     "items": [],
     "location": {
       "lat": 46.344712,
@@ -2037,7 +2037,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***************th",
-    "totalAmmount": 725000,
+    "totalamount": 725000,
     "items": [],
     "location": {
       "lat": 46.79893,
@@ -2059,7 +2059,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": 421000,
+    "totalamount": 421000,
     "items": [],
     "location": {
       "lat": 46.838593,
@@ -2081,7 +2081,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********ső",
-    "totalAmmount": 597000,
+    "totalamount": 597000,
     "items": [],
     "location": {
       "lat": 46.872681,
@@ -2103,7 +2103,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": 418000,
+    "totalamount": 418000,
     "items": [],
     "location": {
       "lat": 47.25802,
@@ -2125,7 +2125,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********la",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.089412,
@@ -2147,7 +2147,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********lt",
-    "totalAmmount": 255000,
+    "totalamount": 255000,
     "items": [],
     "location": {
       "lat": 46.542011,
@@ -2169,7 +2169,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********es",
-    "totalAmmount": 590000,
+    "totalamount": 590000,
     "items": [],
     "location": {
       "lat": 48.071822,
@@ -2191,7 +2191,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********la",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.037457,
@@ -2213,7 +2213,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********************tt",
-    "totalAmmount": 328000,
+    "totalamount": 328000,
     "items": [],
     "location": {
       "lat": 45.960526,
@@ -2235,7 +2235,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********án",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.406979,
@@ -2257,7 +2257,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 46.86864,
@@ -2279,7 +2279,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********ba",
-    "totalAmmount": 330000,
+    "totalamount": 330000,
     "items": [],
     "location": {
       "lat": 46.921518,
@@ -2301,7 +2301,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********ra",
-    "totalAmmount": 566000,
+    "totalamount": 566000,
     "items": [],
     "location": {
       "lat": 47.248911,
@@ -2323,7 +2323,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********ós",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 45.981305,
@@ -2345,7 +2345,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********nő",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.838141,
@@ -2367,7 +2367,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********de",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.502731,
@@ -2389,7 +2389,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********án",
-    "totalAmmount": 500000,
+    "totalamount": 500000,
     "items": [],
     "location": {
       "lat": 47.49132,
@@ -2411,7 +2411,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********án",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.314196,
@@ -2433,7 +2433,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "************al",
-    "totalAmmount": 400000,
+    "totalamount": 400000,
     "items": [],
     "location": {
       "lat": 47.633857,
@@ -2455,7 +2455,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********************na",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.341252,
@@ -2477,7 +2477,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********ád",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 46.045016,
@@ -2499,7 +2499,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********os",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 47.39947,
@@ -2521,7 +2521,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**************né",
-    "totalAmmount": 357000,
+    "totalamount": 357000,
     "items": [],
     "location": {
       "lat": 46.949954,
@@ -2543,7 +2543,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********in",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.157493,
@@ -2565,7 +2565,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********tt",
-    "totalAmmount": 194000,
+    "totalamount": 194000,
     "items": [],
     "location": {
       "lat": 48.12654,
@@ -2587,7 +2587,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********zs",
-    "totalAmmount": 330000,
+    "totalamount": 330000,
     "items": [],
     "location": {
       "lat": 46.81407,
@@ -2609,7 +2609,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********iz",
-    "totalAmmount": 364500,
+    "totalamount": 364500,
     "items": [],
     "location": {
       "lat": 47.02984,
@@ -2631,7 +2631,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "************ka",
-    "totalAmmount": 565000,
+    "totalamount": 565000,
     "items": [],
     "location": {
       "lat": 46.346313,
@@ -2653,7 +2653,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "************tt",
-    "totalAmmount": 260000,
+    "totalamount": 260000,
     "items": [],
     "location": {
       "lat": 47.407387,
@@ -2675,7 +2675,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********el",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.22172,
@@ -2697,7 +2697,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "************tt",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 46.037278,
@@ -2719,7 +2719,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********nc",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.310616,
@@ -2741,7 +2741,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********án",
-    "totalAmmount": 249000,
+    "totalamount": 249000,
     "items": [],
     "location": {
       "lat": 46.810778,
@@ -2763,7 +2763,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": 208000,
+    "totalamount": 208000,
     "items": [],
     "location": {
       "lat": 47.857755,
@@ -2785,7 +2785,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********no",
-    "totalAmmount": 330000,
+    "totalamount": 330000,
     "items": [],
     "location": {
       "lat": 46.317881,
@@ -2807,7 +2807,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********án",
-    "totalAmmount": 224000,
+    "totalamount": 224000,
     "items": [],
     "location": {
       "lat": 47.944871,
@@ -2829,7 +2829,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***************né",
-    "totalAmmount": 570000,
+    "totalamount": 570000,
     "items": [],
     "location": {
       "lat": 46.581812,
@@ -2851,7 +2851,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***MA",
-    "totalAmmount": 298500,
+    "totalamount": 298500,
     "items": [],
     "location": {
       "lat": 47.016789,
@@ -2873,7 +2873,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "****************ta",
-    "totalAmmount": 565900,
+    "totalamount": 565900,
     "items": [],
     "location": {
       "lat": 47.228632,
@@ -2895,7 +2895,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**************or",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.035885,
@@ -2917,7 +2917,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********90",
-    "totalAmmount": 388000,
+    "totalamount": 388000,
     "items": [],
     "location": {
       "lat": 48.141272,
@@ -2939,7 +2939,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********ly",
-    "totalAmmount": 270000,
+    "totalamount": 270000,
     "items": [],
     "location": {
       "lat": 47.245451,
@@ -2961,7 +2961,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************ta",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.566112,
@@ -2983,7 +2983,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********an",
-    "totalAmmount": 565000,
+    "totalamount": 565000,
     "items": [],
     "location": {
       "lat": 46.355246,
@@ -3005,7 +3005,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********ka",
-    "totalAmmount": 610000,
+    "totalamount": 610000,
     "items": [],
     "location": {
       "lat": 47.106384,
@@ -3027,7 +3027,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********or",
-    "totalAmmount": 270000,
+    "totalamount": 270000,
     "items": [],
     "location": {
       "lat": 47.318989,
@@ -3049,7 +3049,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********or",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 47.900337,
@@ -3071,7 +3071,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********or",
-    "totalAmmount": 400000,
+    "totalamount": 400000,
     "items": [],
     "location": {
       "lat": 46.081423,
@@ -3093,7 +3093,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "**********or",
-    "totalAmmount": 270000,
+    "totalamount": 270000,
     "items": [],
     "location": {
       "lat": 47.753586,
@@ -3115,7 +3115,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************zs",
-    "totalAmmount": 565000,
+    "totalamount": 565000,
     "items": [],
     "location": {
       "lat": 47.394846,
@@ -3137,7 +3137,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "********os",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 46.394568,
@@ -3159,7 +3159,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***********ba",
-    "totalAmmount": 189000,
+    "totalamount": 189000,
     "items": [],
     "location": {
       "lat": 46.67827,
@@ -3181,7 +3181,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********or",
-    "totalAmmount": 565000,
+    "totalamount": 565000,
     "items": [],
     "location": {
       "lat": 47.850155,
@@ -3203,7 +3203,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*********án",
-    "totalAmmount": 298000,
+    "totalamount": 298000,
     "items": [],
     "location": {
       "lat": 48.029151,
@@ -3225,7 +3225,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "***************ly",
-    "totalAmmount": 194000,
+    "totalamount": 194000,
     "items": [],
     "location": {
       "lat": 47.384892,
@@ -3247,7 +3247,7 @@
     "createdAt": "2025-11-29T18:30:50.000Z",
     "updatedAt": "2025-11-29T18:30:50.000Z",
     "customer": "*************an",
-    "totalAmmount": 199000,
+    "totalamount": 199000,
     "items": [],
     "location": {
       "lat": 47.605475,

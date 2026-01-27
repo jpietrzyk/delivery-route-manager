@@ -108,24 +108,24 @@ export const OrderFilters = ({
     },
   ];
 
-  const ammountOptions = [
+  const amountOptions = [
     {
       key: "low",
       label: "Niska kwota",
       icon: <ChevronDown />,
-      color: mapConfig.markerColors.ammount.low,
+      color: mapConfig.markerColors.amount.low,
     },
     {
       key: "medium",
       label: "Średnia kwota",
       icon: <AlertCircle />,
-      color: mapConfig.markerColors.ammount.medium,
+      color: mapConfig.markerColors.amount.medium,
     },
     {
       key: "high",
       label: "Wysoka kwota",
       icon: <Zap />,
-      color: mapConfig.markerColors.ammount.high,
+      color: mapConfig.markerColors.amount.high,
     },
   ];
 
@@ -194,7 +194,7 @@ export const OrderFilters = ({
                   high: true,
                 }
               }
-              options={ammountOptions}
+              options={amountOptions}
               onChange={
                 onAmountChange as (filters: Record<string, boolean>) => void
               }

@@ -4,29 +4,9 @@ const fs = require('fs');
 const path = require('path');
 
 
-// Import filterColors from map.config.ts
-const tsConfigPath = path.join(__dirname, '../src/config/map.config.ts');
-const tsConfigContent = fs.readFileSync(tsConfigPath, 'utf8');
-
-function extractColors(section) {
-  const regex = new RegExp(section + ': ?{([\s\S]*?)}', 'm');
-  const match = tsConfigContent.match(regex);
-  if (!match) return {};
-  const obj = {};
-  const lines = match[1].split('\n').map(l => l.trim()).filter(Boolean);
-  lines.forEach(line => {
-    const m = line.match(/(\w+): ?['"](#\w{3,6})['"]/);
-    if (m) obj[m[1]] = m[2];
-  });
-  return obj;
-}
-
-const filterColors = {
-  priority: extractColors('priority'),
-  status: extractColors('status'),
-  amount: extractColors('amount'),
-  complexity: extractColors('complexity'),
-};
+// Read marker colors from JSON config
+const markerColorsPath = path.join(__dirname, '../src/config/marker-colors.json');
+const filterColors = JSON.parse(fs.readFileSync(markerColorsPath, 'utf8'));
 
 const markers = [
   // Priority
@@ -43,9 +23,9 @@ const markers = [
   { name: 'amount-medium', color: filterColors.amount.medium },
   { name: 'amount-high', color: filterColors.amount.high },
   // Complexity
-  { name: 'complexity-simple', color: filterColors.complexity.simple },
-  { name: 'complexity-moderate', color: filterColors.complexity.moderate },
-  { name: 'complexity-complex', color: filterColors.complexity.complex },
+  { name: 'complexity-low', color: filterColors.complexity.low },
+  { name: 'complexity-medium', color: filterColors.complexity.medium },
+  { name: 'complexity-high', color: filterColors.complexity.high },
 ];
 
 const svgTemplate = (color) => `<?xml version="1.0" encoding="UTF-8"?>
@@ -62,7 +42,7 @@ markers.forEach(({ name, color }) => {
   const svg = svgTemplate(color);
   const filePath = path.join(outDir, `marker-${name}.svg`);
   fs.writeFileSync(filePath, svg, 'utf8');
-  console.log(`Generated: ${filePath}`);
+  console.log(`Generated: ${filePath} for ${name}`);
 });
 
 console.log('All marker SVGs generated.');

@@ -66,7 +66,7 @@ describe.skip('Orders Netlify Function', () => {
       createdAt: '2026-01-01T08:00:00.000Z',
       updatedAt: '2026-01-01T08:00:00.000Z',
       customer: 'Test Customer',
-      totalAmmount: 100,
+      totalamount: 100,
       items: [],
       location: {
         lat: 51.5074,

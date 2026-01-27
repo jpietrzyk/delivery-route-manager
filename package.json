@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "test": "pnpm dlx jest --config jest.config.cjs",
     "test:watch": "pnpm dlx jest --config jest.config.cjs --watch",
-    "test:coverage": "pnpm dlx jest --config jest.config.cjs --coverage"
+    "test:coverage": "pnpm dlx jest --config jest.config.cjs --coverage",
+    "generate:markers": "node scripts/generate-marker-svgs.cjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

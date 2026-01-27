@@ -55,7 +55,7 @@ async function loadOrders(): Promise<void> {
           createdAt: new Date(order.createdAt),
           updatedAt: new Date(order.updatedAt),
           customer: order.customer,
-          totalAmount: (orderRecord.totalAmount as number) ?? (orderRecord.totalAmmount as number) ?? 0,
+          totalAmount: (orderRecord.totalAmount as number) ?? (orderRecord.totalamount as number) ?? 0,
           items: order.items,
           location: {
             lat: typeof order.location.lat === 'string' ? parseFloat(order.location.lat) : order.location.lat,
