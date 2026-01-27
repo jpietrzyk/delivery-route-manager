@@ -1,3 +1,15 @@
+import { FiltersGroup } from "./filters-group";
+import { mapConfig } from "@/config/map.config";
+import {
+  Play,
+  Clock,
+  CheckCircle,
+  XCircle,
+  ChevronDown,
+  AlertCircle,
+  Zap,
+  Wrench,
+} from "lucide-react";
 export interface OrderFiltersProps {
   priorityFilters?: PriorityFilterState;
   statusFilters?: StatusFilterState;
@@ -8,33 +20,6 @@ export interface OrderFiltersProps {
   onAmountChange?: (filters: AmountFilterState) => void;
   onComplexityChange?: (filters: ComplexityFilterState) => void;
 }
-import {
-  ChevronDown,
-  AlertCircle,
-  Zap,
-  Clock,
-  Play,
-  CheckCircle,
-  XCircle,
-  Wrench,
-} from "lucide-react";
-
-import { FiltersGroup } from "./filters-group";
-
-export type PriorityFilterState = {
-  low: boolean;
-  medium: boolean;
-  high: boolean;
-  [key: string]: boolean;
-};
-
-export type StatusFilterState = {
-  pending: boolean;
-  "in-progress": boolean;
-  completed: boolean;
-  cancelled: boolean;
-  [key: string]: boolean;
-};
 
 export type ComplexityFilterState = {
   simple: boolean;
@@ -50,6 +35,21 @@ export type AmountFilterState = {
   [key: string]: boolean;
 };
 
+export type PriorityFilterState = {
+  low: boolean;
+  medium: boolean;
+  high: boolean;
+  [key: string]: boolean;
+};
+
+export type StatusFilterState = {
+  pending: boolean;
+  inprogress: boolean;
+  completed: boolean;
+  cancelled: boolean;
+  [key: string]: boolean;
+};
+
 export const OrderFilters = ({
   priorityFilters,
   statusFilters,
@@ -60,6 +60,53 @@ export const OrderFilters = ({
   onAmountChange,
   onComplexityChange,
 }: OrderFiltersProps) => {
+  // ...existing code...
+  const priorityOptions = [
+    {
+      key: "low",
+      label: "Niski priorytet",
+      icon: <ChevronDown />,
+      color: mapConfig.markerColors.priority.low,
+    },
+    {
+      key: "medium",
+      label: "Średni priorytet",
+      icon: <AlertCircle />,
+      color: mapConfig.markerColors.priority.medium,
+    },
+    {
+      key: "high",
+      label: "Wysoki priorytet",
+      icon: <Zap />,
+      color: mapConfig.markerColors.priority.high,
+    },
+  ];
+  const statusOptions = [
+    {
+      key: "pending",
+      label: "Oczekujące",
+      icon: <Play />,
+      color: mapConfig.markerColors.status.pending,
+    },
+    {
+      key: "inprogress",
+      label: "W trakcie",
+      icon: <Clock />,
+      color: mapConfig.markerColors.status.inprogress,
+    },
+    {
+      key: "completed",
+      label: "Zakończone",
+      icon: <CheckCircle />,
+      color: mapConfig.markerColors.status.completed,
+    },
+    {
+      key: "cancelled",
+      label: "Anulowane",
+      icon: <XCircle />,
+      color: mapConfig.markerColors.status.cancelled,
+    },
+  ];
   return (
     <div className="w-full px-4 py-3 border-b border-border bg-muted/50">
       <div className="flex gap-3">
@@ -74,26 +121,8 @@ export const OrderFilters = ({
                   high: true,
                 }
               }
-              options={[
-                {
-                  key: "low",
-                  label: "Niski priorytet",
-                  icon: <ChevronDown />,
-                  color: "text-[#fd5c63]",
-                },
-                {
-                  key: "medium",
-                  label: "Średni priorytet",
-                  icon: <AlertCircle />,
-                  color: "text-[#BD3039]",
-                },
-                {
-                  key: "high",
-                  label: "Wysoki priorytet",
-                  icon: <Zap />,
-                  color: "text-[#C6011F]",
-                },
-              ]}
+              options={priorityOptions}
+              gridCols={3}
               onChange={
                 onPriorityChange as (filters: Record<string, boolean>) => void
               }
@@ -103,37 +132,12 @@ export const OrderFilters = ({
               filters={
                 statusFilters ?? {
                   pending: true,
-                  "in-progress": true,
+                  inprogress: true,
                   completed: true,
                   cancelled: true,
                 }
               }
-              options={[
-                {
-                  key: "pending",
-                  label: "Oczekujące",
-                  icon: <Play />,
-                  color: "text-[#F0E68C]",
-                },
-                {
-                  key: "in-progress",
-                  label: "W trakcie",
-                  icon: <Clock />,
-                  color: "text-[#FFA500]",
-                },
-                {
-                  key: "completed",
-                  label: "Zakończone",
-                  icon: <CheckCircle />,
-                  color: "text-[#4CAF50]",
-                },
-                {
-                  key: "cancelled",
-                  label: "Anulowane",
-                  icon: <XCircle />,
-                  color: "text-[#444C38]",
-                },
-              ]}
+              options={statusOptions}
               gridCols={4}
               onChange={
                 onStatusChange as (filters: Record<string, boolean>) => void
@@ -153,19 +157,19 @@ export const OrderFilters = ({
                   key: "low",
                   label: "Niska kwota",
                   icon: <ChevronDown />,
-                  color: "text-[#eec0c8]",
+                  color: "#eec0c8",
                 },
                 {
                   key: "medium",
                   label: "Średnia kwota",
                   icon: <AlertCircle />,
-                  color: "text-[#F9629F]",
+                  color: "#F9629F",
                 },
                 {
                   key: "high",
                   label: "Wysoka kwota",
                   icon: <Zap />,
-                  color: "text-[#FF00FF]",
+                  color: "#FF00FF",
                 },
               ]}
               onChange={

@@ -52,7 +52,11 @@ export const FiltersGroup = ({
           onPressedChange={handleSelectAll}
           size="sm"
           aria-label={`Zaznacz wszystkie ${name}`}
-          className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-green-50 data-[state=on]:text-green-700 data-[state=on]:border-green-300 h-6 w-6 p-0"
+          className={`border border-border/50 bg-background/50 hover:bg-accent/50 h-6 w-6 p-0 flex items-center justify-center ${
+            allSelected && options[0]?.color
+              ? `data-[state=on]:bg-[${options[0].color}] data-[state=on]:text-[${options[0].color}] data-[state=on]:border-[${options[0].color}]`
+              : ""
+          }`}
         >
           {allSelected ? (
             <Check className="h-3 w-3" />
@@ -68,25 +72,31 @@ export const FiltersGroup = ({
         </span>
       </div>
       <div className={`grid grid-cols-${gridCols} gap-2 lg:flex lg:flex-wrap`}>
-        {options.map((option) => (
-          <Toggle
-            key={option.key}
-            pressed={filters[option.key] ?? false}
-            onPressedChange={() => handleFilterChange(option.key)}
-            size="sm"
-            aria-label={`Filtruj po ${option.label}`}
-            className="border border-border/50 bg-background/50 hover:bg-accent/50 data-[state=on]:bg-accent/10 h-7 w-full flex-1 p-0 flex items-center justify-center"
-            title={option.label}
-          >
-            {isValidElement(option.icon)
-              ? cloneElement(option.icon, {
-                  className: filters[option.key]
-                    ? `h-4 w-4 ${option.color || ""}`
-                    : "h-4 w-4",
-                } as React.HTMLAttributes<HTMLElement>)
-              : option.icon}
-          </Toggle>
-        ))}
+        {options.map((option) => {
+          const color = option.color;
+          return (
+            <Toggle
+              key={option.key}
+              pressed={filters[option.key] ?? false}
+              onPressedChange={() => handleFilterChange(option.key)}
+              size="sm"
+              aria-label={`Filtruj po ${option.label}`}
+              className={`border border-border/50 bg-background/50 hover:bg-accent/50 h-7 w-full flex-1 p-0 flex items-center justify-center ${
+                color
+                  ? `data-[state=on]:bg-[${color}] data-[state=on]:text-[${color}] data-[state=on]:border-[${color}]`
+                  : "data-[state=on]:bg-accent/10"
+              }`}
+              title={option.label}
+            >
+              {isValidElement(option.icon)
+                ? cloneElement(option.icon, {
+                    className: "h-4 w-4",
+                    style: filters[option.key] && color ? { color } : undefined,
+                  } as React.HTMLAttributes<HTMLElement>)
+                : option.icon}
+            </Toggle>
+          );
+        })}
       </div>
     </div>
   );

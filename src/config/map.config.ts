@@ -30,6 +30,23 @@ export const mapConfig = {
   },
 
   /**
+   * Marker Colors for Filters (used by Node and frontend)
+   */
+  markerColors: {
+    priority: {
+      low: "#fd5c63",
+      medium: "#BD3039",
+      high: "#C6011F",
+    },
+    status: {
+      pending: "#90EE90",
+      inprogress: "#3CB371",
+      completed: "#2E8B57",
+      cancelled: "#444C38",
+    },
+    // Add more groups as needed
+  },
+  /**
    * Delivery Order Markers Configuration
    */
   deliveryMarkers: {

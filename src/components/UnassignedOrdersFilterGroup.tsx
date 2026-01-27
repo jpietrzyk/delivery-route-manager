@@ -2,6 +2,7 @@ interface FilterOption {
   label: string;
   value: string;
   checked: boolean;
+  color?: string;
 }
 
 export interface UnassignedOrdersFilterGroupProps {
@@ -36,7 +37,7 @@ export const UnassignedOrdersFilterGroup = ({
         <button
           onClick={handleSelectAll}
           aria-label={`Zaznacz wszystkie ${groupTitle}`}
-          className={`border border-border/50 bg-background/50 hover:bg-accent/50 h-6 w-6 p-0 flex items-center justify-center ${allSelected ? "bg-green-50 text-green-700 border-green-300" : ""}`}
+          className="border border-border/50 bg-background/50 hover:bg-accent/50 h-6 w-6 p-0 flex items-center justify-center"
         >
           {allSelected ? "✓" : "□"}
         </button>
@@ -54,7 +55,11 @@ export const UnassignedOrdersFilterGroup = ({
               type="checkbox"
               checked={filter.checked}
               onChange={() => handleFilterChange(filter.value)}
-              className="h-4 w-4"
+              className={
+                filter.color
+                  ? `h-4 w-4 border-2 border-[${filter.color}] bg-[${filter.color}] text-[${filter.color}]`
+                  : "h-4 w-4"
+              }
             />
             <span>{filter.label}</span>
           </label>
