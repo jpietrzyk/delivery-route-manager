@@ -10,9 +10,9 @@ import { MarkerHighlightContext } from "@/contexts/marker-highlight-context";
 import { OrderHighlightContext } from "@/contexts/order-highlight-context";
 import { SegmentHighlightContext } from "@/contexts/segment-highlight-context";
 import { PolylineHighlightContext } from "@/contexts/polyline-highlight-context";
-import { DeliveryRoutesApi } from "@/services/deliveryRoutesApi";
-import { DeliveryRouteWaypointsApi } from "@/services/deliveryRouteWaypointsApi";
-import { OrdersApi } from "@/services/ordersApi";
+import { DeliveryRoutesApi } from "@/services/delivery-routes-api";
+import { DeliveryRouteWaypointsApi } from "@/services/delivery-route-waypoints-api";
+import { OrdersApi } from "@/services/orders-api";
 import type {
   DeliveryRoute,
   DeliveryRouteWaypoint,
@@ -24,7 +24,7 @@ import {
   markDeliveryUpdateFailed,
   applyPendingOrderUpdates,
 } from "@/lib/local-storage-utils";
-import { RouteManager } from "@/services/RouteManager";
+import { RouteManager } from "@/services/route-manager";
 import { getUnassignedOrders } from "@/lib/utils";
 
 export default function DeliveryRouteManagerProvider({

@@ -1,7 +1,7 @@
 /**
  * Tests for OrdersApi service
  */
-import { OrdersApi } from '@/services/ordersApi';
+import { OrdersApi } from '@/services/orders-api';
 import type { Order } from '@/types/order';
 
 // Mock fetch globally

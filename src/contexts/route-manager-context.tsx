@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { RouteManager } from "@/services/RouteManager";
+import { RouteManager } from "@/services/route-manager";
 
 export type RouteManagerContextType = {
   routeManager: RouteManager | null;

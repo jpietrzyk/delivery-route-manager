@@ -1,8 +1,8 @@
 import type { Order } from '@/types/order';
 import type { DeliveryRoute } from '@/types/delivery-route';
-import { OrdersApi } from '@/services/ordersApi';
-import { DeliveryRoutesApi } from '@/services/deliveryRoutesApi';
-import { DeliveryRouteWaypointsApi } from '@/services/deliveryRouteWaypointsApi';
+import { OrdersApi } from '@/services/orders-api';
+import { DeliveryRoutesApi } from '@/services/delivery-routes-api';
+import { DeliveryRouteWaypointsApi } from '@/services/delivery-route-waypoints-api';
 
 // Local storage keys
 const LOCAL_STORAGE_KEYS = {

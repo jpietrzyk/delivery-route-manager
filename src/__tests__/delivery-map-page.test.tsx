@@ -5,12 +5,12 @@ import DeliveryMapPage from "@/pages/DeliveryRouteMapPage";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import DeliveryRouteManagerProvider from "@/providers/DeliveryRouteManagerProvider";
 import { MapFiltersProvider } from "@/contexts/MapFiltersContext";
-import { OrdersApi } from "@/services/ordersApi";
-import { DeliveryRouteWaypointsApi } from "@/services/deliveryRouteWaypointsApi";
+import { OrdersApi } from "@/services/orders-api";
+import { DeliveryRouteWaypointsApi } from "@/services/delivery-route-waypoints-api";
 import type { Order } from "@/types/order";
 
 // Mock the OrdersApi
-jest.mock("@/services/ordersApi");
+jest.mock("@/services/orders-api");
 
 const mockOrders: Order[] = [
   {

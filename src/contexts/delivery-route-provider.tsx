@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { DeliveryRouteContext } from "./delivery-route-context";
-import { DeliveryRoutesApi } from "@/services/deliveryRoutesApi";
-import { DeliveryRouteWaypointsApi } from "@/services/deliveryRouteWaypointsApi";
-import { OrdersApi } from "@/services/ordersApi";
+import { DeliveryRoutesApi } from "@/services/delivery-routes-api";
+import { DeliveryRouteWaypointsApi } from "@/services/delivery-route-waypoints-api";
+import { OrdersApi } from "@/services/orders-api";
 import type {
   DeliveryRoute,
   DeliveryRouteWaypoint,
@@ -24,7 +24,7 @@ export default function DeliveryRouteProvider({
 }) {
   const [deliveries, setDeliveries] = useState<DeliveryRoute[]>([]);
   const [currentDelivery, setCurrentDelivery] = useState<DeliveryRoute | null>(
-    null
+    null,
   );
   const [unassignedOrders, setUnassignedOrders] = useState<Order[]>([]);
   const [deliveryOrders, setDeliveryOrders] = useState<Order[]>([]);
@@ -49,13 +49,13 @@ export default function DeliveryRouteProvider({
       // Filter orders to get only those not assigned to any delivery
       const unassigned = getUnassignedOrders(
         ordersWithPendingUpdates,
-        allWaypoints
+        allWaypoints,
       );
 
       console.log(
         "[DeliveryRouteProvider] Unassigned orders:",
         unassigned.length,
-        unassigned.map((o) => o.id)
+        unassigned.map((o) => o.id),
       );
       setUnassignedOrders(unassigned);
     } catch (error) {
@@ -79,7 +79,7 @@ export default function DeliveryRouteProvider({
         // Get waypoints for this delivery (junction table)
         const waypoints =
           await DeliveryRouteWaypointsApi.getWaypointsByDelivery(
-            targetDeliveryId
+            targetDeliveryId,
           );
 
         if (waypoints.length === 0) {
@@ -94,7 +94,7 @@ export default function DeliveryRouteProvider({
         // Get orders in sequence using waypoints
         const ordersInSequence = getOrdersInSequence(
           waypoints,
-          ordersWithPendingUpdates
+          ordersWithPendingUpdates,
         );
 
         console.log(
@@ -102,7 +102,7 @@ export default function DeliveryRouteProvider({
           targetDeliveryId,
           ":",
           ordersInSequence.length,
-          ordersInSequence.map((o) => o.id)
+          ordersInSequence.map((o) => o.id),
         );
         setDeliveryOrders(ordersInSequence);
         return ordersInSequence;
@@ -111,7 +111,7 @@ export default function DeliveryRouteProvider({
         return [];
       }
     },
-    [currentDelivery?.id]
+    [currentDelivery?.id],
   );
 
   // Fetch all deliveries
@@ -141,7 +141,7 @@ export default function DeliveryRouteProvider({
     if (deliveries.length > 0 && !currentDelivery) {
       console.log(
         "[DeliveryRouteProvider] POC: Auto-selecting first delivery as current:",
-        deliveries[0].id
+        deliveries[0].id,
       );
       setCurrentDelivery(deliveries[0]);
     }
@@ -167,7 +167,7 @@ export default function DeliveryRouteProvider({
 
     // Filter out any unassigned orders that are also in delivery orders
     const uniqueUnassignedOrders = unassignedOrders.filter(
-      (order) => !deliveryOrderIds.has(order.id)
+      (order) => !deliveryOrderIds.has(order.id),
     );
 
     // Only update if there were duplicates
@@ -176,7 +176,7 @@ export default function DeliveryRouteProvider({
         "[DeliveryRouteProvider] Removed duplicate orders from unassigned list:",
         unassignedOrders
           .filter((o) => deliveryOrderIds.has(o.id))
-          .map((o) => o.id)
+          .map((o) => o.id),
       );
       setUnassignedOrders(uniqueUnassignedOrders);
     }
@@ -193,7 +193,7 @@ export default function DeliveryRouteProvider({
         console.error("Error creating delivery:", error);
       }
     },
-    []
+    [],
   );
 
   // Update an existing delivery
@@ -202,11 +202,11 @@ export default function DeliveryRouteProvider({
       try {
         const updatedDelivery = await DeliveryRoutesApi.updateDelivery(
           id,
-          updates
+          updates,
         );
         if (updatedDelivery) {
           setDeliveries((prev) =>
-            prev.map((d) => (d.id === id ? updatedDelivery : d))
+            prev.map((d) => (d.id === id ? updatedDelivery : d)),
           );
           if (currentDelivery?.id === id) {
             setCurrentDelivery(updatedDelivery);
@@ -216,7 +216,7 @@ export default function DeliveryRouteProvider({
         console.error("Error updating delivery:", error);
       }
     },
-    [currentDelivery]
+    [currentDelivery],
   );
 
   // Delete a delivery
@@ -234,7 +234,7 @@ export default function DeliveryRouteProvider({
         console.error("Error deleting delivery:", error);
       }
     },
-    [currentDelivery]
+    [currentDelivery],
   );
 
   // Add an order to a delivery
@@ -267,7 +267,7 @@ export default function DeliveryRouteProvider({
 
         // Remove from unassigned orders optimistically
         setUnassignedOrders((prev) =>
-          prev.filter((order) => order.id !== orderId)
+          prev.filter((order) => order.id !== orderId),
         );
 
         // Perform API calls in background
@@ -288,7 +288,7 @@ export default function DeliveryRouteProvider({
         console.error("Error adding order to delivery:", error);
       }
     },
-    [currentDelivery?.id]
+    [currentDelivery?.id],
   );
 
   // Remove an order from a delivery (returns to unassigned)
@@ -305,7 +305,7 @@ export default function DeliveryRouteProvider({
 
         // Optimistic UI update - remove from deliveryOrders
         setDeliveryOrders((prev) =>
-          prev.filter((order) => order.id !== orderId)
+          prev.filter((order) => order.id !== orderId),
         );
 
         // Optimistic update - add back to unassigned orders
@@ -334,7 +334,7 @@ export default function DeliveryRouteProvider({
         console.error("Error removing order from delivery:", error);
       }
     },
-    []
+    [],
   );
 
   // Reorder orders in a delivery
@@ -355,7 +355,7 @@ export default function DeliveryRouteProvider({
           DeliveryRouteWaypointsApi.reorderWaypoints(
             deliveryId,
             fromIndex,
-            toIndex
+            toIndex,
           );
         } catch (error) {
           console.error("Error reordering delivery orders:", error);
@@ -365,7 +365,7 @@ export default function DeliveryRouteProvider({
         console.error("Error reordering delivery orders:", error);
       }
     },
-    []
+    [],
   );
 
   const value = {

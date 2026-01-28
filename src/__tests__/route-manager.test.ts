@@ -1,7 +1,7 @@
 /**
  * Basic tests for RouteManager service
  */
-import { RouteManager } from '@/services/RouteManager';
+import { RouteManager } from '@/services/route-manager';
 import type { MapProvider } from '@/types/map-provider';
 
 describe('RouteManager', () => {

@@ -1,9 +1,9 @@
 import type { DeliveryRoute, DeliveryRouteWaypoint } from '@/types/delivery-route';
 import { sampleDeliveries } from '@/types/delivery-route';
 import type { Order } from '@/types/order';
-import { DeliveryRouteWaypointsApi } from './deliveryRouteWaypointsApi';
+import { DeliveryRouteWaypointsApi } from './delivery-route-waypoints-api';
 import { getOrdersInSequence } from '@/lib/delivery-route-waypoint-helpers';
-import { OrdersApi } from './ordersApi';
+import { OrdersApi } from './orders-api';
 
 /**
  * DeliveryRoutesApi - Manages delivery metadata and routing operations

@@ -3,13 +3,15 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import DeliveryRoutesListPage from "@/pages/DeliveryRoutesListPage";
 import type { DeliveryRoute } from "@/types/delivery-route";
 
-jest.mock("@/services/deliveryRoutesApi", () => ({
+jest.mock("@/services/delivery-routes-api", () => ({
   DeliveryRoutesApi: {
     getDeliveries: jest.fn(),
   },
 }));
 
-const { DeliveryRoutesApi } = jest.requireMock("@/services/deliveryRoutesApi");
+const { DeliveryRoutesApi } = jest.requireMock(
+  "@/services/delivery-routes-api",
+);
 
 const mockDeliveries: DeliveryRoute[] = [
   {
@@ -34,13 +36,13 @@ const renderPage = () =>
       <Routes>
         <Route path="/" element={<DeliveryRoutesListPage />} />
       </Routes>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
 describe("DeliveryRoutesListPage", () => {
   beforeEach(() => {
     (DeliveryRoutesApi.getDeliveries as jest.Mock).mockResolvedValue(
-      mockDeliveries
+      mockDeliveries,
     );
   });
 
@@ -78,7 +80,7 @@ describe("DeliveryRoutesListPage", () => {
     ]);
 
     expect(
-      screen.getByRole("link", { name: /zobacz wszystkie na mapie/i })
+      screen.getByRole("link", { name: /zobacz wszystkie na mapie/i }),
     ).toHaveAttribute("href", "/delivery_routes");
   });
 });

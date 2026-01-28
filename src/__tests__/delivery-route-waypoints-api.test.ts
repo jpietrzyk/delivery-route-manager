@@ -4,7 +4,7 @@
  * Testing the new Map-based API that manages waypoint relationships between
  * deliveries and orders in a many-to-many pattern.
  */
-import { DeliveryRouteWaypointsApi } from '@/services/deliveryRouteWaypointsApi';
+import { DeliveryRouteWaypointsApi } from '@/services/delivery-route-waypoints-api';
 import type { DeliveryRouteWaypoint } from '@/types/delivery-route';
 
 // Mock fetch globally

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DeliveryRoutesApi } from "@/services/deliveryRoutesApi";
+import { DeliveryRoutesApi } from "@/services/delivery-routes-api";
 import type { DeliveryRoute } from "@/types/delivery-route";
 import { Link } from "react-router-dom";
 import {
@@ -168,7 +168,7 @@ export default function DeliveryRoutesListPage() {
                                 {delivery.estimatedDuration === 0
                                   ? "?"
                                   : formatDurationPL(
-                                      delivery.estimatedDuration
+                                      delivery.estimatedDuration,
                                     )}
                               </span>
                             </div>

@@ -1,8 +1,8 @@
 /**
  * Tests for DeliveryRoutesApi service
  */
-import { DeliveryRoutesApi } from '@/services/deliveryRoutesApi';
-import { DeliveryRouteWaypointsApi } from '@/services/deliveryRouteWaypointsApi';
+import { DeliveryRoutesApi } from '@/services/delivery-routes-api';
+import { DeliveryRouteWaypointsApi } from '@/services/delivery-route-waypoints-api';
 import type { DeliveryRoute, DeliveryRouteWaypoint } from '@/types/delivery-route';
 import type { Order } from '@/types/order';
 

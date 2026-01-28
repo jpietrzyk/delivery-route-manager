@@ -22,7 +22,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { RouteManager } from "@/services/RouteManager";
+import { RouteManager } from "@/services/route-manager";
 import { useRouteSegments } from "@/hooks/use-route-segments";
 
 interface DeliveryOrderListProps {
@@ -34,7 +34,7 @@ interface DeliveryOrderListProps {
   onReorder?: (
     newOrders: Order[],
     fromIndex?: number,
-    toIndex?: number
+    toIndex?: number,
   ) => void;
   routeManager?: RouteManager | null;
 }
@@ -53,17 +53,17 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (active?.id !== over?.id) {
       const oldIndex = orders.findIndex(
-        (order) => order.id === String(active?.id)
+        (order) => order.id === String(active?.id),
       );
       const newIndex = orders.findIndex(
-        (order) => order.id === String(over?.id)
+        (order) => order.id === String(over?.id),
       );
       if (oldIndex !== -1 && newIndex !== -1) {
         const newOrders = arrayMove(orders, oldIndex, newIndex);
@@ -171,7 +171,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                       key={`${order.id}-${orders[idx + 1].id}-segment`}
                       segment={
                         routeManager.getSegment(
-                          `${order.id}-${orders[idx + 1].id}`
+                          `${order.id}-${orders[idx + 1].id}`,
                         ) || {
                           id: `${order.id}-${orders[idx + 1].id}`,
                           fromOrder: order,
@@ -183,11 +183,11 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                       }
                       onRecalculate={() =>
                         routeManager.recalculateSegment(
-                          `${order.id}-${orders[idx + 1].id}`
+                          `${order.id}-${orders[idx + 1].id}`,
                         )
                       }
                       isCalculating={routeManager.isCalculating(
-                        `${order.id}-${orders[idx + 1].id}`
+                        `${order.id}-${orders[idx + 1].id}`,
                       )}
                       routeManager={routeManager}
                     />
@@ -197,7 +197,7 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                     (() => {
                       const segmentId = `${order.id}-${orders[idx + 1].id}`;
                       const routeSegment = routeSegments.find(
-                        (seg) => seg.id === segmentId
+                        (seg) => seg.id === segmentId,
                       );
 
                       return (
@@ -219,14 +219,14 @@ export const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({
                                   distance:
                                     getDistanceKm(
                                       order.location,
-                                      orders[idx + 1].location
+                                      orders[idx + 1].location,
                                     ) * 1000,
                                   duration:
                                     getDriveMinutes(
                                       getDistanceKm(
                                         order.location,
-                                        orders[idx + 1].location
-                                      )
+                                        orders[idx + 1].location,
+                                      ),
                                     ) * 60,
                                   status: "calculated",
                                 },
