@@ -149,8 +149,8 @@ export default function DeliveryRouteMapLayout({
   }, []);
 
   const getAmountTier = (amount: number): keyof AmountFilterState => {
-    if (amount <= 300000) return "low";
-    if (amount <= 1000000) return "medium";
+    if (amount <= 600) return "low";
+    if (amount <= 1300) return "medium";
     return "high";
   };
 
