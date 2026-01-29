@@ -5,7 +5,7 @@ import { DeliveryOrderItem } from "@/components/delivery-route/delivery-order-it
 // Haversine formula for straight-line distance in km
 function getDistanceKm(
   a: { lat: number; lng: number },
-  b: { lat: number; lng: number }
+  b: { lat: number; lng: number },
 ) {
   const toRad = (x: number) => (x * Math.PI) / 180;
   const R = 6371; // Earth radius in km
@@ -24,8 +24,10 @@ function getDriveMinutes(distanceKm: number) {
   const avgTruckSpeedKmh = 60;
   return Math.round((distanceKm / avgTruckSpeedKmh) * 60);
 }
-function getHandlingMinutes(complexity: number) {
-  return (complexity ?? 1) * 20;
+function getHandlingMinutes(order: Order) {
+  // Use first item's complexity if available, else fallback to 1
+  const complexity = order.complexity ? order.complexity : 1;
+  return complexity * 20;
 }
 
 interface DeliveryRouteManagerProps {
@@ -48,15 +50,15 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
     let driveMinutes = 0;
     if (idx > 0) {
       driveMinutes = getDriveMinutes(
-        getDistanceKm(orders[idx - 1].location, order.location)
+        getDistanceKm(orders[idx - 1].location, order.location),
       );
       currentTime = new Date(currentTime.getTime() + driveMinutes * 60000);
     }
     const arrivalTime = new Date(currentTime);
     // Handling time
-    const handlingMinutes = getHandlingMinutes(order.product?.complexity ?? 1);
+    const handlingMinutes = getHandlingMinutes(order);
     const departureTime = new Date(
-      currentTime.getTime() + handlingMinutes * 60000
+      currentTime.getTime() + handlingMinutes * 60000,
     );
     result.push(
       <DeliveryOrderItem
@@ -68,18 +70,16 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
         isHighlighted={highlightedOrderId === String(order.id)}
         onMouseEnter={() => setHighlightedOrderId?.(String(order.id))}
         onMouseLeave={() => setHighlightedOrderId?.(null)}
-      />
+      />,
     );
     // Prepare for next order
     currentTime = departureTime;
     if (idx < orders.length - 1) {
       // Show drive + handling time to next order
       const nextDriveMinutes = getDriveMinutes(
-        getDistanceKm(order.location, orders[idx + 1].location)
+        getDistanceKm(order.location, orders[idx + 1].location),
       );
-      const nextHandlingMinutes = getHandlingMinutes(
-        orders[idx + 1].product?.complexity ?? 1
-      );
+      const nextHandlingMinutes = getHandlingMinutes(orders[idx + 1] ?? 1);
       result.push(
         <li
           key={`time-${order.id}-${orders[idx + 1].id}`}
@@ -87,7 +87,7 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
         >
           ↳ czas przejazdu: {nextDriveMinutes}min, obsługa:{nextHandlingMinutes}
           min
-        </li>
+        </li>,
       );
     }
   }

@@ -13,19 +13,20 @@ import {
 describe("DeliveryOrderItem", () => {
   const createMockOrder = (
     id: string = "order-1",
-    complexity: 1 | 2 | 3 = 1,
-    customer: string = "Test Customer",
-    productName: string = "Test Product",
+    priority: number = 2,
+    customerName: string = "Test Customer",
+    items: Order["items"] = [
+      { productId: "p1", productName: "Test Product", quantity: 1, price: 100 },
+    ],
   ): Order => ({
     id,
-    product: { name: productName, price: 100, complexity },
-    status: "pending" as const,
-    priority: "medium" as const,
-    active: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    customer,
+    status: "pending",
+    priority,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    customer: { name: customerName },
     totalAmount: 100,
+    items,
     location: { lat: 51.505, lng: -0.09 },
   });
 
@@ -43,15 +44,12 @@ describe("DeliveryOrderItem", () => {
 
   it("should render basic order information", () => {
     const order = createMockOrder();
-
     render(<DeliveryOrderItem id={order.id} order={order} />, {
       wrapper: Wrapper,
     });
-
-    // Should render product name (customer is in tooltip, not main UI)
-    expect(screen.getByText("Test Product")).toBeInTheDocument();
+    // Should render customer name and order id
+    expect(screen.getByText("Test Customer")).toBeInTheDocument();
     expect(screen.getByText(/order-1/)).toBeInTheDocument();
-
     // Should not render status, assembly time, or times (removed for compactness)
     expect(screen.queryByText("pending")).not.toBeInTheDocument();
     expect(screen.queryByText("30 minutes")).not.toBeInTheDocument();

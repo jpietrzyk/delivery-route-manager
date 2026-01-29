@@ -154,12 +154,11 @@ export default function DeliveryRouteMapLayout({
     return "high";
   };
 
-  // Helper function to determine complexity tier based on product complexity
-  const getComplexityTier = (
-    productComplexity: 1 | 2 | 3,
-  ): keyof ComplexityFilterState => {
-    if (productComplexity === 1) return "simple";
-    if (productComplexity === 2) return "moderate";
+  // Helper function to determine complexity tier based on first item's complexity (if available)
+  const getComplexityTier = (order: Order): keyof ComplexityFilterState => {
+    const complexity = order.complexity ? order.complexity : 1;
+    if (complexity === 1) return "simple";
+    if (complexity === 2) return "moderate";
     return "complex";
   };
 
@@ -184,7 +183,7 @@ export default function DeliveryRouteMapLayout({
     const amountMatch =
       amountFilters[getAmountTier(getOrderAmount(order))] ?? false;
     const complexityMatch =
-      complexityFilters[getComplexityTier(order.product.complexity)] ?? false;
+      complexityFilters[getComplexityTier(order)] ?? false;
 
     // Only apply filter if the group has any filters checked
     const activePriorityMatch = Object.values(priorityFilters).some(Boolean)
@@ -222,7 +221,7 @@ export default function DeliveryRouteMapLayout({
       const amountMatch =
         amountFilters[getAmountTier(getOrderAmount(order))] ?? false;
       const complexityMatch =
-        complexityFilters[getComplexityTier(order.product.complexity)] ?? false;
+        complexityFilters[getComplexityTier(order)] ?? false;
 
       // Only apply filter if the group has any filters checked
       const activePriorityMatch = Object.values(priorityFilters).some(Boolean)
