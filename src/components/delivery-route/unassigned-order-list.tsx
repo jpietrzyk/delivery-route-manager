@@ -116,36 +116,43 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                         ? order.product.name.length > 30
                           ? order.product.name.slice(0, 30) + "..."
                           : order.product.name
-                        : `Order ${order.id}`}
+                        : `Order ${order.id || "?"}`}
                     </TableCell>
                     <TableCell className="text-foreground/80">
-                      {order.customer}
+                      {order.customer?.name || order.customer || "?"}
                     </TableCell>
                     <TableCell>
                       <Badge
-                        className={`${getPriorityColor(
-                          order.priority,
-                        )} border-0`}
+                        className={`${getPriorityColor(String(order.priority))} border-0`}
                       >
-                        {order.priority}
+                        {order.priority ?? "?"}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge
-                        className={`${getStatusColor(order.status)} border-0`}
+                        className={`${getStatusColor(String(order.status))} border-0`}
                       >
-                        {order.status}
+                        {order.status ?? "?"}
                       </Badge>
                     </TableCell>
                     <TableCell className="font-mono text-foreground/80">
-                      €{order.totalAmount?.toLocaleString() || "0"}
+                      €
+                      {typeof order.totalAmount === "number"
+                        ? order.totalAmount.toLocaleString()
+                        : order.totalAmount || "0"}
                     </TableCell>
                     <TableCell className="font-mono text-xs text-foreground/70">
-                      {order.location.lat.toFixed(4)},{" "}
-                      {order.location.lng.toFixed(4)}
+                      {order.location?.lat !== undefined &&
+                      order.location?.lng !== undefined
+                        ? `${order.location.lat.toFixed(4)}, ${order.location.lng.toFixed(4)}`
+                        : "?"}
                     </TableCell>
                     <TableCell className="text-foreground/70 text-sm">
-                      {order.createdAt.toLocaleDateString()}
+                      {order.createdAt
+                        ? typeof order.createdAt === "string"
+                          ? new Date(order.createdAt).toLocaleDateString()
+                          : order.createdAt.toLocaleDateString()
+                        : "?"}
                     </TableCell>
                     <TableCell>
                       <Button

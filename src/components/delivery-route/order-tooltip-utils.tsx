@@ -19,12 +19,13 @@ export const getStatusColor = (status: string) => {
 
 // Create expanded tooltip content similar to marker popups
 export const createExpandedTooltipContent = (order: Order) => {
-  const statusColors = getStatusColor(order.status);
+  const statusColors = getStatusColor(order.status ?? "pending");
 
   return (
     <div className="p-4 max-w-[320px] bg-white border border-border rounded-sm shadow-sm">
       <div className="font-semibold text-sm mb-3 text-foreground truncate">
-        {order.product?.name || pl.unknownOrder} (ID: {order.id})
+        {/* Product name or fallback */}
+        {order.product?.name || pl.unknownOrder} (ID: {order.id || "Brak ID"})
       </div>
 
       <div className="space-y-3 text-sm">
@@ -33,7 +34,9 @@ export const createExpandedTooltipContent = (order: Order) => {
           <span className="text-muted-foreground mt-0.5">👤</span>
           <div>
             <div className="font-medium text-foreground">{pl.customer}</div>
-            <div className="text-muted-foreground">{order.customer}</div>
+            <div className="text-muted-foreground">
+              {order.customer?.name || pl.unknownCustomer}
+            </div>
           </div>
         </div>
 
@@ -49,7 +52,7 @@ export const createExpandedTooltipContent = (order: Order) => {
                 color: statusColors.text,
               }}
             >
-              {order.status.toUpperCase()}
+              {(order.status ?? "pending").toUpperCase()}
             </div>
           </div>
         </div>
@@ -61,7 +64,9 @@ export const createExpandedTooltipContent = (order: Order) => {
             <div className="font-medium text-foreground">
               {pl.priorityLabel}
             </div>
-            <div className="text-primary font-medium">{order.priority}</div>
+            <div className="text-primary font-medium">
+              {order.priority ?? "?"}
+            </div>
           </div>
         </div>
 
@@ -71,8 +76,8 @@ export const createExpandedTooltipContent = (order: Order) => {
           <div>
             <div className="font-medium text-foreground">{pl.location}</div>
             <div className="text-muted-foreground text-xs">
-              Lat: {order.location.lat.toFixed(4)}, Lng:{" "}
-              {order.location.lng.toFixed(4)}
+              Lat: {order.location?.lat ? order.location.lat.toFixed(4) : "?"},
+              Lng: {order.location?.lng ? order.location.lng.toFixed(4) : "?"}
             </div>
           </div>
         </div>

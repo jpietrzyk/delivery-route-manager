@@ -44,13 +44,23 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
   let currentTime = new Date();
   currentTime.setHours(8, 0, 0, 0); // Start at 8:00 AM
   const result: React.ReactElement[] = [];
-  for (let idx = 0; idx < orders.length; idx++) {
-    const order = orders[idx];
+  // Filter out duplicate orders by id (preserve first occurrence and order)
+  const uniqueOrders: Order[] = [];
+  const seenOrderIds = new Set<string>();
+  for (const order of orders) {
+    if (!seenOrderIds.has(order.id)) {
+      uniqueOrders.push(order);
+      seenOrderIds.add(order.id);
+    }
+  }
+
+  for (let idx = 0; idx < uniqueOrders.length; idx++) {
+    const order = uniqueOrders[idx];
     // Drive time from previous order (skip for first)
     let driveMinutes = 0;
     if (idx > 0) {
       driveMinutes = getDriveMinutes(
-        getDistanceKm(orders[idx - 1].location, order.location),
+        getDistanceKm(uniqueOrders[idx - 1].location, order.location),
       );
       currentTime = new Date(currentTime.getTime() + driveMinutes * 60000);
     }
@@ -60,6 +70,7 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
     const departureTime = new Date(
       currentTime.getTime() + handlingMinutes * 60000,
     );
+    // Use order.id as key (now guaranteed unique)
     result.push(
       <DeliveryOrderItem
         key={String(order.id)}
@@ -74,15 +85,17 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
     );
     // Prepare for next order
     currentTime = departureTime;
-    if (idx < orders.length - 1) {
+    if (idx < uniqueOrders.length - 1) {
       // Show drive + handling time to next order
       const nextDriveMinutes = getDriveMinutes(
-        getDistanceKm(order.location, orders[idx + 1].location),
+        getDistanceKm(order.location, uniqueOrders[idx + 1].location),
       );
-      const nextHandlingMinutes = getHandlingMinutes(orders[idx + 1] ?? 1);
+      const nextHandlingMinutes = getHandlingMinutes(
+        uniqueOrders[idx + 1] ?? 1,
+      );
       result.push(
         <li
-          key={`time-${order.id}-${orders[idx + 1].id}`}
+          key={`time-${order.id}-${uniqueOrders[idx + 1].id}`}
           className="flex items-center justify-center text-xs text-muted-foreground/80"
         >
           ↳ czas przejazdu: {nextDriveMinutes}min, obsługa:{nextHandlingMinutes}
