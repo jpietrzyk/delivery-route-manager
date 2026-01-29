@@ -1,137 +1,7 @@
 [
   {
-    "id": "f1ec14fb-0594-4fea-b537-6a2e4c96433c",
-    "priority": 3,
-    "totalAmount": 2000.37,
-    "customer": {
-      "name": "Jan Zieliński"
-    },
-    "location": {
-      "lat": 54.5508,
-      "lng": 20.0019
-    },
-    "complexity": 1
-  },
-  {
-    "id": "d8a274d2-19fc-4a2a-b56b-d695cc3f9770",
-    "priority": 2,
-    "totalAmount": 452.01,
-    "customer": {
-      "name": "Marcin Krawczyk"
-    },
-    "location": {
-      "lat": 53.6008,
-      "lng": 16.2894
-    },
-    "complexity": 3
-  },
-  {
-    "id": "c5caad0c-188e-4ebd-9232-efa48c2fcfae",
-    "priority": 3,
-    "totalAmount": 1006.8,
-    "customer": {
-      "name": "Barbara Nowak"
-    },
-    "location": {
-      "lat": 54.3197,
-      "lng": 19.5735
-    },
-    "complexity": 1
-  },
-  {
-    "id": "c15b3965-be5e-4fdd-85c5-567760b8e7c2",
-    "priority": 0,
-    "totalAmount": 223.84,
-    "customer": {
-      "name": "Ewa Mazur"
-    },
-    "location": {
-      "lat": 52.3274,
-      "lng": 21.7849
-    },
-    "complexity": 3
-  },
-  {
-    "id": "2bd7479b-70cc-4913-b2fb-d6ae5931a543",
-    "priority": 4,
-    "totalAmount": 491.56,
-    "customer": {
-      "name": "Anna Szymański"
-    },
-    "location": {
-      "lat": 49.4412,
-      "lng": 16.8845
-    },
-    "complexity": 1
-  },
-  {
     "id": "4303c407-166b-4bfd-b212-8b13cda3fd59",
-    "priority": 4,
-    "totalAmount": 587.55,
-    "customer": {
-      "name": "Krzysztof Kwiatkowski"
-    },
-    "location": {
-      "lat": 49.4268,
-      "lng": 18.2575
-    },
-    "complexity": 1
-  },
-  {
-    "id": "9ee46286-2859-47fc-8bb4-9518bc7bdc3c",
-    "priority": 1,
-    "totalAmount": 725.48,
-    "customer": {
-      "name": "Anna Nowakowski"
-    },
-    "location": {
-      "lat": 51.5028,
-      "lng": 17.3647
-    },
-    "complexity": 3
-  },
-  {
-    "id": "c18ec93b-b8ec-4b64-b000-6ee500d702b9",
-    "priority": 0,
-    "totalAmount": 827.68,
-    "customer": {
-      "name": "Michał Wójcik"
-    },
-    "location": {
-      "lat": 51.5259,
-      "lng": 20.8379
-    },
-    "complexity": 2
-  },
-  {
-    "id": "b97efaf5-36e3-4652-9177-14a776307192",
-    "priority": 0,
-    "totalAmount": 2533.61,
-    "customer": {
-      "name": "Ewa Szymański"
-    },
-    "location": {
-      "lat": 52.3211,
-      "lng": 18.2713
-    },
-    "complexity": 1
-  },
-  {
-    "id": "ea5e3201-7c9d-492f-95c1-50aa749d0396",
-    "priority": 0,
-    "totalAmount": 2113.78,
-    "customer": {
-      "name": "Barbara Krawczyk"
-    },
-    "location": {
-      "lat": 54.1874,
-      "lng": 20.2594
-    },
-    "complexity": 1
-  },
-  {
-    "id": "4303c407-166b-4bfd-b212-8b13cda3fd59",
-    "status": "Processing",
+      "status": "pending",
     "priority": 4,
     "totalAmount": 587.55,
     "customer": {
@@ -168,7 +38,7 @@
   },
   {
     "id": "9ee46286-2859-47fc-8bb4-9518bc7bdc3c",
-    "status": "Processing",
+      "status": "in-progress",
     "priority": 1,
     "totalAmount": 725.48,
     "customer": {
@@ -205,7 +75,7 @@
   },
   {
     "id": "c18ec93b-b8ec-4b64-b000-6ee500d702b9",
-    "status": "Processing",
+      "status": "completed",
     "priority": 0,
     "totalAmount": 827.68,
     "customer": {
@@ -248,7 +118,7 @@
   },
   {
     "id": "b97efaf5-36e3-4652-9177-14a776307192",
-    "status": "Processing",
+      "status": "cancelled",
     "priority": 0,
     "totalAmount": 2533.61,
     "customer": {
@@ -297,7 +167,7 @@
   },
   {
     "id": "ea5e3201-7c9d-492f-95c1-50aa749d0396",
-    "status": "Processing",
+      "status": "pending",
     "priority": 0,
     "totalAmount": 2113.78,
     "customer": {
@@ -346,7 +216,7 @@
   },
   {
     "id": "b9b15516-408c-47ae-9eba-9ba8238f1cd7",
-    "status": "Processing",
+      "status": "in-progress",
     "priority": 3,
     "totalAmount": 1322.24,
     "customer": {
@@ -389,7 +259,7 @@
   },
   {
     "id": "93ad7e5e-5651-40c2-b394-c99d7a2da285",
-    "status": "Processing",
+      "status": "completed",
     "priority": 3,
     "totalAmount": 926.31,
     "customer": {
@@ -426,7 +296,7 @@
   },
   {
     "id": "12fb2945-d232-4658-8a06-f1166e0ecbd9",
-    "status": "Processing",
+      "status": "cancelled",
     "priority": 1,
     "totalAmount": 536.15,
     "customer": {
@@ -457,7 +327,7 @@
   },
   {
     "id": "c98c9995-e1b4-48de-923e-a9c70a17404f",
-    "status": "Processing",
+      "status": "pending",
     "priority": 2,
     "totalAmount": 467.4,
     "customer": {
@@ -494,7 +364,7 @@
   },
   {
     "id": "9dd31ba8-7051-4d99-8b13-66a1f9e879b2",
-    "status": "Processing",
+      "status": "in-progress",
     "priority": 1,
     "totalAmount": 1590.26,
     "customer": {
@@ -531,7 +401,7 @@
   },
   {
     "id": "21e71bd1-3862-4972-a7f2-ffa3faac1158",
-    "status": "Processing",
+      "status": "completed",
     "priority": 3,
     "totalAmount": 2431.87,
     "customer": {
@@ -574,7 +444,7 @@
   },
   {
     "id": "c31ea4fd-3427-421f-9373-06accc33dbc2",
-    "status": "Processing",
+      "status": "cancelled",
     "priority": 1,
     "totalAmount": 87.7,
     "customer": {
@@ -599,7 +469,7 @@
   },
   {
     "id": "5f464948-d2e8-4c8a-bfff-610bf1a5c54d",
-    "status": "Processing",
+      "status": "pending",
     "priority": 4,
     "totalAmount": 874.66,
     "customer": {
@@ -648,7 +518,7 @@
   },
   {
     "id": "585b638f-5741-47d9-857b-22cabc0b913b",
-    "status": "Processing",
+      "status": "in-progress",
     "priority": 3,
     "totalAmount": 1107.73,
     "customer": {
@@ -691,7 +561,7 @@
   },
   {
     "id": "fcbccee2-f1d1-4409-bcb3-ae0d2cffca06",
-    "status": "Processing",
+      "status": "completed",
     "priority": 2,
     "totalAmount": 860.51,
     "customer": {
@@ -728,7 +598,7 @@
   },
   {
     "id": "dc364290-3125-40c1-83eb-3b12c0644ea6",
-    "status": "Processing",
+      "status": "cancelled",
     "priority": 3,
     "totalAmount": 1286.79,
     "customer": {
@@ -777,7 +647,7 @@
   },
   {
     "id": "7afddd21-7f8c-4b5b-82dc-b56249372840",
-    "status": "Processing",
+      "status": "pending",
     "priority": 3,
     "totalAmount": 543.81,
     "customer": {
@@ -814,7 +684,7 @@
   },
   {
     "id": "29b13256-8e8b-42ec-a6a9-8f9dc0f9697e",
-    "status": "Processing",
+      "status": "in-progress",
     "priority": 3,
     "totalAmount": 1028.68,
     "customer": {
@@ -851,7 +721,7 @@
   },
   {
     "id": "53a14dda-c6b2-4876-885f-cb709f4439f9",
-    "status": "Processing",
+      "status": "completed",
     "priority": 4,
     "totalAmount": 102.97,
     "customer": {
@@ -876,7 +746,7 @@
   },
   {
     "id": "2cdf9404-6342-4b22-a8cf-8927d7c73a57",
-    "status": "Processing",
+      "status": "cancelled",
     "priority": 0,
     "totalAmount": 456.71,
     "customer": {
@@ -907,7 +777,7 @@
   },
   {
     "id": "0f3c9d33-85db-41fd-9017-a440b06205a9",
-    "status": "Processing",
+      "status": "pending",
     "priority": 1,
     "totalAmount": 79.82,
     "customer": {
@@ -932,7 +802,7 @@
   },
   {
     "id": "1d51d369-a4ec-4612-9b43-9dcf69404f01",
-    "status": "Processing",
+      "status": "in-progress",
     "priority": 3,
     "totalAmount": 348.56,
     "customer": {
@@ -957,7 +827,7 @@
   },
   {
     "id": "46f2906d-1511-40ed-a615-9a0816fbdd03",
-    "status": "Processing",
+      "status": "completed",
     "priority": 3,
     "totalAmount": 1458.91,
     "customer": {
@@ -1006,7 +876,7 @@
   },
   {
     "id": "5c6ded63-10f9-4abc-a84c-ab12fc17d461",
-    "status": "Processing",
+      "status": "cancelled",
     "priority": 0,
     "totalAmount": 444.71,
     "customer": {
@@ -1031,7 +901,7 @@
   },
   {
     "id": "9cedc6db-5970-46a0-a70d-7960b6a3d8be",
-    "status": "Processing",
+      "status": "pending",
     "priority": 2,
     "totalAmount": 832.75,
     "customer": {
@@ -1074,7 +944,7 @@
   },
   {
     "id": "8842cc1c-a6c1-42fa-8816-640029b61934",
-    "status": "Processing",
+      "status": "in-progress",
     "priority": 0,
     "totalAmount": 40.56,
     "customer": {
@@ -1099,7 +969,7 @@
   },
   {
     "id": "e7d0caa1-3ddd-4877-b7ec-a5867ba56bf6",
-    "status": "Processing",
+      "status": "completed",
     "priority": 2,
     "totalAmount": 703.81,
     "customer": {
@@ -1142,7 +1012,7 @@
   },
   {
     "id": "cbd54afc-ab1d-43e0-9443-9bf6e3194477",
-    "status": "Processing",
+      "status": "cancelled",
     "priority": 0,
     "totalAmount": 656.17,
     "customer": {
@@ -1179,7 +1049,7 @@
   },
   {
     "id": "0a28daf1-1d13-4a1c-a1bd-acc5de9e66e2",
-    "status": "Processing",
+      "status": "pending",
     "priority": 4,
     "totalAmount": 2402.44,
     "customer": {
@@ -1228,7 +1098,7 @@
   },
   {
     "id": "61eabf2b-0a76-430f-978e-918de64480f3",
-    "status": "Processing",
+      "status": "in-progress",
     "priority": 1,
     "totalAmount": 1463.48,
     "customer": {
@@ -1277,7 +1147,7 @@
   },
   {
     "id": "ff34d4ed-d3ae-46f4-9989-7273597912c6",
-    "status": "Processing",
+      "status": "completed",
     "priority": 0,
     "totalAmount": 1341.89,
     "customer": {
@@ -1326,7 +1196,7 @@
   },
   {
     "id": "766049cf-33f6-4043-b0b4-8407d280efae",
-    "status": "Processing",
+      "status": "cancelled",
     "priority": 1,
     "totalAmount": 10.05,
     "customer": {
@@ -1351,7 +1221,7 @@
   },
   {
     "id": "8a5f4f8b-4251-4d6a-8713-9536198f306c",
-    "status": "Processing",
+      "status": "pending",
     "priority": 2,
     "totalAmount": 494.5,
     "customer": {
@@ -1382,7 +1252,7 @@
   },
   {
     "id": "34b3897d-c97a-4287-8d52-575a31a9631c",
-    "status": "Processing",
+      "status": "in-progress",
     "priority": 4,
     "totalAmount": 391.98,
     "customer": {
@@ -1413,7 +1283,7 @@
   },
   {
     "id": "0059eb23-5ea6-47b4-8340-9d59b4b1915a",
-    "status": "Processing",
+    "status": "pending",
     "priority": 1,
     "totalAmount": 1224.97,
     "customer": {
@@ -1450,7 +1320,7 @@
   },
   {
     "id": "5db5709c-59a4-49d1-bfa5-f368343fc94e",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 0,
     "totalAmount": 98.83,
     "customer": {
@@ -1481,7 +1351,7 @@
   },
   {
     "id": "082f11dd-8c0d-4134-91ab-4f457f9ce3ad",
-    "status": "Processing",
+    "status": "completed",
     "priority": 1,
     "totalAmount": 533.43,
     "customer": {
@@ -1512,7 +1382,7 @@
   },
   {
     "id": "8711ece1-0065-4f97-84f3-9d9a75ca0260",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 4,
     "totalAmount": 1605.71,
     "customer": {
@@ -1561,7 +1431,7 @@
   },
   {
     "id": "4f20633c-1d7e-43f1-90c6-8f7d53906534",
-    "status": "Processing",
+    "status": "pending",
     "priority": 0,
     "totalAmount": 1181.01,
     "customer": {
@@ -1598,7 +1468,7 @@
   },
   {
     "id": "334272dc-ea76-4fd8-8b8f-a1b56d1edc4c",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 4,
     "totalAmount": 257.01,
     "customer": {
@@ -1629,7 +1499,7 @@
   },
   {
     "id": "979ec416-4942-4d21-b9d1-0f4489e36c86",
-    "status": "Processing",
+    "status": "completed",
     "priority": 1,
     "totalAmount": 187.02,
     "customer": {
@@ -1654,7 +1524,7 @@
   },
   {
     "id": "220aef59-13b7-4f62-bdb2-dd83e6a6a346",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 2,
     "totalAmount": 567.53,
     "customer": {
@@ -1685,7 +1555,7 @@
   },
   {
     "id": "09dc8f46-6023-4865-85cb-4755c69c5817",
-    "status": "Processing",
+    "status": "pending",
     "priority": 2,
     "totalAmount": 368.5,
     "customer": {
@@ -1710,7 +1580,7 @@
   },
   {
     "id": "ee88be24-c183-447d-85b4-b29f1644409a",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 3,
     "totalAmount": 106.11,
     "customer": {
@@ -1735,7 +1605,7 @@
   },
   {
     "id": "2ca1d6f0-5be0-4e38-a8ed-4d519cbdf3c6",
-    "status": "Processing",
+    "status": "completed",
     "priority": 0,
     "totalAmount": 656.04,
     "customer": {
@@ -1760,7 +1630,7 @@
   },
   {
     "id": "57815f65-7ec6-42fc-95f7-df79c60890b4",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 2,
     "totalAmount": 719.37,
     "customer": {
@@ -1791,7 +1661,7 @@
   },
   {
     "id": "711a4c7f-5e13-48ee-a67f-d3510db2336a",
-    "status": "Processing",
+    "status": "pending",
     "priority": 3,
     "totalAmount": 1394.54,
     "customer": {
@@ -1840,7 +1710,7 @@
   },
   {
     "id": "5d67894c-39af-414e-8008-777c42e46fb8",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 4,
     "totalAmount": 711.03,
     "customer": {
@@ -1871,7 +1741,7 @@
   },
   {
     "id": "4576e4be-3356-4344-845c-cd6a2ba3508c",
-    "status": "Processing",
+    "status": "completed",
     "priority": 1,
     "totalAmount": 1178.77,
     "customer": {
@@ -1914,7 +1784,7 @@
   },
   {
     "id": "be23333c-885c-4971-b515-ddb336d23530",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 4,
     "totalAmount": 1027.96,
     "customer": {
@@ -1957,7 +1827,7 @@
   },
   {
     "id": "45dedd89-7e0a-40cb-b829-a139bebc63c2",
-    "status": "Processing",
+    "status": "pending",
     "priority": 1,
     "totalAmount": 33.95,
     "customer": {
@@ -1982,7 +1852,7 @@
   },
   {
     "id": "1c60ed0a-cdb4-41e5-bc88-6ea2efb3de52",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 3,
     "totalAmount": 623.52,
     "customer": {
@@ -2013,7 +1883,7 @@
   },
   {
     "id": "ec7aa075-ad23-4311-ae9a-f6b29b5b87d5",
-    "status": "Processing",
+    "status": "completed",
     "priority": 0,
     "totalAmount": 1277.39,
     "customer": {
@@ -2062,7 +1932,7 @@
   },
   {
     "id": "e6f58207-7739-4d9a-9df1-b69d60523e90",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 3,
     "totalAmount": 2506.69,
     "customer": {
@@ -2105,7 +1975,7 @@
   },
   {
     "id": "60c448d6-7334-4831-a8be-3a36ecfe230d",
-    "status": "Processing",
+    "status": "pending",
     "priority": 2,
     "totalAmount": 1316.64,
     "customer": {
@@ -2154,7 +2024,7 @@
   },
   {
     "id": "99ca1c26-c1be-43a4-b5ce-8552bed56deb",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 1,
     "totalAmount": 462.5,
     "customer": {
@@ -2179,7 +2049,7 @@
   },
   {
     "id": "5258dbb4-e65b-4785-a837-cd1281565f20",
-    "status": "Processing",
+    "status": "completed",
     "priority": 0,
     "totalAmount": 1200.93,
     "customer": {
@@ -2222,7 +2092,7 @@
   },
   {
     "id": "75817831-b07d-4ade-8749-baa66fa9118c",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 2,
     "totalAmount": 1798.55,
     "customer": {
@@ -2271,7 +2141,7 @@
   },
   {
     "id": "f4bbdb36-920e-4213-8a14-850b555429f5",
-    "status": "Processing",
+    "status": "pending",
     "priority": 0,
     "totalAmount": 842.25,
     "customer": {
@@ -2314,7 +2184,7 @@
   },
   {
     "id": "7ad8c802-2b4b-4997-9112-460df5d8ec05",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 3,
     "totalAmount": 651.33,
     "customer": {
@@ -2339,7 +2209,7 @@
   },
   {
     "id": "bdd225c1-15ef-42e8-8114-9b0efd3ae19b",
-    "status": "Processing",
+    "status": "completed",
     "priority": 2,
     "totalAmount": 1456.81,
     "customer": {
@@ -2388,7 +2258,7 @@
   },
   {
     "id": "fcd3bb00-8c63-4c0f-aa20-97ebbf1cd906",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 0,
     "totalAmount": 654.17,
     "customer": {
@@ -2425,7 +2295,7 @@
   },
   {
     "id": "fb3e4dd5-de89-4e8a-ae8e-fe339f1abdff",
-    "status": "Processing",
+    "status": "pending",
     "priority": 1,
     "totalAmount": 738.16,
     "customer": {
@@ -2462,7 +2332,7 @@
   },
   {
     "id": "f10ed832-cb6e-4afd-88da-c68def2443c2",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 1,
     "totalAmount": 248.8,
     "customer": {
@@ -2493,7 +2363,7 @@
   },
   {
     "id": "3721db95-28c9-48de-b593-e498de952576",
-    "status": "Processing",
+    "status": "completed",
     "priority": 4,
     "totalAmount": 866.84,
     "customer": {
@@ -2524,7 +2394,7 @@
   },
   {
     "id": "1330a367-b3ba-4063-9cb0-d7dad4aa5e3c",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 2,
     "totalAmount": 1313.71,
     "customer": {
@@ -2567,7 +2437,7 @@
   },
   {
     "id": "b0c90de0-d5cc-41c6-b056-b2e33ce4074b",
-    "status": "Processing",
+    "status": "pending",
     "priority": 0,
     "totalAmount": 151.52,
     "customer": {
@@ -2592,7 +2462,7 @@
   },
   {
     "id": "27867f06-23d1-460b-8bb3-9e998bf3f888",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 2,
     "totalAmount": 1008.64,
     "customer": {
@@ -2641,7 +2511,7 @@
   },
   {
     "id": "c224667b-6f76-4bbf-a865-5c0e615f749e",
-    "status": "Processing",
+    "status": "completed",
     "priority": 1,
     "totalAmount": 1930.95,
     "customer": {
@@ -2684,7 +2554,7 @@
   },
   {
     "id": "b21e345b-297f-4b35-a323-3d54cf3d2a9c",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 2,
     "totalAmount": 545.26,
     "customer": {
@@ -2715,7 +2585,7 @@
   },
   {
     "id": "979ae9b1-4569-4323-a858-52ef836569b9",
-    "status": "Processing",
+    "status": "pending",
     "priority": 4,
     "totalAmount": 127.5,
     "customer": {
@@ -2740,7 +2610,7 @@
   },
   {
     "id": "d1ea92c9-06d3-4475-8b4e-e6241b431c84",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 1,
     "totalAmount": 446.4,
     "customer": {
@@ -2771,7 +2641,7 @@
   },
   {
     "id": "ec642d1a-773e-4c1e-832e-ecc7d7e78cce",
-    "status": "Processing",
+    "status": "completed",
     "priority": 3,
     "totalAmount": 628.8,
     "customer": {
@@ -2796,7 +2666,7 @@
   },
   {
     "id": "f8c91935-cb96-439f-bde3-d2ab8880651e",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 3,
     "totalAmount": 1082.8,
     "customer": {
@@ -2839,7 +2709,7 @@
   },
   {
     "id": "6685d31a-941e-4f6d-9b34-0df7b4d56be8",
-    "status": "Processing",
+    "status": "pending",
     "priority": 3,
     "totalAmount": 1094.1,
     "customer": {
@@ -2876,7 +2746,7 @@
   },
   {
     "id": "3e236ddf-fea9-4047-bfd6-9d7db0d0f94e",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 1,
     "totalAmount": 381.28,
     "customer": {
@@ -2901,7 +2771,7 @@
   },
   {
     "id": "3704ea26-23b8-4fed-b96d-ed3cb7e2c1ed",
-    "status": "Processing",
+    "status": "completed",
     "priority": 4,
     "totalAmount": 1302.21,
     "customer": {
@@ -2944,7 +2814,7 @@
   },
   {
     "id": "a1caa0e2-a030-47cd-8fce-ed7e7dd32fe8",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 2,
     "totalAmount": 877.36,
     "customer": {
@@ -2975,7 +2845,7 @@
   },
   {
     "id": "b1ce8a6f-702a-4866-87f3-28dd3ccfc5dc",
-    "status": "Processing",
+    "status": "pending",
     "priority": 1,
     "totalAmount": 1353.56,
     "customer": {
@@ -3018,7 +2888,7 @@
   },
   {
     "id": "d3854796-8116-49c5-b91d-396678d2c7ff",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 1,
     "totalAmount": 2120.04,
     "customer": {
@@ -3067,7 +2937,7 @@
   },
   {
     "id": "cb3ed13c-c7a2-4528-9175-2dd1e63c02fa",
-    "status": "Processing",
+    "status": "completed",
     "priority": 1,
     "totalAmount": 259.71,
     "customer": {
@@ -3092,7 +2962,7 @@
   },
   {
     "id": "b8390407-8fcf-43c9-a312-17768ad718c1",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 1,
     "totalAmount": 562.71,
     "customer": {
@@ -3123,7 +2993,7 @@
   },
   {
     "id": "578e2c0e-58e0-4974-a865-b0f097b986f4",
-    "status": "Processing",
+    "status": "pending",
     "priority": 2,
     "totalAmount": 436.56,
     "customer": {
@@ -3154,7 +3024,7 @@
   },
   {
     "id": "a8f4e2d1-9b3c-4e7a-8f12-6d5e3c9a1f0b",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 0,
     "totalAmount": 912.45,
     "customer": {
@@ -3191,7 +3061,7 @@
   },
   {
     "id": "c7b9f1a3-2e5d-4f8c-9a6b-1d3e7f0c8b2a",
-    "status": "Processing",
+    "status": "completed",
     "priority": 3,
     "totalAmount": 1347.2,
     "customer": {
@@ -3228,7 +3098,7 @@
   },
   {
     "id": "e2d5a9f7-6b1c-4e3f-8d9a-0f7e2c5b1a3d",
-    "status": "Processing",
+    "status": "cancelled",
     "priority": 4,
     "totalAmount": 389.9,
     "customer": {
@@ -3253,7 +3123,7 @@
   },
   {
     "id": "f9a1c3e6-4d8b-5f2a-9e7c-1b0d3f6a8c4e",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 2,
     "totalAmount": 1987.65,
     "customer": {
@@ -3296,7 +3166,7 @@
   },
   {
     "id": "b4e7d2f9-1a5c-3e8b-6f9d-0c2a4e7b1d5f",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 1,
     "totalAmount": 724.1,
     "customer": {
@@ -3333,7 +3203,7 @@
   },
   {
     "id": "d6f3b8e1-9c4a-2f7d-5e0a-3b8c1f6e9d2a",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 0,
     "totalAmount": 1562.33,
     "customer": {
@@ -3376,7 +3246,7 @@
   },
   {
     "id": "a0b9e5c2-7f3d-1a6e-4c8b-9d2f0e5a3c7f",
-    "status": "Processing",
+    "status": "in-progress",
     "priority": 4,
     "totalAmount": 498.75,
     "customer": {

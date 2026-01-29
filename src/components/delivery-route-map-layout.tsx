@@ -154,12 +154,20 @@ export default function DeliveryRouteMapLayout({
     return "high";
   };
 
-  // Helper function to determine complexity tier based on first item's complexity (if available)
+  // Helper function to determine complexity tier
   const getComplexityTier = (order: Order): keyof ComplexityFilterState => {
     const complexity = order.complexity ? order.complexity : 1;
     if (complexity === 1) return "simple";
     if (complexity === 2) return "moderate";
     return "complex";
+  };
+
+  // Map integer priority to filter bucket
+  // 0-1: low, 2: medium, 3+: high
+  const getPriorityTier = (priority: number): keyof PriorityFilterState => {
+    if (priority === 0 || priority === 1) return "low";
+    if (priority === 2) return "medium";
+    return "high";
   };
 
   // Check if any filter groups are active
@@ -178,7 +186,8 @@ export default function DeliveryRouteMapLayout({
       return true; // No filters active, so show all orders
     }
 
-    const priorityMatch = priorityFilters[order.priority] ?? false;
+    const priorityKey = getPriorityTier(order.priority ?? 0);
+    const priorityMatch = priorityFilters[priorityKey] ?? false;
     const statusMatch = statusFilters[order.status] ?? false;
     const amountMatch =
       amountFilters[getAmountTier(getOrderAmount(order))] ?? false;
@@ -216,7 +225,8 @@ export default function DeliveryRouteMapLayout({
         return;
       }
 
-      const priorityMatch = priorityFilters[order.priority] ?? false;
+      const priorityKey = getPriorityTier(order.priority ?? 0);
+      const priorityMatch = priorityFilters[priorityKey] ?? false;
       const statusMatch = statusFilters[order.status] ?? false;
       const amountMatch =
         amountFilters[getAmountTier(getOrderAmount(order))] ?? false;
