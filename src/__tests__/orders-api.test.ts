@@ -212,7 +212,7 @@ describe('OrdersApi', () => {
         json: async () => mockOrdersData
       });
 
-      const updatedOrder = await OrdersApi.updateOrderActiveStatus('ORD-001');
+      await OrdersApi.updateOrderActiveStatus('ORD-001');
 
       // No 'active' property in new Order type
     });
