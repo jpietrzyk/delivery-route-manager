@@ -84,7 +84,7 @@ const createOrderPopupContent = (
           color: "#111827",
         }}
       >
-        {order.product?.name || "Unknown Order"}
+        {order.id || "Unknown Order"}
       </div>
       <div
         style={{
@@ -109,7 +109,7 @@ const createOrderPopupContent = (
       </div>
       <div style={{ fontSize: "13px", color: "#4b5563", marginBottom: "8px" }}>
         <strong style={{ color: "#374151" }}>👤 Customer:</strong>{" "}
-        {order.customer}
+        {order.customer?.name}
       </div>
       <div style={{ fontSize: "13px", marginBottom: "8px" }}>
         <strong style={{ color: "#374151" }}>📋 Status:</strong>

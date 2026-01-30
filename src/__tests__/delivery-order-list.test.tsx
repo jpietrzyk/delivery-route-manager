@@ -25,6 +25,7 @@ describe("DeliveryOrderList", () => {
     totalAmount: 100,
     items,
     location: { lat: 51.505, lng: -0.09 },
+    complexity: 1,
   });
 
   // Wrapper component to provide required contexts

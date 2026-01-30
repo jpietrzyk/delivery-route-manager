@@ -72,7 +72,7 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
               <TableHeader className="bg-muted/30">
                 <TableRow className="border-border/50 hover:bg-muted/50">
                   <TableHead className="font-semibold text-foreground/80 w-[20%]">
-                    Product
+                    Customer
                   </TableHead>
                   <TableHead className="font-semibold text-foreground/80">
                     Customer
@@ -112,14 +112,10 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                     onMouseLeave={() => setHighlightedOrderId?.(null)}
                   >
                     <TableCell className="font-medium text-foreground w-[20%]">
-                      {order.product?.name
-                        ? order.product.name.length > 30
-                          ? order.product.name.slice(0, 30) + "..."
-                          : order.product.name
-                        : `Order ${order.id || "?"}`}
+                      {order.customer?.name || `Order ${order.id || "?"}`}
                     </TableCell>
                     <TableCell className="text-foreground/80">
-                      {order.customer?.name || order.customer || "?"}
+                      {order.customer?.name || "?"}
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -149,9 +145,7 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                     </TableCell>
                     <TableCell className="text-foreground/70 text-sm">
                       {order.createdAt
-                        ? typeof order.createdAt === "string"
-                          ? new Date(order.createdAt).toLocaleDateString()
-                          : order.createdAt.toLocaleDateString()
+                        ? new Date(order.createdAt).toLocaleDateString()
                         : "?"}
                     </TableCell>
                     <TableCell>

@@ -163,38 +163,5 @@ describe("DeliveryOrderItem", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("should handle orders with missing product information", () => {
-    const order: Order = {
-      id: "order-1",
-      product: { name: "Test Product", price: 100, complexity: 1 },
-      status: "pending" as const,
-      priority: "medium" as const,
-      active: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      customer: "Test Customer",
-      totalAmount: 100,
-      location: { lat: 51.505, lng: -0.09 },
-    };
-
-    // Remove product name to test fallback
-    const orderWithoutProductName = {
-      ...order,
-      product: { name: "", price: 100, complexity: 1 as const },
-    };
-
-    render(
-      <DeliveryOrderItem
-        id={orderWithoutProductName.id}
-        order={orderWithoutProductName}
-      />,
-      { wrapper: Wrapper },
-    );
-
-    // Should still render without crashing (customer is in tooltip, order ID is in main UI)
-    // Use getAllByText since there are multiple elements with order-1
-    expect(screen.getAllByText(/order-1/).length).toBeGreaterThan(0);
-  });
-
   // Removed product, active, and string customer fields from Order type tests as per new Order type
-      product: { name: "Test Product", price: 100, complexity: 1 },
+});

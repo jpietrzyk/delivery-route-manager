@@ -54,7 +54,7 @@ describe('OrdersApi', () => {
   });
 
   describe('getOrders', () => {
-    it('should fetch and return only active orders', async () => {
+    it('should fetch and return all orders', async () => {
       (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
@@ -62,10 +62,10 @@ describe('OrdersApi', () => {
 
       const orders = await OrdersApi.getOrders();
 
-      expect(orders).toHaveLength(2); // Only active orders
-      // No 'active' property in new Order type, just check length and ids
+      expect(orders).toHaveLength(3); // All orders
       expect(orders[0].id).toBe('ORD-001');
       expect(orders[1].id).toBe('ORD-002');
+      expect(orders[2].id).toBe('ORD-003');
     });
 
     it('should return a copy of orders data to prevent external mutations', async () => {
@@ -78,10 +78,14 @@ describe('OrdersApi', () => {
       const orders2 = await OrdersApi.getOrders();
 
       // Modify first copy
-      orders1[0].status = 'completed';
-
-      // Second copy should not be affected
-      expect(orders2[0].status).toBe('pending');
+      if (orders1.length > 0 && orders2.length > 0) {
+        orders1[0].status = 'completed';
+        // Second copy should not be affected
+        expect(orders2[0].status).toBe('pending');
+      } else {
+        expect(orders1.length).toBeGreaterThan(0);
+        expect(orders2.length).toBeGreaterThan(0);
+      }
     });
 
     it('should handle fetch errors gracefully', async () => {
@@ -122,7 +126,7 @@ describe('OrdersApi', () => {
   });
 
   describe('getOrderById', () => {
-    it('should return an active order by ID', async () => {
+    it('should return an order by ID', async () => {
       (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockOrdersData
@@ -133,17 +137,6 @@ describe('OrdersApi', () => {
       expect(order).toBeDefined();
       expect(order?.id).toBe('ORD-001');
       expect(order?.customer.name).toBe('Customer A');
-    });
-
-    it('should return null for inactive orders', async () => {
-      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockOrdersData
-      });
-
-      const order = await OrdersApi.getOrderById('ORD-003'); // inactive
-
-      expect(order).toBeNull();
     });
 
     it('should return null if order is not found', async () => {
@@ -184,7 +177,7 @@ describe('OrdersApi', () => {
 
       expect(updatedOrder).toBeDefined();
       expect(updatedOrder?.status).toBe('in-progress');
-      expect(updatedOrder?.updatedAt instanceof Date).toBe(true);
+      expect(typeof updatedOrder?.updatedAt).toBe('string');
     });
 
     it('should update the updatedAt timestamp', async () => {
@@ -193,10 +186,11 @@ describe('OrdersApi', () => {
         json: async () => mockOrdersData
       });
 
-      const originalUpdatedAt = new Date('2026-01-01T08:00:00');
+      const originalUpdatedAt = '2026-01-01T08:00:00';
       const updatedOrder = await OrdersApi.updateOrderStatus('ORD-001', 'completed');
 
-      expect(updatedOrder?.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
+      expect(typeof updatedOrder?.updatedAt).toBe('string');
+      expect(Date.parse(updatedOrder?.updatedAt || '')).toBeGreaterThan(Date.parse(originalUpdatedAt));
     });
 
     it('should return null if order is not found', async () => {
@@ -218,7 +212,7 @@ describe('OrdersApi', () => {
         json: async () => mockOrdersData
       });
 
-      const updatedOrder = await OrdersApi.updateOrderActiveStatus('ORD-001', false);
+      const updatedOrder = await OrdersApi.updateOrderActiveStatus('ORD-001');
 
       // No 'active' property in new Order type
     });
@@ -229,12 +223,14 @@ describe('OrdersApi', () => {
         json: async () => mockOrdersData
       });
 
-      const beforeUpdate = new Date();
-      const updatedOrder = await OrdersApi.updateOrderActiveStatus('ORD-002', false);
-      const afterUpdate = new Date();
+      const beforeUpdate = Date.now();
+      const updatedOrder = await OrdersApi.updateOrderActiveStatus('ORD-002');
+      const afterUpdate = Date.now();
 
-      expect(updatedOrder?.updatedAt.getTime()).toBeGreaterThanOrEqual(beforeUpdate.getTime());
-      expect(updatedOrder?.updatedAt.getTime()).toBeLessThanOrEqual(afterUpdate.getTime());
+      expect(typeof updatedOrder?.updatedAt).toBe('string');
+      const updatedAtTime = Date.parse(updatedOrder?.updatedAt || '');
+      expect(updatedAtTime).toBeGreaterThanOrEqual(beforeUpdate - 1000); // allow 1s clock skew
+      expect(updatedAtTime).toBeLessThanOrEqual(afterUpdate + 1000);
     });
 
     it('should return null if order is not found', async () => {
@@ -243,7 +239,7 @@ describe('OrdersApi', () => {
         json: async () => mockOrdersData
       });
 
-      const updatedOrder = await OrdersApi.updateOrderActiveStatus('ORD-999', false);
+      const updatedOrder = await OrdersApi.updateOrderActiveStatus('ORD-999');
 
       expect(updatedOrder).toBeNull();
     });
@@ -258,12 +254,10 @@ describe('OrdersApi', () => {
 
       const updatedOrder = await OrdersApi.updateOrder('ORD-001', {
         status: 'completed',
-        comment: 'Delivered successfully',
-        priority: 'low'
+        priority: 0 // should be a number
       });
 
       expect(updatedOrder?.status).toBe('completed');
-      // No 'comment' property in new Order type
       expect(updatedOrder?.priority).toBe(0);
     });
 
@@ -287,14 +281,16 @@ describe('OrdersApi', () => {
         json: async () => mockOrdersData
       });
 
-      const beforeUpdate = new Date();
+      const beforeUpdate = Date.now();
       const updatedOrder = await OrdersApi.updateOrder('ORD-001', {
         status: 'in-progress'
       });
-      const afterUpdate = new Date();
+      const afterUpdate = Date.now();
 
-      expect(updatedOrder?.updatedAt.getTime()).toBeGreaterThanOrEqual(beforeUpdate.getTime());
-      expect(updatedOrder?.updatedAt.getTime()).toBeLessThanOrEqual(afterUpdate.getTime());
+      expect(typeof updatedOrder?.updatedAt).toBe('string');
+      const updatedAtTime = Date.parse(updatedOrder?.updatedAt || '');
+      expect(updatedAtTime).toBeGreaterThanOrEqual(beforeUpdate - 1000); // allow 1s clock skew
+      expect(updatedAtTime).toBeLessThanOrEqual(afterUpdate + 1000);
     });
 
     it('should return null if order is not found', async () => {
@@ -312,25 +308,7 @@ describe('OrdersApi', () => {
   });
 
   describe('Date handling', () => {
-    it('should properly convert date strings to Date objects', async () => {
-      const dataWithDates = [
-        {
-          ...mockOrdersData[0],
-          createdAt: '2026-01-01T08:00:00',
-          updatedAt: '2026-01-01T08:00:00'
-        }
-      ];
-
-      (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => dataWithDates
-      });
-
-      const orders = await OrdersApi.getOrders();
-
-      expect(orders[0].createdAt instanceof Date).toBe(true);
-      expect(orders[0].updatedAt instanceof Date).toBe(true);
-    });
+    // No longer converting date strings to Date objects in Order type
   });
 
   describe('Data persistence', () => {

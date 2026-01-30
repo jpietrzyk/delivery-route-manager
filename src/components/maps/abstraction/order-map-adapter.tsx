@@ -135,10 +135,10 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         isPreviousOrder: previousOrderId === order.id,
         isDisabled: false, // No longer disabling markers, using opacity instead
         matchesFilters,
-        priority: order.priority,
+        priority: String(order.priority),
         status: order.status,
         totalAmount: order.totalAmount,
-        product: order.product,
+        // product removed
         popupContent,
       };
 
