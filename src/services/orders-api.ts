@@ -133,7 +133,7 @@ export class OrdersApi {
     const orderIndex = sampleOrdersData.findIndex(order => order.id === id);
     if (orderIndex === -1) return null;
 
-    let updatedOrder = {
+    const updatedOrder = {
       ...sampleOrdersData[orderIndex],
       status,
       updatedAt: new Date().toISOString()
@@ -153,7 +153,7 @@ export class OrdersApi {
     await mockDelay(400);
     const orderIndex = sampleOrdersData.findIndex(order => order.id === id);
     if (orderIndex === -1) return null;
-    let updatedOrder = {
+    const updatedOrder = {
       ...sampleOrdersData[orderIndex],
       updatedAt: new Date().toISOString()
     };
@@ -180,7 +180,7 @@ export class OrdersApi {
       else if (priority === 'high') priority = 2;
       else priority = 0;
     }
-    let updatedOrder = {
+    const updatedOrder = {
       ...sampleOrdersData[orderIndex],
       ...updates,
       ...(priority !== undefined ? { priority } : {}),

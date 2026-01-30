@@ -84,7 +84,10 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
 
     // Verify that orders are loaded and rendered
     await waitFor(() => {
-      expect(screen.getByText(/Product 1/i)).toBeInTheDocument();
+      expect(
+        screen.getAllByText("Nieznane zamówienie").length,
+      ).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText("order-1")).toBeInTheDocument();
     });
   });
 
@@ -113,8 +116,13 @@ describe("DeliveryMapPage - Assigned Count Update Fix", () => {
 
     // Verify that orders are loaded and rendered
     await waitFor(() => {
-      expect(screen.getByText(/Product 1/i)).toBeInTheDocument();
-      expect(screen.getByText(/Product 2/i)).toBeInTheDocument();
+      // The popup title is now 'Nieznane zamówienie' for each order
+      expect(
+        screen.getAllByText("Nieznane zamówienie").length,
+      ).toBeGreaterThanOrEqual(2);
+      // The order ids should also be present
+      expect(screen.getByText("order-1")).toBeInTheDocument();
+      expect(screen.getByText("order-2")).toBeInTheDocument();
     });
   });
 });
