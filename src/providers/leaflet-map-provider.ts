@@ -84,13 +84,9 @@ export class LeafletMapProvider implements MapProvider {
   /**
    * Get the appropriate icon for an order based on its properties
    */
-  private getIconForOrder(order: Order): any {
-    const ORANGE_THRESHOLD = 500000;
-    const isHighValue = order.product.price > ORANGE_THRESHOLD;
-
-    return isHighValue
-      ? this.markerIcons.get("high-value")!
-      : this.markerIcons.get("default")!;
+  private getIconForOrder(): any {
+    // No product field in Order type, so just use default icon
+    return this.markerIcons.get("default")!;
   }
 
   /**
@@ -142,7 +138,7 @@ export class LeafletMapProvider implements MapProvider {
    * Create a marker for an order
    */
   createMarker(order: Order): MapMarker {
-    const icon = this.getIconForOrder(order);
+    const icon = this.getIconForOrder();
     const marker = L.marker([order.location.lat, order.location.lng], { icon });
 
     // Add hover event handlers
@@ -161,11 +157,11 @@ export class LeafletMapProvider implements MapProvider {
       id: `marker-${order.id}`,
       orderId: order.id,
       nativeMarker: marker,
-      iconType: this.getIconForOrder(order) === this.markerIcons.get("highlight")
+      iconType: this.getIconForOrder() === this.markerIcons.get("highlight")
         ? "highlight"
-        : this.getIconForOrder(order) === this.markerIcons.get("unassigned")
+        : this.getIconForOrder() === this.markerIcons.get("unassigned")
         ? "unassigned"
-        : this.getIconForOrder(order) === this.markerIcons.get("high-value")
+        : this.getIconForOrder() === this.markerIcons.get("high-value")
         ? "high-value"
         : "default",
     };
@@ -182,7 +178,7 @@ export class LeafletMapProvider implements MapProvider {
     leafletMarker.setLatLng([order.location.lat, order.location.lng]);
 
     // Update icon based on order properties
-    const newIcon = this.getIconForOrder(order);
+    const newIcon = this.getIconForOrder();
     leafletMarker.setIcon(newIcon);
 
     // Update marker data

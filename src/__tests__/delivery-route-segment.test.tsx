@@ -9,15 +9,14 @@ import DeliveryRouteManagerProvider from "@/providers/delivery-route-manager-pro
 describe("DeliveryRouteSegment", () => {
   const createMockOrder = (id: string = "order-1"): Order => ({
     id,
-    product: { name: "Test Product", price: 100, complexity: 1 },
-    status: "pending" as const,
-    priority: "medium" as const,
-    active: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    customer: "Test Customer",
+    status: "pending",
+    priority: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    customer: { name: "Test Customer" },
     totalAmount: 100,
     location: { lat: 51.505, lng: -0.09 },
+    complexity: 1,
   });
 
   const createMockRouteSegment = (

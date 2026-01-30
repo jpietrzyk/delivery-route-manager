@@ -9,7 +9,7 @@ export function calculateTotalEstimatedTime(orders: Order[]): number {
   let totalTime = 0;
 
   // Add handling time for the first order (starting point)
-  totalTime += getHandlingMinutes(orders[0].product?.complexity ?? 1);
+  totalTime += getHandlingMinutes(orders[0].complexity ?? 1);
 
   // Calculate drive and handling times for subsequent orders
   for (let i = 1; i < orders.length; i++) {
@@ -22,7 +22,7 @@ export function calculateTotalEstimatedTime(orders: Order[]): number {
     totalTime += driveMinutes;
 
     // Add handling time for current order
-    totalTime += getHandlingMinutes(currentOrder.product?.complexity ?? 1);
+    totalTime += getHandlingMinutes(currentOrder.complexity ?? 1);
   }
 
   return totalTime;

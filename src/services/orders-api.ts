@@ -1,4 +1,4 @@
-import type { Order, Product } from "@/types/order";
+import type { Order } from "@/types/order";
 
 // Mock delay to simulate network request
 const mockDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -47,20 +47,18 @@ async function loadOrders(): Promise<void> {
         const orderRecord = order as unknown as Record<string, unknown>;
         return {
           id: order.id,
-          product: order.product as Product,
-          comment: order.comment,
           status: (order.status === 'cancelled' ? 'cancelled' : order.status) as Order['status'],
-          priority: order.priority as Order['priority'],
-          active: order.active !== false, // Default to true if missing
-          createdAt: new Date(order.createdAt),
-          updatedAt: new Date(order.updatedAt),
+          priority: typeof order.priority === 'number' ? order.priority : 0,
+          createdAt: typeof order.createdAt === 'string' ? order.createdAt : '',
+          updatedAt: typeof order.updatedAt === 'string' ? order.updatedAt : '',
           customer: order.customer,
           totalAmount: (orderRecord.totalAmount as number) ?? (orderRecord.totalamount as number) ?? 0,
           items: order.items,
           location: {
             lat: typeof order.location.lat === 'string' ? parseFloat(order.location.lat) : order.location.lat,
             lng: typeof order.location.lng === 'string' ? parseFloat(order.location.lng) : order.location.lng
-          }
+          },
+          complexity: typeof order.complexity === 'number' ? order.complexity : 1,
         };
       });
 
@@ -96,7 +94,8 @@ export class OrdersApi {
     await mockDelay(500);
 
     // Return a copy of the data to prevent external mutations, filtering out inactive orders
-    return sampleOrdersData.filter(order => order.active).map(order => ({ ...order }));
+    // No 'active' property in new Order type, so return all orders
+    return sampleOrdersData.map(order => ({ ...order }));
   }
 
   /**
@@ -118,7 +117,8 @@ export class OrdersApi {
     await loadOrders();
     await mockDelay(300);
 
-    const order = sampleOrdersData.find(order => order.id === id && order.active);
+    // No 'active' property in new Order type
+    const order = sampleOrdersData.find(order => order.id === id);
     return order ? { ...order } : null;
   }
 
@@ -136,12 +136,10 @@ export class OrdersApi {
     const updatedOrder = {
       ...sampleOrdersData[orderIndex],
       status,
-      updatedAt: new Date()
+      updatedAt: new Date().toISOString()
     };
-
-    // Update the in-memory data
+    // Defensive: ensure updatedAt is always a string
     sampleOrdersData[orderIndex] = updatedOrder;
-
     return { ...updatedOrder };
   }
 
@@ -149,22 +147,17 @@ export class OrdersApi {
    * Mock method for updating an order's active status
    * Future: This will be a PUT/PATCH request to the backend
    */
-  static async updateOrderActiveStatus(id: string, active: boolean): Promise<Order | null> {
+  // No 'active' property in new Order type
+  static async updateOrderActiveStatus(id: string): Promise<Order | null> {
     await loadOrders();
     await mockDelay(400);
-
     const orderIndex = sampleOrdersData.findIndex(order => order.id === id);
     if (orderIndex === -1) return null;
-
     const updatedOrder = {
       ...sampleOrdersData[orderIndex],
-      active,
-      updatedAt: new Date()
+      updatedAt: new Date().toISOString()
     };
-
-    // Update the in-memory data
     sampleOrdersData[orderIndex] = updatedOrder;
-
     return { ...updatedOrder };
   }
 
@@ -179,16 +172,22 @@ export class OrdersApi {
     const orderIndex = sampleOrdersData.findIndex(order => order.id === id);
     if (orderIndex === -1) return null;
 
+    // Convert string priorities like 'low' to number if needed
+    let priority = updates.priority;
+    if (typeof priority === 'string') {
+      if (priority === 'low') priority = 0;
+      else if (priority === 'medium') priority = 1;
+      else if (priority === 'high') priority = 2;
+      else priority = 0;
+    }
     const updatedOrder = {
       ...sampleOrdersData[orderIndex],
       ...updates,
+      ...(priority !== undefined ? { priority } : {}),
       id, // Ensure ID doesn't change
-      updatedAt: new Date()
+      updatedAt: new Date().toISOString()
     };
-
-    // Update the in-memory data
     sampleOrdersData[orderIndex] = updatedOrder;
-
     return { ...updatedOrder };
   }
 }

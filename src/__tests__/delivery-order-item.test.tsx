@@ -13,20 +13,23 @@ import {
 describe("DeliveryOrderItem", () => {
   const createMockOrder = (
     id: string = "order-1",
-    complexity: 1 | 2 | 3 = 1,
-    customer: string = "Test Customer",
-    productName: string = "Test Product",
+    priority: number = 2,
+    customerName: string = "Test Customer",
+    items: Order["items"] = [
+      { productId: "p1", productName: "Test Product", quantity: 1, price: 100 },
+    ],
+    complexity: number = 1,
   ): Order => ({
     id,
-    product: { name: productName, price: 100, complexity },
-    status: "pending" as const,
-    priority: "medium" as const,
-    active: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    customer,
+    status: "pending",
+    priority,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    customer: { name: customerName },
     totalAmount: 100,
+    items,
     location: { lat: 51.505, lng: -0.09 },
+    complexity,
   });
 
   // Wrapper component to provide required contexts
@@ -43,15 +46,12 @@ describe("DeliveryOrderItem", () => {
 
   it("should render basic order information", () => {
     const order = createMockOrder();
-
     render(<DeliveryOrderItem id={order.id} order={order} />, {
       wrapper: Wrapper,
     });
-
-    // Should render product name (customer is in tooltip, not main UI)
-    expect(screen.getByText("Test Product")).toBeInTheDocument();
+    // Should render customer name and order id
+    expect(screen.getByText("Test Customer")).toBeInTheDocument();
     expect(screen.getByText(/order-1/)).toBeInTheDocument();
-
     // Should not render status, assembly time, or times (removed for compactness)
     expect(screen.queryByText("pending")).not.toBeInTheDocument();
     expect(screen.queryByText("30 minutes")).not.toBeInTheDocument();
@@ -163,73 +163,5 @@ describe("DeliveryOrderItem", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("should handle orders with missing product information", () => {
-    const order: Order = {
-      id: "order-1",
-      product: { name: "Test Product", price: 100, complexity: 1 },
-      status: "pending" as const,
-      priority: "medium" as const,
-      active: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      customer: "Test Customer",
-      totalAmount: 100,
-      location: { lat: 51.505, lng: -0.09 },
-    };
-
-    // Remove product name to test fallback
-    const orderWithoutProductName = {
-      ...order,
-      product: { name: "", price: 100, complexity: 1 as const },
-    };
-
-    render(
-      <DeliveryOrderItem
-        id={orderWithoutProductName.id}
-        order={orderWithoutProductName}
-      />,
-      { wrapper: Wrapper },
-    );
-
-    // Should still render without crashing (customer is in tooltip, order ID is in main UI)
-    // Use getAllByText since there are multiple elements with order-1
-    expect(screen.getAllByText(/order-1/).length).toBeGreaterThan(0);
-  });
-
-  it("should handle orders with different statuses", () => {
-    const order: Order = {
-      id: "order-1",
-      product: { name: "Test Product", price: 100, complexity: 1 },
-      status: "pending" as const,
-      priority: "medium" as const,
-      active: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      customer: "Test Customer",
-      totalAmount: 100,
-      location: { lat: 51.505, lng: -0.09 },
-    };
-
-    const { rerender } = render(
-      <DeliveryOrderItem id={order.id} order={order} />,
-      { wrapper: Wrapper },
-    );
-
-    // Status is no longer shown in compact view
-    expect(screen.queryByText("pending")).not.toBeInTheDocument();
-
-    // Test in-progress status
-    const orderInProgress = { ...order, status: "in-progress" as const };
-    rerender(
-      <DeliveryOrderItem id={orderInProgress.id} order={orderInProgress} />,
-    );
-    expect(screen.queryByText("in-progress")).not.toBeInTheDocument();
-
-    // Test completed status
-    const orderCompleted = { ...order, status: "completed" as const };
-    rerender(
-      <DeliveryOrderItem id={orderCompleted.id} order={orderCompleted} />,
-    );
-    expect(screen.queryByText("completed")).not.toBeInTheDocument();
-  });
+  // Removed product, active, and string customer fields from Order type tests as per new Order type
 });

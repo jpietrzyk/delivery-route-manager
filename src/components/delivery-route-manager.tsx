@@ -5,7 +5,7 @@ import { DeliveryOrderItem } from "@/components/delivery-route/delivery-order-it
 // Haversine formula for straight-line distance in km
 function getDistanceKm(
   a: { lat: number; lng: number },
-  b: { lat: number; lng: number }
+  b: { lat: number; lng: number },
 ) {
   const toRad = (x: number) => (x * Math.PI) / 180;
   const R = 6371; // Earth radius in km
@@ -24,8 +24,10 @@ function getDriveMinutes(distanceKm: number) {
   const avgTruckSpeedKmh = 60;
   return Math.round((distanceKm / avgTruckSpeedKmh) * 60);
 }
-function getHandlingMinutes(complexity: number) {
-  return (complexity ?? 1) * 20;
+function getHandlingMinutes(order: Order) {
+  // Use first item's complexity if available, else fallback to 1
+  const complexity = order.complexity ? order.complexity : 1;
+  return complexity * 20;
 }
 
 interface DeliveryRouteManagerProps {
@@ -42,22 +44,33 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
   let currentTime = new Date();
   currentTime.setHours(8, 0, 0, 0); // Start at 8:00 AM
   const result: React.ReactElement[] = [];
-  for (let idx = 0; idx < orders.length; idx++) {
-    const order = orders[idx];
+  // Filter out duplicate orders by id (preserve first occurrence and order)
+  const uniqueOrders: Order[] = [];
+  const seenOrderIds = new Set<string>();
+  for (const order of orders) {
+    if (!seenOrderIds.has(order.id)) {
+      uniqueOrders.push(order);
+      seenOrderIds.add(order.id);
+    }
+  }
+
+  for (let idx = 0; idx < uniqueOrders.length; idx++) {
+    const order = uniqueOrders[idx];
     // Drive time from previous order (skip for first)
     let driveMinutes = 0;
     if (idx > 0) {
       driveMinutes = getDriveMinutes(
-        getDistanceKm(orders[idx - 1].location, order.location)
+        getDistanceKm(uniqueOrders[idx - 1].location, order.location),
       );
       currentTime = new Date(currentTime.getTime() + driveMinutes * 60000);
     }
     const arrivalTime = new Date(currentTime);
     // Handling time
-    const handlingMinutes = getHandlingMinutes(order.product?.complexity ?? 1);
+    const handlingMinutes = getHandlingMinutes(order);
     const departureTime = new Date(
-      currentTime.getTime() + handlingMinutes * 60000
+      currentTime.getTime() + handlingMinutes * 60000,
     );
+    // Use order.id as key (now guaranteed unique)
     result.push(
       <DeliveryOrderItem
         key={String(order.id)}
@@ -68,26 +81,26 @@ export const DeliveryRouteManager: React.FC<DeliveryRouteManagerProps> = ({
         isHighlighted={highlightedOrderId === String(order.id)}
         onMouseEnter={() => setHighlightedOrderId?.(String(order.id))}
         onMouseLeave={() => setHighlightedOrderId?.(null)}
-      />
+      />,
     );
     // Prepare for next order
     currentTime = departureTime;
-    if (idx < orders.length - 1) {
+    if (idx < uniqueOrders.length - 1) {
       // Show drive + handling time to next order
       const nextDriveMinutes = getDriveMinutes(
-        getDistanceKm(order.location, orders[idx + 1].location)
+        getDistanceKm(order.location, uniqueOrders[idx + 1].location),
       );
       const nextHandlingMinutes = getHandlingMinutes(
-        orders[idx + 1].product?.complexity ?? 1
+        uniqueOrders[idx + 1] ?? 1,
       );
       result.push(
         <li
-          key={`time-${order.id}-${orders[idx + 1].id}`}
+          key={`time-${order.id}-${uniqueOrders[idx + 1].id}`}
           className="flex items-center justify-center text-xs text-muted-foreground/80"
         >
           ↳ czas przejazdu: {nextDriveMinutes}min, obsługa:{nextHandlingMinutes}
           min
-        </li>
+        </li>,
       );
     }
   }

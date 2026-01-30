@@ -10,18 +10,22 @@ import type { RouteSegmentData } from "@/contexts/route-segments-context";
 describe("DeliveryOrderList", () => {
   const createMockOrder = (
     id: string = "order-1",
-    customer: string = "Test Customer",
+    customerName: string = "Test Customer",
+    priority: number = 2,
+    items: Order["items"] = [
+      { productId: "p1", productName: "Test Product", quantity: 1, price: 100 },
+    ],
   ): Order => ({
     id,
-    product: { name: "Test Product", price: 100, complexity: 1 },
-    status: "pending" as const,
-    priority: "medium" as const,
-    active: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    customer,
+    status: "pending",
+    priority,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    customer: { name: customerName },
     totalAmount: 100,
+    items,
     location: { lat: 51.505, lng: -0.09 },
+    complexity: 1,
   });
 
   // Wrapper component to provide required contexts
@@ -62,9 +66,11 @@ describe("DeliveryOrderList", () => {
     await act(async () => {
       render(<DeliveryOrderList orders={[order]} />, { wrapper: Wrapper });
     });
-    // Should render the order (customer name is in tooltip, not main UI)
-    expect(screen.getByText("Test Product")).toBeInTheDocument();
+    // Should render the order (order id, customer name, and priority)
     expect(screen.getByText(/order-1/)).toBeInTheDocument();
+    expect(screen.getByText("Customer 1")).toBeInTheDocument();
+    // Priority is shown as part of 'order-1 | 2'
+    expect(screen.getByText("order-1 | 2")).toBeInTheDocument();
   });
 
   it("should render multiple orders correctly", async () => {
@@ -75,10 +81,11 @@ describe("DeliveryOrderList", () => {
         wrapper: Wrapper,
       });
     });
-    // Should render both orders (customer names are in tooltips, not main UI)
-    expect(screen.getAllByText("Test Product")).toHaveLength(2);
+    // Should render both orders (order ids and customer names)
     expect(screen.getByText(/order-1/)).toBeInTheDocument();
     expect(screen.getByText(/order-2/)).toBeInTheDocument();
+    expect(screen.getByText("Customer 1")).toBeInTheDocument();
+    expect(screen.getByText("Customer 2")).toBeInTheDocument();
   });
 
   it("should render route segments between orders when routeManager is not provided", async () => {
@@ -98,58 +105,47 @@ describe("DeliveryOrderList", () => {
   it("should handle orders with different statuses", async () => {
     const order1: Order = {
       ...createMockOrder("order-1", "Customer 1"),
-      status: "pending" as const,
+      status: "pending",
     };
-
     const order2: Order = {
       ...createMockOrder("order-2", "Customer 2"),
-      status: "in-progress" as const,
+      status: "in-progress",
     };
-
     const order3: Order = {
       ...createMockOrder("order-3", "Customer 3"),
-      status: "completed" as const,
+      status: "completed",
     };
-
     await act(async () => {
       render(<DeliveryOrderList orders={[order1, order2, order3]} />, {
         wrapper: Wrapper,
       });
     });
-    // Should render all orders (statuses and customer names are in tooltips, not main UI)
+    // Should render all orders (order ids)
     expect(screen.getByText(/order-1/)).toBeInTheDocument();
     expect(screen.getByText(/order-2/)).toBeInTheDocument();
     expect(screen.getByText(/order-3/)).toBeInTheDocument();
   });
 
   it("should handle orders with different priorities", async () => {
-    const order1: Order = {
-      ...createMockOrder("order-1", "Customer 1"),
-      priority: "high" as const,
-    };
-
-    const order2: Order = {
-      ...createMockOrder("order-2", "Customer 2"),
-      priority: "medium" as const,
-    };
-
-    const order3: Order = {
-      ...createMockOrder("order-3", "Customer 3"),
-      priority: "low" as const,
-    };
-
+    const order1: Order = { ...createMockOrder("order-1", "Customer 1", 3) };
+    const order2: Order = { ...createMockOrder("order-2", "Customer 2", 2) };
+    const order3: Order = { ...createMockOrder("order-3", "Customer 3", 1) };
     await act(async () => {
       render(<DeliveryOrderList orders={[order1, order2, order3]} />, {
         wrapper: Wrapper,
       });
     });
-    // Should render all orders (priorities are shown in main UI, customer names are in tooltips)
+    // Should render all orders (order ids, customer names, and priorities)
     expect(screen.getByText(/order-1/)).toBeInTheDocument();
     expect(screen.getByText(/order-2/)).toBeInTheDocument();
     expect(screen.getByText(/order-3/)).toBeInTheDocument();
-    expect(screen.getByText(/high/)).toBeInTheDocument();
-    expect(screen.getByText(/medium/)).toBeInTheDocument();
-    expect(screen.getByText(/low/)).toBeInTheDocument();
+    expect(screen.getByText("Customer 1")).toBeInTheDocument();
+    expect(screen.getByText("Customer 2")).toBeInTheDocument();
+    expect(screen.getByText("Customer 3")).toBeInTheDocument();
+    // Check that priorities 3, 2, 1 are present (may appear in multiple places)
+    expect(screen.getAllByText("3").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("2").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("1").length).toBeGreaterThanOrEqual(1);
   });
 
   it("should use route segments from context when available", async () => {

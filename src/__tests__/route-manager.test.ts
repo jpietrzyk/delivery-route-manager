@@ -47,15 +47,14 @@ describe('RouteManager', () => {
 
   const createMockOrder = (id: string, lat: number, lng: number) => ({
     id,
-    product: { name: 'Test Product', price: 100, complexity: 1 } as const,
     status: 'pending' as const,
-    priority: 'medium' as const,
-    active: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    customer: 'Test Customer',
+    priority: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    customer: { name: 'Test Customer' },
     totalAmount: 100,
     location: { lat, lng },
+    complexity: 1,
   });
 
   it('should create a segment when upsertSegment is called', () => {
@@ -97,11 +96,9 @@ describe('RouteManager', () => {
     const mockOrder1 = createMockOrder('order-1', 51.505, -0.09);
     const mockOrder2 = createMockOrder('order-2', 51.51, -0.1);
     const mockOrder3 = createMockOrder('order-3', 51.515, -0.11);
-
     routeManager.upsertSegment(mockOrder1, mockOrder2);
     routeManager.upsertSegment(mockOrder2, mockOrder3);
     expect(routeManager.getAllSegments()).toHaveLength(2);
-
     routeManager.clear();
     expect(routeManager.getAllSegments()).toHaveLength(0);
   });

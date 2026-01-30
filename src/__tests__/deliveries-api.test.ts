@@ -17,31 +17,27 @@ describe('DeliveryRoutesApi', () => {
   const mockOrdersData: Order[] = [
     {
       id: 'ORD-001',
-      product: { name: 'Widget A', price: 100, complexity: 1 },
-      comment: 'Test',
       status: 'pending',
-      priority: 'high',
-      active: true,
-      createdAt: new Date('2026-01-01T08:00:00'),
-      updatedAt: new Date('2026-01-01T08:00:00'),
-      customer: 'Customer A',
+      priority: 1,
+      createdAt: '2026-01-01T08:00:00.000Z',
+      updatedAt: '2026-01-01T08:00:00.000Z',
+      customer: { name: 'Customer A' },
       totalAmount: 100,
       items: [],
-      location: { lat: 51.5074, lng: -0.1278 }
+      location: { lat: 51.5074, lng: -0.1278 },
+      complexity: 1
     },
     {
       id: 'ORD-002',
-      product: { name: 'Widget B', price: 200, complexity: 2 },
-      comment: 'Test',
       status: 'pending',
-      priority: 'medium',
-      active: true,
-      createdAt: new Date('2026-01-01T08:15:00'),
-      updatedAt: new Date('2026-01-01T08:15:00'),
-      customer: 'Customer B',
+      priority: 2,
+      createdAt: '2026-01-01T08:15:00.000Z',
+      updatedAt: '2026-01-01T08:15:00.000Z',
+      customer: { name: 'Customer B' },
       totalAmount: 200,
       items: [],
-      location: { lat: 51.5085, lng: -0.1250 }
+      location: { lat: 51.5085, lng: -0.1250 },
+      complexity: 2
     }
   ];
 

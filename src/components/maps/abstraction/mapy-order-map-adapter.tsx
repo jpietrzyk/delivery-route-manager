@@ -169,10 +169,10 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         isPreviousOrder: previousOrderId === order.id,
         isDisabled,
         matchesFilters,
-        priority: order.priority,
+        priority: String(order.priority),
         status: order.status,
         totalAmount: order.totalAmount,
-        product: order.product,
+        // product removed
         popupContent: (
           <OrderPopupContent
             order={order}

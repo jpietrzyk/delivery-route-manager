@@ -72,7 +72,7 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
               <TableHeader className="bg-muted/30">
                 <TableRow className="border-border/50 hover:bg-muted/50">
                   <TableHead className="font-semibold text-foreground/80 w-[20%]">
-                    Product
+                    Customer
                   </TableHead>
                   <TableHead className="font-semibold text-foreground/80">
                     Customer
@@ -112,40 +112,41 @@ export const UnassignedOrderList: React.FC<UnassignedOrderListProps> = ({
                     onMouseLeave={() => setHighlightedOrderId?.(null)}
                   >
                     <TableCell className="font-medium text-foreground w-[20%]">
-                      {order.product?.name
-                        ? order.product.name.length > 30
-                          ? order.product.name.slice(0, 30) + "..."
-                          : order.product.name
-                        : `Order ${order.id}`}
+                      {order.customer?.name || `Order ${order.id || "?"}`}
                     </TableCell>
                     <TableCell className="text-foreground/80">
-                      {order.customer}
+                      {order.customer?.name || "?"}
                     </TableCell>
                     <TableCell>
                       <Badge
-                        className={`${getPriorityColor(
-                          order.priority,
-                        )} border-0`}
+                        className={`${getPriorityColor(String(order.priority))} border-0`}
                       >
-                        {order.priority}
+                        {order.priority ?? "?"}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge
-                        className={`${getStatusColor(order.status)} border-0`}
+                        className={`${getStatusColor(String(order.status))} border-0`}
                       >
-                        {order.status}
+                        {order.status ?? "?"}
                       </Badge>
                     </TableCell>
                     <TableCell className="font-mono text-foreground/80">
-                      €{order.totalAmount?.toLocaleString() || "0"}
+                      €
+                      {typeof order.totalAmount === "number"
+                        ? order.totalAmount.toLocaleString()
+                        : order.totalAmount || "0"}
                     </TableCell>
                     <TableCell className="font-mono text-xs text-foreground/70">
-                      {order.location.lat.toFixed(4)},{" "}
-                      {order.location.lng.toFixed(4)}
+                      {order.location?.lat !== undefined &&
+                      order.location?.lng !== undefined
+                        ? `${order.location.lat.toFixed(4)}, ${order.location.lng.toFixed(4)}`
+                        : "?"}
                     </TableCell>
                     <TableCell className="text-foreground/70 text-sm">
-                      {order.createdAt.toLocaleDateString()}
+                      {order.createdAt
+                        ? new Date(order.createdAt).toLocaleDateString()
+                        : "?"}
                     </TableCell>
                     <TableCell>
                       <Button

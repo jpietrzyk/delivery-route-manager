@@ -12,18 +12,17 @@ import type { RouteSegmentData } from "@/contexts/route-segments-context";
 describe("MapyOrderMapAdapter - totalAmount handling", () => {
   const createMockOrder = (
     id: string = "order-1",
-    overrides: Partial<Order> = {}
+    overrides: Partial<Order> = {},
   ): Order => ({
     id,
-    product: { name: "Test Product", price: 100, complexity: 1 },
-    status: "pending" as const,
-    priority: "medium" as const,
-    active: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    customer: "Test Customer",
+    status: "pending",
+    priority: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    customer: { name: "Test Customer" },
     totalAmount: 100,
     location: { lat: 51.505, lng: -0.09 },
+    complexity: 1,
     ...overrides,
   });
 
@@ -56,25 +55,13 @@ describe("MapyOrderMapAdapter - totalAmount handling", () => {
     customerLabel.style.fontSize = "11px";
     customerSection.appendChild(customerLabel);
     const customerValue = document.createElement("div");
-    customerValue.textContent = order.customer;
+    customerValue.textContent = order.customer?.name;
     customerValue.style.fontSize = "14px";
     customerSection.appendChild(customerValue);
     container.appendChild(customerSection);
 
     // Product Section (conditional)
-    if (order.product) {
-      const productSection = document.createElement("div");
-      productSection.style.marginBottom = "10px";
-      const productLabel = document.createElement("div");
-      productLabel.textContent = "Product";
-      productLabel.style.fontSize = "11px";
-      productSection.appendChild(productLabel);
-      const productValue = document.createElement("div");
-      productValue.textContent = order.product.name;
-      productValue.style.fontSize = "14px";
-      productSection.appendChild(productValue);
-      container.appendChild(productSection);
-    }
+    // Product section removed: no longer in Order type
 
     // Total Amount Section (conditional - this is what we're testing)
     if (order.totalAmount != null) {
@@ -155,16 +142,11 @@ describe("MapyOrderMapAdapter - totalAmount handling", () => {
   });
 
   it("should handle order without product gracefully", () => {
-    const orderWithoutProduct = createMockOrder("order-7", {
-      product: undefined as unknown as Order["product"],
-    });
-
+    // Product field removed: no longer relevant for Order type
+    const orderWithoutProduct = createMockOrder("order-7");
     expect(() => {
       createOrderPopupContent(orderWithoutProduct);
     }).not.toThrow();
-
-    const popup = createOrderPopupContent(orderWithoutProduct);
-    expect(popup.textContent).not.toContain("Product");
   });
 });
 

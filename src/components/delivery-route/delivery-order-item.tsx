@@ -120,14 +120,10 @@ export const DeliveryOrderItem = memo<DeliveryOrderItemProps>(
               <h4 className="truncate text-sm font-medium text-foreground flex items-center gap-2">
                 <div className="min-w-0 flex-1">
                   <div className="truncate">
-                    {order.product?.name || order.id}
+                    {order.customer?.name || order.id}
                   </div>
                   <div className="text-xs text-muted-foreground truncate">
-                    {order.id} |{" "}
-                    {order.product?.complexity
-                      ? order.product.complexity * 30
-                      : 0}{" "}
-                    min | {order.priority}
+                    {order.id} | {order.priority}
                   </div>
                 </div>
               </h4>

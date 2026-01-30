@@ -53,9 +53,9 @@ export const OrderPopupContent: React.FC<OrderPopupContentProps> = ({
         </span>
       </div>
 
-      {/* Order/Product Name */}
+      {/* Order Name (no product field in Order type) */}
       <div className="font-semibold mb-3 text-sm text-gray-900">
-        {order.product?.name || pl.unknownOrder}
+        {pl.unknownOrder}
       </div>
 
       {/* Unassigned/Assigned Badge */}
@@ -79,7 +79,7 @@ export const OrderPopupContent: React.FC<OrderPopupContentProps> = ({
           {pl.customer}
         </div>
         <div className="text-sm font-medium text-gray-700">
-          {order.customer}
+          {order.customer?.name || "?"}
         </div>
       </div>
 

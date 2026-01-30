@@ -19,21 +19,23 @@ export const getStatusColor = (status: string) => {
 
 // Create expanded tooltip content similar to marker popups
 export const createExpandedTooltipContent = (order: Order) => {
-  const statusColors = getStatusColor(order.status);
+  const statusColors = getStatusColor(order.status ?? "pending");
 
   return (
     <div className="p-4 max-w-[320px] bg-white border border-border rounded-sm shadow-sm">
       <div className="font-semibold text-sm mb-3 text-foreground truncate">
-        {order.product?.name || pl.unknownOrder} (ID: {order.id})
+        {order.customer?.name || pl.unknownOrder} (ID: {order.id || "Brak ID"})
       </div>
 
       <div className="space-y-3 text-sm">
         {/* Customer */}
         <div className="flex items-start gap-2">
-          <span className="text-muted-foreground mt-0.5">👤</span>
+          <span className="text-muted-foreground mt-0.5">64</span>
           <div>
             <div className="font-medium text-foreground">{pl.customer}</div>
-            <div className="text-muted-foreground">{order.customer}</div>
+            <div className="text-muted-foreground">
+              {order.customer?.name || pl.unknownOrder}
+            </div>
           </div>
         </div>
 
@@ -49,7 +51,7 @@ export const createExpandedTooltipContent = (order: Order) => {
                 color: statusColors.text,
               }}
             >
-              {order.status.toUpperCase()}
+              {(order.status ?? "pending").toUpperCase()}
             </div>
           </div>
         </div>
@@ -61,7 +63,9 @@ export const createExpandedTooltipContent = (order: Order) => {
             <div className="font-medium text-foreground">
               {pl.priorityLabel}
             </div>
-            <div className="text-primary font-medium">{order.priority}</div>
+            <div className="text-primary font-medium">
+              {order.priority ?? "?"}
+            </div>
           </div>
         </div>
 
@@ -71,41 +75,11 @@ export const createExpandedTooltipContent = (order: Order) => {
           <div>
             <div className="font-medium text-foreground">{pl.location}</div>
             <div className="text-muted-foreground text-xs">
-              Lat: {order.location.lat.toFixed(4)}, Lng:{" "}
-              {order.location.lng.toFixed(4)}
+              Lat: {order.location?.lat ? order.location.lat.toFixed(4) : "?"},
+              Lng: {order.location?.lng ? order.location.lng.toFixed(4) : "?"}
             </div>
           </div>
         </div>
-
-        {/* Product Details */}
-        {order.product && (
-          <div className="flex items-start gap-2 pt-2 border-t border-border/50">
-            <span className="text-muted-foreground mt-0.5">📦</span>
-            <div>
-              <div className="font-medium text-foreground">
-                {pl.productDetails}
-              </div>
-              <div className="text-muted-foreground text-xs line-clamp-2">
-                {order.product.name} - €{order.product.price.toLocaleString()} |
-                Złożoność: {order.product.complexity} (≈
-                {order.product.complexity * 30} min)
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Comment */}
-        {order.comment && (
-          <div className="flex items-start gap-2 pt-2 border-t border-border/50">
-            <span className="text-muted-foreground mt-0.5">💬</span>
-            <div>
-              <div className="font-medium text-foreground">{pl.notes}</div>
-              <div className="text-muted-foreground text-xs italic line-clamp-2">
-                {order.comment}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Total Amount */}
         {order.totalAmount && (
