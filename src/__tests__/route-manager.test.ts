@@ -47,15 +47,14 @@ describe('RouteManager', () => {
 
   const createMockOrder = (id: string, lat: number, lng: number) => ({
     id,
-    product: { name: 'Test Product', price: 100, complexity: 1 } as const,
-    status: 'pending' as const,
-    priority: 'medium' as const,
-    active: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    customer: 'Test Customer',
+    status: 'pending',
+    priority: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    customer: { name: 'Test Customer' },
     totalAmount: 100,
     location: { lat, lng },
+    complexity: 1,
   });
 
   it('should create a segment when upsertSegment is called', () => {

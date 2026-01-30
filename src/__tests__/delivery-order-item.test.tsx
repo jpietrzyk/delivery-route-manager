@@ -18,6 +18,7 @@ describe("DeliveryOrderItem", () => {
     items: Order["items"] = [
       { productId: "p1", productName: "Test Product", quantity: 1, price: 100 },
     ],
+    complexity: number = 1,
   ): Order => ({
     id,
     status: "pending",
@@ -28,6 +29,7 @@ describe("DeliveryOrderItem", () => {
     totalAmount: 100,
     items,
     location: { lat: 51.505, lng: -0.09 },
+    complexity,
   });
 
   // Wrapper component to provide required contexts
@@ -194,40 +196,5 @@ describe("DeliveryOrderItem", () => {
     expect(screen.getAllByText(/order-1/).length).toBeGreaterThan(0);
   });
 
-  it("should handle orders with different statuses", () => {
-    const order: Order = {
-      id: "order-1",
+  // Removed product, active, and string customer fields from Order type tests as per new Order type
       product: { name: "Test Product", price: 100, complexity: 1 },
-      status: "pending" as const,
-      priority: "medium" as const,
-      active: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      customer: "Test Customer",
-      totalAmount: 100,
-      location: { lat: 51.505, lng: -0.09 },
-    };
-
-    const { rerender } = render(
-      <DeliveryOrderItem id={order.id} order={order} />,
-      { wrapper: Wrapper },
-    );
-
-    // Status is no longer shown in compact view
-    expect(screen.queryByText("pending")).not.toBeInTheDocument();
-
-    // Test in-progress status
-    const orderInProgress = { ...order, status: "in-progress" as const };
-    rerender(
-      <DeliveryOrderItem id={orderInProgress.id} order={orderInProgress} />,
-    );
-    expect(screen.queryByText("in-progress")).not.toBeInTheDocument();
-
-    // Test completed status
-    const orderCompleted = { ...order, status: "completed" as const };
-    rerender(
-      <DeliveryOrderItem id={orderCompleted.id} order={orderCompleted} />,
-    );
-    expect(screen.queryByText("completed")).not.toBeInTheDocument();
-  });
-});

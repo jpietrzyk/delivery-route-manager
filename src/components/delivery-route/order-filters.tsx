@@ -1,4 +1,4 @@
-import { FiltersGroup } from "./filters-group";
+import { FiltersGroup } from "@/components/delivery-route/filters-group";
 import { mapConfig } from "@/config/map.config";
 import {
   Play,

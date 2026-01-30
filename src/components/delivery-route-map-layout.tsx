@@ -17,6 +17,7 @@ import { UnassignedOrderList } from "@/components/delivery-route/unassigned-orde
 
 import { OrderFilters } from "@/components/delivery-route/order-filters";
 import type {
+  PriorityFilterState,
   AmountFilterState,
   ComplexityFilterState,
 } from "@/components/delivery-route/order-filters";
