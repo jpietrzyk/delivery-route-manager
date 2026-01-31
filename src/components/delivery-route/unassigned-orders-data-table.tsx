@@ -61,20 +61,6 @@ export function UnassignedOrdersDataTable({
         cell: (info) => info.getValue(),
       },
       {
-        id: "add",
-        header: "",
-        cell: (info) => (
-          <button
-            className="inline-flex items-center px-2 py-1 text-xs font-medium rounded border border-primary text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
-            onClick={() => onAddOrder?.(info.row.original.id)}
-            title="Add to delivery route"
-          >
-            Add
-          </button>
-        ),
-        enableSorting: false,
-      },
-      {
         accessorKey: "priority",
         header: () => <span>Priority</span>,
         cell: (info) => info.getValue(),
@@ -116,6 +102,21 @@ export function UnassignedOrdersDataTable({
           info.getValue()
             ? new Date(info.getValue() as string).toLocaleDateString()
             : "?",
+      },
+      // Add button column LAST
+      {
+        id: "add",
+        header: "",
+        cell: (info) => (
+          <button
+            className="inline-flex items-center px-2 py-1 text-xs font-medium rounded border border-primary text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
+            onClick={() => onAddOrder?.(info.row.original.id)}
+            title="Add to delivery route"
+          >
+            Add
+          </button>
+        ),
+        enableSorting: false,
       },
     ],
     [onAddOrder],
