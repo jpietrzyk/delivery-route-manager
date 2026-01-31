@@ -1,7 +1,6 @@
 // Shared marker style logic for all map providers
 import L from "leaflet";
 import type { MapMarkerData } from "./map-data";
-import type { MapFiltersState } from "../../../contexts/map-filters-context-types";
 
 // Marker icon URLs (should match across providers)
 const ICONS = {
@@ -46,7 +45,7 @@ export function createNumberedIcon(iconUrl: string, badgeNumber?: number) {
   });
 }
 
-export function getMarkerStyle(marker: MapMarkerData, filters?: MapFiltersState) {
+export function getMarkerStyle(marker: MapMarkerData) {
   // Always use default icon for unassigned/outfiltered markers
   let iconUrl = ICONS.default;
 
