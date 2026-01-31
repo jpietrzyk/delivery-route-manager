@@ -127,11 +127,30 @@ export function UnassignedOrdersDataTable({
         cell: (info) => info.getValue(),
       },
       {
-        accessorKey: "location",
-        header: "Location",
+        accessorKey: "complexity",
+        header: () => <span>Complexity</span>,
         cell: (info) => {
-          const loc = info.getValue() as Order["location"];
-          return loc ? `${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}` : "?";
+          const complexity = info.getValue() as number;
+          let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
+          if (complexity >= 3)
+            badgeColor = "bg-purple-50 text-purple-700 border-purple-200";
+          if (complexity === 2)
+            badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
+          if (complexity === 1)
+            badgeColor = "bg-green-50 text-green-700 border-green-200";
+          return (
+            <span
+              className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
+            >
+              {complexity}
+            </span>
+          );
+        },
+        enableSorting: true,
+        sortingFn: (rowA, rowB, columnId) => {
+          const a = Number(rowA.getValue(columnId) || 0);
+          const b = Number(rowB.getValue(columnId) || 0);
+          return a - b;
         },
       },
       {
