@@ -63,7 +63,28 @@ export function UnassignedOrdersDataTable({
       {
         accessorKey: "priority",
         header: () => <span>Priority</span>,
-        cell: (info) => info.getValue(),
+        cell: (info) => {
+          const priority = info.getValue() as number;
+          let label = priority;
+          let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
+          if (priority >= 3) {
+            label = "High";
+            badgeColor = "bg-red-50 text-red-700 border-red-200";
+          } else if (priority === 2) {
+            label = "Medium";
+            badgeColor = "bg-yellow-50 text-yellow-800 border-yellow-200";
+          } else {
+            label = "Low";
+            badgeColor = "bg-green-50 text-green-700 border-green-200";
+          }
+          return (
+            <span
+              className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
+            >
+              {label}
+            </span>
+          );
+        },
         enableSorting: true,
         sortingFn: (rowA, rowB, columnId) => {
           const a = (rowA.getValue(columnId) || "").toString().toLowerCase();
