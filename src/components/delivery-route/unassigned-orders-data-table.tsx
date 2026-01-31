@@ -215,8 +215,8 @@ export function UnassignedOrdersDataTable({
   const table = useStableReactTable(data, columns, sorting, setSorting);
 
   return (
-    <div className="w-full relative rounded-xl border border-border/40 bg-background/95 shadow-sm p-2">
-      <Table className="w-full text-sm text-foreground h-[400px] overflow-auto">
+    <div className="w-full rounded-xl border border-border/40 bg-background/95 shadow-sm p-2">
+      <Table className="w-full text-sm text-foreground">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -228,7 +228,7 @@ export function UnassignedOrdersDataTable({
                       ? header.column.getToggleSortingHandler()
                       : undefined
                   }
-                  className={`bg-background/80 border-b border-border/40 rounded-t-lg px-4 py-2 text-base font-semibold text-foreground/80 shadow-sm sticky top-0 z-10 ${
+                  className={`bg-background/80 border-b border-border/40 rounded-t-lg px-4 py-2 text-base font-semibold text-foreground/80 shadow-sm ${
                     header.column.getCanSort()
                       ? "cursor-pointer select-none"
                       : ""
@@ -249,35 +249,42 @@ export function UnassignedOrdersDataTable({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => {
-            const orderId = row.original.id;
-            const isHighlighted = highlightedOrderId === orderId;
-            return (
-              <TableRow
-                key={row.id}
-                className={
-                  isHighlighted
-                    ? "bg-primary/10 border-primary/60 text-primary shadow-sm"
-                    : "hover:bg-accent/20 transition-colors"
-                }
-                style={{ cursor: "pointer", borderRadius: 8 }}
-                onMouseEnter={() => setHighlightedOrderId(orderId)}
-                onMouseLeave={() => setHighlightedOrderId(null)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className="align-middle px-3 py-2 border-b border-border/30 bg-background/95"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            );
-          })}
-        </TableBody>
       </Table>
+      <div className="h-[400px] overflow-auto">
+        <Table className="w-full text-sm text-foreground">
+          <TableBody>
+            {table.getRowModel().rows.map((row) => {
+              const orderId = row.original.id;
+              const isHighlighted = highlightedOrderId === orderId;
+              return (
+                <TableRow
+                  key={row.id}
+                  className={
+                    isHighlighted
+                      ? "bg-primary/10 border-primary/60 text-primary shadow-sm"
+                      : "hover:bg-accent/20 transition-colors"
+                  }
+                  style={{ cursor: "pointer", borderRadius: 8 }}
+                  onMouseEnter={() => setHighlightedOrderId(orderId)}
+                  onMouseLeave={() => setHighlightedOrderId(null)}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="align-middle px-3 py-2 border-b border-border/30 bg-background/95"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
