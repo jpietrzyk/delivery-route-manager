@@ -1,5 +1,13 @@
 import * as React from "react";
 import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
+import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
@@ -10,14 +18,6 @@ import type {
   SortingState,
   OnChangeFn,
 } from "@tanstack/react-table";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
 import type { Order } from "@/types/order";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 
@@ -29,7 +29,6 @@ function useStableReactTable<TData>(
   sorting: SortingState,
   onSortingChange: OnChangeFn<SortingState>,
 ) {
-  // eslint-disable-next-line react-hooks/incompatible-library
   return useReactTable({
     data,
     columns,
@@ -54,58 +53,19 @@ export function UnassignedOrdersDataTable({
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const columns = React.useMemo<ColumnDef<Order, unknown>[]>(
-    () => [
-      {
-        accessorKey: "customer.name",
-        header: "Customer",
-        cell: (info) => info.getValue(),
-      },
-      {
-        accessorKey: "priority",
-        header: () => <span>Priority</span>,
-        cell: (info) => {
-          const priority = info.getValue() as number;
-          let label = priority;
-          let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
-          if (priority >= 3) {
-            label = "High";
-            badgeColor = "bg-red-50 text-red-700 border-red-200";
-          } else if (priority === 2) {
-            label = "Medium";
-            badgeColor = "bg-yellow-50 text-yellow-800 border-yellow-200";
-          } else {
-            label = "Low";
-            badgeColor = "bg-green-50 text-green-700 border-green-200";
-          }
-          return (
-            <span
-              className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
-            >
-              {label}
-            </span>
-          );
-        },
-        enableSorting: true,
-        sortingFn: (rowA, rowB, columnId) => {
-          const a = (rowA.getValue(columnId) || "").toString().toLowerCase();
-          const b = (rowB.getValue(columnId) || "").toString().toLowerCase();
-          return a.localeCompare(b);
-        },
-      },
+    (): ColumnDef<Order, unknown>[] => [
       {
         accessorKey: "status",
-        header: () => <span>Status</span>,
-        cell: (info) => {
-          const status = info.getValue() as Order["status"];
+        header: "Status",
+        cell: (info: { getValue: () => unknown }) => {
+          const status = info.getValue() as string;
           let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
-          if (status === "pending")
-            badgeColor = "bg-yellow-50 text-yellow-800 border-yellow-200";
-          if (status === "in-progress")
-            badgeColor = "bg-blue-50 text-blue-800 border-blue-200";
-          if (status === "completed")
-            badgeColor = "bg-green-50 text-green-800 border-green-200";
-          if (status === "cancelled")
-            badgeColor = "bg-red-50 text-red-800 border-red-200";
+          if (status === "priority")
+            badgeColor = "bg-red-50 text-red-700 border-red-200";
+          if (status === "delayed")
+            badgeColor = "bg-yellow-50 text-yellow-700 border-yellow-200";
+          if (status === "normal")
+            badgeColor = "bg-green-50 text-green-700 border-green-200";
           return (
             <span
               className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
@@ -115,7 +75,42 @@ export function UnassignedOrdersDataTable({
           );
         },
         enableSorting: true,
-        sortingFn: (rowA, rowB, columnId) => {
+        sortingFn: (
+          rowA: { getValue: (col: string) => unknown },
+          rowB: { getValue: (col: string) => unknown },
+          columnId: string,
+        ) => {
+          const a = (rowA.getValue(columnId) || "").toString().toLowerCase();
+          const b = (rowB.getValue(columnId) || "").toString().toLowerCase();
+          return a.localeCompare(b);
+        },
+      },
+      {
+        accessorKey: "priority",
+        header: "Priority",
+        cell: (info: { getValue: () => unknown }) => {
+          const priority = info.getValue() as string;
+          let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
+          if (priority === "high")
+            badgeColor = "bg-red-50 text-red-700 border-red-200";
+          if (priority === "medium")
+            badgeColor = "bg-yellow-50 text-yellow-700 border-yellow-200";
+          if (priority === "low")
+            badgeColor = "bg-green-50 text-green-700 border-green-200";
+          return (
+            <span
+              className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
+            >
+              {priority}
+            </span>
+          );
+        },
+        enableSorting: true,
+        sortingFn: (
+          rowA: { getValue: (col: string) => unknown },
+          rowB: { getValue: (col: string) => unknown },
+          columnId: string,
+        ) => {
           const a = (rowA.getValue(columnId) || "").toString().toLowerCase();
           const b = (rowB.getValue(columnId) || "").toString().toLowerCase();
           return a.localeCompare(b);
@@ -124,12 +119,22 @@ export function UnassignedOrdersDataTable({
       {
         accessorKey: "totalAmount",
         header: "Amount",
-        cell: (info) => info.getValue(),
+        cell: (info: { getValue: () => unknown }) => info.getValue(),
+        enableSorting: true,
+        sortingFn: (
+          rowA: { getValue: (col: string) => unknown },
+          rowB: { getValue: (col: string) => unknown },
+          columnId: string,
+        ) => {
+          const a = Number(rowA.getValue(columnId) || 0);
+          const b = Number(rowB.getValue(columnId) || 0);
+          return a - b;
+        },
       },
       {
         accessorKey: "complexity",
         header: () => <span>Complexity</span>,
-        cell: (info) => {
+        cell: (info: { getValue: () => unknown }) => {
           const complexity = info.getValue() as number;
           let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
           if (complexity >= 3)
@@ -147,7 +152,11 @@ export function UnassignedOrdersDataTable({
           );
         },
         enableSorting: true,
-        sortingFn: (rowA, rowB, columnId) => {
+        sortingFn: (
+          rowA: { getValue: (col: string) => unknown },
+          rowB: { getValue: (col: string) => unknown },
+          columnId: string,
+        ) => {
           const a = Number(rowA.getValue(columnId) || 0);
           const b = Number(rowB.getValue(columnId) || 0);
           return a - b;
@@ -156,16 +165,25 @@ export function UnassignedOrdersDataTable({
       {
         accessorKey: "createdAt",
         header: "Created",
-        cell: (info) =>
+        cell: (info: { getValue: () => unknown }) =>
           info.getValue()
             ? new Date(info.getValue() as string).toLocaleDateString()
             : "?",
+        enableSorting: true,
+        sortingFn: (
+          rowA: { getValue: (col: string) => unknown },
+          rowB: { getValue: (col: string) => unknown },
+          columnId: string,
+        ) => {
+          const a = new Date(rowA.getValue(columnId) as string).getTime() || 0;
+          const b = new Date(rowB.getValue(columnId) as string).getTime() || 0;
+          return a - b;
+        },
       },
-      // Add button column LAST
       {
         id: "add",
         header: "",
-        cell: (info) => (
+        cell: (info: { row: { original: Order } }) => (
           <button
             className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-lg border border-primary/60 text-primary bg-primary/5 hover:bg-primary/20 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
             onClick={() => onAddOrder?.(info.row.original.id)}
@@ -194,13 +212,11 @@ export function UnassignedOrdersDataTable({
     [onAddOrder],
   );
 
-  // Use custom hook to wrap useReactTable with stable references
-  // This avoids issues with React Compiler and TanStack Table's non-memoizable API
   const table = useStableReactTable(data, columns, sorting, setSorting);
 
   return (
-    <div className="w-full overflow-x-auto rounded-xl border border-border/40 bg-background/95 shadow-sm p-2">
-      <Table className="w-full text-sm text-foreground bg-background/95">
+    <div className="w-full relative rounded-xl border border-border/40 bg-background/95 shadow-sm p-2">
+      <Table className="w-full text-sm text-foreground h-[400px] overflow-auto">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -212,7 +228,7 @@ export function UnassignedOrdersDataTable({
                       ? header.column.getToggleSortingHandler()
                       : undefined
                   }
-                  className={`bg-background/80 border-b border-border/40 rounded-t-lg px-4 py-2 text-base font-semibold text-foreground/80 shadow-sm ${
+                  className={`bg-background/80 border-b border-border/40 rounded-t-lg px-4 py-2 text-base font-semibold text-foreground/80 shadow-sm sticky top-0 z-10 ${
                     header.column.getCanSort()
                       ? "cursor-pointer select-none"
                       : ""
