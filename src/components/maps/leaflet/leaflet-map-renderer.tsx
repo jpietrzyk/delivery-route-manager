@@ -155,7 +155,14 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
         .filter((marker) => marker.type === "delivery")
         .map((marker) => {
           let icon, opacity;
-          if (marker.customIconUrl) {
+          // Use marker-waypoint.svg for delivery waypoints
+          if (marker.waypointIndex !== undefined) {
+            icon = createNumberedIcon(
+              "/markers/marker-waypoint.svg",
+              marker.waypointIndex,
+            );
+            opacity = marker.matchesFilters === false ? 0.4 : 1.0;
+          } else if (marker.customIconUrl) {
             const baseIcon = L.icon({
               iconUrl: marker.customIconUrl,
               iconSize: [25, 41],
@@ -165,10 +172,7 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
                 "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
               shadowSize: [41, 41],
             });
-            icon =
-              marker.waypointIndex !== undefined
-                ? createNumberedIcon(marker.customIconUrl, marker.waypointIndex)
-                : baseIcon;
+            icon = baseIcon;
             opacity = marker.matchesFilters === false ? 0.4 : 1.0;
           } else {
             ({ icon, opacity } = getMarkerStyle(marker));

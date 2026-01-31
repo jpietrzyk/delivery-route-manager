@@ -55,6 +55,40 @@ const svgTemplate = (color) => `<?xml version="1.0" encoding="UTF-8" standalone=
 </svg>
 `;
 
+const svgWaypointTemplate = (color) => `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="237.47388mm"
+   height="337.49982mm"
+   viewBox="0 0 237.47388 337.49982"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="layer1"
+     transform="translate(23.283336,50.270834)">
+    <path
+       fill-rule="evenodd"
+       fill="${color}"
+       fill-opacity="1"
+       d="m 95.27378,213.88359 c -0.148828,0 -0.296624,0.003 -0.44442,0.005 0.06821,0.11988 0.152955,0.27183 0.219101,0.39068 0.07133,-0.12094 0.156078,-0.27493 0.225319,-0.39584 z m 32.47451,1.38078 c -4.73046,8.42947 -9.05166,16.07447 -12.45402,21.95319 -3.93155,6.79027 -11.49284,12.45918 -20.245809,12.46021 -8.74985,0 -16.309075,-5.66994 -20.240625,-12.46021 -3.388942,-5.85493 -7.691516,-13.46999 -12.398216,-21.85707 -24.696155,2.2097 -46.400243,6.83575 -61.85151237,13.18162 -15.45433863,6.34691 -23.82075463,14.0715 -23.84144463,22.01209 0.0026,9.7276 12.511907,19.05519 34.779293,25.93332 22.26736,6.87814 52.46915,10.74145 83.959725,10.74145 31.491609,0 61.690279,-3.86437 83.957659,-10.74145 22.26739,-6.87813 34.77721,-16.20676 34.77721,-25.93332 0,-7.98711 -8.44601,-15.75612 -24.04814,-22.12578 -15.60216,-6.36963 -37.50987,-10.99156 -62.39412,-13.16405 z m 0,0"
+       id="path4"
+       style="stroke-width:0.264583" />
+    <path
+       fill-rule="evenodd"
+       fill="#${color}"
+       fill-opacity="1"
+       d="m 95.051557,-50.270832 c -52.872216,0 -95.73161998,43.1456853 -95.73161998,96.366209 0.008202,19.16162 5.69060538,37.767202 26.18030898,73.604803 15.890504,27.79882 47.17026,85.0098 61.803993,110.28682 4.053496,7.00421 11.43807,7.00318 15.493631,0 14.63683,-25.27702 45.9114,-82.48697 61.8019,-110.28579 20.48971,-35.837599 26.17515,-54.443181 26.18031,-73.604801 0,-53.2205239 -42.85938,-96.36621 -95.728523,-96.36621 z m 0,56.7293511 c 23.907593,0 43.293483,19.5130209 43.293483,43.5818349 0,11.560019 -4.56094,22.643582 -12.68138,30.815685 -8.12043,8.173164 -19.12958,12.766146 -30.612103,12.766146 -23.910687,0 -43.294511,-19.513016 -43.294511,-43.581831 0,-24.068814 19.383824,-43.5818349 43.294511,-43.5818349 z m 0,0"
+       id="path5"
+       style="stroke-width:0.264583" />
+  </g>
+</svg>
+`
+
 const outDir = path.join(__dirname, '../public/markers');
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -63,6 +97,10 @@ const filePath = path.join(outDir, `marker-default.svg`);
 fs.writeFileSync(filePath, templateSvg, 'utf8');
 console.log(`Generated: ${filePath} for default`);
 
+const svgWaypoint = svgWaypointTemplate('#3498db');
+const filePathWaypoint = path.join(outDir, `marker-waypoint.svg`);
+fs.writeFileSync(filePathWaypoint, svgWaypoint, 'utf8');
+console.log(`Generated: ${filePathWaypoint} for default`);
 
 markers.forEach(({ name, color }) => {
   const svg = svgTemplate(color);

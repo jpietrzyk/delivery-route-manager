@@ -144,7 +144,13 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
       // Get custom icon URL based on filters
       const markerStyle = getMarkerStyle(markerData);
       let customIconUrl: string | undefined = undefined;
+      // Use waypoint icon for delivery waypoints
       if (
+        markerData.type === "delivery" &&
+        markerData.waypointIndex !== undefined
+      ) {
+        customIconUrl = "/markers/marker-waypoint.svg";
+      } else if (
         markerStyle &&
         markerStyle.icon &&
         "options" in markerStyle.icon &&
