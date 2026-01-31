@@ -102,6 +102,11 @@ const filePathWaypoint = path.join(outDir, `marker-waypoint.svg`);
 fs.writeFileSync(filePathWaypoint, svgWaypoint, 'utf8');
 console.log(`Generated: ${filePathWaypoint} for default`);
 
+const svgMarkerHover = svgWaypointTemplate('#90EE90');
+const filePathMarkerHover = path.join(outDir, `marker-hover.svg`);
+fs.writeFileSync(filePathMarkerHover, svgMarkerHover, 'utf8');
+console.log(`Generated: ${filePathMarkerHover} for hover`);
+
 markers.forEach(({ name, color }) => {
   const svg = svgTemplate(color);
   const filePath = path.join(outDir, `marker-${name}.svg`);
