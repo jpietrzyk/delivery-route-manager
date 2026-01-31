@@ -12,7 +12,6 @@ import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useRouteSegments } from "@/hooks/use-route-segments";
 import { pl } from "@/lib/translations";
 import { OrderPopupContent } from "./order-popup-content";
-import { getMarkerStyle } from "./marker-style";
 
 interface OrderMapAdapterProps {
   orders: Order[];
