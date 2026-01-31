@@ -11,7 +11,6 @@ import type {
   MapRouteSegmentData,
   MapBounds,
 } from "../abstraction/map-data";
-import { createNumberedIcon } from "../abstraction/marker-style";
 
 interface MapyMapRendererProps {
   markers: MapMarkerData[];
@@ -193,40 +192,18 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
     // Process unassigned markers first (rendered below)
     unassignedMarkers.forEach((markerData) => {
       const existingMarker = markerInstances.get(markerData.id);
-      let icon, opacity;
-      if (markerData.customIconUrl) {
-        const baseIcon = L.icon({
-          iconUrl: markerData.customIconUrl,
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowUrl:
-            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-          shadowSize: [41, 41],
-        });
-        icon =
-          markerData.waypointIndex !== undefined
-            ? createNumberedIcon(
-                markerData.customIconUrl,
-                markerData.waypointIndex,
-              )
-            : baseIcon;
-        opacity = markerData.matchesFilters === false ? 0.4 : 1.0;
-      } else {
-        ({ icon, opacity } = getMarkerStyle(markerData));
-      }
+      const { icon, opacity } = getMarkerStyle(markerData);
       const position: [number, number] = [
         markerData.location.lat,
         markerData.location.lng,
       ];
-
       if (existingMarker) {
         // Update existing marker
         existingMarker.setLatLng(position);
         existingMarker.setIcon(icon);
         existingMarker.setOpacity(opacity);
 
-        // Update popup if needed (allow faded/disabled markers to show popup)
+        // Update popup if needed
         if (markerData.popupContent) {
           let popupData = popupDataRef.current.get(markerData.id);
           if (!popupData) {
@@ -250,8 +227,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
           icon,
           opacity,
         });
-
-        // Add popup if provided (allow faded/disabled markers to show popup)
+        // Add popup if provided
         if (markerData.popupContent) {
           const popupContainer = document.createElement("div");
           const root = createRoot(popupContainer);
@@ -266,7 +242,6 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
             maxWidth: 300,
           });
         }
-
         // Add hover events
         newMarker.on("mouseover", () => {
           onMarkerHover?.(markerData.id, true);
@@ -274,7 +249,6 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         newMarker.on("mouseout", () => {
           onMarkerHover?.(markerData.id, false);
         });
-
         newMarker.addTo(markerLayer);
         markerInstances.set(markerData.id, newMarker);
       }
@@ -283,21 +257,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
     // Process delivery markers second (rendered on top)
     deliveryMarkers.forEach((markerData) => {
       const existingMarker = markerInstances.get(markerData.id);
-      let icon, opacity;
-      if (markerData.customIconUrl) {
-        icon = L.icon({
-          iconUrl: markerData.customIconUrl,
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowUrl:
-            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-          shadowSize: [41, 41],
-        });
-        opacity = markerData.matchesFilters === false ? 0.4 : 1.0;
-      } else {
-        ({ icon, opacity } = getMarkerStyle(markerData));
-      }
+      const { icon, opacity } = getMarkerStyle(markerData);
       const position: [number, number] = [
         markerData.location.lat,
         markerData.location.lng,

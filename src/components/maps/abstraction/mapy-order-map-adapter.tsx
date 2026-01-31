@@ -182,15 +182,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         ),
       };
 
-      // Get custom icon URL based on filters
-      const { icon } = getMarkerStyle(markerData);
-      const customIconUrl =
-        icon instanceof L.Icon ? icon.options.iconUrl : undefined;
-
-      return {
-        ...markerData,
-        customIconUrl,
-      };
+      return markerData;
     });
   }, [
     orders,
