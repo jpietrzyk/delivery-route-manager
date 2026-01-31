@@ -74,7 +74,25 @@ export function UnassignedOrdersDataTable({
       {
         accessorKey: "status",
         header: () => <span>Status</span>,
-        cell: (info) => info.getValue(),
+        cell: (info) => {
+          const status = info.getValue() as Order["status"];
+          let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
+          if (status === "pending")
+            badgeColor = "bg-yellow-50 text-yellow-800 border-yellow-200";
+          if (status === "in-progress")
+            badgeColor = "bg-blue-50 text-blue-800 border-blue-200";
+          if (status === "completed")
+            badgeColor = "bg-green-50 text-green-800 border-green-200";
+          if (status === "cancelled")
+            badgeColor = "bg-red-50 text-red-800 border-red-200";
+          return (
+            <span
+              className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
+            >
+              {status}
+            </span>
+          );
+        },
         enableSorting: true,
         sortingFn: (rowA, rowB, columnId) => {
           const a = (rowA.getValue(columnId) || "").toString().toLowerCase();
@@ -141,8 +159,8 @@ export function UnassignedOrdersDataTable({
   const table = useStableReactTable(data, columns, sorting, setSorting);
 
   return (
-    <div className="w-full overflow-x-auto rounded-xl border border-border/60 bg-background/80 shadow-lg backdrop-blur-sm p-2">
-      <Table className="w-full text-sm text-foreground bg-background/80">
+    <div className="w-full overflow-x-auto rounded-xl border border-border/40 bg-background/95 shadow-sm p-2">
+      <Table className="w-full text-sm text-foreground bg-background/95">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -188,7 +206,10 @@ export function UnassignedOrdersDataTable({
                 onMouseLeave={() => setHighlightedOrderId(null)}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    className="align-middle px-3 py-2 border-b border-border/30 bg-background/95"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
