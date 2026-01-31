@@ -28,7 +28,6 @@ interface LeafletMapRendererProps {
 }
 
 import { getMarkerStyle } from "../abstraction/marker-style";
-import { createNumberedIcon } from "../abstraction/marker-style";
 
 // Map fitter component - handles bounds fitting
 function MapFitter({ bounds }: { bounds: MapBounds }) {
@@ -118,22 +117,7 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
       {markersWithIndex
         .filter((marker) => marker.type !== "delivery")
         .map((marker) => {
-          let icon, opacity;
-          if (marker.customIconUrl) {
-            const baseIcon = L.icon({
-              iconUrl: marker.customIconUrl,
-              iconSize: [25, 41],
-              iconAnchor: [12, 41],
-              popupAnchor: [1, -34],
-              shadowUrl:
-                "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-              shadowSize: [41, 41],
-            });
-            icon = baseIcon;
-            opacity = marker.matchesFilters === false ? 0.4 : 1.0;
-          } else {
-            ({ icon, opacity } = getMarkerStyle(marker));
-          }
+          const { icon, opacity } = getMarkerStyle(marker);
           return (
             <Marker
               key={marker.id}
@@ -154,25 +138,7 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
       {markersWithIndex
         .filter((marker) => marker.type === "delivery")
         .map((marker) => {
-          let icon, opacity;
-          if (marker.customIconUrl) {
-            const baseIcon = L.icon({
-              iconUrl: marker.customIconUrl,
-              iconSize: [25, 41],
-              iconAnchor: [12, 41],
-              popupAnchor: [1, -34],
-              shadowUrl:
-                "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-              shadowSize: [41, 41],
-            });
-            icon =
-              marker.waypointIndex !== undefined
-                ? createNumberedIcon(marker.customIconUrl, marker.waypointIndex)
-                : baseIcon;
-            opacity = marker.matchesFilters === false ? 0.4 : 1.0;
-          } else {
-            ({ icon, opacity } = getMarkerStyle(marker));
-          }
+          const { icon, opacity } = getMarkerStyle(marker);
           return (
             <Marker
               key={marker.id}

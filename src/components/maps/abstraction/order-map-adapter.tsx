@@ -12,7 +12,6 @@ import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useRouteSegments } from "@/hooks/use-route-segments";
 import { pl } from "@/lib/translations";
 import { OrderPopupContent } from "./order-popup-content";
-import { getMarkerStyle } from "./marker-style";
 
 interface OrderMapAdapterProps {
   orders: Order[];
@@ -64,20 +63,20 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     );
     const allOrders = [...orders, ...uniqueUnassignedOrders];
 
+    // Assign waypointIndex to delivery markers (1-based)
+    let deliverySeq = 0;
     return allOrders.map((order) => {
-      // Check if order is in delivery by checking if it's in the orders array (not by deliveryId field)
-      // This is because orders from waypoint system don't have deliveryId set on the Order object
       const isUnassigned = !deliveryOrderIds.has(order.id);
-
-      // Check if this unassigned order matches current filters
       const matchesFilters = isUnassigned
         ? (unassignedOrderFilterStatus?.get(order.id) ?? true)
-        : true; // Delivery orders always match (no filtering applied to them)
-
+        : true;
       let type: MapMarkerData["type"] = "delivery";
+      if (isUnassigned) type = "unassigned";
 
-      if (isUnassigned) {
-        type = "unassigned";
+      // Assign waypointIndex for delivery markers
+      let waypointIndex: number | undefined = undefined;
+      if (!isUnassigned) {
+        waypointIndex = ++deliverySeq;
       }
 
       const popupContent = (
@@ -92,7 +91,6 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
                   alert("Wybierz najpierw trasę dostawy");
                   return;
                 }
-
                 await addOrderToDelivery(currentDelivery.id, order.id);
                 onOrderAddedToDelivery?.(order.id);
                 onRefreshRequested?.();
@@ -101,7 +99,6 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
                   alert("Wybierz najpierw trasę dostawy");
                   return;
                 }
-
                 await removeOrderFromDelivery(currentDelivery.id, order.id);
                 onRefreshRequested?.();
               }
@@ -122,42 +119,23 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         />
       );
 
-      // Create marker data for styling
-      // If marker is outfiltered, force type to "outfiltered" for gray icon (applies to all marker types)
       const markerType = !matchesFilters ? "outfiltered" : type;
       const markerData: MapMarkerData = {
         id: order.id,
         location: order.location,
         type: markerType,
+        waypointIndex,
         isHighlighted: highlightedOrderId === order.id,
         isCurrentOrder: currentOrderId === order.id,
         isPreviousOrder: previousOrderId === order.id,
-        isDisabled: false, // No longer disabling markers, using opacity instead
+        isDisabled: false,
         matchesFilters,
         priority: String(order.priority),
         status: order.status,
         totalAmount: order.totalAmount,
-        // product removed
         popupContent,
       };
-
-      // Get custom icon URL based on filters
-      const markerStyle = getMarkerStyle(markerData);
-      let customIconUrl: string | undefined = undefined;
-      if (
-        markerStyle &&
-        markerStyle.icon &&
-        "options" in markerStyle.icon &&
-        markerStyle.icon.options &&
-        "iconUrl" in markerStyle.icon.options
-      ) {
-        customIconUrl = markerStyle.icon.options.iconUrl;
-      }
-
-      return {
-        ...markerData,
-        customIconUrl,
-      };
+      return markerData;
     });
   }, [
     orders,

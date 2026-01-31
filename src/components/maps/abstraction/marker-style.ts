@@ -49,8 +49,9 @@ export function getMarkerStyle(marker: MapMarkerData) {
   // Always use default icon for unassigned/outfiltered markers
   let iconUrl = ICONS.default;
 
-  // For delivery markers, keep numbered badge
+  // For delivery waypoint markers, use waypoint icon
   if (marker.type === "delivery" && marker.waypointIndex !== undefined) {
+    iconUrl = ICONS.waypoint;
     return {
       icon: createNumberedIcon(iconUrl, marker.waypointIndex),
       opacity: 1.0,
