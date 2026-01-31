@@ -109,10 +109,24 @@ export function UnassignedOrdersDataTable({
         header: "",
         cell: (info) => (
           <button
-            className="inline-flex items-center px-2 py-1 text-xs font-medium rounded border border-primary text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
+            className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-lg border border-primary/60 text-primary bg-primary/5 hover:bg-primary/20 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
             onClick={() => onAddOrder?.(info.row.original.id)}
             title="Add to delivery route"
           >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
             Add
           </button>
         ),
@@ -127,8 +141,8 @@ export function UnassignedOrdersDataTable({
   const table = useStableReactTable(data, columns, sorting, setSorting);
 
   return (
-    <div className="w-full overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
-      <Table className="w-full text-sm text-gray-700">
+    <div className="w-full overflow-x-auto rounded-xl border border-border/60 bg-background/80 shadow-lg backdrop-blur-sm p-2">
+      <Table className="w-full text-sm text-foreground bg-background/80">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -165,8 +179,11 @@ export function UnassignedOrdersDataTable({
               <TableRow
                 key={row.id}
                 className={
-                  isHighlighted ? "bg-accent/30 border-accent" : undefined
+                  isHighlighted
+                    ? "bg-primary/10 border-primary/60 text-primary shadow-sm"
+                    : "hover:bg-accent/20 transition-colors"
                 }
+                style={{ cursor: "pointer", borderRadius: 8 }}
                 onMouseEnter={() => setHighlightedOrderId(orderId)}
                 onMouseLeave={() => setHighlightedOrderId(null)}
               >
