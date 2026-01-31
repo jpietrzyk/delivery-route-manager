@@ -4,8 +4,9 @@ import type { MapMarkerData } from "./map-data";
 
 // Marker icon URLs (should match across providers)
 const ICONS = {
-    waypoint: "/markers/marker-waypoint.svg",
+  waypoint: "/markers/marker-waypoint.svg",
   default: "/markers/marker-default.svg",
+  hover: "/markers/marker-hover.svg",
   unassigned: "/markers/unassigned-marker.svg",
   shadow: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
   // Priority
@@ -49,17 +50,25 @@ export function getMarkerStyle(marker: MapMarkerData) {
   // Always use default icon for unassigned/outfiltered markers
   let iconUrl = ICONS.default;
 
-  // For delivery waypoint markers, use waypoint icon
+  // Highlighted marker (hovered from list or map)
+  if (marker.isHighlighted) {
+    iconUrl = ICONS.hover;
+  }
+
+  // For delivery waypoint markers, use waypoint icon (and highlight if hovered)
   if (marker.type === "delivery" && marker.waypointIndex !== undefined) {
-    iconUrl = ICONS.waypoint;
+    iconUrl = marker.isHighlighted ? ICONS.hover : ICONS.waypoint;
     return {
       icon: createNumberedIcon(iconUrl, marker.waypointIndex),
       opacity: 1.0,
     };
   }
 
-  // Faded if filtered out
-  const opacity = marker.matchesFilters === false ? 0.4 : 1.0;
+  // Faded if filtered out, but always full opacity if highlighted
+  let opacity = marker.matchesFilters === false ? 0.4 : 1.0;
+  if (marker.isHighlighted) {
+    opacity = 1.0;
+  }
 
   // Fallback for undefined iconUrl
   if (!iconUrl) {
