@@ -13,32 +13,11 @@ import {
   getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import type {
-  ColumnDef,
-  SortingState,
-  OnChangeFn,
-} from "@tanstack/react-table";
+import type { ColumnDef, SortingState } from "@tanstack/react-table";
 import type { Order } from "@/types/order";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 
-// Custom hook to wrap useReactTable with stable references
-// This prevents React Compiler from attempting to memoize TanStack Table's non-memoizable API
-function useStableReactTable<TData>(
-  data: TData[],
-  columns: ColumnDef<TData, unknown>[],
-  sorting: SortingState,
-  onSortingChange: OnChangeFn<SortingState>,
-) {
-  return useReactTable({
-    data,
-    columns,
-    state: { sorting },
-    onSortingChange,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    debugTable: false,
-  });
-}
+// Removed custom hook for useReactTable due to React Compiler incompatibility.
 
 interface UnassignedOrdersDataTableProps {
   data: Order[];
@@ -212,7 +191,15 @@ export function UnassignedOrdersDataTable({
     [onAddOrder],
   );
 
-  const table = useStableReactTable(data, columns, sorting, setSorting);
+  const table = useReactTable({
+    data,
+    columns,
+    state: { sorting },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    debugTable: false,
+  });
 
   return (
     <div className="w-full rounded-xl border border-border/40 bg-background/95 shadow-sm p-2">
