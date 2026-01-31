@@ -47,94 +47,10 @@ export function createNumberedIcon(iconUrl: string, badgeNumber?: number) {
 }
 
 export function getMarkerStyle(marker: MapMarkerData, filters?: MapFiltersState) {
-  // Determine icon URL
+  // Always use default icon for unassigned/outfiltered markers
   let iconUrl = ICONS.unassigned;
 
-  // Color mapping for filter values (should match filter toggle button colors)
-  const PRIORITY_COLORS = {
-    low: ICONS.priorityLow,
-    medium: ICONS.priorityMedium,
-    high: ICONS.priorityHigh,
-  };
-  const STATUS_COLORS = {
-    pending: ICONS.statusPending,
-    "in-progress": ICONS.statusInProgress,
-    completed: ICONS.statusCompleted,
-    cancelled: ICONS.statusCancelled,
-  };
-  const AMOUNT_COLORS = {
-    low: ICONS.amountLow,
-    medium: ICONS.amountMedium,
-    high: ICONS.amountHigh,
-  };
-  const COMPLEXITY_COLORS = {
-    simple: ICONS.complexitySimple,
-    moderate: ICONS.complexityModerate,
-    complex: ICONS.complexityComplex,
-  };
-
-  // Special case: outfiltered markers always gray
-  if (marker.type === "outfiltered") {
-    iconUrl = ICONS.unassigned;
-  } else if (marker.type === "unassigned") {
-    if (filters) {
-      // Complexity filters take precedence
-      if (marker.product?.complexity !== undefined) {
-        const complexityTier = marker.product.complexity === 1 ? "simple" : marker.product.complexity === 2 ? "moderate" : "complex";
-        if (filters.complexityFilters[complexityTier as keyof typeof filters.complexityFilters]) {
-          iconUrl = COMPLEXITY_COLORS[complexityTier as keyof typeof COMPLEXITY_COLORS] || ICONS.default;
-        }
-        // If not active, check other filters
-        else if (filters.priorityFilters[marker.priority as keyof typeof filters.priorityFilters]) {
-          iconUrl = PRIORITY_COLORS[marker.priority as keyof typeof PRIORITY_COLORS] || ICONS.default;
-        } else if (filters.statusFilters[marker.status as keyof typeof filters.statusFilters]) {
-          iconUrl = STATUS_COLORS[marker.status as keyof typeof STATUS_COLORS] || ICONS.default;
-        } else if (marker.totalAmount !== undefined) {
-          const amountTier = marker.totalAmount <= 300000 ? "low" : marker.totalAmount <= 1000000 ? "medium" : "high";
-          if (filters.amountFilters[amountTier as keyof typeof filters.amountFilters]) {
-            iconUrl = AMOUNT_COLORS[amountTier as keyof typeof AMOUNT_COLORS] || ICONS.default;
-          } else {
-            iconUrl = ICONS.unassigned;
-          }
-        } else {
-          iconUrl = ICONS.unassigned;
-        }
-      } else if (filters.priorityFilters[marker.priority as keyof typeof filters.priorityFilters]) {
-        iconUrl = PRIORITY_COLORS[marker.priority as keyof typeof PRIORITY_COLORS] || ICONS.default;
-      } else if (filters.statusFilters[marker.status as keyof typeof filters.statusFilters]) {
-        iconUrl = STATUS_COLORS[marker.status as keyof typeof STATUS_COLORS] || ICONS.default;
-      } else if (marker.totalAmount !== undefined) {
-        const amountTier = marker.totalAmount <= 300000 ? "low" : marker.totalAmount <= 1000000 ? "medium" : "high";
-        if (filters.amountFilters[amountTier as keyof typeof filters.amountFilters]) {
-          iconUrl = AMOUNT_COLORS[amountTier as keyof typeof AMOUNT_COLORS] || ICONS.default;
-        } else {
-          iconUrl = ICONS.unassigned;
-        }
-      } else {
-        iconUrl = ICONS.unassigned;
-      }
-    } else {
-      iconUrl = ICONS.unassigned;
-    }
-  } else {
-    // For delivery markers, use color mapping based on marker properties
-    if (marker.product?.complexity !== undefined) {
-      // Use complexity color if available
-      const complexityTier = marker.product.complexity === 1 ? "simple" : marker.product.complexity === 2 ? "moderate" : "complex";
-      iconUrl = COMPLEXITY_COLORS[complexityTier as keyof typeof COMPLEXITY_COLORS] || ICONS.default;
-    } else if (marker.priority && PRIORITY_COLORS[marker.priority as keyof typeof PRIORITY_COLORS]) {
-      iconUrl = PRIORITY_COLORS[marker.priority as keyof typeof PRIORITY_COLORS] || ICONS.default;
-    } else if (marker.status && STATUS_COLORS[marker.status as keyof typeof STATUS_COLORS]) {
-      iconUrl = STATUS_COLORS[marker.status as keyof typeof STATUS_COLORS] || ICONS.default;
-    } else if (marker.totalAmount !== undefined) {
-      const amountTier = marker.totalAmount <= 300000 ? "low" : marker.totalAmount <= 1000000 ? "medium" : "high";
-      iconUrl = AMOUNT_COLORS[amountTier as keyof typeof AMOUNT_COLORS] || ICONS.default;
-    } else {
-      iconUrl = ICONS.default;
-    }
-  }
-
-  // Attach waypoint index badge only for delivery markers with a known sequence
+  // For delivery markers, keep numbered badge
   if (marker.type === "delivery" && marker.waypointIndex !== undefined) {
     return {
       icon: createNumberedIcon(iconUrl, marker.waypointIndex),
