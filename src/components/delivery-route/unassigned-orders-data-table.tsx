@@ -172,11 +172,15 @@ export function UnassignedOrdersDataTable({
                       ? header.column.getToggleSortingHandler()
                       : undefined
                   }
-                  className={
+                  className={`bg-background/80 border-b border-border/40 rounded-t-lg px-4 py-2 text-base font-semibold text-foreground/80 shadow-sm ${
                     header.column.getCanSort()
                       ? "cursor-pointer select-none"
-                      : undefined
-                  }
+                      : ""
+                  }`}
+                  style={{
+                    borderTop: "1px solid var(--border-color)",
+                    borderLeft: "1px solid var(--border-color)",
+                  }}
                 >
                   {flexRender(
                     header.column.columnDef.header,
