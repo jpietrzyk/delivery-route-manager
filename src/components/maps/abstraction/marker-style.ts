@@ -6,7 +6,7 @@ import type { MapFiltersState } from "../../../contexts/map-filters-context-type
 // Marker icon URLs (should match across providers)
 const ICONS = {
     waypoint: "/markers/marker-waypoint.svg",
-  default: "/markers/unassigned-marker.svg",
+  default: "/markers/marker-default.svg",
   unassigned: "/markers/unassigned-marker.svg",
   shadow: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
   // Priority
@@ -48,7 +48,7 @@ export function createNumberedIcon(iconUrl: string, badgeNumber?: number) {
 
 export function getMarkerStyle(marker: MapMarkerData, filters?: MapFiltersState) {
   // Always use default icon for unassigned/outfiltered markers
-  let iconUrl = ICONS.unassigned;
+  let iconUrl = ICONS.default;
 
   // For delivery markers, keep numbered badge
   if (marker.type === "delivery" && marker.waypointIndex !== undefined) {
