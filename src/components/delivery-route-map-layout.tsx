@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
-import { UnassignedOrderList } from "@/components/delivery-route/unassigned-order-list";
+import { UnassignedOrdersDataTable } from "@/components/delivery-route/unassigned-orders-data-table";
 
 import { OrderFilters } from "@/components/delivery-route/order-filters";
 import type {
@@ -22,7 +22,6 @@ import type {
   ComplexityFilterState,
 } from "@/components/delivery-route/order-filters";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
-import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import type { Order } from "@/types/order";
 import { resetLocalStorageAndFetchData } from "@/lib/local-storage-utils";
 
@@ -42,7 +41,7 @@ export default function DeliveryRouteMapLayout({
   const { deliveryId } = useParams<{ deliveryId: string }>();
   const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
+  // const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
 
   // Detect current map provider from URL
   const getCurrentMapProvider = () => {
@@ -460,9 +459,9 @@ export default function DeliveryRouteMapLayout({
             </div>
             <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6 bg-background/40">
               {filteredUnassignedOrders.length > 0 ? (
-                <UnassignedOrderList
-                  unassignedOrders={filteredUnassignedOrders}
-                  onAddToDelivery={async (orderId: string) => {
+                <UnassignedOrdersDataTable
+                  data={filteredUnassignedOrders}
+                  onAddOrder={async (orderId) => {
                     try {
                       const targetDeliveryId =
                         deliveryId || currentDelivery?.id;
@@ -470,16 +469,12 @@ export default function DeliveryRouteMapLayout({
                         throw new Error("No delivery selected");
                       }
                       await addOrderToDelivery(targetDeliveryId, orderId);
-                      await refreshDeliveryOrders(deliveryId);
-                      handleDeliveryOrdersUpdated();
+                      await refreshDeliveryOrders(targetDeliveryId);
                     } catch (error) {
                       console.error("Failed to add order to delivery:", error);
                       alert("Failed to add order to delivery");
                     }
                   }}
-                  title=""
-                  highlightedOrderId={highlightedOrderId}
-                  setHighlightedOrderId={setHighlightedOrderId}
                 />
               ) : (
                 <div className="flex items-center justify-center h-full">
