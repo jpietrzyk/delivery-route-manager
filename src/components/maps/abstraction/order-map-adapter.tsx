@@ -10,7 +10,6 @@ import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useRouteSegments } from "@/hooks/use-route-segments";
-import { useMapFilters } from "@/hooks/use-map-filters";
 import { pl } from "@/lib/translations";
 import { OrderPopupContent } from "./order-popup-content";
 import { getMarkerStyle } from "./marker-style";
@@ -49,7 +48,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDeliveryRoute();
   const { setRouteSegments } = useRouteSegments();
-  const { filters } = useMapFilters();
+  // const { filters } = useMapFilters();
 
   // Clear route segments for Leaflet (uses geometric calculations)
   React.useEffect(() => {
@@ -143,7 +142,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
       };
 
       // Get custom icon URL based on filters
-      const markerStyle = getMarkerStyle(markerData, filters);
+      const markerStyle = getMarkerStyle(markerData);
       let customIconUrl: string | undefined = undefined;
       if (
         markerStyle &&
@@ -172,7 +171,6 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     removeOrderFromDelivery,
     onOrderAddedToDelivery,
     onRefreshRequested,
-    filters,
   ]);
 
   // Transform consecutive orders to route segments

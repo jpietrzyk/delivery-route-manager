@@ -11,7 +11,6 @@ import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useRouteSegments } from "@/hooks/use-route-segments";
-import { useMapFilters } from "@/hooks/use-map-filters";
 import { pl } from "@/lib/translations";
 import { MapyRoutingApi, type RouteSegment } from "@/services/mapy-routing-api";
 import { OrderPopupContent } from "./order-popup-content";
@@ -47,7 +46,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDeliveryRoute();
   const { setRouteSegments } = useRouteSegments();
-  const { filters } = useMapFilters();
+  // const { filters } = useMapFilters();
 
   const [calculatedRoutes, setCalculatedRoutes] = useState<RouteSegment[]>([]);
 
@@ -184,7 +183,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
       };
 
       // Get custom icon URL based on filters
-      const { icon } = getMarkerStyle(markerData, filters);
+      const { icon } = getMarkerStyle(markerData);
       const customIconUrl =
         icon instanceof L.Icon ? icon.options.iconUrl : undefined;
 
@@ -206,7 +205,6 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
     onOrderAddedToDelivery,
     onRefreshRequested,
     waypointIndexMap,
-    filters,
   ]);
 
   // Transform calculated routes to route segments
