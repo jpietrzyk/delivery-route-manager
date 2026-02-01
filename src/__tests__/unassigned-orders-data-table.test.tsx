@@ -60,10 +60,15 @@ describe("UnassignedOrdersDataTable", () => {
     await waitFor(() => expect(onFilteredDataChange).toHaveBeenCalled());
 
     await user.click(screen.getByRole("button", { name: pl.filterStatus }));
-    const menuItem = await screen.findByRole("menuitem", {
-      name: pl.statusPending,
-    });
-    await user.click(menuItem);
+
+    // Get all elements with the text and find the one in the dropdown menu
+    const menuItems = await screen.findAllByText((content) =>
+      content.includes(pl.statusPending),
+    );
+    // The dropdown menu item should be the one that is visible (not in the table)
+    // We click the last occurrence which is in the dropdown
+    const dropdownMenuItem = menuItems[menuItems.length - 1];
+    await user.click(dropdownMenuItem);
 
     await waitFor(() => {
       const lastCall =

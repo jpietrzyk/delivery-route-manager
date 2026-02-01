@@ -11,20 +11,45 @@ jest.mock("react-router-dom", () => ({
   useParams: () => ({ deliveryId: "DEL-001" }),
 }));
 
+interface MapyMapViewProps {
+  [key: string]: unknown;
+}
+
 const mapySpy = jest.fn(() => <div data-testid="mapy" />);
 
 jest.mock("@/components/maps/abstraction/mapy-map-view", () => ({
   __esModule: true,
-  default: (props: any) => {
+  default: (props: MapyMapViewProps) => {
     mapySpy(props);
     return <div data-testid="mapy" />;
   },
 }));
 
+interface Order {
+  id: string;
+  status: string;
+  priority: number;
+  createdAt: string;
+  updatedAt: string;
+  customer: { name: string };
+  totalAmount: number;
+  location: { lat: number; lng: number };
+  complexity: number;
+}
+
 jest.mock("@/components/delivery-route-map-layout", () => ({
   __esModule: true,
-  default: ({ renderMap }: { renderMap: Function }) => {
-    const orders = [
+  default: ({
+    renderMap,
+  }: {
+    renderMap: (
+      orders: Order[],
+      unassignedOrders: Order[],
+      onOrderAddedToDelivery: () => void,
+      onRefreshRequested: () => void,
+    ) => React.ReactNode;
+  }) => {
+    const orders: Order[] = [
       {
         id: "order-1",
         status: "pending",
@@ -37,7 +62,7 @@ jest.mock("@/components/delivery-route-map-layout", () => ({
         complexity: 1,
       },
     ];
-    const unassignedOrders = [
+    const unassignedOrders: Order[] = [
       {
         id: "order-2",
         status: "pending",
@@ -63,9 +88,15 @@ describe("MapyCzMapPage", () => {
     render(<MapyCzMapPage />);
 
     expect(mapySpy).toHaveBeenCalled();
-    const props = mapySpy.mock.calls[0][0];
-    expect(props.filteredUnassignedOrders).toBe(props.unassignedOrders);
-    expect(typeof props.onOrderAddedToDelivery).toBe("function");
-    expect(typeof props.onRefreshRequested).toBe("function");
+    const props =
+      mapySpy.mock.calls.length > 0 && mapySpy.mock.calls[0]?.length > 0
+        ? mapySpy.mock.calls[0][0]
+        : undefined;
+    expect(props).toBeDefined();
+    expect(props && props.filteredUnassignedOrders).toBe(
+      props && props.unassignedOrders,
+    );
+    expect(typeof (props && props.onOrderAddedToDelivery)).toBe("function");
+    expect(typeof (props && props.onRefreshRequested)).toBe("function");
   });
 });
