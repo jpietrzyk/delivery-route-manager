@@ -6,7 +6,6 @@ import OrderMapAdapter from "./order-map-adapter";
 interface MapViewProps {
   orders: Order[];
   unassignedOrders?: Order[];
-  unassignedOrderFilterStatus?: Map<string, boolean>;
   onOrderAddedToDelivery?: (orderId?: string) => void | Promise<void>;
   onRefreshRequested?: () => void;
 }
@@ -18,7 +17,6 @@ interface MapViewProps {
 const MapView: React.FC<MapViewProps> = ({
   orders,
   unassignedOrders = [],
-  unassignedOrderFilterStatus,
   onOrderAddedToDelivery,
   onRefreshRequested,
 }) => {
@@ -26,7 +24,6 @@ const MapView: React.FC<MapViewProps> = ({
     <OrderMapAdapter
       orders={orders}
       unassignedOrders={unassignedOrders}
-      unassignedOrderFilterStatus={unassignedOrderFilterStatus}
       onOrderAddedToDelivery={onOrderAddedToDelivery}
       onRefreshRequested={onRefreshRequested}
     >

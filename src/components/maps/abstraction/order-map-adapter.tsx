@@ -16,7 +16,6 @@ import { OrderPopupContent } from "./order-popup-content";
 interface OrderMapAdapterProps {
   orders: Order[];
   unassignedOrders: Order[];
-  unassignedOrderFilterStatus?: Map<string, boolean>;
   onOrderAddedToDelivery?: (orderId?: string) => void | Promise<void>;
   onRefreshRequested?: () => void;
   children: (props: {
@@ -35,7 +34,6 @@ interface OrderMapAdapterProps {
 const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   orders,
   unassignedOrders,
-  unassignedOrderFilterStatus,
   onOrderAddedToDelivery,
   onRefreshRequested,
   children,
@@ -67,9 +65,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     let deliverySeq = 0;
     return allOrders.map((order) => {
       const isUnassigned = !deliveryOrderIds.has(order.id);
-      const matchesFilters = isUnassigned
-        ? (unassignedOrderFilterStatus?.get(order.id) ?? true)
-        : true;
+      const matchesFilters = true; // All orders are shown; filtering happens at data table level
       let type: MapMarkerData["type"] = "delivery";
       if (isUnassigned) type = "unassigned";
 
@@ -140,7 +136,6 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   }, [
     orders,
     unassignedOrders,
-    unassignedOrderFilterStatus,
     highlightedOrderId,
     currentOrderId,
     previousOrderId,
