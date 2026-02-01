@@ -53,17 +53,19 @@ export function DataTableFilterDropdown({
         <Button
           variant="outline"
           size="sm"
-          className={`h-8 gap-1.5 px-2.5 ${
-            someSelected ? "border-primary/40 bg-primary/5 text-primary" : ""
+          className={`h-8 gap-1.5 px-3 border-border/40 bg-background/50 text-foreground hover:bg-background/80 hover:border-border/60 transition-colors ${
+            someSelected
+              ? "bg-primary/5 border-primary/30 text-primary hover:bg-primary/10"
+              : ""
           }`}
         >
-          <span>{title}</span>
+          <span className="text-xs font-medium">{title}</span>
           {someSelected && (
-            <span className="inline-flex items-center justify-center rounded-full bg-primary/30 px-1.5 text-xs font-semibold">
+            <span className="inline-flex items-center justify-center rounded-full bg-primary/15 text-primary px-1.5 text-xs font-semibold">
               {selectedValues.length}
             </span>
           )}
-          <ChevronDown className="h-4 w-4 opacity-50" />
+          <ChevronDown className="h-3.5 w-3.5 opacity-40" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-56 z-[1260]">
@@ -72,7 +74,7 @@ export function DataTableFilterDropdown({
         <DropdownMenuCheckboxItem
           checked={allSelected}
           onCheckedChange={handleSelectAll}
-          className="font-semibold"
+          className="font-semibold text-xs"
         >
           {allSelected ? "Deselect All" : "Select All"}
         </DropdownMenuCheckboxItem>
@@ -82,11 +84,11 @@ export function DataTableFilterDropdown({
             key={option.value}
             checked={selectedValues.includes(option.value)}
             onCheckedChange={() => handleOptionToggle(option.value)}
-            className="flex gap-2"
+            className="flex gap-2 text-xs"
           >
             {option.color && (
               <div
-                className="h-3 w-3 rounded-full border border-border"
+                className="h-3 w-3 rounded-full border border-border/40"
                 style={{ backgroundColor: option.color }}
               />
             )}
