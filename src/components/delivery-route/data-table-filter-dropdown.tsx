@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { pl } from "@/lib/translations";
 
 export type FilterOption = {
   value: string;
@@ -76,7 +77,7 @@ export function DataTableFilterDropdown({
           onCheckedChange={handleSelectAll}
           className="font-semibold text-xs"
         >
-          {allSelected ? "Deselect All" : "Select All"}
+          {allSelected ? pl.deselectAll : pl.selectAll}
         </DropdownMenuCheckboxItem>
         <DropdownMenuSeparator />
         {options.map((option) => (

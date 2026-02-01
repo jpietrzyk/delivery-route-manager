@@ -23,6 +23,7 @@ import type { Order } from "@/types/order";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
 import { DataTableFiltersBar } from "./data-table-filters-bar";
 import type { FiltersBarConfig } from "./data-table-filters-bar";
+import { pl } from "@/lib/translations";
 
 // Removed custom hook for useReactTable due to React Compiler incompatibility.
 
@@ -68,24 +69,32 @@ export function UnassignedOrdersDataTable({
     (): ColumnDef<Order, unknown>[] => [
       {
         accessorKey: "status",
-        header: "Status",
+        header: pl.tableStatus,
         filterFn: createArrayIncludesFilter("status"),
         cell: (info: { getValue: () => unknown }) => {
           const status = info.getValue() as string;
-          let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
-          if (status === "pending")
-            badgeColor = "bg-yellow-50 text-yellow-700 border-yellow-200";
-          if (status === "in-progress")
-            badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
-          if (status === "completed")
-            badgeColor = "bg-green-50 text-green-700 border-green-200";
-          if (status === "cancelled")
-            badgeColor = "bg-red-50 text-red-700 border-red-200";
+          let badgeColor = "bg-gray-100/50 text-gray-700 border-gray-200/60";
+          let label = status;
+
+          if (status === "pending") {
+            badgeColor = "bg-yellow-50/60 text-yellow-700 border-yellow-100/60";
+            label = pl.statusPending;
+          } else if (status === "in-progress") {
+            badgeColor = "bg-blue-50/60 text-blue-700 border-blue-100/60";
+            label = pl.statusInProgress;
+          } else if (status === "completed") {
+            badgeColor = "bg-green-50/60 text-green-700 border-green-100/60";
+            label = pl.statusCompleted;
+          } else if (status === "cancelled") {
+            badgeColor = "bg-red-50/60 text-red-700 border-red-100/60";
+            label = pl.statusCancelled;
+          }
+
           return (
             <span
-              className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
+              className={`inline-block px-2 py-0.5 rounded-md border border-dashed text-xs font-medium ${badgeColor}`}
             >
-              {status}
+              {label}
             </span>
           );
         },
@@ -102,7 +111,7 @@ export function UnassignedOrdersDataTable({
       },
       {
         accessorKey: "priority",
-        header: "Priority",
+        header: pl.tablePriority,
         filterFn: (
           row: { getValue: (columnId: string) => unknown },
           columnId: string,
@@ -125,29 +134,29 @@ export function UnassignedOrdersDataTable({
         },
         cell: (info: { getValue: () => unknown }) => {
           const priorityNum = Number(info.getValue());
-          let priority = "none";
+          let priority: string = pl.priorityNone;
           let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
 
           if (priorityNum === 0 || !priorityNum) {
-            priority = "none";
-            badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
+            priority = pl.priorityNone;
+            badgeColor = "bg-gray-100/50 text-gray-700 border-gray-200/60";
           } else if (priorityNum === 1) {
-            priority = "low";
-            badgeColor = "bg-green-50 text-green-700 border-green-200";
+            priority = pl.priorityLow;
+            badgeColor = "bg-green-50/60 text-green-700 border-green-100/60";
           } else if (priorityNum === 2) {
-            priority = "medium";
-            badgeColor = "bg-yellow-50 text-yellow-700 border-yellow-200";
+            priority = pl.priorityMedium;
+            badgeColor = "bg-yellow-50/60 text-yellow-700 border-yellow-100/60";
           } else if (priorityNum === 3) {
-            priority = "moderate";
-            badgeColor = "bg-orange-50 text-orange-700 border-orange-200";
+            priority = pl.priorityModerate;
+            badgeColor = "bg-orange-50/60 text-orange-700 border-orange-100/60";
           } else if (priorityNum === 4) {
-            priority = "high";
-            badgeColor = "bg-red-50 text-red-700 border-red-200";
+            priority = pl.priorityHigh;
+            badgeColor = "bg-red-50/60 text-red-700 border-red-100/60";
           }
 
           return (
             <span
-              className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
+              className={`inline-block px-2 py-0.5 rounded-md border border-dashed text-xs font-medium ${badgeColor}`}
             >
               {priority}
             </span>
@@ -166,7 +175,7 @@ export function UnassignedOrdersDataTable({
       },
       {
         accessorKey: "totalAmount",
-        header: "Amount",
+        header: pl.tableAmount,
         filterFn: (
           row: { getValue: (columnId: string) => unknown },
           columnId: string,
@@ -200,7 +209,7 @@ export function UnassignedOrdersDataTable({
       },
       {
         accessorKey: "complexity",
-        header: () => <span>Complexity</span>,
+        header: () => <span>{pl.tableComplexity}</span>,
         filterFn: (
           row: { getValue: (columnId: string) => unknown },
           columnId: string,
@@ -225,19 +234,19 @@ export function UnassignedOrdersDataTable({
           let label = "Unknown";
 
           if (complexity >= 3) {
-            badgeColor = "bg-purple-50 text-purple-700 border-purple-200";
-            label = "Complex";
+            badgeColor = "bg-purple-50/60 text-purple-700 border-purple-100/60";
+            label = pl.complexityComplexShort;
           } else if (complexity === 2) {
-            badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
-            label = "Moderate";
+            badgeColor = "bg-blue-50/60 text-blue-700 border-blue-100/60";
+            label = pl.complexityModerateShort;
           } else if (complexity === 1) {
-            badgeColor = "bg-green-50 text-green-700 border-green-200";
-            label = "Simple";
+            badgeColor = "bg-green-50/60 text-green-700 border-green-100/60";
+            label = pl.complexitySimpleShort;
           }
 
           return (
             <span
-              className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
+              className={`inline-block px-2 py-0.5 rounded-md border border-dashed text-xs font-medium ${badgeColor}`}
             >
               {label}
             </span>
@@ -346,41 +355,41 @@ export function UnassignedOrdersDataTable({
   const filterConfig: FiltersBarConfig[] = [
     {
       id: "status",
-      title: "Status",
+      title: pl.filterStatus,
       options: [
-        { value: "pending", label: "Pending" },
-        { value: "in-progress", label: "In Progress" },
-        { value: "completed", label: "Completed" },
-        { value: "cancelled", label: "Cancelled" },
+        { value: "pending", label: pl.statusPending },
+        { value: "in-progress", label: pl.statusInProgress },
+        { value: "completed", label: pl.statusCompleted },
+        { value: "cancelled", label: pl.statusCancelled },
       ],
     },
     {
       id: "priority",
-      title: "Priority",
+      title: pl.filterPriority,
       options: [
-        { value: "none", label: "None" },
-        { value: "low", label: "Low" },
-        { value: "medium", label: "Medium" },
-        { value: "moderate", label: "Moderate" },
-        { value: "high", label: "High" },
+        { value: "none", label: pl.priorityNone },
+        { value: "low", label: pl.priorityLow },
+        { value: "medium", label: pl.priorityMedium },
+        { value: "moderate", label: pl.priorityModerate },
+        { value: "high", label: pl.priorityHigh },
       ],
     },
     {
       id: "totalAmount",
-      title: "Amount",
+      title: pl.filterAmount,
       options: [
-        { value: "low", label: "Low (≤ 600)" },
-        { value: "medium", label: "Medium (601-1300)" },
-        { value: "high", label: "High (> 1300)" },
+        { value: "low", label: `${pl.amountNone} (≤ 600)` },
+        { value: "medium", label: `${pl.amountNormal} (601-1300)` },
+        { value: "high", label: `${pl.amountHeavy} (> 1300)` },
       ],
     },
     {
       id: "complexity",
-      title: "Complexity",
+      title: pl.filterComplexity,
       options: [
-        { value: "1", label: "Simple" },
-        { value: "2", label: "Moderate" },
-        { value: "3", label: "Complex" },
+        { value: "1", label: pl.complexitySimpleShort },
+        { value: "2", label: pl.complexityModerateShort },
+        { value: "3", label: pl.complexityComplexShort },
       ],
     },
   ];
