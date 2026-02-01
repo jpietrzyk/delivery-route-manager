@@ -41,6 +41,12 @@ export default function DeliveryRouteMapLayout({
   const { deliveryId } = useParams<{ deliveryId: string }>();
   const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [dataTableFilteredOrders, setDataTableFilteredOrders] = useState<
+    Order[]
+  >([]);
+  const [dataTableColumnFilters, setDataTableColumnFilters] = useState<
+    Array<{ id: string; value: unknown }>
+  >([]);
   // const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
 
   // Detect current map provider from URL
@@ -313,7 +319,9 @@ export default function DeliveryRouteMapLayout({
           <div className="absolute inset-0 z-0">
             {renderMap(
               displayedOrders,
-              unassignedOrders,
+              dataTableFilteredOrders.length > 0
+                ? dataTableFilteredOrders
+                : filteredUnassignedOrders,
               unassignedOrderFilterStatus,
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               async (_orderId?: string) => {
@@ -461,6 +469,9 @@ export default function DeliveryRouteMapLayout({
               {filteredUnassignedOrders.length > 0 ? (
                 <UnassignedOrdersDataTable
                   data={filteredUnassignedOrders}
+                  onFilteredDataChange={setDataTableFilteredOrders}
+                  columnFilters={dataTableColumnFilters}
+                  onColumnFiltersChange={setDataTableColumnFilters}
                   onAddOrder={async (orderId) => {
                     try {
                       const targetDeliveryId =

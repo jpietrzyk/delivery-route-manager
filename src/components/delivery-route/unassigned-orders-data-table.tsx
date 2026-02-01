@@ -29,6 +29,11 @@ import type { FiltersBarConfig } from "./data-table-filters-bar";
 interface UnassignedOrdersDataTableProps {
   data: Order[];
   onAddOrder?: (orderId: string) => void;
+  onFilteredDataChange?: (filteredData: Order[]) => void;
+  columnFilters?: Array<{ id: string; value: unknown }>;
+  onColumnFiltersChange?: (
+    filters: Array<{ id: string; value: unknown }>,
+  ) => void;
 }
 
 // Custom filter functions
@@ -49,11 +54,14 @@ const createArrayIncludesFilter =
 export function UnassignedOrdersDataTable({
   data,
   onAddOrder,
+  onFilteredDataChange,
+  columnFilters: propColumnFilters,
+  onColumnFiltersChange,
 }: UnassignedOrdersDataTableProps) {
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
+    propColumnFilters || [],
   );
 
   const columns = React.useMemo<ColumnDef<Order, unknown>[]>(
@@ -168,11 +176,12 @@ export function UnassignedOrdersDataTable({
             return true;
           }
           const amount = Number(row.getValue(columnId) || 0);
-          
+
           // Map amount ranges to filter values
           for (const filterVal of filterValue) {
             if (filterVal === "low" && amount <= 600) return true;
-            if (filterVal === "medium" && amount > 600 && amount <= 1300) return true;
+            if (filterVal === "medium" && amount > 600 && amount <= 1300)
+              return true;
             if (filterVal === "high" && amount > 1300) return true;
           }
           return false;
@@ -300,6 +309,32 @@ export function UnassignedOrdersDataTable({
     globalFilterFn: "auto",
     debugTable: false,
   });
+
+  // Notify parent when filtered data changes
+  React.useEffect(() => {
+    if (onFilteredDataChange) {
+      const filteredRows = table.getFilteredRowModel().rows;
+      const filteredData = filteredRows.map((row) => row.original);
+      onFilteredDataChange(filteredData);
+    }
+  }, [table, onFilteredDataChange, columnFilters]);
+
+  // Sync filter changes with parent
+  React.useEffect(() => {
+    if (onColumnFiltersChange) {
+      onColumnFiltersChange(columnFilters);
+    }
+  }, [columnFilters, onColumnFiltersChange]);
+
+  // Update local filters when props change
+  React.useEffect(() => {
+    if (
+      propColumnFilters &&
+      JSON.stringify(propColumnFilters) !== JSON.stringify(columnFilters)
+    ) {
+      setColumnFilters(propColumnFilters);
+    }
+  }, [propColumnFilters]);
 
   const filterConfig: FiltersBarConfig[] = [
     {
