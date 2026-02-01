@@ -65,12 +65,14 @@ export function UnassignedOrdersDataTable({
         cell: (info: { getValue: () => unknown }) => {
           const status = info.getValue() as string;
           let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
-          if (status === "priority")
-            badgeColor = "bg-red-50 text-red-700 border-red-200";
-          if (status === "delayed")
+          if (status === "pending")
             badgeColor = "bg-yellow-50 text-yellow-700 border-yellow-200";
-          if (status === "normal")
+          if (status === "in-progress")
+            badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
+          if (status === "completed")
             badgeColor = "bg-green-50 text-green-700 border-green-200";
+          if (status === "cancelled")
+            badgeColor = "bg-red-50 text-red-700 border-red-200";
           return (
             <span
               className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
@@ -148,8 +150,15 @@ export function UnassignedOrdersDataTable({
           if (!Array.isArray(filterValue) || filterValue.length === 0) {
             return true;
           }
-          const value = String(row.getValue(columnId));
-          return filterValue.includes(value);
+          const value = Number(row.getValue(columnId));
+
+          // Handle filtering for complexity groups
+          for (const filterVal of filterValue) {
+            if (filterVal === "1" && value === 1) return true;
+            if (filterVal === "2" && value === 2) return true;
+            if (filterVal === "3" && value >= 3) return true;
+          }
+          return false;
         },
         cell: (info: { getValue: () => unknown }) => {
           const complexity = info.getValue() as number;
@@ -247,9 +256,10 @@ export function UnassignedOrdersDataTable({
       id: "status",
       title: "Status",
       options: [
-        { value: "priority", label: "Priority" },
-        { value: "delayed", label: "Delayed" },
-        { value: "normal", label: "Normal" },
+        { value: "pending", label: "Pending" },
+        { value: "in-progress", label: "In Progress" },
+        { value: "completed", label: "Completed" },
+        { value: "cancelled", label: "Cancelled" },
       ],
     },
     {

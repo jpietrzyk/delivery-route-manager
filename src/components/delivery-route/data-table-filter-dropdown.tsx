@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
   DropdownMenuLabel,
@@ -48,22 +49,24 @@ export function DataTableFilterDropdown({
 
   return (
     <DropdownMenu>
-      <Button
-        variant="outline"
-        size="sm"
-        className={`h-8 gap-1.5 px-2.5 ${
-          someSelected ? "border-primary/40 bg-primary/5 text-primary" : ""
-        }`}
-      >
-        <span>{title}</span>
-        {someSelected && (
-          <span className="inline-flex items-center justify-center rounded-full bg-primary/30 px-1.5 text-xs font-semibold">
-            {selectedValues.length}
-          </span>
-        )}
-        <ChevronDown className="h-4 w-4 opacity-50" />
-      </Button>
-      <DropdownMenuContent align="start" className="w-56">
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className={`h-8 gap-1.5 px-2.5 ${
+            someSelected ? "border-primary/40 bg-primary/5 text-primary" : ""
+          }`}
+        >
+          <span>{title}</span>
+          {someSelected && (
+            <span className="inline-flex items-center justify-center rounded-full bg-primary/30 px-1.5 text-xs font-semibold">
+              {selectedValues.length}
+            </span>
+          )}
+          <ChevronDown className="h-4 w-4 opacity-50" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-56 z-[1260]">
         <DropdownMenuLabel>{title}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
