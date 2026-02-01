@@ -418,14 +418,16 @@ export function UnassignedOrdersDataTable({
                         ? header.column.getToggleSortingHandler()
                         : undefined
                     }
-                    className={`bg-background/80 border-b border-border/40 rounded-t-lg px-4 py-2 text-base font-semibold text-foreground/80 shadow-sm ${
+                    className={`bg-primary/3 border-b border-primary/15 px-4 py-2.5 text-xs font-semibold text-foreground/60 uppercase tracking-wide ${
                       header.column.getCanSort()
-                        ? "cursor-pointer select-none"
+                        ? "cursor-pointer select-none hover:text-foreground/80 hover:bg-primary/5 transition-colors"
                         : ""
                     }`}
                     style={{
-                      borderTop: "1px solid var(--border-color)",
-                      borderLeft: "1px solid var(--border-color)",
+                      borderTop:
+                        "1px solid var(--primary-color, rgba(59, 130, 246, 0.1))",
+                      borderLeft:
+                        "1px solid var(--primary-color, rgba(59, 130, 246, 0.1))",
                     }}
                   >
                     {flexRender(
