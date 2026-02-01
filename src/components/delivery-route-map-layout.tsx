@@ -216,24 +216,6 @@ export default function DeliveryRouteMapLayout({
                 </span>
               </div>
             </div>
-            <div className="border-b border-border/50 bg-background/50 backdrop-blur-xs">
-              <div className="w-full px-4 py-3">
-                <div className="flex gap-3">
-                  <div className="flex items-center">
-                    <h3
-                      className="text-sm font-semibold text-foreground/70 tracking-wider whitespace-nowrap"
-                      style={{
-                        writingMode: "vertical-rl",
-                        textOrientation: "mixed",
-                      }}
-                    >
-                      FILTRY
-                    </h3>
-                  </div>
-                  <div className="flex-1"></div>
-                </div>
-              </div>
-            </div>
             <div className="h-[25vh] min-h-[25vh] max-h-[25vh] px-6 pb-6 bg-background/40">
               {unassignedOrders.length > 0 ? (
                 <UnassignedOrdersDataTable
