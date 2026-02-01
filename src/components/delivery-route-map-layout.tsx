@@ -216,7 +216,7 @@ export default function DeliveryRouteMapLayout({
                 </span>
               </div>
             </div>
-            <div className="h-[25vh] min-h-[25vh] max-h-[25vh] px-6 pb-6 bg-background/40">
+            <div className="h-[45vh] min-h-[45vh] max-h-[45vh] px-6 pb-6 bg-background/40">
               {unassignedOrders.length > 0 ? (
                 <UnassignedOrdersDataTable
                   data={unassignedOrders}
