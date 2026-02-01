@@ -69,7 +69,7 @@ export function DataTableFilterDropdown({
           <ChevronDown className="h-3.5 w-3.5 opacity-40" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-56 z-[1260]">
+      <DropdownMenuContent align="start" className="w-56 z-1260">
         <DropdownMenuLabel>{title}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem

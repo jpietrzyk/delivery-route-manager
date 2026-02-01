@@ -13,18 +13,14 @@ export default function HereMapPage() {
       renderMap={(
         displayedOrders: Order[],
         allUnassignedOrders: Order[],
-        unassignedOrderFilterStatus: Map<string, boolean>,
-        onOrderAddedToDelivery,
-        onRefreshRequested,
+        onOrderAddedToDelivery: (orderId?: string) => Promise<void>,
+        onRefreshRequested: () => void,
       ) => {
-        const filteredUnassignedOrders = allUnassignedOrders.filter(
-          (order) => unassignedOrderFilterStatus.get(order.id) ?? false,
-        );
         return (
           <HereMapView
             orders={displayedOrders}
             unassignedOrders={allUnassignedOrders}
-            filteredUnassignedOrders={filteredUnassignedOrders}
+            filteredUnassignedOrders={allUnassignedOrders}
             onOrderAddedToDelivery={onOrderAddedToDelivery}
             onRefreshRequested={onRefreshRequested}
           />

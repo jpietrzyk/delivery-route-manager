@@ -1,3 +1,6 @@
+"use no memo";
+"use client";
+
 import * as React from "react";
 import {
   Table,
@@ -39,7 +42,7 @@ interface UnassignedOrdersDataTableProps {
 
 // Custom filter functions
 const createArrayIncludesFilter =
-  (_key: keyof Order) =>
+  () =>
   (
     row: { getValue: (columnId: string) => unknown },
     columnId: string,
@@ -70,7 +73,7 @@ export function UnassignedOrdersDataTable({
       {
         accessorKey: "status",
         header: pl.tableStatus,
-        filterFn: createArrayIncludesFilter("status"),
+        filterFn: createArrayIncludesFilter(),
         cell: (info: { getValue: () => unknown }) => {
           const status = info.getValue() as string;
           let badgeColor = "bg-gray-100/50 text-gray-700 border-gray-200/60";
@@ -313,6 +316,7 @@ export function UnassignedOrdersDataTable({
     [onAddOrder],
   );
 
+  // biome-ignore lint/correctness/noConstantCondition: useReactTable incompatible with React Compiler
   const table = useReactTable({
     data,
     columns,

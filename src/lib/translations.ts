@@ -82,15 +82,10 @@ export const pl = {
   minute_short: "m",
 
   // Priorities
-  priorityLow: "Niski",
-  priorityMedium: "Średni",
-  priorityHigh: "Wysoki",
+  // (moved to filter options section below)
 
   // Statuses
-  statusPending: "Oczekujące",
-  statusInProgress: "W trakcie",
-  statusCompleted: "Zakończone",
-  statusCancelled: "Anulowane",
+  // (moved to filter options section below)
 
   // Filters
   filters: "Filtry",
