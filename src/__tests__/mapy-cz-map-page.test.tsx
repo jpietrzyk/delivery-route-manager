@@ -15,7 +15,7 @@ interface MapyMapViewProps {
   [key: string]: unknown;
 }
 
-const mapySpy = jest.fn(() => <div data-testid="mapy" />);
+const mapySpy = jest.fn();
 
 jest.mock("@/components/maps/abstraction/mapy-map-view", () => ({
   __esModule: true,
