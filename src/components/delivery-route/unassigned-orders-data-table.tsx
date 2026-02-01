@@ -354,6 +354,7 @@ export function UnassignedOrdersDataTable({
     ) {
       setColumnFilters(propColumnFilters);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propColumnFilters]);
 
   const filterConfig: FiltersBarConfig[] = [
@@ -462,7 +463,7 @@ export function UnassignedOrdersDataTable({
             ))}
           </TableHeader>
         </Table>
-        <div className="h-[400px] overflow-auto">
+        <div className="h-100 overflow-auto">
           <Table className="w-full text-sm text-foreground">
             <TableBody>
               {table.getRowModel().rows.map((row) => {
