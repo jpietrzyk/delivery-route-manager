@@ -11,11 +11,18 @@ import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
+  getFilteredRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import type { ColumnDef, SortingState } from "@tanstack/react-table";
+import type {
+  ColumnDef,
+  SortingState,
+  ColumnFiltersState,
+} from "@tanstack/react-table";
 import type { Order } from "@/types/order";
 import { useMarkerHighlight } from "@/hooks/use-marker-highlight";
+import { DataTableFiltersBar } from "./data-table-filters-bar";
+import type { FiltersBarConfig } from "./data-table-filters-bar";
 
 // Removed custom hook for useReactTable due to React Compiler incompatibility.
 
@@ -24,18 +31,37 @@ interface UnassignedOrdersDataTableProps {
   onAddOrder?: (orderId: string) => void;
 }
 
+// Custom filter functions
+const createArrayIncludesFilter =
+  (_key: keyof Order) =>
+  (
+    row: { getValue: (columnId: string) => unknown },
+    columnId: string,
+    filterValue: unknown,
+  ) => {
+    if (!Array.isArray(filterValue) || filterValue.length === 0) {
+      return true;
+    }
+    const value = String(row.getValue(columnId));
+    return filterValue.includes(value);
+  };
+
 export function UnassignedOrdersDataTable({
   data,
   onAddOrder,
 }: UnassignedOrdersDataTableProps) {
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
 
   const columns = React.useMemo<ColumnDef<Order, unknown>[]>(
     (): ColumnDef<Order, unknown>[] => [
       {
         accessorKey: "status",
         header: "Status",
+        filterFn: createArrayIncludesFilter("status"),
         cell: (info: { getValue: () => unknown }) => {
           const status = info.getValue() as string;
           let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
@@ -67,6 +93,7 @@ export function UnassignedOrdersDataTable({
       {
         accessorKey: "priority",
         header: "Priority",
+        filterFn: createArrayIncludesFilter("priority"),
         cell: (info: { getValue: () => unknown }) => {
           const priority = info.getValue() as string;
           let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
@@ -113,6 +140,17 @@ export function UnassignedOrdersDataTable({
       {
         accessorKey: "complexity",
         header: () => <span>Complexity</span>,
+        filterFn: (
+          row: { getValue: (columnId: string) => unknown },
+          columnId: string,
+          filterValue: unknown,
+        ) => {
+          if (!Array.isArray(filterValue) || filterValue.length === 0) {
+            return true;
+          }
+          const value = String(row.getValue(columnId));
+          return filterValue.includes(value);
+        },
         cell: (info: { getValue: () => unknown }) => {
           const complexity = info.getValue() as number;
           let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
@@ -194,83 +232,143 @@ export function UnassignedOrdersDataTable({
   const table = useReactTable({
     data,
     columns,
-    state: { sorting },
+    state: { sorting, columnFilters },
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: "auto",
     debugTable: false,
   });
 
+  const filterConfig: FiltersBarConfig[] = [
+    {
+      id: "status",
+      title: "Status",
+      options: [
+        { value: "priority", label: "Priority" },
+        { value: "delayed", label: "Delayed" },
+        { value: "normal", label: "Normal" },
+      ],
+    },
+    {
+      id: "priority",
+      title: "Priority",
+      options: [
+        { value: "high", label: "High" },
+        { value: "medium", label: "Medium" },
+        { value: "low", label: "Low" },
+      ],
+    },
+    {
+      id: "complexity",
+      title: "Complexity",
+      options: [
+        { value: "1", label: "Simple" },
+        { value: "2", label: "Moderate" },
+        { value: "3", label: "Complex" },
+      ],
+    },
+  ];
+
+  const selectedFilters = React.useMemo(() => {
+    const filters: Record<string, string[]> = {};
+    columnFilters.forEach((filter) => {
+      if (Array.isArray(filter.value)) {
+        filters[filter.id] = filter.value.map((v) => String(v));
+      }
+    });
+    return filters;
+  }, [columnFilters]);
+
+  const handleFilterChange = (filterId: string, values: string[]) => {
+    setColumnFilters((prev) => {
+      const filtered = prev.filter((f) => f.id !== filterId);
+      if (values.length > 0) {
+        return [...filtered, { id: filterId, value: values }];
+      }
+      return filtered;
+    });
+  };
+
   return (
-    <div className="w-full rounded-xl border border-border/40 bg-background/95 shadow-sm p-2">
-      <Table className="w-full text-sm text-foreground">
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  onClick={
-                    header.column.getCanSort()
-                      ? header.column.getToggleSortingHandler()
-                      : undefined
-                  }
-                  className={`bg-background/80 border-b border-border/40 rounded-t-lg px-4 py-2 text-base font-semibold text-foreground/80 shadow-sm ${
-                    header.column.getCanSort()
-                      ? "cursor-pointer select-none"
-                      : ""
-                  }`}
-                  style={{
-                    borderTop: "1px solid var(--border-color)",
-                    borderLeft: "1px solid var(--border-color)",
-                  }}
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
-                  {header.column.getIsSorted() === "asc" && " ▲"}
-                  {header.column.getIsSorted() === "desc" && " ▼"}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-      </Table>
-      <div className="h-[400px] overflow-auto">
+    <div className="w-full rounded-xl border border-border/40 bg-background/95 shadow-sm overflow-hidden">
+      <DataTableFiltersBar
+        filters={filterConfig}
+        selectedFilters={selectedFilters}
+        onFilterChange={handleFilterChange}
+      />
+      <div className="p-2">
         <Table className="w-full text-sm text-foreground">
-          <TableBody>
-            {table.getRowModel().rows.map((row) => {
-              const orderId = row.original.id;
-              const isHighlighted = highlightedOrderId === orderId;
-              return (
-                <TableRow
-                  key={row.id}
-                  className={
-                    isHighlighted
-                      ? "bg-primary/10 border-primary/60 text-primary shadow-sm"
-                      : "hover:bg-accent/20 transition-colors"
-                  }
-                  style={{ cursor: "pointer", borderRadius: 8 }}
-                  onMouseEnter={() => setHighlightedOrderId(orderId)}
-                  onMouseLeave={() => setHighlightedOrderId(null)}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className="align-middle px-3 py-2 border-b border-border/30 bg-background/95"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            })}
-          </TableBody>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    onClick={
+                      header.column.getCanSort()
+                        ? header.column.getToggleSortingHandler()
+                        : undefined
+                    }
+                    className={`bg-background/80 border-b border-border/40 rounded-t-lg px-4 py-2 text-base font-semibold text-foreground/80 shadow-sm ${
+                      header.column.getCanSort()
+                        ? "cursor-pointer select-none"
+                        : ""
+                    }`}
+                    style={{
+                      borderTop: "1px solid var(--border-color)",
+                      borderLeft: "1px solid var(--border-color)",
+                    }}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                    {header.column.getIsSorted() === "asc" && " ▲"}
+                    {header.column.getIsSorted() === "desc" && " ▼"}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
         </Table>
+        <div className="h-[400px] overflow-auto">
+          <Table className="w-full text-sm text-foreground">
+            <TableBody>
+              {table.getRowModel().rows.map((row) => {
+                const orderId = row.original.id;
+                const isHighlighted = highlightedOrderId === orderId;
+                return (
+                  <TableRow
+                    key={row.id}
+                    className={
+                      isHighlighted
+                        ? "bg-primary/10 border-primary/60 text-primary shadow-sm"
+                        : "hover:bg-accent/20 transition-colors"
+                    }
+                    style={{ cursor: "pointer", borderRadius: 8 }}
+                    onMouseEnter={() => setHighlightedOrderId(orderId)}
+                    onMouseLeave={() => setHighlightedOrderId(null)}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className="align-middle px-3 py-2 border-b border-border/30 bg-background/95"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
