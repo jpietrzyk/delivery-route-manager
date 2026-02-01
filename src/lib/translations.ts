@@ -82,15 +82,10 @@ export const pl = {
   minute_short: "m",
 
   // Priorities
-  priorityLow: "Niski",
-  priorityMedium: "Średni",
-  priorityHigh: "Wysoki",
+  // (moved to filter options section below)
 
   // Statuses
-  statusPending: "Oczekujące",
-  statusInProgress: "W trakcie",
-  statusCompleted: "Zakończone",
-  statusCancelled: "Anulowane",
+  // (moved to filter options section below)
 
   // Filters
   filters: "Filtry",
@@ -114,6 +109,44 @@ export const pl = {
   updatedModerate: "1-4 tygodnie",
   updatedOld: "Starsze niż miesiąc",
   selectAll: "Zaznacz wszystkie",
+  deselectAll: "Odznacz wszystkie",
+
+  // Data table columns
+  tableStatus: "Status",
+  tablePriority: "Priorytet",
+  tableAmount: "Kwota",
+  tableComplexity: "Złożoność",
+  tableCreated: "Utworzono",
+  tableAdd: "Dodaj",
+
+  // Filter dropdowns
+  filterStatus: "Status",
+  filterPriority: "Priorytet",
+  filterAmount: "Kwota",
+  filterComplexity: "Złożoność",
+
+  // Filter options - Status
+  statusPending: "Oczekujące",
+  statusInProgress: "W trakcie",
+  statusCompleted: "Zakończone",
+  statusCancelled: "Anulowane",
+
+  // Filter options - Priority
+  priorityNone: "Brak",
+  priorityLow: "Niski",
+  priorityMedium: "Średni",
+  priorityModerate: "Umiarkowany",
+  priorityHigh: "Wysoki",
+
+  // Filter options - Amount
+  amountNone: "Niska",
+  amountNormal: "Średnia",
+  amountHeavy: "Wysoka",
+
+  // Filter options - Complexity
+  complexitySimpleShort: "Prosta",
+  complexityModerateShort: "Umiarkowana",
+  complexityComplexShort: "Złożona",
 
   // Aria labels
   ariaRemoveOrder: "Usuń zamówienie",

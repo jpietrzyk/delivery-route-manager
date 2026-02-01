@@ -1,5 +1,4 @@
-import React, { type ReactNode, useEffect, useState } from "react";
-import { useMapFilters } from "@/hooks/use-map-filters";
+import { type ReactNode, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DeliverySidebar from "@/components/delivery-route-sidebar";
@@ -15,12 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 import { UnassignedOrdersDataTable } from "@/components/delivery-route/unassigned-orders-data-table";
 
-import { OrderFilters } from "@/components/delivery-route/order-filters";
-import type {
-  PriorityFilterState,
-  AmountFilterState,
-  ComplexityFilterState,
-} from "@/components/delivery-route/order-filters";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import type { Order } from "@/types/order";
 import { resetLocalStorageAndFetchData } from "@/lib/local-storage-utils";
@@ -29,7 +22,6 @@ interface DeliveryRouteMapLayoutProps {
   renderMap: (
     displayedOrders: Order[],
     allUnassignedOrders: Order[],
-    unassignedOrderFilterStatus: Map<string, boolean>,
     onOrderAddedToDelivery: (orderId?: string) => Promise<void>,
     onRefreshRequested: () => void,
   ) => ReactNode;
@@ -41,6 +33,12 @@ export default function DeliveryRouteMapLayout({
   const { deliveryId } = useParams<{ deliveryId: string }>();
   const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [dataTableFilteredOrders, setDataTableFilteredOrders] = useState<
+    Order[]
+  >([]);
+  const [dataTableColumnFilters, setDataTableColumnFilters] = useState<
+    Array<{ id: string; value: unknown }>
+  >([]);
   // const { setHighlightedOrderId, highlightedOrderId } = useMarkerHighlight();
 
   // Detect current map provider from URL
@@ -94,182 +92,8 @@ export default function DeliveryRouteMapLayout({
   const [displayedOrders, setDisplayedOrders] =
     useState<Order[]>(deliveryOrders);
 
-  // Use shared filter state from context
-  const { filters, setFilters } = useMapFilters();
-  const priorityFilters = React.useMemo(
-    () => filters.priorityFilters ?? { low: true, medium: true, high: true },
-    [filters.priorityFilters],
-  );
-  const statusFilters = React.useMemo(
-    () =>
-      filters.statusFilters ?? {
-        pending: true,
-        "in-progress": true,
-        completed: true,
-        cancelled: true,
-      },
-    [filters.statusFilters],
-  );
-  const amountFilters = React.useMemo(
-    () => filters.amountFilters ?? { low: true, medium: true, high: true },
-    [filters.amountFilters],
-  );
-  const complexityFilters = React.useMemo(
-    () =>
-      filters.complexityFilters ?? {
-        simple: true,
-        moderate: true,
-        complex: true,
-      },
-    [filters.complexityFilters],
-  );
-
-  // Remove localStorage filter logic (now handled by context)
-
-  // Helper function to determine amount tier
-  // Accept both totalAmount and totalamount fields for compatibility
-  type OrderWithAmount = Order & {
-    totalAmount?: number | string;
-    totalamount?: number | string;
-  };
-
-  const getOrderAmount = React.useCallback((order: OrderWithAmount): number => {
-    // Prefer camelCase, fallback to lowercase
-    const value =
-      order.totalAmount !== undefined ? order.totalAmount : order.totalamount;
-    if (typeof value === "number") return value;
-    if (typeof value === "string") {
-      // Remove spaces, replace comma with dot if needed, remove thousands separator
-      const cleaned = value.replace(/\s/g, "").replace(/,/g, "");
-      // If value is like "2,19800" (should be 219800), just remove comma
-      const parsed = parseInt(cleaned, 10);
-      if (!isNaN(parsed)) return parsed;
-    }
-    return 0;
-  }, []);
-
-  const getAmountTier = (amount: number): keyof AmountFilterState => {
-    if (amount <= 600) return "low";
-    if (amount <= 1300) return "medium";
-    return "high";
-  };
-
-  // Helper function to determine complexity tier
-  const getComplexityTier = (order: Order): keyof ComplexityFilterState => {
-    const complexity = order.complexity ? order.complexity : 1;
-    if (complexity === 1) return "simple";
-    if (complexity === 2) return "moderate";
-    return "complex";
-  };
-
-  // Map integer priority to filter bucket
-  // 0-1: low, 2: medium, 3+: high
-  const getPriorityTier = (priority: number): keyof PriorityFilterState => {
-    if (priority === 0 || priority === 1) return "low";
-    if (priority === 2) return "medium";
-    return "high";
-  };
-
-  // Check if any filter groups are active
-  const hasActiveFilters = React.useMemo(() => {
-    return (
-      Object.values(priorityFilters).some(Boolean) ||
-      Object.values(statusFilters).some(Boolean) ||
-      Object.values(amountFilters).some(Boolean) ||
-      Object.values(complexityFilters).some(Boolean)
-    );
-  }, [priorityFilters, statusFilters, amountFilters, complexityFilters]);
-
-  // Filter unassigned orders based on active filters (for UI display)
-  const filteredUnassignedOrders = unassignedOrders.filter((order) => {
-    if (!hasActiveFilters) {
-      return true; // No filters active, so show all orders
-    }
-
-    const priorityKey = getPriorityTier(order.priority ?? 0);
-    const priorityMatch = priorityFilters[priorityKey] ?? false;
-    const statusMatch = statusFilters[order.status] ?? false;
-    const amountMatch =
-      amountFilters[getAmountTier(getOrderAmount(order))] ?? false;
-    const complexityMatch =
-      complexityFilters[getComplexityTier(order)] ?? false;
-
-    // Only apply filter if the group has any filters checked
-    const activePriorityMatch = Object.values(priorityFilters).some(Boolean)
-      ? priorityMatch
-      : true;
-    const activeStatusMatch = Object.values(statusFilters).some(Boolean)
-      ? statusMatch
-      : true;
-    const activeAmountMatch = Object.values(amountFilters).some(Boolean)
-      ? amountMatch
-      : true;
-    const activeComplexityMatch = Object.values(complexityFilters).some(Boolean)
-      ? complexityMatch
-      : true;
-
-    return (
-      activePriorityMatch &&
-      activeStatusMatch &&
-      activeAmountMatch &&
-      activeComplexityMatch
-    );
-  });
-
-  // Create filter match status for all unassigned orders
-  const unassignedOrderFilterStatus = React.useMemo(() => {
-    const statusMap = new Map<string, boolean>();
-    unassignedOrders.forEach((order) => {
-      if (!hasActiveFilters) {
-        statusMap.set(order.id, true); // No filters active, so all orders match
-        return;
-      }
-
-      const priorityKey = getPriorityTier(order.priority ?? 0);
-      const priorityMatch = priorityFilters[priorityKey] ?? false;
-      const statusMatch = statusFilters[order.status] ?? false;
-      const amountMatch =
-        amountFilters[getAmountTier(getOrderAmount(order))] ?? false;
-      const complexityMatch =
-        complexityFilters[getComplexityTier(order)] ?? false;
-
-      // Only apply filter if the group has any filters checked
-      const activePriorityMatch = Object.values(priorityFilters).some(Boolean)
-        ? priorityMatch
-        : true;
-      const activeStatusMatch = Object.values(statusFilters).some(Boolean)
-        ? statusMatch
-        : true;
-      const activeAmountMatch = Object.values(amountFilters).some(Boolean)
-        ? amountMatch
-        : true;
-      const activeComplexityMatch = Object.values(complexityFilters).some(
-        Boolean,
-      )
-        ? complexityMatch
-        : true;
-
-      const matchesFilters =
-        activePriorityMatch &&
-        activeStatusMatch &&
-        activeAmountMatch &&
-        activeComplexityMatch;
-      statusMap.set(order.id, matchesFilters);
-    });
-    return statusMap;
-  }, [
-    unassignedOrders,
-    hasActiveFilters,
-    priorityFilters,
-    statusFilters,
-    amountFilters,
-    complexityFilters,
-    getOrderAmount,
-  ]);
-
   const totalAvailableOrders = displayedOrders.length + unassignedOrders.length;
-  const totalOrdersCount =
-    displayedOrders.length + filteredUnassignedOrders.length;
+  const totalOrdersCount = displayedOrders.length + unassignedOrders.length;
 
   useEffect(() => {
     void refreshDeliveryOrders(deliveryId);
@@ -313,8 +137,9 @@ export default function DeliveryRouteMapLayout({
           <div className="absolute inset-0 z-0">
             {renderMap(
               displayedOrders,
-              unassignedOrders,
-              unassignedOrderFilterStatus,
+              dataTableFilteredOrders.length > 0
+                ? dataTableFilteredOrders
+                : unassignedOrders,
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               async (_orderId?: string) => {
                 await refreshDeliveryOrders(deliveryId);
@@ -358,23 +183,6 @@ export default function DeliveryRouteMapLayout({
             onResetData={handleResetData}
             currentMapProvider={currentMapProvider}
             onMapProviderChange={handleMapProviderChange}
-            onResetFilters={() => {
-              setFilters({
-                priorityFilters: { low: true, medium: true, high: true },
-                statusFilters: {
-                  pending: true,
-                  "in-progress": true,
-                  completed: true,
-                  cancelled: true,
-                },
-                amountFilters: { low: true, medium: true, high: true },
-                complexityFilters: {
-                  simple: true,
-                  moderate: true,
-                  complex: true,
-                },
-              });
-            }}
           />
 
           {/* Sidebar trigger at top right */}
@@ -404,63 +212,17 @@ export default function DeliveryRouteMapLayout({
                 </DrawerTitle>
                 <span className="text-muted-foreground/60 shrink-0">·</span>
                 <span className="text-sm text-muted-foreground inline">
-                  {getOrdersCountText(filteredUnassignedOrders.length)}
+                  {getOrdersCountText(unassignedOrders.length)}
                 </span>
               </div>
             </div>
-            <div className="border-b border-border/50 bg-background/50 backdrop-blur-xs">
-              <div className="w-full px-4 py-3">
-                <div className="flex gap-3">
-                  <div className="flex items-center">
-                    <h3
-                      className="text-sm font-semibold text-foreground/70 tracking-wider whitespace-nowrap"
-                      style={{
-                        writingMode: "vertical-rl",
-                        textOrientation: "mixed",
-                      }}
-                    >
-                      FILTRY
-                    </h3>
-                  </div>
-                  <div className="flex-1">
-                    <OrderFilters
-                      priorityFilters={priorityFilters}
-                      statusFilters={statusFilters}
-                      amountFilters={amountFilters}
-                      complexityFilters={complexityFilters}
-                      onPriorityChange={(filters) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          priorityFilters: filters,
-                        }))
-                      }
-                      onStatusChange={(filters) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          statusFilters: filters,
-                        }))
-                      }
-                      onAmountChange={(filters) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          amountFilters: filters,
-                        }))
-                      }
-                      onComplexityChange={(filters) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          complexityFilters: filters,
-                        }))
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="h-[25vh] min-h-[25vh] max-h-[25vh] overflow-y-auto px-6 pb-6 bg-background/40">
-              {filteredUnassignedOrders.length > 0 ? (
+            <div className="h-[45vh] min-h-[45vh] max-h-[45vh] px-6 pb-6 bg-background/40">
+              {unassignedOrders.length > 0 ? (
                 <UnassignedOrdersDataTable
-                  data={filteredUnassignedOrders}
+                  data={unassignedOrders}
+                  onFilteredDataChange={setDataTableFilteredOrders}
+                  columnFilters={dataTableColumnFilters}
+                  onColumnFiltersChange={setDataTableColumnFilters}
                   onAddOrder={async (orderId) => {
                     try {
                       const targetDeliveryId =
