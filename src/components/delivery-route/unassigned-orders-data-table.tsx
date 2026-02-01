@@ -222,17 +222,24 @@ export function UnassignedOrdersDataTable({
         cell: (info: { getValue: () => unknown }) => {
           const complexity = info.getValue() as number;
           let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
-          if (complexity >= 3)
+          let label = "Unknown";
+
+          if (complexity >= 3) {
             badgeColor = "bg-purple-50 text-purple-700 border-purple-200";
-          if (complexity === 2)
+            label = "Complex";
+          } else if (complexity === 2) {
             badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
-          if (complexity === 1)
+            label = "Moderate";
+          } else if (complexity === 1) {
             badgeColor = "bg-green-50 text-green-700 border-green-200";
+            label = "Simple";
+          }
+
           return (
             <span
               className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
             >
-              {complexity}
+              {label}
             </span>
           );
         },
@@ -453,17 +460,17 @@ export function UnassignedOrdersDataTable({
                     key={row.id}
                     className={
                       isHighlighted
-                        ? "bg-primary/10 border-primary/60 text-primary shadow-sm"
-                        : "hover:bg-accent/20 transition-colors"
+                        ? "bg-primary/15 border-l-4 border-l-primary shadow-md"
+                        : "border-l-4 border-l-transparent hover:bg-primary/8 hover:border-l-primary/40 transition-all duration-200"
                     }
-                    style={{ cursor: "pointer", borderRadius: 8 }}
+                    style={{ cursor: "pointer" }}
                     onMouseEnter={() => setHighlightedOrderId(orderId)}
                     onMouseLeave={() => setHighlightedOrderId(null)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
-                        className="align-middle px-3 py-2 border-b border-border/30 bg-background/95"
+                        className="align-middle px-3 py-2 border-b border-border/30"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
