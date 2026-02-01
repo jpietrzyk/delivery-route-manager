@@ -95,16 +95,48 @@ export function UnassignedOrdersDataTable({
       {
         accessorKey: "priority",
         header: "Priority",
-        filterFn: createArrayIncludesFilter("priority"),
+        filterFn: (
+          row: { getValue: (columnId: string) => unknown },
+          columnId: string,
+          filterValue: unknown,
+        ) => {
+          if (!Array.isArray(filterValue) || filterValue.length === 0) {
+            return true;
+          }
+          const value = Number(row.getValue(columnId));
+
+          // Map numeric priority to string labels for filtering
+          for (const filterVal of filterValue) {
+            if (filterVal === "none" && (value === 0 || !value)) return true;
+            if (filterVal === "low" && value === 1) return true;
+            if (filterVal === "medium" && value === 2) return true;
+            if (filterVal === "moderate" && value === 3) return true;
+            if (filterVal === "high" && value === 4) return true;
+          }
+          return false;
+        },
         cell: (info: { getValue: () => unknown }) => {
-          const priority = info.getValue() as string;
+          const priorityNum = Number(info.getValue());
+          let priority = "none";
           let badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
-          if (priority === "high")
-            badgeColor = "bg-red-50 text-red-700 border-red-200";
-          if (priority === "medium")
-            badgeColor = "bg-yellow-50 text-yellow-700 border-yellow-200";
-          if (priority === "low")
+
+          if (priorityNum === 0 || !priorityNum) {
+            priority = "none";
+            badgeColor = "bg-gray-100 text-gray-700 border-gray-300";
+          } else if (priorityNum === 1) {
+            priority = "low";
             badgeColor = "bg-green-50 text-green-700 border-green-200";
+          } else if (priorityNum === 2) {
+            priority = "medium";
+            badgeColor = "bg-yellow-50 text-yellow-700 border-yellow-200";
+          } else if (priorityNum === 3) {
+            priority = "moderate";
+            badgeColor = "bg-orange-50 text-orange-700 border-orange-200";
+          } else if (priorityNum === 4) {
+            priority = "high";
+            badgeColor = "bg-red-50 text-red-700 border-red-200";
+          }
+
           return (
             <span
               className={`inline-block px-2 py-0.5 rounded-full border text-xs font-semibold ${badgeColor}`}
@@ -119,14 +151,32 @@ export function UnassignedOrdersDataTable({
           rowB: { getValue: (col: string) => unknown },
           columnId: string,
         ) => {
-          const a = (rowA.getValue(columnId) || "").toString().toLowerCase();
-          const b = (rowB.getValue(columnId) || "").toString().toLowerCase();
-          return a.localeCompare(b);
+          const a = Number(rowA.getValue(columnId) || 0);
+          const b = Number(rowB.getValue(columnId) || 0);
+          return a - b;
         },
       },
       {
         accessorKey: "totalAmount",
         header: "Amount",
+        filterFn: (
+          row: { getValue: (columnId: string) => unknown },
+          columnId: string,
+          filterValue: unknown,
+        ) => {
+          if (!Array.isArray(filterValue) || filterValue.length === 0) {
+            return true;
+          }
+          const amount = Number(row.getValue(columnId) || 0);
+          
+          // Map amount ranges to filter values
+          for (const filterVal of filterValue) {
+            if (filterVal === "low" && amount <= 600) return true;
+            if (filterVal === "medium" && amount > 600 && amount <= 1300) return true;
+            if (filterVal === "high" && amount > 1300) return true;
+          }
+          return false;
+        },
         cell: (info: { getValue: () => unknown }) => info.getValue(),
         enableSorting: true,
         sortingFn: (
@@ -266,9 +316,20 @@ export function UnassignedOrdersDataTable({
       id: "priority",
       title: "Priority",
       options: [
-        { value: "high", label: "High" },
-        { value: "medium", label: "Medium" },
+        { value: "none", label: "None" },
         { value: "low", label: "Low" },
+        { value: "medium", label: "Medium" },
+        { value: "moderate", label: "Moderate" },
+        { value: "high", label: "High" },
+      ],
+    },
+    {
+      id: "totalAmount",
+      title: "Amount",
+      options: [
+        { value: "low", label: "Low (≤ 600)" },
+        { value: "medium", label: "Medium (601-1300)" },
+        { value: "high", label: "High (> 1300)" },
       ],
     },
     {
