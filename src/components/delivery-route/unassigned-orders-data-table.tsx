@@ -270,13 +270,13 @@ export function UnassignedOrdersDataTable({
         header: "",
         cell: (info: { row: { original: Order } }) => (
           <button
-            className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-lg border border-primary/60 text-primary bg-primary/5 hover:bg-primary/20 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-primary/30 text-primary bg-primary/5 hover:bg-primary/12 hover:border-primary/40 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-0"
             onClick={() => onAddOrder?.(info.row.original.id)}
             title="Add to delivery route"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
+              className="h-3.5 w-3.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -284,7 +284,7 @@ export function UnassignedOrdersDataTable({
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={2.5}
                 d="M12 4v16m8-8H4"
               />
             </svg>
