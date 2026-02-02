@@ -10,7 +10,7 @@ export interface MapMarkerData {
     lat: number;
     lng: number;
   };
-    type: 'delivery' | 'unassigned' | 'outfiltered';
+  type: 'delivery' | 'unassigned' | 'outfiltered';
   waypointIndex?: number; // 1-based position in delivery route when applicable
   isHighlighted?: boolean;
   isCurrentOrder?: boolean;
@@ -26,6 +26,8 @@ export interface MapMarkerData {
     complexity: number;
   };
   customIconUrl?: string; // For filter-based coloring
+  // Icon path - computed by adapter based on type, highlight state, and waypointIndex
+  iconPath?: string; // e.g., "/markers/marker-waypoint.svg" or "/markers/marker-hover.svg"
 }
 
 export interface MapRouteSegmentData {

@@ -52,6 +52,26 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     setRouteSegments([]);
   }, [setRouteSegments]);
 
+  // Helper function to compute icon path based on marker state
+  const getIconPath = React.useCallback(
+    (
+      type: MapMarkerData["type"],
+      isHighlighted: boolean,
+      waypointIndex?: number,
+    ): string => {
+      if (isHighlighted) {
+        return "/markers/marker-hover.svg";
+      }
+
+      if (type === "delivery" && waypointIndex !== undefined) {
+        return "/markers/marker-waypoint.svg";
+      }
+
+      return "/markers/marker-default.svg";
+    },
+    [],
+  );
+
   // Transform orders to markers
   const markers: MapMarkerData[] = React.useMemo(() => {
     // Deduplicate on initialization: filter unassigned orders that are also in delivery orders
@@ -74,6 +94,10 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
       if (!isUnassigned) {
         waypointIndex = ++deliverySeq;
       }
+
+      const isHighlighted = highlightedOrderId === order.id;
+      const markerType = !matchesFilters ? "outfiltered" : type;
+      const iconPath = getIconPath(markerType, isHighlighted, waypointIndex);
 
       const popupContent = (
         <OrderPopupContent
@@ -115,13 +139,12 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         />
       );
 
-      const markerType = !matchesFilters ? "outfiltered" : type;
       const markerData: MapMarkerData = {
         id: order.id,
         location: order.location,
         type: markerType,
         waypointIndex,
-        isHighlighted: highlightedOrderId === order.id,
+        isHighlighted,
         isCurrentOrder: currentOrderId === order.id,
         isPreviousOrder: previousOrderId === order.id,
         isDisabled: false,
@@ -130,6 +153,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         status: order.status,
         totalAmount: order.totalAmount,
         popupContent,
+        iconPath,
       };
       return markerData;
     });
@@ -144,6 +168,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     removeOrderFromDelivery,
     onOrderAddedToDelivery,
     onRefreshRequested,
+    getIconPath,
   ]);
 
   // Transform consecutive orders to route segments

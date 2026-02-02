@@ -27,6 +27,10 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   const markersGroupRef = React.useRef<any | null>(null);
   const routesGroupRef = React.useRef<any | null>(null);
   const lastBoundsKeyRef = React.useRef<string | null>(null);
+  const markerMapRef = React.useRef<Map<string, any>>(new Map());
+  const iconCacheRef = React.useRef<Map<string, any>>(new Map());
+  const userInteractedRef = React.useRef<boolean>(false);
+  const initialBoundsFitRef = React.useRef<boolean>(false);
 
   // Initialize HERE Map
   React.useEffect(() => {
@@ -51,10 +55,19 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
 
       mapInstanceRef.current = map;
 
-      const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+      const mapEvents = new H.mapevents.MapEvents(map);
+      const behavior = new H.mapevents.Behavior(mapEvents);
       void behavior;
       const ui = H.ui.UI.createDefault(map, defaultLayers);
       void ui;
+
+      // Track user interactions to stop auto-fitting bounds
+      const markUserInteraction = () => {
+        userInteractedRef.current = true;
+      };
+      map.addEventListener("dragstart", markUserInteraction);
+      map.addEventListener("wheel", markUserInteraction);
+      map.addEventListener("dbltap", markUserInteraction);
 
       const handleResize = () => map.getViewPort().resize();
       window.addEventListener("resize", handleResize);
@@ -74,32 +87,16 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   }, []);
 
   const getHereIconUrl = React.useCallback((marker: MapMarkerData) => {
-    const ICONS = {
-      waypoint: "/markers/marker-waypoint.svg",
-      default: "/markers/marker-default.svg",
-      hover: "/markers/marker-hover.svg",
-      unassigned: "/markers/unassigned-marker.svg",
-    };
+    const baseUrl = window.location.origin;
+    const iconPath = marker.iconPath || "/markers/marker-default.svg";
 
     if (marker.customIconUrl) {
-      return marker.customIconUrl;
+      return marker.customIconUrl.startsWith("http")
+        ? marker.customIconUrl
+        : `${baseUrl}${marker.customIconUrl}`;
     }
 
-    let iconUrl = ICONS.default;
-
-    if (marker.isHighlighted) {
-      iconUrl = ICONS.hover;
-    }
-
-    if (marker.type === "delivery" && marker.waypointIndex !== undefined) {
-      iconUrl = marker.isHighlighted ? ICONS.hover : ICONS.waypoint;
-    }
-
-    if (marker.type !== "delivery") {
-      iconUrl = marker.isHighlighted ? ICONS.hover : ICONS.unassigned;
-    }
-
-    return iconUrl;
+    return `${baseUrl}${iconPath}`;
   }, []);
 
   const getHereIconOptions = React.useCallback((marker: MapMarkerData) => {
@@ -116,54 +113,126 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     };
   }, []);
 
-  // Update markers and routes
+  const createHereIcon = React.useCallback((iconUrl: string, options: any) => {
+    const H = (window as any).H;
+    if (!H) return null;
+
+    const cacheKey = `${iconUrl}-${options.size.w}-${options.size.h}`;
+    if (iconCacheRef.current.has(cacheKey)) {
+      return iconCacheRef.current.get(cacheKey);
+    }
+
+    try {
+      const icon = new H.map.Icon(iconUrl, {
+        size: options.size,
+        anchor: options.anchor,
+      });
+      iconCacheRef.current.set(cacheKey, icon);
+      return icon;
+    } catch (error) {
+      console.error(`Failed to create icon from URL: ${iconUrl}`, error);
+      return null;
+    }
+  }, []);
+
+  // Create markers only when positions/count change (not on highlight)
   React.useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    // Remove previous groups if present
-    if (markersGroupRef.current) {
-      map.removeObject(markersGroupRef.current);
-      markersGroupRef.current = null;
-    }
+    const H = (window as any).H;
+    if (!H) return;
 
+    // Create a key based on marker positions and IDs only (exclude highlight state)
+    const markerKey = markers
+      .map((m) => `${m.id}:${m.location.lat}:${m.location.lng}:${m.type}`)
+      .join("|");
+
+    // Check if we need to recreate markers
+    const existingMarkerIds = new Set(markerMapRef.current.keys());
+    const newMarkerIds = new Set(markers.map((m) => m.id));
+    const needsRecreate =
+      existingMarkerIds.size !== newMarkerIds.size ||
+      ![...existingMarkerIds].every((id) => newMarkerIds.has(id));
+
+    if (needsRecreate) {
+      // Remove old markers group
+      if (markersGroupRef.current) {
+        map.removeObject(markersGroupRef.current);
+        markersGroupRef.current = null;
+      }
+      markerMapRef.current.clear();
+
+      const markersGroup = new H.map.Group();
+
+      // Create new markers
+      markers.forEach((marker) => {
+        const iconUrl = getHereIconUrl(marker);
+        const iconOptions = getHereIconOptions(marker);
+        const icon = createHereIcon(iconUrl, iconOptions);
+
+        const hereMarker = new H.map.Marker(
+          { lat: marker.location.lat, lng: marker.location.lng },
+          icon ? { icon } : undefined,
+        );
+
+        if (onMarkerHover) {
+          hereMarker.addEventListener("pointerenter", () =>
+            onMarkerHover(marker.id, true),
+          );
+          hereMarker.addEventListener("pointerleave", () =>
+            onMarkerHover(marker.id, false),
+          );
+        }
+
+        markersGroup.addObject(hereMarker);
+        markerMapRef.current.set(marker.id, hereMarker);
+      });
+
+      map.addObject(markersGroup);
+      markersGroupRef.current = markersGroup;
+    }
+  }, [
+    markers,
+    onMarkerHover,
+    getHereIconUrl,
+    getHereIconOptions,
+    createHereIcon,
+  ]);
+
+  // Update marker icons when highlight state changes (without recreating)
+  React.useEffect(() => {
+    const H = (window as any).H;
+    if (!H) return;
+
+    markers.forEach((marker) => {
+      const hereMarker = markerMapRef.current.get(marker.id);
+      if (hereMarker) {
+        const iconUrl = getHereIconUrl(marker);
+        const iconOptions = getHereIconOptions(marker);
+        const icon = createHereIcon(iconUrl, iconOptions);
+        if (icon) {
+          hereMarker.setIcon(icon);
+        }
+      }
+    });
+  }, [markers, getHereIconUrl, getHereIconOptions, createHereIcon]);
+
+  // Update routes
+  React.useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    const H = (window as any).H;
+    if (!H) return;
+
+    // Remove previous routes group
     if (routesGroupRef.current) {
       map.removeObject(routesGroupRef.current);
       routesGroupRef.current = null;
     }
 
-    const H = (window as any).H;
-    if (!H) return;
-
-    const markersGroup = new H.map.Group();
     const routesGroup = new H.map.Group();
-
-    // Add markers
-    markers.forEach((marker) => {
-      const iconUrl = getHereIconUrl(marker);
-      const iconOptions = getHereIconOptions(marker);
-      const icon = iconUrl
-        ? new H.map.Icon(iconUrl, {
-            size: iconOptions.size,
-            anchor: iconOptions.anchor,
-          })
-        : undefined;
-      const hereMarker = new H.map.Marker(
-        { lat: marker.location.lat, lng: marker.location.lng },
-        icon ? { icon } : undefined,
-      );
-
-      if (onMarkerHover) {
-        hereMarker.addEventListener("pointerenter", () =>
-          onMarkerHover(marker.id, true),
-        );
-        hereMarker.addEventListener("pointerleave", () =>
-          onMarkerHover(marker.id, false),
-        );
-      }
-
-      markersGroup.addObject(hereMarker);
-    });
 
     // Add polylines for routes
     routes.forEach((route) => {
@@ -199,45 +268,64 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       routesGroup.addObject(polyline);
     });
 
-    map.addObject(markersGroup);
     map.addObject(routesGroup);
-    markersGroupRef.current = markersGroup;
     routesGroupRef.current = routesGroup;
+  }, [routes, onRouteSegmentHover]);
 
-    // Fit bounds only when the set of points changes
-    if (bounds.points.length > 0) {
-      const key = bounds.points
-        .map((p) => `${p.lat.toFixed(6)}:${p.lng.toFixed(6)}`)
-        .join("|");
-      if (lastBoundsKeyRef.current !== key) {
-        lastBoundsKeyRef.current = key;
-        const points = bounds.points;
-        if (points.length === 1) {
-          map.setCenter({ lat: points[0].lat, lng: points[0].lng });
-          map.setZoom(13);
-        } else {
-          const boundingBox = new H.geo.Rect(
-            points[0].lat,
-            points[0].lng,
-            points[0].lat,
-            points[0].lng,
-          );
-          points.forEach((point) => {
-            boundingBox.mergePoint({ lat: point.lat, lng: point.lng });
-          });
-          map.getViewModel().setLookAtData({ bounds: boundingBox }, true);
-        }
+  // Handle bounds fitting in a separate effect
+  React.useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map || bounds.points.length === 0) return;
+
+    // Create a stable key based on sorted delivery order positions only
+    const deliveryPoints = bounds.points.slice(
+      0,
+      markers.filter((m) => m.type === "delivery").length,
+    );
+    const key = deliveryPoints
+      .map((p) => `${p.lat.toFixed(5)}:${p.lng.toFixed(5)}`)
+      .join("|");
+
+    // Only fit bounds if:
+    // 1. This is the first time (initial load)
+    // 2. The delivery points have actually changed
+    // 3. User hasn't manually interacted with the map
+    const boundsChanged = lastBoundsKeyRef.current !== key;
+    const shouldFit =
+      boundsChanged &&
+      (!initialBoundsFitRef.current || !userInteractedRef.current);
+
+    if (shouldFit) {
+      lastBoundsKeyRef.current = key;
+      initialBoundsFitRef.current = true;
+
+      const points = bounds.points;
+      if (points.length === 1) {
+        map.setCenter({ lat: points[0].lat, lng: points[0].lng });
+        map.setZoom(13);
+      } else {
+        const H = (window as any).H;
+        if (!H) return;
+
+        const boundingBox = new H.geo.Rect(
+          points[0].lat,
+          points[0].lng,
+          points[0].lat,
+          points[0].lng,
+        );
+        points.forEach((point) => {
+          boundingBox.mergePoint({ lat: point.lat, lng: point.lng });
+        });
+        map.getViewModel().setLookAtData({ bounds: boundingBox }, true);
+      }
+
+      // Reset user interaction flag when bounds change significantly (e.g., order added/removed)
+      // This allows auto-fit after meaningful changes
+      if (boundsChanged) {
+        userInteractedRef.current = false;
       }
     }
-  }, [
-    markers,
-    routes,
-    bounds,
-    onMarkerHover,
-    onRouteSegmentHover,
-    getHereIconUrl,
-    getHereIconOptions,
-  ]);
+  }, [bounds, markers]);
 
   return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
 };
