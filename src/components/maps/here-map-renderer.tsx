@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
+import { createPortal } from "react-dom";
 import { loadHere } from "@/lib/here-loader";
 import type {
   MapMarkerData,
   MapRouteSegmentData,
   MapBounds,
 } from "@/components/maps/abstraction/map-data";
+import { OrderPopupContent } from "@/components/maps/abstraction/order-popup-content";
 
 interface HereMapRendererProps {
   markers: MapMarkerData[];
@@ -13,6 +15,7 @@ interface HereMapRendererProps {
   bounds: MapBounds;
   onMarkerHover?: (markerId: string, isHovering: boolean) => void;
   onRouteSegmentHover?: (segmentId: string, isHovering: boolean) => void;
+  onMarkerClick?: (markerId: string) => void;
 }
 
 const HereMapRenderer: React.FC<HereMapRendererProps> = ({
@@ -21,6 +24,7 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   bounds,
   onMarkerHover,
   onRouteSegmentHover,
+  onMarkerClick,
 }) => {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = React.useRef<any>(null);
@@ -31,6 +35,32 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   const iconCacheRef = React.useRef<Map<string, any>>(new Map());
   const userInteractedRef = React.useRef<boolean>(false);
   const initialBoundsFitRef = React.useRef<boolean>(false);
+  const popupContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const [selectedMarkerId, setSelectedMarkerId] = React.useState<string | null>(
+    null,
+  );
+  const [popupPosition, setPopupPosition] = React.useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+
+  // Close popup when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popupContainerRef.current &&
+        !popupContainerRef.current.contains(event.target as Node)
+      ) {
+        setSelectedMarkerId(null);
+      }
+    };
+
+    if (selectedMarkerId) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [selectedMarkerId]);
 
   // Initialize HERE Map
   React.useEffect(() => {
@@ -102,14 +132,16 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   const getHereIconOptions = React.useCallback((marker: MapMarkerData) => {
     const isUnassigned = marker.type !== "delivery";
     if (isUnassigned) {
+      // Unassigned markers: maintain 0.67:1 aspect ratio (226.14 x 335 in SVG)
       return {
-        size: { w: 32, h: 32 },
-        anchor: { x: 16, y: 16 },
+        size: { w: 22, h: 32 },
+        anchor: { x: 11, y: 32 },
       };
     }
+    // Waypoint/delivery markers: maintain 0.67:1 aspect ratio (237.47 x 337.5 in SVG)
     return {
-      size: { w: 25, h: 41 },
-      anchor: { x: 12, y: 41 },
+      size: { w: 27, h: 40 },
+      anchor: { x: 13, y: 40 },
     };
   }, []);
 
@@ -134,6 +166,37 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       return null;
     }
   }, []);
+
+  const handleMarkerClickCallback = React.useCallback(
+    (markerId: string) => {
+      console.log("🎯 Marker clicked:", markerId);
+      setSelectedMarkerId(markerId);
+      onMarkerClick?.(markerId);
+    },
+    [onMarkerClick],
+  );
+
+  // Fallback: handle marker clicks at the map level
+  React.useEffect(() => {
+    const map = mapInstanceRef.current;
+    const H = (window as any).H;
+    if (!map || !H) return;
+
+    const handleMapTap = (evt: any) => {
+      const target = evt?.target;
+      if (target && target instanceof H.map.Marker) {
+        const data = target.getData?.();
+        if (data?.id) {
+          handleMarkerClickCallback(data.id);
+        }
+      }
+    };
+
+    map.addEventListener("tap", handleMapTap);
+    return () => {
+      map.removeEventListener("tap", handleMapTap);
+    };
+  }, [handleMarkerClickCallback]);
 
   // Create markers only when positions/count change (not on highlight)
   React.useEffect(() => {
@@ -165,6 +228,21 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
 
       const markersGroup = new H.map.Group();
 
+      const handleGroupMarkerClick = (evt: any) => {
+        console.log("Group marker click detected, event:", evt);
+        const target = evt?.target;
+        const data = target?.getData?.();
+        console.log("Extracted data from marker:", data);
+        if (data?.id) {
+          console.log("Calling handleMarkerClickCallback with ID:", data.id);
+          handleMarkerClickCallback(data.id);
+        }
+      };
+
+      markersGroup.addEventListener("tap", handleGroupMarkerClick);
+      markersGroup.addEventListener("pointerup", handleGroupMarkerClick);
+      markersGroup.addEventListener("click", handleGroupMarkerClick);
+
       // Create new markers
       markers.forEach((marker) => {
         const iconUrl = getHereIconUrl(marker);
@@ -175,6 +253,7 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
           { lat: marker.location.lat, lng: marker.location.lng },
           icon ? { icon } : undefined,
         );
+        hereMarker.setData({ id: marker.id });
 
         if (onMarkerHover) {
           hereMarker.addEventListener("pointerenter", () =>
@@ -184,6 +263,12 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
             onMarkerHover(marker.id, false),
           );
         }
+
+        const handleMarkerClick = () => handleMarkerClickCallback(marker.id);
+        hereMarker.addEventListener("tap", handleMarkerClick);
+        hereMarker.addEventListener("pointerdown", handleMarkerClick);
+        hereMarker.addEventListener("pointerup", handleMarkerClick);
+        hereMarker.addEventListener("click", handleMarkerClick);
 
         markersGroup.addObject(hereMarker);
         markerMapRef.current.set(marker.id, hereMarker);
@@ -195,6 +280,7 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   }, [
     markers,
     onMarkerHover,
+    handleMarkerClickCallback,
     getHereIconUrl,
     getHereIconOptions,
     createHereIcon,
@@ -277,36 +363,21 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     const map = mapInstanceRef.current;
     if (!map || bounds.points.length === 0) return;
 
-    // Create a stable key based on sorted delivery order positions only
-    const deliveryPoints = bounds.points.slice(
-      0,
-      markers.filter((m) => m.type === "delivery").length,
-    );
-    const key = deliveryPoints
-      .map((p) => `${p.lat.toFixed(5)}:${p.lng.toFixed(5)}`)
-      .join("|");
+    // Only fit bounds on initial load, never auto-fit afterwards
+    // This prevents the jumping zoom issue
+    if (initialBoundsFitRef.current) return;
 
-    // Only fit bounds if:
-    // 1. This is the first time (initial load)
-    // 2. The delivery points have actually changed
-    // 3. User hasn't manually interacted with the map
-    const boundsChanged = lastBoundsKeyRef.current !== key;
-    const shouldFit =
-      boundsChanged &&
-      (!initialBoundsFitRef.current || !userInteractedRef.current);
+    const points = bounds.points;
+    console.log("Fitting initial bounds with", points.length, "points");
 
-    if (shouldFit) {
-      lastBoundsKeyRef.current = key;
-      initialBoundsFitRef.current = true;
+    const H = (window as any).H;
+    if (!H) return;
 
-      const points = bounds.points;
+    try {
       if (points.length === 1) {
         map.setCenter({ lat: points[0].lat, lng: points[0].lng });
         map.setZoom(13);
       } else {
-        const H = (window as any).H;
-        if (!H) return;
-
         const boundingBox = new H.geo.Rect(
           points[0].lat,
           points[0].lng,
@@ -318,16 +389,126 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
         });
         map.getViewModel().setLookAtData({ bounds: boundingBox }, true);
       }
-
-      // Reset user interaction flag when bounds change significantly (e.g., order added/removed)
-      // This allows auto-fit after meaningful changes
-      if (boundsChanged) {
-        userInteractedRef.current = false;
-      }
+      initialBoundsFitRef.current = true;
+      console.log("Initial bounds fitted");
+    } catch (error) {
+      console.error("Error fitting bounds:", error);
     }
-  }, [bounds, markers]);
+  }, []);
 
-  return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
+  // Get the selected marker's popup content
+  const selectedMarker = selectedMarkerId
+    ? markers.find((m) => m.id === selectedMarkerId)
+    : null;
+
+  React.useEffect(() => {
+    console.log("selectedMarkerId changed:", selectedMarkerId);
+    console.log("selectedMarker:", selectedMarker);
+    if (selectedMarker?.popupData) {
+      console.log("selectedMarker.popupData:", selectedMarker.popupData);
+    }
+    console.log(
+      "should show popup:",
+      selectedMarker && selectedMarker.popupData,
+    );
+  }, [selectedMarkerId, selectedMarker]);
+
+  const updatePopupPosition = React.useCallback(() => {
+    const map = mapInstanceRef.current;
+    const mapElement = mapRef.current;
+    if (!map || !mapElement || !selectedMarker) {
+      setPopupPosition(null);
+      return;
+    }
+
+    try {
+      const screenPoint = map.geoToScreen({
+        lat: selectedMarker.location.lat,
+        lng: selectedMarker.location.lng,
+      });
+      const rect = mapElement.getBoundingClientRect();
+      setPopupPosition({
+        x: rect.left + screenPoint.x,
+        y: rect.top + screenPoint.y,
+      });
+    } catch (error) {
+      console.error("Failed to compute popup position:", error);
+      setPopupPosition(null);
+    }
+  }, [selectedMarker]);
+
+  React.useEffect(() => {
+    updatePopupPosition();
+
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    const handleMapViewChange = () => updatePopupPosition();
+    map.addEventListener("mapviewchange", handleMapViewChange);
+    window.addEventListener("resize", handleMapViewChange);
+
+    return () => {
+      map.removeEventListener("mapviewchange", handleMapViewChange);
+      window.removeEventListener("resize", handleMapViewChange);
+    };
+  }, [selectedMarkerId, updatePopupPosition]);
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <div
+        ref={mapRef}
+        style={{ width: "100%", height: "100%", position: "relative" }}
+      />
+      {selectedMarker?.popupData &&
+        createPortal(
+          <>
+            {popupPosition && (
+              <div
+                ref={popupContainerRef}
+                style={{
+                  position: "fixed",
+                  left: `${popupPosition.x}px`,
+                  top: `${popupPosition.y}px`,
+                  transform: "translate(-50%, calc(-100% - 12px))",
+                  backgroundColor: "white",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+                  zIndex: 10000,
+                  maxWidth: "400px",
+                  maxHeight: "80vh",
+                  overflowY: "auto",
+                }}
+              >
+                <button
+                  onClick={() => setSelectedMarkerId(null)}
+                  style={{
+                    position: "absolute",
+                    top: "8px",
+                    right: "8px",
+                    backgroundColor: "transparent",
+                    border: "none",
+                    fontSize: "20px",
+                    cursor: "pointer",
+                    color: "#6b7280",
+                  }}
+                >
+                  ✕
+                </button>
+                <div style={{ padding: "20px", paddingTop: "30px" }}>
+                  <OrderPopupContent
+                    order={selectedMarker.popupData.order}
+                    isUnassigned={selectedMarker.popupData.isUnassigned}
+                    toggleText={selectedMarker.popupData.toggleText}
+                    onToggle={selectedMarker.popupData.onToggle}
+                  />
+                </div>
+              </div>
+            )}
+          </>,
+          document.body,
+        )}
+    </div>
+  );
 };
 
 export default HereMapRenderer;

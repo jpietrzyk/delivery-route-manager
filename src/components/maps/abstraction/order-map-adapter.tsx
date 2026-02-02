@@ -24,6 +24,7 @@ interface OrderMapAdapterProps {
     bounds: MapBounds;
     onMarkerHover: (markerId: string, isHovering: boolean) => void;
     onRouteSegmentHover: (segmentId: string, isHovering: boolean) => void;
+    onMarkerClick?: (markerId: string) => void;
   }) => React.ReactNode;
 }
 
@@ -99,45 +100,44 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
       const markerType = !matchesFilters ? "outfiltered" : type;
       const iconPath = getIconPath(markerType, isHighlighted, waypointIndex);
 
-      const popupContent = (
-        <OrderPopupContent
-          order={order}
-          isUnassigned={isUnassigned}
-          toggleText={isUnassigned ? pl.addToDelivery : pl.removeFromDelivery}
-          onToggle={async () => {
-            try {
-              if (isUnassigned) {
-                if (!currentDelivery) {
-                  alert("Wybierz najpierw trasę dostawy");
-                  return;
-                }
-                await addOrderToDelivery(currentDelivery.id, order.id);
-                onOrderAddedToDelivery?.(order.id);
-                onRefreshRequested?.();
-              } else {
-                if (!currentDelivery) {
-                  alert("Wybierz najpierw trasę dostawy");
-                  return;
-                }
-                await removeOrderFromDelivery(currentDelivery.id, order.id);
-                onRefreshRequested?.();
+      // Store popup data (order and callback) instead of JSX to avoid React element staling
+      const popupData = {
+        order,
+        isUnassigned,
+        toggleText: isUnassigned ? pl.addToDelivery : pl.removeFromDelivery,
+        onToggle: async () => {
+          try {
+            if (isUnassigned) {
+              if (!currentDelivery) {
+                alert("Wybierz najpierw trasę dostawy");
+                return;
               }
-            } catch (error) {
-              console.error(
-                isUnassigned
-                  ? "Failed to add order to delivery:"
-                  : "Failed to remove order from delivery:",
-                error,
-              );
-              alert(
-                isUnassigned
-                  ? "Failed to add order to delivery"
-                  : "Failed to remove order from delivery",
-              );
+              await addOrderToDelivery(currentDelivery.id, order.id);
+              onOrderAddedToDelivery?.(order.id);
+              onRefreshRequested?.();
+            } else {
+              if (!currentDelivery) {
+                alert("Wybierz najpierw trasę dostawy");
+                return;
+              }
+              await removeOrderFromDelivery(currentDelivery.id, order.id);
+              onRefreshRequested?.();
             }
-          }}
-        />
-      );
+          } catch (error) {
+            console.error(
+              isUnassigned
+                ? "Failed to add order to delivery:"
+                : "Failed to remove order from delivery:",
+              error,
+            );
+            alert(
+              isUnassigned
+                ? "Failed to add order to delivery"
+                : "Failed to remove order from delivery",
+            );
+          }
+        },
+      };
 
       const markerData: MapMarkerData = {
         id: order.id,
@@ -152,7 +152,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         priority: String(order.priority),
         status: order.status,
         totalAmount: order.totalAmount,
-        popupContent,
+        popupData,
         iconPath,
       };
       return markerData;
@@ -171,7 +171,6 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     getIconPath,
   ]);
 
-  // Transform consecutive orders to route segments
   const routes: MapRouteSegmentData[] = React.useMemo(() => {
     if (orders.length < 2) return [];
 
@@ -236,6 +235,11 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     [setHighlightedSegmentId],
   );
 
+  const handleMarkerClick = React.useCallback((markerId: string) => {
+    // Marker click is handled by the renderer displaying the popup
+    // This is a placeholder for any additional logic needed
+  }, []);
+
   return (
     <>
       {children({
@@ -244,6 +248,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         bounds,
         onMarkerHover: handleMarkerHover,
         onRouteSegmentHover: handleRouteSegmentHover,
+        onMarkerClick: handleMarkerClick,
       })}
     </>
   );
