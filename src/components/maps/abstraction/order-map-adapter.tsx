@@ -18,6 +18,7 @@ interface OrderMapAdapterProps {
   unassignedOrders: Order[];
   onOrderAddedToDelivery?: (orderId?: string) => void | Promise<void>;
   onRefreshRequested?: () => void;
+  enableHereRouting?: boolean;
   children: (props: {
     markers: MapMarkerData[];
     routes: MapRouteSegmentData[];
@@ -37,6 +38,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   unassignedOrders,
   onOrderAddedToDelivery,
   onRefreshRequested,
+  enableHereRouting = false,
   children,
 }) => {
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
@@ -56,7 +58,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   const { routes: hereRoutes } = useHereRoutes({
     orders,
     apiKey: hereApiKey,
-    enabled: orders.length >= 2 && !!hereApiKey,
+    enabled: enableHereRouting && orders.length >= 2 && !!hereApiKey,
   });
 
   // Clear route segments for Leaflet (uses geometric calculations)
@@ -193,7 +195,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
       const segmentId = `${fromOrder.id}-${toOrder.id}`;
 
       // Use HERE route segment by index
-      const hereSegment = hereRoutes[i];
+      const hereSegment = enableHereRouting ? hereRoutes[i] : undefined;
 
       // Determine if highlighted and what color
       const isFromHighlighted = highlightedOrderId === fromOrder.id;
@@ -222,7 +224,13 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     }
 
     return segments;
-  }, [orders, hereRoutes, highlightedOrderId, highlightedSegmentId]);
+  }, [
+    orders,
+    hereRoutes,
+    highlightedOrderId,
+    highlightedSegmentId,
+    enableHereRouting,
+  ]);
 
   // Calculate bounds
   const bounds: MapBounds = React.useMemo(() => {

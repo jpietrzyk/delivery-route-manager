@@ -21,6 +21,7 @@ const HereMapView: React.FC<HereMapViewProps> = ({
     <OrderMapAdapter
       orders={orders}
       unassignedOrders={filteredUnassignedOrders || unassignedOrders}
+      enableHereRouting
       onOrderAddedToDelivery={onOrderAddedToDelivery}
       onRefreshRequested={onRefreshRequested}
     >
