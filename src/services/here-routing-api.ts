@@ -195,14 +195,11 @@ class HereRoutingApiClass {
     const header = decoder[1];
     const precision = header & 15;
     const thirdDim = (header >> 4) & 7;
-    const thirdDimPrecision = (header >> 7) & 15;
 
     const factorDegree = Math.pow(10, precision);
-    const factorZ = Math.pow(10, thirdDimPrecision);
 
     let lastLat = 0;
     let lastLng = 0;
-    let lastZ = 0;
 
     const coordinates: Array<{ lat: number; lng: number }> = [];
     let i = 2;
@@ -213,9 +210,7 @@ class HereRoutingApiClass {
       lastLng += deltaLng;
 
       if (thirdDim) {
-        const deltaZ = toSigned(decoder[i + 2]);
-        lastZ += deltaZ;
-        void factorZ;
+        // Z dimension is present but not used
         i += 3;
       } else {
         i += 2;

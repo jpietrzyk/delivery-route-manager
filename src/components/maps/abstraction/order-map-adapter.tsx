@@ -49,10 +49,17 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     useDeliveryRoute();
   const { setRouteSegments } = useRouteSegments();
 
-  // Get HERE Maps API key
-  const hereApiKey = import.meta.env.VITE_HERE_MAPS_API_KEY as
-    | string
-    | undefined;
+  // Get HERE Maps API key - access through variable to avoid Jest parsing issues
+  let hereApiKey: string | undefined;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const meta = (globalThis as any)?.import?.meta?.env;
+    hereApiKey =
+      meta?.VITE_HERE_MAPS_API_KEY ||
+      (process.env.VITE_HERE_MAPS_API_KEY as string | undefined);
+  } catch {
+    hereApiKey = process.env.VITE_HERE_MAPS_API_KEY as string | undefined;
+  }
 
   // Calculate HERE routes for the delivery orders
   const { routes: hereRoutes } = useHereRoutes({

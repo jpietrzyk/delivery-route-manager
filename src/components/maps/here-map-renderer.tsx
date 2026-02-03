@@ -71,7 +71,7 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
 
   // Instant hover handlers - update visuals immediately, then notify context
   const handleMarkerHoverImmediate = React.useCallback(
-    (markerId: string, isHovering: boolean, markerData: MapMarkerData) => {
+    (markerId: string, isHovering: boolean) => {
       const hereMarker = markerMapRef.current.get(markerId);
       const iconData = markerIconDataRef.current.get(markerId);
 
@@ -177,7 +177,7 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       disposed = true;
       void disposerPromise;
     };
-  }, []);
+  }, [bounds.points]);
 
   const getHereIconUrl = React.useCallback(
     (marker: MapMarkerData, isHover: boolean = false) => {
@@ -217,27 +217,30 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     };
   }, []);
 
-  const createHereIcon = React.useCallback((iconUrl: string, options: any) => {
-    const H = (window as any).H;
-    if (!H) return null;
+  const createHereIcon = React.useCallback(
+    (iconUrl: string, options: any) => {
+      const H = (window as any).H;
+      if (!H) return null;
 
-    const cacheKey = `${iconUrl}-${options.size.w}-${options.size.h}`;
-    if (iconCacheRef.current.has(cacheKey)) {
-      return iconCacheRef.current.get(cacheKey);
-    }
+      const cacheKey = `${iconUrl}-${options.size.w}-${options.size.h}`;
+      if (iconCacheRef.current.has(cacheKey)) {
+        return iconCacheRef.current.get(cacheKey);
+      }
 
-    try {
-      const icon = new H.map.Icon(iconUrl, {
-        size: options.size,
-        anchor: options.anchor,
-      });
-      iconCacheRef.current.set(cacheKey, icon);
-      return icon;
-    } catch (error) {
-      console.error(`Failed to create icon from URL: ${iconUrl}`, error);
-      return null;
-    }
-  }, []);
+      try {
+        const icon = new H.map.Icon(iconUrl, {
+          size: options.size,
+          anchor: options.anchor,
+        });
+        iconCacheRef.current.set(cacheKey, icon);
+        return icon;
+      } catch (error) {
+        console.error(`Failed to create icon from URL: ${iconUrl}`, error);
+        return null;
+      }
+    },
+    [bounds.points],
+  );
 
   const handleMarkerClickCallback = React.useCallback(
     (markerId: string) => {
@@ -341,10 +344,10 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
 
         // Use immediate hover handlers for instant visual feedback
         hereMarker.addEventListener("pointerenter", () =>
-          handleMarkerHoverImmediate(marker.id, true, marker),
+          handleMarkerHoverImmediate(marker.id, true),
         );
         hereMarker.addEventListener("pointerleave", () =>
-          handleMarkerHoverImmediate(marker.id, false, marker),
+          handleMarkerHoverImmediate(marker.id, false),
         );
 
         const handleMarkerClick = () => handleMarkerClickCallback(marker.id);
@@ -579,7 +582,7 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     } catch (error) {
       console.error("Error fitting bounds:", error);
     }
-  }, []);
+  }, [bounds.points]);
 
   // Get the selected marker's popup content
   const selectedMarker = selectedMarkerId
