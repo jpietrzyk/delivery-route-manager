@@ -31,6 +31,10 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   const markersGroupRef = React.useRef<any | null>(null);
   const routesGroupRef = React.useRef<any | null>(null);
   const markerMapRef = React.useRef<Map<string, any>>(new Map());
+  const markerIconDataRef = React.useRef<
+    Map<string, { base: any; hover: any }>
+  >(new Map());
+  const routePolylineMapRef = React.useRef<Map<string, any>>(new Map());
   const iconCacheRef = React.useRef<Map<string, any>>(new Map());
   const userInteractedRef = React.useRef<boolean>(false);
   const initialBoundsFitRef = React.useRef<boolean>(false);
@@ -42,6 +46,10 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     x: number;
     y: number;
   } | null>(null);
+
+  // Track local hover state for instant visual feedback (no React re-render needed)
+  const localHoveredMarkerRef = React.useRef<string | null>(null);
+  const localHoveredRouteRef = React.useRef<string | null>(null);
 
   // Close popup when clicking outside
   React.useEffect(() => {
@@ -60,6 +68,48 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
         document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [selectedMarkerId]);
+
+  // Instant hover handlers - update visuals immediately, then notify context
+  const handleMarkerHoverImmediate = React.useCallback(
+    (markerId: string, isHovering: boolean, markerData: MapMarkerData) => {
+      const hereMarker = markerMapRef.current.get(markerId);
+      const iconData = markerIconDataRef.current.get(markerId);
+
+      if (hereMarker && iconData) {
+        // Instant visual feedback - swap icon immediately
+        hereMarker.setIcon(isHovering ? iconData.hover : iconData.base);
+
+        // Update local state
+        localHoveredMarkerRef.current = isHovering ? markerId : null;
+      }
+
+      // Notify context for sidebar updates (debounced to avoid excessive re-renders)
+      onMarkerHover?.(markerId, isHovering);
+    },
+    [onMarkerHover],
+  );
+
+  const handleRouteHoverImmediate = React.useCallback(
+    (segmentId: string, isHovering: boolean) => {
+      const polyline = routePolylineMapRef.current.get(segmentId);
+
+      if (polyline) {
+        // Instant visual feedback - update style immediately
+        polyline.setStyle({
+          lineWidth: isHovering ? 6 : 4,
+          strokeColor: isHovering ? "#10b981" : "#2563eb",
+          opacity: isHovering ? 1.0 : 0.8,
+        });
+
+        // Update local state
+        localHoveredRouteRef.current = isHovering ? segmentId : null;
+      }
+
+      // Notify context for sidebar updates
+      onRouteSegmentHover?.(segmentId, isHovering);
+    },
+    [onRouteSegmentHover],
+  );
 
   // Initialize HERE Map
   React.useEffect(() => {
@@ -81,6 +131,20 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
         center: { lat: 50.049683, lng: 19.944544 },
         zoom: 6,
       });
+
+      // Optimize canvas for frequent readback operations
+      // This fixes the "willReadFrequently" console warning
+      try {
+        const canvas = mapRef.current?.querySelector("canvas");
+        if (canvas) {
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          if (ctx) {
+            console.log("✅ Canvas optimized with willReadFrequently");
+          }
+        }
+      } catch (error) {
+        console.warn("Could not optimize canvas:", error);
+      }
 
       mapInstanceRef.current = map;
 
@@ -115,18 +179,27 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     };
   }, []);
 
-  const getHereIconUrl = React.useCallback((marker: MapMarkerData) => {
-    const baseUrl = window.location.origin;
-    const iconPath = marker.iconPath || "/markers/marker-default.svg";
+  const getHereIconUrl = React.useCallback(
+    (marker: MapMarkerData, isHover: boolean = false) => {
+      const baseUrl = window.location.origin;
 
-    if (marker.customIconUrl) {
-      return marker.customIconUrl.startsWith("http")
-        ? marker.customIconUrl
-        : `${baseUrl}${marker.customIconUrl}`;
-    }
+      // If hover state, always use hover icon
+      if (isHover) {
+        return `${baseUrl}/markers/marker-hover.svg`;
+      }
 
-    return `${baseUrl}${iconPath}`;
-  }, []);
+      const iconPath = marker.iconPath || "/markers/marker-default.svg";
+
+      if (marker.customIconUrl) {
+        return marker.customIconUrl.startsWith("http")
+          ? marker.customIconUrl
+          : `${baseUrl}${marker.customIconUrl}`;
+      }
+
+      return `${baseUrl}${iconPath}`;
+    },
+    [],
+  );
 
   const getHereIconOptions = React.useCallback((marker: MapMarkerData) => {
     const isUnassigned = marker.type !== "delivery";
@@ -239,24 +312,40 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
 
       // Create new markers
       markers.forEach((marker) => {
-        const iconUrl = getHereIconUrl(marker);
+        // Pre-create both base and hover icons for instant swapping
+        const baseIconUrl = getHereIconUrl(marker, false);
+        const hoverIconUrl = getHereIconUrl(marker, true);
         const iconOptions = getHereIconOptions(marker);
-        const icon = createHereIcon(iconUrl, iconOptions);
+        const baseIcon = createHereIcon(baseIconUrl, iconOptions);
+        const hoverIcon = createHereIcon(hoverIconUrl, iconOptions);
+
+        // Store both icons for instant swapping
+        if (baseIcon && hoverIcon) {
+          markerIconDataRef.current.set(marker.id, {
+            base: baseIcon,
+            hover: hoverIcon,
+          });
+        }
 
         const hereMarker = new H.map.Marker(
           { lat: marker.location.lat, lng: marker.location.lng },
-          icon ? { icon } : undefined,
+          baseIcon ? { icon: baseIcon } : undefined,
         );
-        hereMarker.setData({ id: marker.id });
+        hereMarker.setData({ id: marker.id, markerData: marker });
 
-        if (onMarkerHover) {
-          hereMarker.addEventListener("pointerenter", () =>
-            onMarkerHover(marker.id, true),
-          );
-          hereMarker.addEventListener("pointerleave", () =>
-            onMarkerHover(marker.id, false),
-          );
+        // Add cursor pointer for better UX
+        const markerElement = hereMarker.getRootElement?.();
+        if (markerElement) {
+          markerElement.style.cursor = "pointer";
         }
+
+        // Use immediate hover handlers for instant visual feedback
+        hereMarker.addEventListener("pointerenter", () =>
+          handleMarkerHoverImmediate(marker.id, true, marker),
+        );
+        hereMarker.addEventListener("pointerleave", () =>
+          handleMarkerHoverImmediate(marker.id, false, marker),
+        );
 
         const handleMarkerClick = () => handleMarkerClickCallback(marker.id);
         hereMarker.addEventListener("tap", handleMarkerClick);
@@ -273,32 +362,34 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     }
   }, [
     markers,
-    onMarkerHover,
+    handleMarkerHoverImmediate,
     handleMarkerClickCallback,
     getHereIconUrl,
     getHereIconOptions,
     createHereIcon,
   ]);
 
-  // Update marker icons when highlight state changes (without recreating)
+  // Sync highlight state from context (for sidebar-initiated highlights)
   React.useEffect(() => {
-    const H = (window as any).H;
-    if (!H) return;
-
     markers.forEach((marker) => {
       const hereMarker = markerMapRef.current.get(marker.id);
-      if (hereMarker) {
-        const iconUrl = getHereIconUrl(marker);
-        const iconOptions = getHereIconOptions(marker);
-        const icon = createHereIcon(iconUrl, iconOptions);
-        if (icon) {
-          hereMarker.setIcon(icon);
+      const iconData = markerIconDataRef.current.get(marker.id);
+
+      if (hereMarker && iconData && marker.isHighlighted) {
+        // If highlighted from context (sidebar), update icon
+        if (localHoveredMarkerRef.current !== marker.id) {
+          hereMarker.setIcon(iconData.hover);
+        }
+      } else if (hereMarker && iconData && !marker.isHighlighted) {
+        // If not highlighted, reset to base icon (unless locally hovered)
+        if (localHoveredMarkerRef.current !== marker.id) {
+          hereMarker.setIcon(iconData.base);
         }
       }
     });
-  }, [markers, getHereIconUrl, getHereIconOptions, createHereIcon]);
+  }, [markers]);
 
-  // Update routes
+  // Create routes only when route structure changes (not on highlight)
   React.useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -306,11 +397,24 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     const H = (window as any).H;
     if (!H) return;
 
+    // Check if we need to recreate routes
+    const existingRouteIds = new Set(routePolylineMapRef.current.keys());
+    const newRouteIds = new Set(routes.map((r) => r.id));
+    const needsRecreate =
+      existingRouteIds.size !== newRouteIds.size ||
+      ![...existingRouteIds].every((id) => newRouteIds.has(id));
+
+    if (!needsRecreate) {
+      // Routes structure unchanged, skip recreation
+      return;
+    }
+
     // Remove previous routes group
     if (routesGroupRef.current) {
       map.removeObject(routesGroupRef.current);
       routesGroupRef.current = null;
     }
+    routePolylineMapRef.current.clear();
 
     const routesGroup = new H.map.Group();
 
@@ -328,24 +432,22 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
 
       const polyline = new H.map.Polyline(lineString, {
         style: {
-          lineWidth: route.isHighlighted ? 6 : 4,
-          strokeColor: route.isHighlighted
-            ? route.highlightColor || "#10b981"
-            : "#2563eb",
-          opacity: route.isHighlighted ? 1.0 : 0.8,
+          lineWidth: 4,
+          strokeColor: "#2563eb",
+          opacity: 0.8,
         },
       });
 
-      if (onRouteSegmentHover) {
-        polyline.addEventListener("pointerenter", () =>
-          onRouteSegmentHover(route.id, true),
-        );
-        polyline.addEventListener("pointerleave", () =>
-          onRouteSegmentHover(route.id, false),
-        );
-      }
+      // Use immediate hover handlers for instant visual feedback
+      polyline.addEventListener("pointerenter", () =>
+        handleRouteHoverImmediate(route.id, true),
+      );
+      polyline.addEventListener("pointerleave", () =>
+        handleRouteHoverImmediate(route.id, false),
+      );
 
       routesGroup.addObject(polyline);
+      routePolylineMapRef.current.set(route.id, polyline);
 
       // Add route information labels if distance/duration available
       if (route.distance !== undefined || route.duration !== undefined) {
@@ -392,7 +494,26 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
 
     map.addObject(routesGroup);
     routesGroupRef.current = routesGroup;
-  }, [routes, onRouteSegmentHover]);
+  }, [routes, handleRouteHoverImmediate]);
+
+  // Sync route highlight state from context (for sidebar-initiated highlights)
+  React.useEffect(() => {
+    routes.forEach((route) => {
+      const polyline = routePolylineMapRef.current.get(route.id);
+      if (polyline) {
+        // Update only if not locally hovered (local hover takes precedence)
+        if (localHoveredRouteRef.current !== route.id) {
+          polyline.setStyle({
+            lineWidth: route.isHighlighted ? 6 : 4,
+            strokeColor: route.isHighlighted
+              ? route.highlightColor || "#10b981"
+              : "#2563eb",
+            opacity: route.isHighlighted ? 1.0 : 0.8,
+          });
+        }
+      }
+    });
+  }, [routes]);
 
   // Handle bounds fitting in a separate effect
   React.useEffect(() => {

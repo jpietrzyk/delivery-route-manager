@@ -67,16 +67,10 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   }, [setRouteSegments]);
 
   // Helper function to compute icon path based on marker state
+  // Note: We use the same icon regardless of highlight state for performance
+  // Visual highlighting is done via map rendering, not icon swapping
   const getIconPath = React.useCallback(
-    (
-      type: MapMarkerData["type"],
-      isHighlighted: boolean,
-      waypointIndex?: number,
-    ): string => {
-      if (isHighlighted) {
-        return "/markers/marker-hover.svg";
-      }
-
+    (type: MapMarkerData["type"], waypointIndex?: number): string => {
       if (type === "delivery" && waypointIndex !== undefined) {
         return "/markers/marker-waypoint.svg";
       }
@@ -111,7 +105,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
 
       const isHighlighted = highlightedOrderId === order.id;
       const markerType = !matchesFilters ? "outfiltered" : type;
-      const iconPath = getIconPath(markerType, isHighlighted, waypointIndex);
+      const iconPath = getIconPath(markerType, waypointIndex);
 
       // Store popup data (order and callback) instead of JSX to avoid React element staling
       const popupData = {
