@@ -10,8 +10,8 @@ import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useRouteSegments } from "@/hooks/use-route-segments";
+import { useHereRoutes } from "@/hooks/use-here-routes";
 import { pl } from "@/lib/translations";
-import { OrderPopupContent } from "./order-popup-content";
 
 interface OrderMapAdapterProps {
   orders: Order[];
@@ -46,7 +46,18 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDeliveryRoute();
   const { setRouteSegments } = useRouteSegments();
-  // const { filters } = useMapFilters();
+
+  // Get HERE Maps API key
+  const hereApiKey = import.meta.env.VITE_HERE_MAPS_API_KEY as
+    | string
+    | undefined;
+
+  // Calculate HERE routes for the delivery orders
+  const { routes: hereRoutes } = useHereRoutes({
+    orders,
+    apiKey: hereApiKey,
+    enabled: orders.length >= 2 && !!hereApiKey,
+  });
 
   // Clear route segments for Leaflet (uses geometric calculations)
   React.useEffect(() => {
@@ -175,10 +186,14 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     if (orders.length < 2) return [];
 
     const segments: MapRouteSegmentData[] = [];
+
     for (let i = 0; i < orders.length - 1; i++) {
       const fromOrder = orders[i];
       const toOrder = orders[i + 1];
       const segmentId = `${fromOrder.id}-${toOrder.id}`;
+
+      // Use HERE route segment by index
+      const hereSegment = hereRoutes[i];
 
       // Determine if highlighted and what color
       const isFromHighlighted = highlightedOrderId === fromOrder.id;
@@ -198,13 +213,16 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         id: segmentId,
         from: fromOrder.location,
         to: toOrder.location,
+        positions: hereSegment?.positions, // Use the real route polyline if available
+        distance: hereSegment?.distance,
+        duration: hereSegment?.duration,
         isHighlighted,
         highlightColor,
       });
     }
 
     return segments;
-  }, [orders, highlightedOrderId, highlightedSegmentId]);
+  }, [orders, hereRoutes, highlightedOrderId, highlightedSegmentId]);
 
   // Calculate bounds
   const bounds: MapBounds = React.useMemo(() => {
@@ -235,7 +253,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     [setHighlightedSegmentId],
   );
 
-  const handleMarkerClick = React.useCallback((markerId: string) => {
+  const handleMarkerClick = React.useCallback(() => {
     // Marker click is handled by the renderer displaying the popup
     // This is a placeholder for any additional logic needed
   }, []);

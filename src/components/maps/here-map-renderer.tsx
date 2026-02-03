@@ -30,7 +30,6 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   const mapInstanceRef = React.useRef<any>(null);
   const markersGroupRef = React.useRef<any | null>(null);
   const routesGroupRef = React.useRef<any | null>(null);
-  const lastBoundsKeyRef = React.useRef<string | null>(null);
   const markerMapRef = React.useRef<Map<string, any>>(new Map());
   const iconCacheRef = React.useRef<Map<string, any>>(new Map());
   const userInteractedRef = React.useRef<boolean>(false);
@@ -95,9 +94,9 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       const markUserInteraction = () => {
         userInteractedRef.current = true;
       };
-      map.addEventListener("dragstart", markUserInteraction);
-      map.addEventListener("wheel", markUserInteraction);
-      map.addEventListener("dbltap", markUserInteraction);
+      (map as any).addEventListener("dragstart", markUserInteraction);
+      (map as any).addEventListener("wheel", markUserInteraction);
+      (map as any).addEventListener("dbltap", markUserInteraction);
 
       const handleResize = () => map.getViewPort().resize();
       window.addEventListener("resize", handleResize);
@@ -205,11 +204,6 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
 
     const H = (window as any).H;
     if (!H) return;
-
-    // Create a key based on marker positions and IDs only (exclude highlight state)
-    const markerKey = markers
-      .map((m) => `${m.id}:${m.location.lat}:${m.location.lng}:${m.type}`)
-      .join("|");
 
     // Check if we need to recreate markers
     const existingMarkerIds = new Set(markerMapRef.current.keys());
@@ -352,6 +346,48 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       }
 
       routesGroup.addObject(polyline);
+
+      // Add route information labels if distance/duration available
+      if (route.distance !== undefined || route.duration !== undefined) {
+        const midPoint = positions[Math.floor(positions.length / 2)];
+
+        // Format distance in km
+        const distanceKm = route.distance
+          ? (route.distance / 1000).toFixed(1)
+          : null;
+
+        // Format duration as hours/minutes
+        let durationStr = "";
+        if (route.duration) {
+          const hours = Math.floor(route.duration / 3600);
+          const minutes = Math.floor((route.duration % 3600) / 60);
+          if (hours > 0) {
+            durationStr = `${hours}h ${minutes}m`;
+          } else {
+            durationStr = `${minutes}m`;
+          }
+        }
+
+        // Create label text
+        const labelText = [distanceKm && `${distanceKm}km`, durationStr]
+          .filter(Boolean)
+          .join(" • ");
+
+        if (labelText) {
+          // Create a simple SVG icon for the label
+          const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="30">
+            <rect x="2" y="2" width="116" height="26" fill="white" stroke="#999" stroke-width="1" rx="3"/>
+            <text x="60" y="19" text-anchor="middle" font-size="12" font-family="Arial" fill="#333">${labelText}</text>
+          </svg>`;
+          const iconUrl = "data:image/svg+xml," + encodeURIComponent(svg);
+          const labelIcon = new H.map.Icon(iconUrl, { width: 120, height: 30 });
+          const label = new H.map.Marker(
+            { lat: midPoint.lat, lng: midPoint.lng },
+            { icon: labelIcon },
+          );
+          routesGroup.addObject(label);
+        }
+      }
     });
 
     map.addObject(routesGroup);
