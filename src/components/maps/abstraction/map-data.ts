@@ -10,14 +10,20 @@ export interface MapMarkerData {
     lat: number;
     lng: number;
   };
-    type: 'delivery' | 'unassigned' | 'outfiltered';
+  type: 'delivery' | 'unassigned' | 'outfiltered';
   waypointIndex?: number; // 1-based position in delivery route when applicable
   isHighlighted?: boolean;
   isCurrentOrder?: boolean;
   isPreviousOrder?: boolean;
   isDisabled?: boolean; // True for filtered-out markers (shown but grayed and non-clickable)
   matchesFilters?: boolean; // True if the marker matches current filter criteria
-  popupContent?: React.ReactNode;
+  // Popup data - stored as data instead of JSX to avoid React element staling issues
+  popupData?: {
+    order: Record<string, unknown>; // Order object with all properties
+    isUnassigned: boolean;
+    toggleText: string;
+    onToggle: () => Promise<void>;
+  };
   // Additional fields for filter-based styling
   priority?: string;
   status?: string;
@@ -26,6 +32,8 @@ export interface MapMarkerData {
     complexity: number;
   };
   customIconUrl?: string; // For filter-based coloring
+  // Icon path - computed by adapter based on type, highlight state, and waypointIndex
+  iconPath?: string; // e.g., "/markers/marker-waypoint.svg" or "/markers/marker-hover.svg"
 }
 
 export interface MapRouteSegmentData {

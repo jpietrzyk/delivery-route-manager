@@ -12,7 +12,6 @@ import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useRouteSegments } from "@/hooks/use-route-segments";
 import { pl } from "@/lib/translations";
 import { MapyRoutingApi, type RouteSegment } from "@/services/mapy-routing-api";
-import { OrderPopupContent } from "./order-popup-content";
 
 interface MapyOrderMapAdapterProps {
   orders: Order[];
@@ -155,6 +154,14 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         ? pl.addToDelivery
         : pl.removeFromDelivery;
 
+      // Store popup data (order and callback) instead of JSX to avoid React element staling
+      const popupData = {
+        order: order as unknown as Record<string, unknown>,
+        isUnassigned,
+        toggleText,
+        onToggle: handleToggle,
+      };
+
       // Create marker data for styling
       const markerData: MapMarkerData = {
         id: order.id,
@@ -169,15 +176,7 @@ const MapyOrderMapAdapter: React.FC<MapyOrderMapAdapterProps> = ({
         priority: String(order.priority),
         status: order.status,
         totalAmount: order.totalAmount,
-        // product removed
-        popupContent: (
-          <OrderPopupContent
-            order={order}
-            isUnassigned={isUnassigned}
-            toggleText={toggleText}
-            onToggle={handleToggle}
-          />
-        ),
+        popupData,
       };
 
       return markerData;

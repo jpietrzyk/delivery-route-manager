@@ -18,6 +18,8 @@ import type {
   MapRouteSegmentData,
   MapBounds,
 } from "../abstraction/map-data";
+import type { Order } from "@/types/order";
+import { OrderPopupContent } from "@/components/maps/abstraction/order-popup-content";
 
 interface LeafletMapRendererProps {
   markers: MapMarkerData[];
@@ -130,7 +132,16 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
                 mouseout: () => onMarkerHover?.(marker.id, false),
               }}
             >
-              {marker.popupContent && <Popup>{marker.popupContent}</Popup>}
+              {marker.popupData && (
+                <Popup>
+                  <OrderPopupContent
+                    order={marker.popupData.order as unknown as Order}
+                    isUnassigned={marker.popupData.isUnassigned}
+                    toggleText={marker.popupData.toggleText}
+                    onToggle={marker.popupData.onToggle}
+                  />
+                </Popup>
+              )}
             </Marker>
           );
         })}
@@ -151,7 +162,16 @@ const LeafletMapRenderer: React.FC<LeafletMapRendererProps> = ({
                 mouseout: () => onMarkerHover?.(marker.id, false),
               }}
             >
-              {marker.popupContent && <Popup>{marker.popupContent}</Popup>}
+              {marker.popupData && (
+                <Popup>
+                  <OrderPopupContent
+                    order={marker.popupData.order as unknown as Order}
+                    isUnassigned={marker.popupData.isUnassigned}
+                    toggleText={marker.popupData.toggleText}
+                    onToggle={marker.popupData.onToggle}
+                  />
+                </Popup>
+              )}
             </Marker>
           );
         })}

@@ -11,6 +11,8 @@ import type {
   MapRouteSegmentData,
   MapBounds,
 } from "../abstraction/map-data";
+import type { Order } from "@/types/order";
+import { OrderPopupContent } from "@/components/maps/abstraction/order-popup-content";
 
 interface MapyMapRendererProps {
   markers: MapMarkerData[];
@@ -204,7 +206,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         existingMarker.setOpacity(opacity);
 
         // Update popup if needed
-        if (markerData.popupContent) {
+        if (markerData.popupData) {
           let popupData = popupDataRef.current.get(markerData.id);
           if (!popupData) {
             // Create new container and root if they don't exist
@@ -214,7 +216,14 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
             popupDataRef.current.set(markerData.id, popupData);
           }
           // Render content to existing root and container
-          popupData.root.render(markerData.popupContent);
+          popupData.root.render(
+            <OrderPopupContent
+              order={markerData.popupData.order as unknown as Order}
+              isUnassigned={markerData.popupData.isUnassigned}
+              toggleText={markerData.popupData.toggleText}
+              onToggle={markerData.popupData.onToggle}
+            />,
+          );
           existingMarker.bindPopup(popupData.container, {
             closeButton: true,
             closeOnClick: false,
@@ -228,14 +237,21 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
           opacity,
         });
         // Add popup if provided
-        if (markerData.popupContent) {
+        if (markerData.popupData) {
           const popupContainer = document.createElement("div");
           const root = createRoot(popupContainer);
           popupDataRef.current.set(markerData.id, {
             container: popupContainer,
             root,
           });
-          root.render(markerData.popupContent);
+          root.render(
+            <OrderPopupContent
+              order={markerData.popupData.order as unknown as Order}
+              isUnassigned={markerData.popupData.isUnassigned}
+              toggleText={markerData.popupData.toggleText}
+              onToggle={markerData.popupData.onToggle}
+            />,
+          );
           newMarker.bindPopup(popupContainer, {
             closeButton: true,
             closeOnClick: false,
@@ -270,7 +286,7 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         existingMarker.setOpacity(opacity);
 
         // Update popup if needed
-        if (markerData.popupContent && !markerData.isDisabled) {
+        if (markerData.popupData && !markerData.isDisabled) {
           let popupData = popupDataRef.current.get(markerData.id);
           if (!popupData) {
             // Create new container and root if they don't exist
@@ -280,7 +296,14 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
             popupDataRef.current.set(markerData.id, popupData);
           }
           // Render content to existing root and container
-          popupData.root.render(markerData.popupContent);
+          popupData.root.render(
+            <OrderPopupContent
+              order={markerData.popupData.order as unknown as Order}
+              isUnassigned={markerData.popupData.isUnassigned}
+              toggleText={markerData.popupData.toggleText}
+              onToggle={markerData.popupData.onToggle}
+            />,
+          );
           existingMarker.bindPopup(popupData.container, {
             closeButton: true,
             closeOnClick: false,
@@ -295,14 +318,21 @@ const MapyMapRenderer: React.FC<MapyMapRendererProps> = ({
         });
 
         // Add popup if provided and not disabled
-        if (markerData.popupContent && !markerData.isDisabled) {
+        if (markerData.popupData && !markerData.isDisabled) {
           const popupContainer = document.createElement("div");
           const root = createRoot(popupContainer);
           popupDataRef.current.set(markerData.id, {
             container: popupContainer,
             root,
           });
-          root.render(markerData.popupContent);
+          root.render(
+            <OrderPopupContent
+              order={markerData.popupData.order as unknown as Order}
+              isUnassigned={markerData.popupData.isUnassigned}
+              toggleText={markerData.popupData.toggleText}
+              onToggle={markerData.popupData.onToggle}
+            />,
+          );
           newMarker.bindPopup(popupContainer, {
             closeButton: true,
             closeOnClick: false,

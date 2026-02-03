@@ -10,20 +10,22 @@ import { useOrderHighlight } from "@/hooks/use-order-highlight";
 import { useSegmentHighlight } from "@/hooks/use-segment-highlight";
 import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useRouteSegments } from "@/hooks/use-route-segments";
+import { useHereRoutes } from "@/hooks/use-here-routes";
 import { pl } from "@/lib/translations";
-import { OrderPopupContent } from "./order-popup-content";
 
 interface OrderMapAdapterProps {
   orders: Order[];
   unassignedOrders: Order[];
   onOrderAddedToDelivery?: (orderId?: string) => void | Promise<void>;
   onRefreshRequested?: () => void;
+  enableHereRouting?: boolean;
   children: (props: {
     markers: MapMarkerData[];
     routes: MapRouteSegmentData[];
     bounds: MapBounds;
     onMarkerHover: (markerId: string, isHovering: boolean) => void;
     onRouteSegmentHover: (segmentId: string, isHovering: boolean) => void;
+    onMarkerClick?: (markerId: string) => void;
   }) => React.ReactNode;
 }
 
@@ -36,6 +38,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   unassignedOrders,
   onOrderAddedToDelivery,
   onRefreshRequested,
+  enableHereRouting = false,
   children,
 }) => {
   const { highlightedOrderId, setHighlightedOrderId } = useMarkerHighlight();
@@ -45,12 +48,44 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
   const { currentDelivery, removeOrderFromDelivery, addOrderToDelivery } =
     useDeliveryRoute();
   const { setRouteSegments } = useRouteSegments();
-  // const { filters } = useMapFilters();
+
+  // Get HERE Maps API key - access through variable to avoid Jest parsing issues
+  let hereApiKey: string | undefined;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const meta = (globalThis as any)?.import?.meta?.env;
+    hereApiKey =
+      meta?.VITE_HERE_MAPS_API_KEY ||
+      (process.env.VITE_HERE_MAPS_API_KEY as string | undefined);
+  } catch {
+    hereApiKey = process.env.VITE_HERE_MAPS_API_KEY as string | undefined;
+  }
+
+  // Calculate HERE routes for the delivery orders
+  const { routes: hereRoutes } = useHereRoutes({
+    orders,
+    apiKey: hereApiKey,
+    enabled: enableHereRouting && orders.length >= 2 && !!hereApiKey,
+  });
 
   // Clear route segments for Leaflet (uses geometric calculations)
   React.useEffect(() => {
     setRouteSegments([]);
   }, [setRouteSegments]);
+
+  // Helper function to compute icon path based on marker state
+  // Note: We use the same icon regardless of highlight state for performance
+  // Visual highlighting is done via map rendering, not icon swapping
+  const getIconPath = React.useCallback(
+    (type: MapMarkerData["type"], waypointIndex?: number): string => {
+      if (type === "delivery" && waypointIndex !== undefined) {
+        return "/markers/marker-waypoint.svg";
+      }
+
+      return "/markers/marker-default.svg";
+    },
+    [],
+  );
 
   // Transform orders to markers
   const markers: MapMarkerData[] = React.useMemo(() => {
@@ -75,53 +110,55 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         waypointIndex = ++deliverySeq;
       }
 
-      const popupContent = (
-        <OrderPopupContent
-          order={order}
-          isUnassigned={isUnassigned}
-          toggleText={isUnassigned ? pl.addToDelivery : pl.removeFromDelivery}
-          onToggle={async () => {
-            try {
-              if (isUnassigned) {
-                if (!currentDelivery) {
-                  alert("Wybierz najpierw trasę dostawy");
-                  return;
-                }
-                await addOrderToDelivery(currentDelivery.id, order.id);
-                onOrderAddedToDelivery?.(order.id);
-                onRefreshRequested?.();
-              } else {
-                if (!currentDelivery) {
-                  alert("Wybierz najpierw trasę dostawy");
-                  return;
-                }
-                await removeOrderFromDelivery(currentDelivery.id, order.id);
-                onRefreshRequested?.();
-              }
-            } catch (error) {
-              console.error(
-                isUnassigned
-                  ? "Failed to add order to delivery:"
-                  : "Failed to remove order from delivery:",
-                error,
-              );
-              alert(
-                isUnassigned
-                  ? "Failed to add order to delivery"
-                  : "Failed to remove order from delivery",
-              );
-            }
-          }}
-        />
-      );
-
+      const isHighlighted = highlightedOrderId === order.id;
       const markerType = !matchesFilters ? "outfiltered" : type;
+      const iconPath = getIconPath(markerType, waypointIndex);
+
+      // Store popup data (order and callback) instead of JSX to avoid React element staling
+      const popupData = {
+        order: order as unknown as Record<string, unknown>,
+        isUnassigned,
+        toggleText: isUnassigned ? pl.addToDelivery : pl.removeFromDelivery,
+        onToggle: async () => {
+          try {
+            if (isUnassigned) {
+              if (!currentDelivery) {
+                alert("Wybierz najpierw trasę dostawy");
+                return;
+              }
+              await addOrderToDelivery(currentDelivery.id, order.id);
+              onOrderAddedToDelivery?.(order.id);
+              onRefreshRequested?.();
+            } else {
+              if (!currentDelivery) {
+                alert("Wybierz najpierw trasę dostawy");
+                return;
+              }
+              await removeOrderFromDelivery(currentDelivery.id, order.id);
+              onRefreshRequested?.();
+            }
+          } catch (error) {
+            console.error(
+              isUnassigned
+                ? "Failed to add order to delivery:"
+                : "Failed to remove order from delivery:",
+              error,
+            );
+            alert(
+              isUnassigned
+                ? "Failed to add order to delivery"
+                : "Failed to remove order from delivery",
+            );
+          }
+        },
+      };
+
       const markerData: MapMarkerData = {
         id: order.id,
         location: order.location,
         type: markerType,
         waypointIndex,
-        isHighlighted: highlightedOrderId === order.id,
+        isHighlighted,
         isCurrentOrder: currentOrderId === order.id,
         isPreviousOrder: previousOrderId === order.id,
         isDisabled: false,
@@ -129,7 +166,8 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         priority: String(order.priority),
         status: order.status,
         totalAmount: order.totalAmount,
-        popupContent,
+        popupData,
+        iconPath,
       };
       return markerData;
     });
@@ -144,17 +182,21 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     removeOrderFromDelivery,
     onOrderAddedToDelivery,
     onRefreshRequested,
+    getIconPath,
   ]);
 
-  // Transform consecutive orders to route segments
   const routes: MapRouteSegmentData[] = React.useMemo(() => {
     if (orders.length < 2) return [];
 
     const segments: MapRouteSegmentData[] = [];
+
     for (let i = 0; i < orders.length - 1; i++) {
       const fromOrder = orders[i];
       const toOrder = orders[i + 1];
       const segmentId = `${fromOrder.id}-${toOrder.id}`;
+
+      // Use HERE route segment by index
+      const hereSegment = enableHereRouting ? hereRoutes[i] : undefined;
 
       // Determine if highlighted and what color
       const isFromHighlighted = highlightedOrderId === fromOrder.id;
@@ -174,13 +216,22 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         id: segmentId,
         from: fromOrder.location,
         to: toOrder.location,
+        positions: hereSegment?.positions, // Use the real route polyline if available
+        distance: hereSegment?.distance,
+        duration: hereSegment?.duration,
         isHighlighted,
         highlightColor,
       });
     }
 
     return segments;
-  }, [orders, highlightedOrderId, highlightedSegmentId]);
+  }, [
+    orders,
+    hereRoutes,
+    highlightedOrderId,
+    highlightedSegmentId,
+    enableHereRouting,
+  ]);
 
   // Calculate bounds
   const bounds: MapBounds = React.useMemo(() => {
@@ -211,6 +262,11 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     [setHighlightedSegmentId],
   );
 
+  const handleMarkerClick = React.useCallback(() => {
+    // Marker click is handled by the renderer displaying the popup
+    // This is a placeholder for any additional logic needed
+  }, []);
+
   return (
     <>
       {children({
@@ -219,6 +275,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
         bounds,
         onMarkerHover: handleMarkerHover,
         onRouteSegmentHover: handleRouteSegmentHover,
+        onMarkerClick: handleMarkerClick,
       })}
     </>
   );
