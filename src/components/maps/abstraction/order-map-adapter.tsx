@@ -12,6 +12,7 @@ import { useDeliveryRoute } from "@/hooks/use-delivery-route";
 import { useRouteSegments } from "@/hooks/use-route-segments";
 import { useHereRoutes } from "@/hooks/use-here-routes";
 import { pl } from "@/lib/translations";
+import { ENV } from "@/config/env";
 
 interface OrderMapAdapterProps {
   orders: Order[];
@@ -49,10 +50,8 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     useDeliveryRoute();
   const { setRouteSegments } = useRouteSegments();
 
-  // Get HERE Maps API key
-  const hereApiKey = import.meta.env.VITE_HERE_MAPS_API_KEY as
-    | string
-    | undefined;
+  const hereApiKey = ENV.HERE_MAPS_API_KEY;
+
   console.log(
     "OrderMapAdapter: HERE API key available:",
     !!hereApiKey,
