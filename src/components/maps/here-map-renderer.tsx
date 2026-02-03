@@ -400,9 +400,37 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     // Check if we need to recreate routes
     const existingRouteIds = new Set(routePolylineMapRef.current.keys());
     const newRouteIds = new Set(routes.map((r) => r.id));
-    const needsRecreate =
+
+    // Check if route IDs changed
+    const routeIdsChanged =
       existingRouteIds.size !== newRouteIds.size ||
       ![...existingRouteIds].every((id) => newRouteIds.has(id));
+
+    // Also check if any route positions have changed (e.g., HERE API routes loaded)
+    let routePositionsChanged = false;
+    if (!routeIdsChanged) {
+      // Only check positions if IDs are the same
+      for (const route of routes) {
+        const existingPolyline = routePolylineMapRef.current.get(route.id);
+        if (existingPolyline) {
+          const existingPositions = existingPolyline
+            .getGeometry()
+            .getLatLngAltArray();
+          const newPositions = route.positions || [
+            { lat: route.from.lat, lng: route.from.lng },
+            { lat: route.to.lat, lng: route.to.lng },
+          ];
+
+          // Compare position count as a quick check
+          if (existingPositions.length / 3 !== newPositions.length) {
+            routePositionsChanged = true;
+            break;
+          }
+        }
+      }
+    }
+
+    const needsRecreate = routeIdsChanged || routePositionsChanged;
 
     if (!needsRecreate) {
       // Routes structure unchanged, skip recreation
