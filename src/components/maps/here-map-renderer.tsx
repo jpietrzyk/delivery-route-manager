@@ -7,6 +7,7 @@ import type {
   MapRouteSegmentData,
   MapBounds,
 } from "@/components/maps/abstraction/map-data";
+import type { Order } from "@/types/order";
 import { OrderPopupContent } from "@/components/maps/abstraction/order-popup-content";
 
 interface HereMapRendererProps {
@@ -684,7 +685,7 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
                 </button>
                 <div style={{ padding: "20px", paddingTop: "30px" }}>
                   <OrderPopupContent
-                    order={selectedMarker.popupData.order}
+                    order={selectedMarker.popupData.order as unknown as Order}
                     isUnassigned={selectedMarker.popupData.isUnassigned}
                     toggleText={selectedMarker.popupData.toggleText}
                     onToggle={selectedMarker.popupData.onToggle}

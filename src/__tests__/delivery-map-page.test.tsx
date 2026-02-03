@@ -1,5 +1,5 @@
 // import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 import DeliveryMapPage from "@/pages/delivery-route-map-page";
 import { MemoryRouter, Routes, Route } from "react-router-dom";

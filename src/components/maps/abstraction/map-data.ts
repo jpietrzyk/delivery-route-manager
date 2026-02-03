@@ -19,7 +19,7 @@ export interface MapMarkerData {
   matchesFilters?: boolean; // True if the marker matches current filter criteria
   // Popup data - stored as data instead of JSX to avoid React element staling issues
   popupData?: {
-    order: any; // Order object with all properties
+    order: Record<string, unknown>; // Order object with all properties
     isUnassigned: boolean;
     toggleText: string;
     onToggle: () => Promise<void>;
