@@ -116,7 +116,7 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
 
       // Store popup data (order and callback) instead of JSX to avoid React element staling
       const popupData = {
-        order,
+        order: order as unknown as Record<string, unknown>,
         isUnassigned,
         toggleText: isUnassigned ? pl.addToDelivery : pl.removeFromDelivery,
         onToggle: async () => {
