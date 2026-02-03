@@ -178,7 +178,7 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       disposed = true;
       void disposerPromise;
     };
-  }, [bounds.points]);
+  }, []);
 
   const getHereIconUrl = React.useCallback(
     (marker: MapMarkerData, isHover: boolean = false) => {
@@ -290,14 +290,20 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       ![...existingMarkerIds].every((id) => newMarkerIds.has(id));
 
     if (needsRecreate) {
-      // Remove old markers group
-      if (markersGroupRef.current) {
-        map.removeObject(markersGroupRef.current);
-        markersGroupRef.current = null;
+      // Reuse existing markers group when possible to avoid remove errors
+      let markersGroup = markersGroupRef.current;
+      if (markersGroup) {
+        try {
+          markersGroup.removeAll();
+        } catch (error) {
+          console.warn("Could not clear markers group:", error);
+        }
+      } else {
+        markersGroup = new H.map.Group();
+        markersGroupRef.current = markersGroup;
+        map.addObject(markersGroup);
       }
       markerMapRef.current.clear();
-
-      const markersGroup = new H.map.Group();
 
       const handleGroupMarkerClick = (evt: any) => {
         console.log("Group marker click detected, event:", evt);
@@ -360,9 +366,6 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
         markersGroup.addObject(hereMarker);
         markerMapRef.current.set(marker.id, hereMarker);
       });
-
-      map.addObject(markersGroup);
-      markersGroupRef.current = markersGroup;
     }
   }, [
     markers,
@@ -441,14 +444,20 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
       return;
     }
 
-    // Remove previous routes group
-    if (routesGroupRef.current) {
-      map.removeObject(routesGroupRef.current);
-      routesGroupRef.current = null;
+    // Reuse existing routes group when possible to avoid remove errors
+    let routesGroup = routesGroupRef.current;
+    if (routesGroup) {
+      try {
+        routesGroup.removeAll();
+      } catch (error) {
+        console.warn("Could not clear routes group:", error);
+      }
+    } else {
+      routesGroup = new H.map.Group();
+      routesGroupRef.current = routesGroup;
+      map.addObject(routesGroup);
     }
     routePolylineMapRef.current.clear();
-
-    const routesGroup = new H.map.Group();
 
     // Add polylines for routes
     routes.forEach((route) => {
@@ -523,9 +532,6 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
         }
       }
     });
-
-    map.addObject(routesGroup);
-    routesGroupRef.current = routesGroup;
   }, [routes, handleRouteHoverImmediate]);
 
   // Sync route highlight state from context (for sidebar-initiated highlights)
@@ -567,15 +573,21 @@ const HereMapRenderer: React.FC<HereMapRendererProps> = ({
         map.setCenter({ lat: points[0].lat, lng: points[0].lng });
         map.setZoom(13);
       } else {
-        const boundingBox = new H.geo.Rect(
-          points[0].lat,
-          points[0].lng,
-          points[0].lat,
-          points[0].lng,
-        );
-        points.forEach((point) => {
-          boundingBox.mergePoint({ lat: point.lat, lng: point.lng });
-        });
+        // Calculate min/max coordinates to create proper bounding box
+        let minLat = points[0].lat;
+        let maxLat = points[0].lat;
+        let minLng = points[0].lng;
+        let maxLng = points[0].lng;
+
+        for (const point of points) {
+          minLat = Math.min(minLat, point.lat);
+          maxLat = Math.max(maxLat, point.lat);
+          minLng = Math.min(minLng, point.lng);
+          maxLng = Math.max(maxLng, point.lng);
+        }
+
+        // Create rect with proper bounds (north, west, south, east)
+        const boundingBox = new H.geo.Rect(maxLat, minLng, minLat, maxLng);
         map.getViewModel().setLookAtData({ bounds: boundingBox }, true);
       }
       initialBoundsFitRef.current = true;

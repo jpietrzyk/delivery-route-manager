@@ -22,6 +22,7 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
   const markerIndexRef = React.useRef<
     Map<string, { marker: any; type: "delivery" | "unassigned" }>
   >(new Map());
+  const groupRef = React.useRef<any | null>(null);
   const defaultIconRef = React.useRef<any | null>(null);
   const unassignedIconRef = React.useRef<any | null>(null);
   const highlightIconRef = React.useRef<any | null>(null);
@@ -106,9 +107,10 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    // Clear existing markers
-    for (const m of markersRef.current) {
-      map.removeObject(m);
+    // Clear existing markers by removing the group
+    if (groupRef.current) {
+      map.removeObject(groupRef.current);
+      groupRef.current = null;
     }
     markersRef.current = [];
     markerIndexRef.current.clear();
@@ -118,6 +120,7 @@ export const HereMapRenderer: React.FC<HereMapRendererProps> = ({
     if (!H) return;
 
     const group = new H.map.Group();
+    groupRef.current = group;
     const addOrderMarker = (order: Order, type: "delivery" | "unassigned") => {
       const isHighlighted =
         highlightedOrderId && order.id === highlightedOrderId;
