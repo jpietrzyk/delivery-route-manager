@@ -18,9 +18,12 @@ export const useHereRoutes = ({ orders, apiKey, enabled = true }: UseHereRoutesO
 
   useEffect(() => {
     if (!enabled || !apiKey || orders.length < 2) {
+      console.log('useHereRoutes: skipping', { enabled, hasApiKey: !!apiKey, ordersCount: orders.length });
       setRoutes([]);
       return;
     }
+
+    console.log('useHereRoutes: calculating routes for', orders.length, 'orders');
 
     const calculateRoutes = async () => {
       try {
@@ -32,6 +35,7 @@ export const useHereRoutes = ({ orders, apiKey, enabled = true }: UseHereRoutesO
           lng: order.location.lng,
         }));
 
+        console.log('useHereRoutes: fetching routes from HERE API...');
         const segments = await HereRoutingApi.calculateRouteSegments(
           waypoints,
           apiKey,
@@ -41,6 +45,7 @@ export const useHereRoutes = ({ orders, apiKey, enabled = true }: UseHereRoutesO
           }
         );
 
+        console.log('useHereRoutes: received', segments.length, 'route segments');
         setRoutes(segments);
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err));
