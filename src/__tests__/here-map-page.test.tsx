@@ -15,7 +15,7 @@ const hereSpy = jest.fn<React.ReactElement, [Record<string, unknown>]>(() => (
   <div data-testid="here" />
 ));
 
-jest.mock("@/components/maps/abstraction/here-map-view", () => ({
+jest.mock("@/components/maps/abstraction/leaflet-map-view", () => ({
   __esModule: true,
   default: (props: Record<string, unknown>) => {
     // Add filteredUnassignedOrders to props if not present, for test compatibility
