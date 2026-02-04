@@ -68,10 +68,33 @@ const OrderMapAdapter: React.FC<OrderMapAdapterProps> = ({
     enabled: enableHereRouting && orders.length >= 2 && !!hereApiKey,
   });
 
-  // Clear route segments for Leaflet (uses geometric calculations)
+  // Update route segments for sidebar calculations when HERE routing is enabled
   React.useEffect(() => {
-    setRouteSegments([]);
-  }, [setRouteSegments]);
+    if (!enableHereRouting || orders.length < 2) {
+      setRouteSegments([]);
+      return;
+    }
+
+    if (hereRoutes.length === 0) {
+      setRouteSegments([]);
+      return;
+    }
+
+    const segmentData = orders.slice(0, -1).map((order, index) => {
+      const nextOrder = orders[index + 1];
+      const hereSegment = hereRoutes[index];
+
+      return {
+        id: `${order.id}-${nextOrder.id}`,
+        fromOrderId: order.id,
+        toOrderId: nextOrder.id,
+        distance: hereSegment?.distance ?? 0,
+        duration: hereSegment?.duration ?? 0,
+      };
+    });
+
+    setRouteSegments(segmentData);
+  }, [enableHereRouting, orders, hereRoutes, setRouteSegments]);
 
   // Helper function to compute icon path based on marker state
   // Note: We use the same icon regardless of highlight state for performance
