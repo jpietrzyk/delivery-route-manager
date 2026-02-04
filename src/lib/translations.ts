@@ -157,6 +157,7 @@ export const pl = {
   ariaToggleSidebar: "Przełącz panel boczny",
   leaflet: "Leaflet",
   mapycz: "Mapy.cz",
+  here: "HERE Maps",
 } as const;
 
 /**

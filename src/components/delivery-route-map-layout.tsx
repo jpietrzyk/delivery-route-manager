@@ -45,19 +45,22 @@ export default function DeliveryRouteMapLayout({
   const getCurrentMapProvider = () => {
     const pathname = window.location.pathname;
     if (pathname.includes("/mapy")) return "mapy";
+    if (pathname.includes("/here")) return "here";
     return "leaflet"; // default
   };
 
   const [currentMapProvider, setCurrentMapProvider] = useState<
-    "leaflet" | "mapy"
+    "leaflet" | "mapy" | "here"
   >(getCurrentMapProvider());
 
-  const handleMapProviderChange = (provider: "leaflet" | "mapy") => {
+  const handleMapProviderChange = (provider: "leaflet" | "mapy" | "here") => {
     const currentDeliveryId = deliveryId || "DEL-001"; // fallback
     setCurrentMapProvider(provider);
 
     if (provider === "mapy") {
       navigate(`/delivery_routes/${currentDeliveryId}/mapy`);
+    } else if (provider === "here") {
+      navigate(`/delivery_routes/${currentDeliveryId}/here`);
     } else {
       navigate(`/delivery_routes/${currentDeliveryId}/leaflet`);
     }
